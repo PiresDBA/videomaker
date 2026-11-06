@@ -630,15 +630,82 @@ def phase_music(args, p: Project):
     p.mark("music", detail=str(p.bgm if p.bgm.exists() else p.bgm_proc))
 
 
+VOICE_STATE = HERE / ".narration_voice_state.json"
+
+
+def _pick_gemini_voice(cfg):
+    """Escolhe a proxima voz Gemini da lista (alternancia entre videos)."""
+    tts = cfg.get("tts", {})
+    voices = tts.get("gemini_voices") or [tts.get("voice", "Leda")]
+    if not tts.get("alternate_voices", True) or len(voices) < 2:
+        return voices[0]
+    state = {}
+    if VOICE_STATE.exists():
+        try:
+            state = json.loads(VOICE_STATE.read_text(encoding="utf-8"))
+        except Exception:
+            state = {}
+    idx = int(state.get("index", -1)) + 1
+    if idx >= len(voices):
+        idx = 0
+    voice = voices[idx]
+    VOICE_STATE.write_text(json.dumps({"index": idx, "last": voice}, ensure_ascii=False),
+                           encoding="utf-8")
+    return voice
+
+
 def phase_narration(args, p: Project):
-    run([sys.executable, str(SCRIPTS["gen_narration"]),
-         "--proj", str(p.dir),
-         "--voice", args.voice,
-         "--rate", args.rate,
-         "--pitch", args.pitch,
-         "--style", args.style,
-         "--workers", str(args.workers)],
-        "FASE narration: narracao Edge-TTS (local, sem API)")
+    cfg = load_json(HERE / "config.json")
+    tts = cfg.get("tts", {})
+    provider = (getattr(args, "narration_provider", None) or tts.get("provider") or "edge").lower()
+    if provider not in ("edge", "gemini"):
+        provider = "edge"
+
+    voice_arg = (getattr(args, "voice", "") or "").strip()
+    edge_style = (not voice_arg) or voice_arg.lower().startswith("pt-br-") \
+        or voice_arg.lower().endswith("neural")
+
+    def _run_edge(voice, rate, pitch, style, workers, label):
+        run([sys.executable, str(SCRIPTS["gen_narration"]),
+             "--proj", str(p.dir),
+             "--voice", voice,
+             "--rate", rate,
+             "--pitch", pitch,
+             "--style", style,
+             "--workers", str(workers)], label)
+        p.state.setdefault("narration", {}).update({"provider": "edge", "voice": voice})
+        p.save_state()
+
+    if provider == "gemini":
+        voice = _pick_gemini_voice(cfg) if edge_style else voice_arg
+        model = tts.get("model", "gemini-3.8-flash-tts")
+        cmd = [sys.executable, str(HERE / "gen_narration_gemini_sections.py"),
+               "--proj", str(p.dir),
+               "--voice", voice,
+               "--model", model]
+        if getattr(args, "force", False):
+            cmd.append("--force")
+        try:
+            run(cmd, "FASE narration: Gemini TTS '%s' (Google AI Studio)" % voice)
+            p.state.setdefault("narration", {}).update({"provider": "gemini", "voice": voice})
+            p.save_state()
+        except RuntimeError as e:
+            if not tts.get("edge_fallback", True):
+                raise
+            edge_voice = cfg.get("voice", "pt-BR-ThalitaNeural")
+            print("== FALLBACK: Gemini TTS indisponivel (%s)." % str(e).splitlines()[0][:120])
+            print("== FALLBACK: gerando narracao com Edge-TTS '%s' (local, sem API)." % edge_voice)
+            _run_edge(edge_voice,
+                      cfg.get("voice_rate", "+12%"),
+                      cfg.get("voice_pitch", "+8Hz"),
+                      "excited",
+                      getattr(args, "workers", 4),
+                      "FASE narration: FALLBACK Edge-TTS (local, sem API)")
+            p.state["narration"]["fallback_from"] = "gemini"
+            p.save_state()
+    else:
+        _run_edge(args.voice, args.rate, args.pitch, args.style, args.workers,
+                  "FASE narration: narracao Edge-TTS (local, sem API)")
     p.mark("narration", detail=str(p.narration_timing))
 
 
@@ -1368,7 +1435,10 @@ def main():
         sp.add_argument("--slug", help="forca o nome do projeto (senao vem do prompt)")
         sp.add_argument("--wait", type=int, default=420)
         sp.add_argument("--pause", type=int, default=8)
-        sp.add_argument("--voice", default="pt-BR-ThalitaNeural")
+        sp.add_argument("--voice", default="pt-BR-ThalitaNeural",
+                        help="voz Edge (pt-BR-*) ou voz Gemini (Leda, Achernar, ...)")
+        sp.add_argument("--narration-provider", default=None, choices=["edge", "gemini"],
+                        help="motor de narracao (padrao: config tts.provider)")
         sp.add_argument("--rate", default="+12%")
         sp.add_argument("--pitch", default="+8Hz")
         sp.add_argument("--style", default="excited")

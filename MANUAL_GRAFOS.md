@@ -2048,6 +2048,107 @@ Arquivos: `scripts/gemini_fetch.py`, `scripts/generate_script_from_prompt.py`,
 
 ---
 
+## 36. Padrão oficial de descrição do canal (2026-11-06)
+
+### 36.1. O problema
+
+Os vídeos publicados entre 04 e 06/11/2025 saíram com descrições de **16 a 46
+palavras** (o mínimo do YouTube é 5000 caracteres, mas o padrão do canal é
+100+ palavras), sem contexto de geração por IA, sem aviso de "sem promoção
+paga" e com apenas 4 a 7 hashtags. A causa raiz era o `youtube_upload.py`, que
+montava a descrição no próprio arquivo, sem usar o roteiro do projeto.
+
+### 36.2. Fonte única da verdade
+
+`scripts/description_template.py` é o **único** lugar onde o padrão é
+definido. Nenhum outro script escreve texto de description na mão.
+
+| Bloco | Conteúdo | Obrigatório |
+|-------|----------|-------------|
+| 1 | Título do vídeo | sim |
+| 2 | Gancho de curiosidade (2 frases, 6 templates, escolha estável por índice) | sim |
+| 3 | Enredo real (texto das seções `s1..sN` do `script.json`, sem `s0`/`s_intro`/`s_outro`) | sim |
+| 4 | "Vídeo gerado por inteligência artificial..." | sim |
+| 5 | "Não contém promoção paga..." | sim |
+| 6 | CTA do canal ("Siga-nos para mais aventuras...") | sim |
+| 7 | Hashtags (11, com e sem acento) | sim (mín. 8) |
+
+Funções públicas do módulo:
+
+- `build_description(title, storyline, hook_index=0, max_chars=5000)` — monta a
+  descrição respeitando o limite do YouTube. **O enredo é o único bloco
+  encurtado**: os blocos obrigatórios nunca são cortados.
+- `description_for_project(project_dir)` — atalho para um projeto.
+- `validate(description)` — devolve a lista de problemas (vazia = conforme).
+- `word_count(description)` — contagem de palavras.
+- `extract_storyline(script)` — separa o enredo do `script.json`.
+- `find_project_for_title(title)` — acha a pasta do projeto pelo título
+  (sobreposição de tokens entre título, slug, título do script e prompt).
+
+### 36.3. Consumers
+
+- `scripts/youtube_upload.py` — descrição do upload (causa raiz corrigida).
+- `scripts/standardize_descriptions.py` — padronização em massa dos projetos.
+- `scripts/audit_youtube.py` — auditoria e correção do canal publicado.
+
+### 36.4. Comandos
+
+```powershell
+# Auditoria do canal (não altera nada)
+python scripts/audit_youtube.py --limit 30
+
+# Simula a correção (dry-run)
+python scripts/audit_youtube.py --limit 30 --fix --dry-run
+
+# Corrige no YouTube
+python scripts/audit_youtube.py --limit 30 --fix
+
+# Padroniza todos os projetos locais
+python scripts/standardize_descriptions.py --force
+
+# Casa vídeos do canal com projetos locais pela duração e grava video_id
+python scripts/match_videos_by_duration.py --apply
+```
+
+### 36.5. Casamento vídeo ↔ projeto
+
+O título do YouTube não é igual ao título do `script.json` (o Gemini reescreve
+completamente). Por isso o rastreamento usa **duas estratégias**:
+
+1. `find_project_for_title()` — sobreposição de tokens (limiar 45%).
+2. `scripts/match_videos_by_duration.py` — **fingerprint forte**: a duração do
+   mp4 local (`ffprobe`) versus `contentDetails.duration` do YouTube, com
+   tolerância de 2s. Em 2026-11-06, 19 dos 27 vídeos do canal casaram com
+   delta < 1s, e as duas estratégias concordaram em todos os casos.
+
+O `video_id` resultante é gravado em `projects/<slug>/project-control.json`,
+no bloco `publish` (junto de `youtube_duration_s` e `local_duration_s`).
+
+### 36.6. Estado da auditoria (2026-11-06)
+
+Canal **Frida e Luna** (`@fridaeluna`, `UCt8f_9bKINYilXvp063Ik3A`):
+
+- **27/27 vídeos** no padrão (antes: 8 fora do padrão nos 8 mais recentes).
+- Descrições: 146 a 1066 palavras (média ~430).
+- Tags: 20 a 30 por vídeo (antes: 0 a 15).
+- 21/21 projetos locais com descrição >= 100 palavras.
+- 2 projetos sem `video_id` (`dachshund-marrom-luna-tenta-pegar-o-bisc` sem
+  render; `e-se-os-cachorros-pudessem-falar-por-um` com 169s inedito) — nunca
+  foram publicados.
+
+### 36.7. Ressalvas
+
+- A descrição tem limite de **5000 caracteres**. O YouTube mostra "mostrar
+  mais" a partir de ~160 caracteres, então os 3 primeiros blocos (título,
+  gancho, início do enredo) são o que aparece no preview.
+- 8 vídeos do canal (03/11/2025) não têm projeto local correspondente — os
+  projetos foram apagados ou vieram de outra máquina. Receberam a descrição
+  padrão sem enredo detalhado.
+- `ZBnPARaNtCs` ("O Segredo para Acabar com o Hálito de Onça do Seu Cão") está
+  com **10 segundos** de duração no canal — upload quebrado, vale reenviar.
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 

@@ -102,14 +102,6 @@ def build_hook(theme):
     if not t:
         t = "uma aventura nova com a Frida e a Luna"
     t = t.rstrip(".!?")
-    return "E se " + t + "? Ja imaginou como sera?"
-
-    
-    t = clean_theme(theme)
-    if not t:
-        t = "uma aventura nova com a Frida e a Luna"
-    # Remove pontuação final se houver, pois já adicionamos interrogação
-    t = t.rstrip(".!?")
     return "E se " + t + "? Já imaginou como será?"
 
 
@@ -153,20 +145,31 @@ def apply_contract(script, theme=None):
         return script, ["script com menos de 2 secoes; contrato nao aplicado"]
 
     # ---------- secao de introducao (s_intro) ----------
-    # Adiciona NO INICIO, antes de tudo
-    hook_section = {
-        "id": HOOK_ID,
-        "label": HOOK_LABEL,
-        "text": hook,
-        "delivery_cues": {
-            "pace": "brisk",
-            "energy": "curioso e empolgado",
-            "emphasis_words": [],
-            "pause_after_seconds": 0.8,
-        },
-    }
-    sections.insert(0, hook_section)
-    changes.append("secao de introducao adicionada (s_intro)")
+    # Idempotente: se ja existe, garante que esta no inicio e mantem o texto
+    # (o Gemini gera um gancho unico por video; so preenche se estiver vazio).
+    hook_idx = next((i for i, s in enumerate(sections) if s.get("id") == HOOK_ID), None)
+    if hook_idx is None:
+        hook_section = {
+            "id": HOOK_ID,
+            "label": HOOK_LABEL,
+            "text": hook,
+            "delivery_cues": {
+                "pace": "brisk",
+                "energy": "curioso e empolgado",
+                "emphasis_words": [],
+                "pause_after_seconds": 0.8,
+            },
+        }
+        sections.insert(0, hook_section)
+        changes.append("secao de introducao adicionada (s_intro)")
+    else:
+        if hook_idx != 0:
+            sections.insert(0, sections.pop(hook_idx))
+            changes.append("secao de introducao movida para o inicio")
+        atual = sections[0]
+        if not (atual.get("text") or "").strip():
+            _set(atual, "text", hook, changes, HOOK_ID)
+        _set(atual, "label", HOOK_LABEL, changes, HOOK_ID)
 
     # ---------- abertura (s0) ----------
     first = sections[1]  # s_intro esta na posicao 0, s0 na posicao 1

@@ -120,7 +120,7 @@ def main():
     ap.add_argument("--video", required=True)
     ap.add_argument("--title", default="", help="titulo (default: nome do arquivo ou do projeto)")
     ap.add_argument("--description", default="", help="descricao (default: gerada automaticamente com IA, sem promocao paga, PT-BR, infantil)")
-    ap.add_argument("--tags", default="cachorro,animacao,infantil,frida,luna", help="tags separadas por virgula")
+    ap.add_argument("--tags", default="cachorro,animacao,infantil,frida,luna,cachorrinho,desenhoanimado,videoengraçado,conteúdocriativo,petspride,familia,criancas,cachorroengraçado,diversão,aprendizado", help="tags separadas por virgula")
     ap.add_argument("--category", default="24", help="22=Pessoas e blogs, 24=Entretenimento, 1=Filmes/Animacao")
     ap.add_argument("--privacy", default="public", choices=["private", "unlisted", "public"])
     ap.add_argument("--made-for-kids", action="store_true", default=True, help="marca como feito para criancas (padrao: sim)")
@@ -153,19 +153,19 @@ def main():
     if not title:
         title = video.stem.replace("-", " ").title()
 
-    # Descricao: usa --description, senão gera automatica
+    # Descricao: usa --description, senão gera automatica no PADRAO DO CANAL
+    # (scripts/description_template.py — fonte unica da verdade).
     desc = a.description.strip()
     if not desc:
-        tema = video.stem.replace("-", " ")
-        desc = (
-            f"{title}\n\n"
-            f"{tema}\n\n"
-            "Vídeo gerado por inteligência artificial (IA).\n"
-            "Não contém promoção paga.\n"
-            "Idioma da narração e das legendas: Português do Brasil.\n"
-            "Conteúdo infantil (feito para crianças).\n\n"
-            "#cachorro #animacao #infantil #frida #luna #desenhoanimado"
-        )
+        from description_template import build_description, extract_storyline, read_script
+
+        proj_dir = video.parent.parent  # projects/<slug>/output -> projects/<slug>
+        script = read_script(proj_dir)
+        if script:
+            desc = build_description(script.get("title", title), extract_storyline(script))
+        if not desc.strip():
+            # fallback: sem script.json, gera a partir do titulo
+            desc = build_description(title, [])
 
     # Tags
     tags = [t.strip() for t in a.tags.split(",") if t.strip()]

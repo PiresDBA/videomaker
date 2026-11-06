@@ -86,7 +86,7 @@ PHASES = [
     ("scenes", "Cenas", "IA · HTML"),
     ("images", "Imagens", "IA web · Gemini"),
     ("music", "Música", "IA web / procedural"),
-    ("narration", "Narração", "Edge-TTS local"),
+    ("narration", "Narração", "Gemini (AI Studio) / Edge-TTS"),
     ("timeline", "Timeline", "Linha do tempo"),
     ("mix", "Mixagem", "Áudio final"),
     ("compose", "Composição", "HyperFrames"),
@@ -990,6 +990,7 @@ class App(tk.Tk):
         self.v_rate = tk.StringVar(value="+12%")
         self.v_pitch = tk.StringVar(value="+8Hz")
         self.v_style = tk.StringVar(value="excited")
+        self.v_narr_provider = tk.StringVar(value="gemini")
         self.v_wait = tk.StringVar(value="240")
         self.v_yt_mode = tk.StringVar(value="manual")
         self.v_yt_priv = tk.StringVar(value="private")
@@ -1290,11 +1291,20 @@ class App(tk.Tk):
         vb = self.voice_box.body
         for col, w in enumerate((3, 1, 1, 1, 1)):
             vb.grid_columnconfigure(col, weight=w, uniform="v")
+        prov_row = tk.Frame(vb, bg=T["card"])
+        prov_row.grid(row=0, column=0, columnspan=5, sticky="ew", pady=(0, P(10)))
+        lbl(prov_row, "Motor de narração", 9, True, "text2").pack(side="left")
+        Segmented(prov_row, [("gemini", "Gemini"), ("edge", "Edge")],
+                  self.v_narr_provider).pack(side="right")
         for col, (name, var, mono) in enumerate((("Voz", self.v_voice, True), ("Velocidade", self.v_rate, True),
                                                  ("Tom", self.v_pitch, True), ("Estilo", self.v_style, False),
                                                  ("Espera máx. (s)", self.v_wait, False))):
             labeled(vb, name, lambda p, v=var, m=mono: make_field(p, v, mono=m)).grid(
-                row=0, column=col, sticky="ew", padx=(0, P(10)) if col < 4 else 0)
+                row=1, column=col, sticky="ew", padx=(0, P(10)) if col < 4 else 0)
+        lbl(vb, "Gemini: deixe a voz como está para alternar entre Achernar e Leda a cada vídeo; "
+                 "ou digite uma voz (ex: Leda, Kore, Zephyr). Edge: use vozes pt-BR-*Neural.",
+            8, False, "text2", anchor="w", justify="left").grid(
+            row=2, column=0, columnspan=5, sticky="ew", pady=(P(8), 0))
 
     # -------------------------------------------------------- publicar ---
     def _page_publish(self, root):
@@ -2179,6 +2189,7 @@ class App(tk.Tk):
             cmd.append("--skip-check")
         cmd += ["--voice", self.v_voice.get(), "--rate", self.v_rate.get(), "--pitch",
                 self.v_pitch.get(), "--wait", self.v_wait.get()]
+        cmd += ["--narration-provider", self.v_narr_provider.get()]
         if self.v_style.get().strip():
             cmd += ["--style", self.v_style.get().strip()]
         cmd += ["--duration", str(self.v_dur.get())]

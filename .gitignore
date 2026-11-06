@@ -38,6 +38,9 @@ __pycache__/
 
 # --- Credenciais e configurações locais (NUNCA subir) ---
 scripts/client_secret*.json
+scripts/client_secre*.json*
+scripts/client_*.json*
+scripts/*token*.json
 scripts/config.json
 scripts/daily_config.json
 scripts/pipeline_ui_settings.json
@@ -53,8 +56,14 @@ scheduled_videos.json*
 daily_state.json
 
 # --- Banco de mídia local (não subir) ---
-"banco de imagens"/
-"banco de musicas"/
+# Sem aspas: o git não entende aspas em padrões e buscaria as aspas no nome
+banco de imagens/
+banco de musicas/
+
+# --- Estado local da interface ---
+ui/test-results/
+user_settings.json
+scripts/pipeline_defaults.json
 
 # --- Binários e executáveis (não subir) ---
 ffmpeg/
@@ -72,3 +81,4 @@ hyperframes-workspace/
 
 # --- Temporário ---
 *.tmp
+scripts/.narration_voice_state.json

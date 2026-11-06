@@ -1,0 +1,179 @@
+{
+  "_help": "Para cada secao: images = arquivos em assets/images/. split = fracao da cena em que entra a 2a imagem. camera = [escala_inicial, escala_final, x_inicial, x_final, y_inicial, y_final] por imagem. Sem camera = push-in padrao.",
+  "s1": {
+    "images": [
+      "introdu_o_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s2": {
+    "images": [
+      "apar_ncia_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s3": {
+    "images": [
+      "o_superpoder_do_sono_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s4": {
+    "images": [
+      "a_personalidade_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s4b": {
+    "images": [
+      "o_mestre_da_pregui_a_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s5": {
+    "images": [
+      "os_benef_cios_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s6": {
+    "images": [
+      "os_problemas_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s7": {
+    "images": [
+      "o_amor_incondicional_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s8": {
+    "images": [
+      "por_que_todo_mundo_ama_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s8b": {
+    "images": [
+      "a_magia_di_ria_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  },
+  "s9": {
+    "images": [
+      "conclus_o_scene.jpg"
+    ],
+    "split": null,
+    "camera": [
+      [
+        1.03,
+        1.1,
+        0,
+        18,
+        0,
+        -8
+      ]
+    ]
+  }
+}

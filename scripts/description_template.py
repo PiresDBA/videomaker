@@ -1,0 +1,302 @@
+# -*- coding: utf-8 -*-
+"""
+PADRÃO OFICIAL DE DESCRIÇÃO DO CANAL "Frida e Luna" — fonte única da verdade.
+
+Usado por:
+  - scripts/youtube_upload.py      (descrição no upload de vídeos novos)
+  - scripts/standardize_descriptions.py  (padronização em massa dos projetos)
+  - scripts/audit_youtube.py       (auditoria e correção de vídeos publicados)
+
+Regras do padrão:
+  1. Mínimo de 100 palavras (recomendado: 250-400).
+  2. Primeiro bloco = título do vídeo.
+  3. Segundo bloco = gancho de curiosidade (2 frases, varia por tema).
+  4. Terceiro bloco = enredo (texto real das seções do roteiro, sem s0/s_outro).
+  5. Quarto bloco = contexto obrigatório: "gerado por IA" + "sem promoção paga".
+  6. Sexto bloco = call-to-action do canal.
+  7. Último bloco = hashtags de pesquisa (no mínimo 8, com e sem acento).
+
+Comandos:
+  python scripts/description_template.py --proj projects/<slug>
+  python scripts/description_template.py --proj projects/<slug> --print
+"""
+
+import json
+import re
+import unicodedata
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+PROJECTS_DIR = Path(r"C:\videomaker\projects")
+
+# --- Blocos fixos do padrão -------------------------------------------------
+IA_BLOCK = (
+    "Vídeo gerado por inteligência artificial — a criatividade brilha aqui! "
+    "Este vídeo foi criado completamente com IA e sem humanos no set, "
+    "mostrando todo o poder da nova geração de ferramentas criativas."
+)
+
+NO_PROMO_BLOCK = "Não contém promoção paga — apenas diversão pura de cachorros!"
+
+CTA_BLOCK = (
+    "Siga-nos para mais aventuras diárias com a Frida e a Luna — "
+    "a alegria dos pets nunca termina!"
+)
+
+HASHTAGS = [
+    "#cachorro",
+    "#animação",
+    "#fridaeluna",
+    "#infantil",
+    "#videoengraçado",
+    "#conteúdocriativo",
+    "#petspride",
+    "#cachorrinho",
+    "#desenhoanimado",
+    "#aprendizado",
+    "#diversão",
+]
+
+MIN_WORDS = 100
+
+
+def _fold(text):
+    """Minusculas sem acentos, para comparacao tolerante."""
+    t = unicodedata.normalize("NFKD", text or "")
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    return " ".join(t.lower().split())
+
+
+def _clean_sentence(text):
+    """Remove risadas escritas e normaliza espacos."""
+    text = re.sub(r"(?i)\b(?:ha[\s\-!]*){2,}[!\.,]?", " ", text or "")
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _hook_templates(title):
+    t = (title or "").strip()
+    low = t.lower()
+    return [
+        "Descubra o incrível mundo de %s — uma aventura que vai te deixar boquiaberto!" % low,
+        "E se %s pudesse se tornar realidade? Prepare-se para uma jornada surpreendente!" % low,
+        "%s — uma história que vai transformar o seu dia e deixar todo mundo sorrindo!" % t,
+        "Mergulhe no universo incrível de %s — você não vai querer perder essa!" % low,
+        "Já imaginou como seria %s? A Frida e a Luna viveram algo que só quem ama cachorros entende!" % low,
+        "Atenção, família de quatro patas! %s começa agora e promete muita risada e carinho!" % t,
+    ]
+
+
+def pick_hook(title, index=0):
+    """Escolhe um gancho. O index torna a escolha estavel entre execucoes."""
+    templates = _hook_templates(title)
+    return templates[index % len(templates)]
+
+
+def read_script(project_dir):
+    """Le artifacts/script.json do projeto. Retorna dict ou None."""
+    p = Path(project_dir) / "artifacts" / "script.json"
+    if not p.is_file():
+        return None
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def extract_storyline(script):
+    """Texto do enredo: secoes de conteudo (sem s0, s_intro e s_outro)."""
+    parts = []
+    for sec in (script or {}).get("sections", []):
+        sid = sec.get("id", "")
+        if sid in ("s0", "s_intro", "s_outro"):
+            continue
+        text = _clean_sentence(sec.get("text", ""))
+        if text:
+            parts.append(text)
+    return parts
+
+
+MAX_CHARS = 5000
+
+
+def _fit_storyline(storyline, budget):
+    """Encaixa os paragrafos do enredo no orcamento de caracteres.
+
+    Corta apenas o enredo (que e o bloco mais longo) para preservar sempre
+    os blocos obrigatorios do padrao (IA, sem promocao, CTA e hashtags).
+    """
+    if budget <= 0:
+        return ""
+
+    chosen = []
+    used = 0
+    for para in storyline:
+        para = (para or "").strip()
+        if not para:
+            continue
+        add = len(para) + (2 if chosen else 0)
+        if used + add > budget:
+            break
+        chosen.append(para)
+        used += add
+
+    if not chosen:
+        # nao cabe nenhum paragrafo inteiro: corta no limite de palavra
+        first = (storyline[0] if storyline else "").strip()
+        if not first:
+            return ""
+        cut = first[:budget].rsplit(" ", 1)[0]
+        return (cut + "...") if cut else ""
+
+    text = "\n".join(chosen)
+    if len(text) >= budget and len(chosen) < len(storyline):
+        text = text[:budget].rsplit(" ", 1)[0].rstrip(" ,.;:") + "..."
+    return text
+
+
+def build_description(title, storyline=None, hook_index=0, max_chars=MAX_CHARS):
+    """Monta a descricao completa no padrao do canal.
+
+    A ordem dos blocos e: titulo, gancho, enredo, contexto de IA, aviso de
+    sem promocao paga, CTA e hashtags. Se o enredo for muito longo, ele e
+    encurtado para que os blocos obrigatorios nunca sejam cortados.
+    """
+    title = (title or "").strip() or "Aventura da Frida e da Luna"
+    storyline = storyline or []
+
+    head = [title, pick_hook(title, hook_index)]
+    tail = [IA_BLOCK, NO_PROMO_BLOCK, CTA_BLOCK, " ".join(HASHTAGS)]
+
+    reserved = len("\n\n".join(head + tail)) + 2
+    budget = max_chars - reserved
+
+    body = _fit_storyline(storyline, budget)
+    blocks = head + ([body] if body else []) + tail
+    return "\n\n".join(blocks)
+
+
+def description_for_project(project_dir, hook_index=0):
+    """Monta a descricao de um projeto a partir do script.json."""
+    script = read_script(project_dir)
+    if not script:
+        return None
+    title = script.get("title", "")
+    return build_description(title, extract_storyline(script), hook_index)
+
+
+def word_count(description):
+    return len((description or "").split())
+
+
+def validate(description):
+    """Retorna lista de problemas da descricao (vazia = conforme o padrao)."""
+    issues = []
+    desc = description or ""
+    if not desc.strip():
+        issues.append("descricao vazia")
+        return issues
+    if word_count(desc) < MIN_WORDS:
+        issues.append("abaixo de %d palavras (%d)" % (MIN_WORDS, word_count(desc)))
+    low = _fold(desc)
+    if "gerado por inteligencia artificial" not in low:
+        issues.append("falta o contexto de geracao por IA")
+    if "promocao paga" not in low:
+        issues.append("falta o aviso de nao promocao paga")
+    if not re.search(r"#\w+", desc):
+        issues.append("sem hashtags")
+    if len(re.findall(r"#\w+", desc)) < 8:
+        issues.append("menos de 8 hashtags")
+    if "frida" not in low and "luna" not in low:
+        issues.append("sem mencao a Frida ou Luna")
+    return issues
+
+
+STOPWORDS = {"a", "o", "as", "os", "de", "da", "do", "e", "em", "um", "uma",
+             "para", "com", "que", "se", "por", "no", "na", "nos", "nas",
+             "the", "of", "to", "is", "are"}
+
+
+def _tokens(text):
+    """Tokens normalizados (sem acento), sem palavras vazias."""
+    t = _fold(text)
+    raw = re.split(r"[^a-z0-9]+", t)
+    return [w for w in raw if w and w not in STOPWORDS and len(w) > 2]
+
+
+def _slug_tokens(text):
+    return [w for w in re.split(r"[^a-z0-9]+", _fold(text)) if w]
+
+
+def find_project_for_title(title, projects_dir=None):
+    """Encontra a pasta do projeto que corresponde ao titulo do video.
+
+    O titulo do YouTube normalmente NAO e igual ao titulo do script.json
+    (o Gemini reescreve). Por isso a busca usa sobreposicao de palavras
+    entre o titulo e o slug/prompt do projeto.
+    """
+    root = Path(projects_dir or PROJECTS_DIR)
+    if not root.is_dir():
+        return None
+
+    title_tokens = set(_tokens(title))
+    if not title_tokens:
+        return None
+
+    best = None
+    best_score = 0.0
+    for item in sorted(root.iterdir()):
+        if not item.is_dir():
+            continue
+
+        cands = [item.name]
+        script = read_script(item)
+        if script:
+            cands.append(script.get("title", ""))
+        pc = item / "project-control.json"
+        if pc.is_file():
+            try:
+                with open(pc, encoding="utf-8") as f:
+                    cands.append(json.load(f).get("prompt") or "")
+            except Exception:
+                pass
+
+        pool = set()
+        for c in cands:
+            pool |= set(_slug_tokens(c))
+
+        if not pool:
+            continue
+        overlap = len(title_tokens & pool) / float(len(title_tokens))
+        if overlap > best_score:
+            best_score = overlap
+            best = item
+
+    return best if best_score >= 0.45 else None
+
+
+def main():
+    import argparse
+
+    ap = argparse.ArgumentParser(description="Gera a descricao padrao do canal")
+    ap.add_argument("--proj", required=True, help="pasta do projeto")
+    ap.add_argument("--print", action="store_true", dest="show", help="imprime no console")
+    args = ap.parse_args()
+
+    desc = description_for_project(args.proj)
+    if desc is None:
+        print("ERRO: script.json nao encontrado em %s" % args.proj)
+        return 1
+
+    issues = validate(desc)
+    print("Palavras: %d" % word_count(desc))
+    print("Problemas: %s" % (", ".join(issues) if issues else "nenhum"))
+    if args.show:
+        print("-" * 60)
+        print(desc)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
