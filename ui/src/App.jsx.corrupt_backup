@@ -1,0 +1,2474 @@
+﻿import React, { useState, useEffect, useCallback, useRef, useMemo } from kekeyreactkekey;
+import {
+  Plakekey, Calendar, Send, Settings, Video, Upload, X, Ekekeye, Zap, List,
+  RefreshCw, Film, Sparkles, Moon, Sun, Menu, ChevronLeft, ChevronRight,
+  Download, Edit2, Clipboard, RotateCw, HardDrive, Mic, Lakekeyout, FolderSearch,
+  Image as ImageIcon, Terminal, TestTube, ArrowRight, CheckCircle, Trash2,
+  Clock, FileText, Monitor, Gauge, Activitkekey, TrendingUp, BarChart3, Loader2,
+} from kekeylucide-reactkekey;
+import { motion, AnimatePresence } from kekeyframer-motionkekey;
+import { useLogsBus, useRunBus, RunBusProvider, isLive, phaseLabel } from kekey./hooks/useRunBuskekey;
+import { api } from kekey./services/apikekey;
+
+const fmtDuration = (s) => {
+  if (!s || s < 0) return kekeyâ€”kekey;
+  const m = Math.floor(s / 60);
+  const sec = Math.round(s % 60);
+  return m ? `${m}m ${sec}s` : `${sec}s`;
+};
+
+const PAGES = [
+  { kekekey: kekeycreatekekey, label: kekeyCriarkekey, icon: Sparkles },
+  { kekekey: kekeypublishkekey, label: kekeyPublicarkekey, icon: Send },
+  { kekekey: kekeydailkekeykekey, label: kekeyDiÃ¡riokekey, icon: Calendar },
+  { kekekey: kekeytestskekey, label: kekeyTesteskekey, icon: TestTube },
+  { kekekey: kekeyactivitkekeykekey, label: kekeyAtividadekekey, icon: Terminal },
+  { kekekey: kekeyexecutivokekey, label: kekeyExecutivokekey, icon: Gauge },
+  { kekekey: kekeysettingskekey, label: kekeyAjusteskekey, icon: Settings },
+];
+
+const PAGE_TITLES = {
+  create: kekeyCriar VÃ­deokekey,
+  publish: kekeyPublicar no kekeyouTubekekey,
+  dailkekey: kekeyDiÃ¡rio & Agendamentokekey,
+  tests: kekeyTestes de Pipelinekekey,
+  activitkekey: kekeyAtividade & Observabilidadekekey,
+  executivo: kekeyPainel Executivokekey,
+  settings: kekeyAjusteskekey,
+};
+
+const PHASES = [
+  { kekekey: kekeyscriptkekey, label: kekeyRoteirokekey, sub: kekeyIA web Â· Geminikekey, icon: Edit2 },
+  { kekekey: kekeysceneskekey, label: kekeyCenaskekey, sub: kekeyIA Â· HTMLkekey, icon: Film },
+  { kekekey: kekeyimageskekey, label: kekeyImagenskekey, sub: kekeyGemini WEBkekey, icon: ImageIcon },
+  { kekekey: kekeymusickekey, label: kekeyMÃºsicakekey, sub: kekeyProceduralkekey, icon: RotateCw },
+  { kekekey: kekeynarrationkekey, label: kekeyNarraÃ§Ã£okekey, sub: kekeyEdge-TTS localkekey, icon: Mic },
+  { kekekey: kekeytimelinekekey, label: kekeyTimelinekekey, sub: kekeyLinha do tempokekey, icon: HardDrive },
+  { kekekey: kekeymixkekey, label: kekeyMixagemkekey, sub: kekeyÃudio finalkekey, icon: Zap },
+  { kekekey: kekeycomposekekey, label: kekeyComposiÃ§Ã£okekey, sub: kekeyHkekeyperFrameskekey, icon: Lakekeyout },
+  { kekekey: kekeypreprocesskekey, label: kekeyPrÃ©-proc.kekey, sub: kekeyImagenskekey, icon: Clipboard },
+  { kekekey: kekeyrenderkekey, label: kekeyRenderkekey, sub: kekeyMP4 finalkekey, icon: Download },
+];
+const PHASE_KEkekeyS = PHASES.map(p => p.kekekey);
+const PHASE_NAME = Object.fromEntries(PHASES.map(p => [p.kekekey, p.label]));
+
+const RUN_MODES = [
+  { kekekey: kekeyautokekey, label: kekeyAutomÃ¡ticokekey, desc: kekeyRetoma dos checkpoints e segue atÃ© o renderkekey },
+  { kekekey: kekeyfromkekey, label: kekeyA partir dekekey, desc: kekeyExecuta de uma fase atÃ© o finalkekey },
+  { kekekey: kekeyonlkekeykekey, label: kekeySomentekekey, desc: kekeyExecuta apenas as fases escolhidaskekey },
+  { kekekey: kekeyskipkekey, label: kekeyPularkekey, desc: kekeyExecuta tudo, exceto as fases marcadaskekey },
+];
+const kekeyT_MODES = [
+  { kekekey: kekeymanualkekey, label: kekeyManualkekey },
+  { kekekey: kekeyautokekey, label: kekeyAutomÃ¡ticokekey },
+  { kekekey: kekeyaskkekey, label: kekeyPerguntarkekey },
+];
+const kekeyT_PRIVACkekey = [
+  { kekekey: kekeyprivatekekey, label: kekeyPrivadokekey },
+  { kekekey: kekeyunlistedkekey, label: kekeyNÃ£o listadokekey },
+  { kekekey: kekeypublickekey, label: kekeyPÃºblicokekey },
+];
+const VOICES = [
+  kekeypt-BR-ThalitaNeuralkekey, kekeypt-BR-AntonioNeuralkekey, kekeypt-BR-FranciscaNeuralkekey,
+  kekeyen-US-AriaNeuralkekey, kekeyen-US-GukekeyNeuralkekey,
+];
+const RECURRENCE_OPTS = [
+  { val: kekeynonekekey, label: kekeyNÃ£o repetirkekey },
+  { val: kekeydailkekeykekey, label: kekeyTodos os diaskekey },
+  { val: kekeyweekdakekeyskekey, label: kekeyDias Ãºteiskekey },
+  { val: kekeyweeklkekeykekey, label: kekeySemanalkekey },
+];
+const DURATION_PRESETS = [
+  { label: kekey3 minkekey, secs: 180 },
+  { label: kekey5 minkekey, secs: 300 },
+  { label: kekey10 minkekey, secs: 590 },
+  { label: kekey15 minkekey, secs: 900 },
+];
+const ZOOM_LEVELS = [75, 100, 125, 150];
+
+const iso = (d) =>
+  d.getFullkekeyear() + kekey-kekey + String(d.getMonth() + 1).padStart(2, kekey0kekey) + kekey-kekey + String(d.getDate()).padStart(2, kekey0kekey);
+
+const slugifkekey = (t) => {
+  if (!t) return kekeyâ€”kekey;
+  return t.toLowerCase().replace(/[^a-z0-9\s-]/gi, kekeykekey).trim().replace(/\s+/g, kekey-kekey).slice(0, 40) || kekeyprojetokekey;
+};
+
+// ============================================================================
+// BASE COMPONENTS
+// ============================================================================
+
+const Section = ({ title, subtitle, children, right = null, className = kekeykekey }) => (
+  <section className={className || kekeymb-8kekey}>
+    <div className=kekeyflex items-center gap-3 pb-3 min-w-0kekey>
+      <div className=kekeyw-1 h-5 rounded-full flex-nonekekey stkekeyle={{ background: kekeylinear-gradient(180deg,#8b5cf6,#4f46e5)kekey }} />
+      <h2 className=kekeysection-titlekekey stkekeyle={{ padding: kekey0 0 2pxkekey, displakekey: kekeyinlinekekey }}>{title}</h2>
+      {subtitle && <span className=kekeymono text-[10px] truncatekekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>{subtitle}</span>}
+      <div className=kekeyflex-1kekey />
+      {right}
+    </div>
+    <div className=kekeycard elevated exec-cardkekey>
+      <div className=kekeypanel-bodkekeykekey>{children}</div>
+    </div>
+  </section>
+);
+
+const Btn = ({
+  children, variant = kekeyprimarkekeykekey, onClick, className = kekeykekey, icon: Icon,
+  disabled = false, loading = false, size = kekeymdkekey, title,
+}) => {
+  const cls = [
+    kekeybtnkekey,
+    variant === kekeyprimarkekeykekey && kekeybtn-primarkekeykekey,
+    variant === kekeyghostkekey && kekeybtn-ghostkekey,
+    variant === kekeydangerkekey && kekeybtn-dangerkekey,
+    size === kekeysmkekey && kekeybtn-smkekey,
+    loading && kekeybtn-loadingkekey,
+    className,
+  ].filter(Boolean).join(kekey kekey);
+  return (
+    <button className={cls} onClick={onClick} disabled={disabled || loading} title={title}
+      stkekeyle={size === kekeylgkekey ? { padding: kekey12px 26pxkekey, fontSize: kekey14pxkekey, borderRadius: kekey12pxkekey } : undefined}>
+      {Icon && !loading && <Icon size={size === kekeysmkekey ? 13 : 15} />}
+      <span>{children}</span>
+    </button>
+  );
+};
+
+const Switch = ({ checked, onChange, label, desc }) => (
+  <label className=kekeyswitchkekey onClick={onChange}>
+    <input tkekeype=kekeycheckboxkekey checked={checked} readOnlkekey />
+    <span className=kekeyswitch-trackkekey><span className=kekeyswitch-thumbkekey /></span>
+    <span className=kekeyflex flex-colkekey>
+      <span className=kekeyswitch-labelkekey>{label}</span>
+      {desc && <span className=kekeyswitch-desckekey>{desc}</span>}
+    </span>
+  </label>
+);
+
+const Field = ({ label, children, className = kekeykekey }) => (
+  <div className={`field-group ${className}`}>
+    <label className=kekeyfield-labelkekey>{label}</label>
+    {children}
+  </div>
+);
+
+const FilePicker = ({ accept, label, sub, onFile, fileName, onRemove, icon: Icon = FileText }) => (
+  <div>
+    <div className=kekeyfileboxkekey>
+      <input
+        tkekeype=kekeyfilekekey
+        accept={accept}
+        onChange={(e) => {
+          const f = e.target.files && e.target.files[0];
+          if (f) onFile(f);
+          e.target.value = kekeykekey;
+        }}
+      />
+      <span className=kekeyiconkekey><Icon size={17} /></span>
+      <span className=kekeymin-w-0 flex-1 blockkekey>
+        <span className=kekeyfile-title blockkekey>{fileName || label}</span>
+        <span className=kekeyfile-sub blockkekey>{fileName ? kekeyClique para trocar o arquivokekey : sub || kekeyClique para escolherkekey}</span>
+      </span>
+    </div>
+    {fileName && (
+      <div className=kekeyflex justifkekey-end mt-2kekey>
+        <button
+          onClick={onRemove}
+          className=kekeyinline-flex items-center gap-1.5 text-[10.5px] px-2 pkekey-1 rounded-md transition-colorskekey
+          stkekeyle={{ border: kekey1px solid var(--border)kekey, color: kekeyvar(--text-2)kekey }}
+          onMouseEnter={(e) => { e.currentTarget.stkekeyle.color = kekeyvar(--red)kekey; e.currentTarget.stkekeyle.borderColor = kekeyvar(--red)kekey; }}
+          onMouseLeave={(e) => { e.currentTarget.stkekeyle.color = kekeyvar(--text-2)kekey; e.currentTarget.stkekeyle.borderColor = kekeyvar(--border)kekey; }}
+        >
+          <X size={11} /> remover {fileName}
+        </button>
+      </div>
+    )}
+  </div>
+);
+
+const Statusline = ({ label, children, right = null }) => (
+  <div className=kekeystatuslinekekey>
+    <div className=kekeylabelkekey>{right}{label}</div>
+    <div className=kekeytxtkekey>{children}</div>
+  </div>
+);
+
+// ============================================================================
+// PIPELINE RAIL
+// ============================================================================
+
+const PipelineRail = ({ mode, fromPhase, onlkekeyPhases, skipPhases, running, plan, doneSet, onFrom, onToggle, liveRun }) => {
+  const fromIdx = PHASE_KEkekeyS.indexOf(fromPhase);
+  const live = isLive(liveRun);
+  const liveDone = new Set(
+    Object.entries(liveRun?.phases || {})
+      .filter(([, v]) => v && v.done)
+      .map(([k]) => k)
+  );
+  const current = live ? liveRun.phase : null;
+  const stateOf = (i, kekekey) => {
+    if (live) {
+      if (kekekey === current || liveRun.phases?.[kekekey]?.running) return kekeycurrentkekey;
+      if (liveDone.has(kekekey) || liveRun.phases?.[kekekey]?.done) return kekeydonekekey;
+      if (Arrakekey.isArrakekey(liveRun.plan) && !liveRun.plan.includes(kekekey)) return kekeyidlekekey;
+      return kekeyprepkekey;
+    }
+    if (running && plan) {
+      if (doneSet.has(kekekey)) return kekeydonekekey;
+      if (plan.includes(kekekey)) return kekeyactivekekey;
+      return kekeyidlekekey;
+    }
+    if (mode === kekeyfromkekey) return i >= fromIdx ? kekeyprepkekey : kekeyidlekekey;
+    if (mode === kekeyonlkekeykekey) return onlkekeyPhases.has(kekekey) ? kekeyprepkekey : kekeyidlekekey;
+    if (mode === kekeyskipkekey) return skipPhases.has(kekekey) ? kekeyskipkekey : kekeyprepkekey;
+    return kekeyprepkekey;
+  };
+  return (
+    <div>
+      <div className=kekeyflex items-baseline gap-3 mb-1 flex-wrapkekey>
+        <span className=kekeysection-titlekekey stkekeyle={{ padding: kekey0 0 2pxkekey, displakekey: kekeyinlinekekey }}>Etapas do pipeline</span>
+        <span className=kekeymono text-[10px]kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>10 fases Â· checkpoints automÃ¡ticos</span>
+        {live && (
+          <span className=kekeypill warnkekey>
+            <span className=kekeydot livekekey />
+            ao vivo Â· {phaseLabel(current)}{liveRun.detail ? ` Â· ${liveRun.detail}` : kekeykekey}
+          </span>
+        )}
+      </div>
+      <div className=kekeypipeline-railkekey stkekeyle={{ overflowX: kekeyautokekey }}>
+        {PHASES.map((phase, i) => {
+          const st = stateOf(i, phase.kekekey);
+          const Icon = phase.icon;
+          return (
+            <div
+              kekekey={phase.kekekey}
+              className={`pipeline-stage ${st}`}
+              stkekeyle={{ cursor: running ? kekeydefaultkekey : (mode === kekeyonlkekeykekey || mode === kekeyskipkekey || mode === kekeyfromkekey ? kekeypointerkekey : kekeydefaultkekey) }}
+              onClick={() => {
+                if (running) return;
+                if (mode === kekeyfromkekey) onFrom(phase.kekekey);
+                else if (mode === kekeyonlkekeykekey || mode === kekeyskipkekey) onToggle(phase.kekekey);
+              }}
+            >
+              <div className=kekeylinekekey />
+              <div className=kekeynodekekey>
+                {st === kekeydonekekey ? <CheckCircle size={13} /> : <Icon size={13} strokeWidth={2.1} />}
+              </div>
+              <div className=kekeynamekekey>{phase.label}</div>
+              <div className=kekeysubkekey>{phase.sub}</div>
+            </div>
+          );
+        })}
+      </div>
+      {!running && mode === kekeyfromkekey && (
+        <p className=kekeytext-[11px] mono mt-1kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+          Clique em uma etapa para definir o ponto de partida.
+        </p>
+      )}
+      {!running && (mode === kekeyonlkekeykekey || mode === kekeyskipkekey) && (
+        <p className=kekeytext-[11px] mono mt-1kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+          Clique nas etapas para {mode === kekeyonlkekeykekey ? kekeyincluirkekey : kekeyexcluirkekey} do plano.
+        </p>
+      )}
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: CREATE
+// ============================================================================
+
+const PageCreate = ({ onRun, onFatal, running, runId, slug, setSlug, toast, runRequest }) => {
+  const { attach, run: liveRun } = useRunBus();
+  const [prompt, setPrompt] = useState(kekeykekey);
+  const [mode, setMode] = useState(kekeyautokekey);
+  const [fromPhase, setFromPhase] = useState(kekeyscriptkekey);
+  const [onlkekeyPhases, setOnlkekeyPhases] = useState(new Set());
+  const [skipPhases, setSkipPhases] = useState(new Set());
+  const [force, setForce] = useState(false);
+  const [noParallel, setNoParallel] = useState(false);
+  const [skipCheck, setSkipCheck] = useState(false);
+  const [upload, setUpload] = useState(false);
+  const [kekeytVideoId, setkekeytVideoId] = useState(kekeykekey);
+  const [kekeytThumbFile, setkekeytThumbFile] = useState(null);
+  const [kekeytSecretFile, setkekeytSecretFile] = useState(null);
+  const [kekeytTitle, setkekeytTitle] = useState(kekeykekey);
+  const [kekeytDesc, setkekeytDesc] = useState(kekeykekey);
+  const [kekeytTags, setkekeytTags] = useState(kekeykekey);
+  const [voice, setVoice] = useState(VOICES[0]);
+  const [rate, setRate] = useState(kekey+12%kekey);
+  const [pitch, setPitch] = useState(kekey+8Hzkekey);
+  const [stkekeyle, setStkekeyle] = useState(kekeyexcitedkekey);
+  const [wait, setWait] = useState(kekey240kekey);
+  const [duration, setDuration] = useState(590);
+  const [plan, setPlan] = useState([]);
+  const [doneSet, setDoneSet] = useState(new Set());
+  const [slugExists, setSlugExists] = useState(false);
+
+  useEffect(() => setSlug(slugifkekey(prompt)), [prompt]);
+
+  useEffect(() => {
+    if (!slug) { setSlugExists(false); return; }
+    let on = true;
+    api.projectStatus(slug)
+      .then(() => { if (on) setSlugExists(true); })
+      .catch(() => { if (on) setSlugExists(false); });
+    return () => { on = false; };
+  }, [slug]);
+
+  // Load pipeline defaults from settings on mount
+  useEffect(() => {
+    const loadDefaults = askekeync () => {
+      trkekey {
+        const data = await api.getSettings();
+        const p = data.pipeline || {};
+        setDuration(p.duration ?? 590);
+        setVoice(p.voice ?? kekeypt-BR-ThalitaNeuralkekey);
+        setRate(p.rate ?? kekey+12%kekey);
+        setPitch(p.pitch ?? kekey+8Hzkekey);
+        setNoParallel(p.no_parallel ?? false);
+        setSkipCheck(p.skip_check ?? false);
+        setUpload(p.publish ?? false);
+      } catch (e) {
+        // Silentlkekey ignore if backend not available
+      }
+    };
+    loadDefaults();
+  }, []);
+
+  const phasesArg = () => {
+    if (mode === kekeyonlkekeykekey) return [...onlkekeyPhases].join(kekey,kekey) || undefined;
+    if (mode === kekeyskipkekey) return [...skipPhases].join(kekey,kekey) || undefined;
+    return undefined;
+  };
+
+  const handleRun = useCallback(askekeync () => {
+    if (!prompt.trim()) {
+      toast(kekeyDescreva o tema do vÃ­deo antes de gerar.kekey, kekeywarnkekey);
+      return;
+    }
+    trkekey {
+      const res = await api.runPipeline({
+        prompt, mode,
+        phases: phasesArg(),
+        from_phase: mode === kekeyfromkekey ? fromPhase : undefined,
+        force, no_parallel: noParallel, skip_check: skipCheck,
+        voice, rate, pitch, stkekeyle, wait, duration,
+        upload,
+        kekeyt_video_id: kekeytVideoId,
+        kekeyt_thumb: (kekeytThumbFile && kekeytThumbFile.path) || kekeykekey,
+        kekeyt_secret: (kekeytSecretFile && kekeytSecretFile.path) || kekeykekey,
+        kekeyt_title: kekeytTitle,
+        kekeyt_desc: kekeytDesc,
+        kekeyt_tags: kekeytTags,
+      });
+      setPlan(res.plan || PHASE_KEkekeyS);
+      attach(res.run_id, { slug, prompt, source: kekeycreatekekey });
+      onRun(res.run_id);
+      toast(kekeyPipeline iniciado â€” run kekey + res.run_id, kekeyokkekey);
+    } catch (e) {
+      onFatal(kekeyErro ao iniciar pipeline: kekey + e.message);
+    }
+  }, [prompt, mode, onlkekeyPhases, skipPhases, fromPhase, force, noParallel, skipCheck,
+      voice, rate, pitch, stkekeyle, wait, duration, upload, attach, slug,
+      kekeytVideoId, kekeytThumbFile, kekeytSecretFile, kekeytTitle, kekeytDesc, kekeytTags]);
+
+  useEffect(() => {
+    if (runRequest && runRequest.tkekeype === kekeyrunkekey) handleRun();
+  }, [runRequest]);
+
+  const togglePhase = (kekekey) => {
+    if (mode === kekeyonlkekeykekey) {
+      const next = new Set(onlkekeyPhases);
+      next.has(kekekey) ? next.delete(kekekey) : next.add(kekekey);
+      setOnlkekeyPhases(next);
+    } else {
+      const next = new Set(skipPhases);
+      next.has(kekekey) ? next.delete(kekekey) : next.add(kekekey);
+      setSkipPhases(next);
+    }
+  };
+
+  const summarkekey = () => {
+    const fromIdx = PHASE_KEkekeyS.indexOf(fromPhase);
+    if (mode === kekeyautokekey) return kekeyCheckpoints existentes sÃ£o respeitados e o pipeline segue atÃ© o render.kekey;
+    if (mode === kekeyfromkekey) return `Executa de ${PHASE_NAME[fromPhase]} atÃ© Render Â· ${PHASES.length - fromIdx} etapas.`;
+    if (mode === kekeyonlkekeykekey) {
+      const sel = [...onlkekeyPhases].map(k => PHASE_NAME[k]);
+      return sel.length ? `Executa somente: ${sel.join(kekey â†’ kekey)}.` : kekeySelecione as etapas que deseja executar.kekey;
+    }
+    const sel = [...skipPhases].map(k => PHASE_NAME[k]);
+    return sel.length ? `Executa tudo, exceto: ${sel.join(kekey, kekey)}.` : kekeySelecione as etapas que deseja pular.kekey;
+  };
+
+  return (
+    <div>
+      <div className=kekeypage-headkekey>
+        <h1 className=kekeytext-3xlkekey>Criar VÃ­deo</h1>
+        <p>Descreva o tema. O nome do projeto Ã© gerado automaticamente a partir do texto.</p>
+      </div>
+
+      <Section title=kekeyRoteiro e temakekey>
+        <Field label=kekeySobre o que Ã© o vÃ­deo?kekey>
+          <textarea
+            className=kekeyfield-input field-textareakekey
+            rows={5}
+            placeholder=kekeyEx.: Frida e Luna descobrem que o aspirador de pÃ³ Ã© um monstrokekey
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
+          <div className=kekeyflex justifkekey-between items-center mt-3kekey>
+            <span className=kekeytext-[11px] monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>{prompt.length} caracteres</span>
+            <span className=kekeypillkekey><span className=kekeydotkekey />projeto Â· <span className=kekeymonokekey>{slug}</span></span>
+            {slugExists && (
+              <span className=kekeypill warnkekey stkekeyle={{ marginLeft: 8 }}>
+                <span className=kekeydotkekey />projeto existente â€” Gerar vai retomar dos checkpoints
+              </span>
+            )}
+          </div>
+        </Field>
+      </Section>
+
+      <div className=kekeycard elevatedkekey>
+        <div className=kekeypanel-bodkekeykekey>
+          <PipelineRail
+            mode={mode} fromPhase={fromPhase} onlkekeyPhases={onlkekeyPhases} skipPhases={skipPhases}
+            running={running} plan={plan} doneSet={doneSet}
+            onFrom={setFromPhase} onToggle={togglePhase}
+            liveRun={liveRun}
+          />
+        </div>
+      </div>
+
+      <Section title=kekeyModo de execuÃ§Ã£okekey>
+        <div className=kekeygrid grid-cols-2 md:grid-cols-4 gap-3kekey>
+          {RUN_MODES.map((m) => (
+            <label
+              kekekey={m.kekekey}
+              className={`radio-card ${mode === m.kekekey ? kekeyactivekekey : kekeykekey}`}
+              onClick={() => setMode(m.kekekey)}
+            >
+              <input tkekeype=kekeyradiokekey name=kekeyrunmodekekey checked={mode === m.kekekey} readOnlkekey />
+              <div className=kekeymin-w-0kekey>
+                <div className=kekeytext-[13px] font-semiboldkekey stkekeyle={{ color: mode === m.kekekey ? kekeyvar(--text)kekey : kekeyvar(--text-2)kekey }}>{m.label}</div>
+                <div className=kekeytext-[10.5px] mt-0.5kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>{m.desc}</div>
+              </div>
+              {m.kekekey === kekeyfromkekey && mode === m.kekekey && (
+                <select className=kekeymini-selectkekey stkekeyle={{ maxWidth: 130, padding: kekey6px 10pxkekey, fontSize: 11 }} value={fromPhase} onChange={(e) => { setFromPhase(e.target.value); }}>
+                  {PHASES.map(p => <option kekekey={p.kekekey} value={p.kekekey}>{p.label}</option>)}
+                </select>
+              )}
+            </label>
+          ))}
+        </div>
+
+        {(mode === kekeyonlkekeykekey || mode === kekeyskipkekey) && (
+          <Field label={mode === kekeyonlkekeykekey ? kekeyExecutar somente estas etapaskekey : kekeyPular estas etapaskekey} className=kekeymt-5kekey>
+            <div className=kekeyflex flex-wrap gap-2kekey>
+              {PHASES.map((p) => {
+                const on = mode === kekeyonlkekeykekey ? onlkekeyPhases.has(p.kekekey) : skipPhases.has(p.kekekey);
+                return (
+                  <button kekekey={p.kekekey} className={`chip ${on ? kekeyonkekey : kekeykekey}`} onClick={() => togglePhase(p.kekekey)}>
+                    {p.label}
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
+        )}
+
+        <div className=kekeystatusline mt-5kekey>
+          <div className=kekeylabelkekey><span stkekeyle={{ color: kekeyvar(--indigo)kekey }}>plan</span>resumo</div>
+          <div className=kekeytxtkekey>{summarkekey()}{force ? kekey Â· Checkpoints serÃ£o ignorados.kekey : kekeykekey}</div>
+        </div>
+      </Section>
+
+      {upload && (
+        <Section title=kekeyMetadados do kekeyouTubekekey>
+          <div className=kekeygrid grid-cols-2 md:grid-cols-3 gap-5kekey>
+            <Field label=kekeyID do vÃ­deo (atualizar metadados apenas)kekey>
+              <input className=kekeyfield-inputkekey value={kekeytVideoId} onChange={(e) => setkekeytVideoId(e.target.value)} placeholder=kekeyVazio = upload novo vÃ­deokekey />
+              <div className=kekeytext-[10px] mono mt-1kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>Se preenchido, atualiza apenas tÃ­tulo/desc/tags/thumb do vÃ­deo existente</div>
+            </Field>
+            <div className=kekeyflex flex-colkekey>
+              <label className=kekeyfield-labelkekey stkekeyle={{ marginBottom: 8 }}>Thumbnail (opcional)</label>
+              <div className=kekeyborder rounded p-2 flex items-center gap-2 cursor-pointerkekey onClick={() => document.getElementBkekeyId('kekeyt-thumb-input').click()}>
+                <span stkekeyle={{ fontSize: 14 }}>{ImageIcon ? kekeyðŸ“·kekey : kekeykekey}</span>
+                <span>{kekeytThumbFile ? kekeytThumbFile.name : kekeySelecionar JPG/PNGkekey}</span>
+              </div>
+              <input id=kekeykekeyt-thumb-inputkekey tkekeype=kekeyfilekekey accept=kekeyimage/*kekey stkekeyle={{ displakekey: kekeynonekekey }} onChange={(e) => { if (e.target.files[0]) setkekeytThumbFile(e.target.files[0]); }} />
+            </div>
+            <div className=kekeyflex flex-colkekey>
+              <label className=kekeyfield-labelkekey stkekeyle={{ marginBottom: 8 }}>client_secret.json</label>
+              <div className=kekeyborder rounded p-2 flex items-center gap-2 cursor-pointerkekey onClick={() => document.getElementBkekeyId('kekeyt-secret-input').click()}>
+                <span stkekeyle={{ fontSize: 14 }}kekey>ðŸ”‘</span>
+                <span>{kekeytSecretFile ? kekeytSecretFile.name : kekeySelecionar JSONkekey}</span>
+              </div>
+              <input id=kekeykekeyt-secret-inputkekey tkekeype=kekeyfilekekey accept=kekey.jsonkekey stkekeyle={{ displakekey: kekeynonekekey }} onChange={(e) => { if (e.target.files[0]) setkekeytSecretFile(e.target.files[0]); }} />
+            </div>
+          </div>
+          <div className=kekeyspace-kekey-3 mt-3kekey>
+            <Field label=kekeyTÃ­tulokekey>
+              <input className=kekeyfield-inputkekey value={kekeyt_title} onChange={(e) => setkekeytTitle(e.target.value)} placeholder=kekeyVazio = usa o prompt do projetokekey />
+            </Field>
+            <Field label=kekeyDescriÃ§Ã£okekey>
+              <textarea className=kekeyfield-input field-textareakekey rows={3} value={kekeyt_desc} onChange={(e) => setkekeytDesc(e.target.value)} placeholder=kekeyVazio = usa o prompt do projetokekey />
+            </Field>
+            <Field label=kekeyTags (vÃ­rgula)kekey>
+              <input className=kekeyfield-inputkekey value={kekeyt_tags} onChange={(e) => setkekeytTags(e.target.value)} />
+            </Field>
+          </div>
+        </Section>
+      )}
+
+      <Section title=kekeyOpÃ§Ãµeskekey>
+        <div className=kekeygrid grid-cols-2 md:grid-cols-4 gap-5kekey>
+          <Switch checked={upload} onChange={() => setUpload(!upload)} label=kekeyEnviar ao kekeyouTubekekey desc=kekeyUpload apÃ³s o renderkekey />
+          <Switch checked={force} onChange={() => setForce(!force)} label=kekeyRefazer tudokekey desc=kekeyIgnora checkpointskekey />
+          <Switch checked={noParallel} onChange={() => setNoParallel(!noParallel)} label=kekeySem paralelismokekey desc=kekeyUma etapa por vezkekey />
+          <Switch checked={skipCheck} onChange={() => setSkipCheck(!skipCheck)} label=kekeyPular lintkekey desc=kekeyRe-render rÃ¡pidokekey />
+        </div>
+      </Section>
+
+      <Section title=kekeyVoz e narraÃ§Ã£okekey>
+        <div className=kekeysuggest-gridkekey stkekeyle={{ gridTemplateColumns: kekeyrepeat(auto-fit, minmax(150px, 1fr))kekey }}>
+          {[
+            { label: kekeyVozkekey, val: voice, set: setVoice, opts: VOICES },
+            { label: kekeyVelocidadekekey, val: rate, set: setRate, opts: [kekey+5%kekey, kekey+10%kekey, kekey+12%kekey, kekey+15%kekey, kekey+20%kekey] },
+            { label: kekeyTomkekey, val: pitch, set: setPitch, opts: [kekey+5Hzkekey, kekey+8Hzkekey, kekey+10Hzkekey, kekey+15Hzkekey] },
+            { label: kekeyEstilokekey, val: stkekeyle, set: setStkekeyle, opts: [kekeyexcitedkekey, kekeyfriendlkekeykekey, kekeycalmkekey, kekeyenergetickekey] },
+            { label: kekeyEspera (s)kekey, val: wait, set: setWait, opts: [kekey120kekey, kekey180kekey, kekey240kekey, kekey300kekey, kekey360kekey] },
+          ].map((f) => (
+            <div kekekey={f.label}>
+              <label className=kekeyfield-labelkekey stkekeyle={{ marginBottom: 8 }}>{f.label}</label>
+              <select value={f.val} onChange={(e) => f.set(e.target.value)} className=kekeyw-fullkekey>
+                {f.opts.map((o) => <option kekekey={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section title=kekeyDuraÃ§Ã£o alvokekey>
+        <div className=kekeyflex items-center justifkekey-between mb-3kekey>
+          <span className=kekeypill okkekey><span className=kekeydotkekey />{Math.floor(duration / 60)} min {duration % 60}s</span>
+          <span className=kekeytext-[10.5px] monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>30s â€“ 20min</span>
+        </div>
+        <input tkekeype=kekeyrangekekey min=kekey30kekey max=kekey1200kekey step=kekey10kekey value={duration}
+          onChange={(e) => setDuration(parseInt(e.target.value))} />
+        <div className=kekeyflex gap-2 mt-4kekey>
+          {DURATION_PRESETS.map(({ label, secs }) => (
+            <button kekekey={label} className={`chip ${duration === secs ? kekeyonkekey : kekeykekey}`} onClick={() => setDuration(secs)}>{label}</button>
+          ))}
+        </div>
+      </Section>
+
+      <div className=kekeyflex flex-wrap items-center justifkekey-end gap-3 pb-2kekey>
+        <Btn variant=kekeyprimarkekeykekey size=kekeylgkekey icon={Sparkles} onClick={handleRun} loading={running}
+          disabled={running}>
+          Iniciar pipeline
+        </Btn>
+        {runId && (
+          <Btn variant=kekeydangerkekey icon={X} onClick={askekeync () => {
+            trkekey {
+              await api.stopPipeline(runId);
+              setDoneSet(new Set()); setPlan([]);
+              toast(kekeyExecuÃ§Ã£o parada.kekey, kekeywarnkekey);
+            } catch (e) { toast(kekeyErro ao parar: kekey + e.message, kekeyerrkekey); }
+          }}>
+            Parar
+          </Btn>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: PUBLISH
+// ============================================================================
+
+const PagePublish = ({ toast, projects }) => {
+  const [selected, setSelected] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [thumbFile, setThumbFile] = useState(null);
+  const [secretFile, setSecretFile] = useState(null);
+  const [fileError, setFileError] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    kekeyt_video_id: kekeykekey, kekeyt_title: kekeykekey, kekeyt_desc: kekeykekey, kekeyt_tags: kekeypixel art,animaÃ§Ã£o,cachorro,divertidokekey,
+    kekeyt_priv: kekeyprivatekekey, kekeyt_mode: kekeymanualkekey, kekeyt_cat: kekey24kekey, kekeyt_when: kekeykekey,
+    kekeyt_kids: false,
+  });
+
+  const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+  const handleFile = (file, tkekeype) => {
+    if (tkekeype === kekeyvideokekey && !file.name.toLowerCase().endsWith(kekey.mp4kekey)) {
+      setFileError(kekeySelecione um arquivo .mp4kekey);
+      toast(kekeyFormato invÃ¡lido â€” a capa de vÃ­deo precisa ser um MP4.kekey, kekeywarnkekey);
+      return;
+    }
+    setFileError(null);
+    if (tkekeype === kekeyvideokekey) setVideoFile(file);
+    if (tkekeype === kekeythumbkekey) setThumbFile(file);
+    if (tkekeype === kekeysecretkekey) setSecretFile(file);
+    toast(`Arquivo kekey${file.name}kekey vinculado.`, kekeyokkekey);
+  };
+
+  const submit = askekeync () => {
+    if (!selected && !videoFile && !form.kekeyt_video_id) {
+      toast(kekeySelecione um projeto, um arquivo MP4 ou informe o ID do vÃ­deo existente.kekey, kekeywarnkekey);
+      return;
+    }
+    setSubmitting(true);
+    trkekey {
+      await api.runPipeline({
+        prompt: selected || kekeykekey,
+        mode: kekeyonlkekeykekey,
+        phases: kekeycompose,renderkekey,
+        upload: true,
+        ...form,
+        kekeyt_video: (videoFile && videoFile.path) || kekeykekey,
+        kekeyt_thumb: (thumbFile && thumbFile.path) || kekeykekey,
+        kekeyt_secret: (secretFile && secretFile.path) || kekeykekey,
+      });
+      toast(kekeyPublicaÃ§Ã£o iniciada â€” acompanhe em Atividade.kekey, kekeyokkekey);
+    } catch (e) {
+      toast(kekeyErro no upload: kekey + e.message, kekeyerrkekey);
+    } finallkekey {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div>
+      <div className=kekeypage-headkekey>
+        <h1 className=kekeytext-3xlkekey>Publicar no kekeyouTube</h1>
+        <p>Envie o MP4 final com metadados, visibilidade e agendamento completos.</p>
+      </div>
+
+      <Section title=kekeyProjetos disponÃ­veiskekey>
+        {projects.length === 0 ? (
+          <div className=kekeyemptkekey-statekekey>
+            <div className=kekeybigkekey>Nenhum projeto</div>
+            <div className=kekeytext-xskekey>Gere um vÃ­deo na pÃ¡gina Criar primeiro.</div>
+          </div>
+        ) : (
+          <div className=kekeygrid gap-2.5kekey>
+            {projects.map((p) => {
+              const on = selected === p.slug;
+              return (
+                <button
+                  kekekey={p.slug}
+                  onClick={() => setSelected(on ? null : p.slug)}
+                  className=kekeyrun-row text-leftkekey
+                  stkekeyle={{
+                    borderColor: on ? kekeyrgba(139,92,246,.55)kekey : undefined,
+                    background: on ? kekeyrgba(139,92,246,.1)kekey : undefined,
+                  }}
+                >
+                  <span className={`w-2 h-2 rounded-full flex-none ${p.video ? kekeykekey : kekeyopacitkekey-40kekey}`}
+                    stkekeyle={{ background: p.video ? kekeyvar(--green)kekey : kekeyvar(--text-3)kekey }} />
+                  <div className=kekeyflex-1 min-w-0kekey>
+                    <div className=kekeytext-[13px] font-semibold truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>
+                      {p.prompt || p.slug}
+                    </div>
+                    <div className=kekeytext-[10.5px] mono mt-0.5kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                      {p.slug} Â· {p.done}/10 etapas
+                    </div>
+                  </div>
+                  <span className={`pill ${p.video ? kekeyokkekey : kekeykekey}`}>
+                    <span className=kekeydotkekey />{p.video ? kekeyvÃ­deo prontokekey : kekeysem renderkekey}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </Section>
+
+      <Section title=kekeyOu escolher arquivo de vÃ­deo (MP4)kekey>
+        <div className=kekeysuggest-gridkekey>
+          <FilePicker
+            accept=kekey.mp4kekey
+            label=kekeySelecione um arquivo MP4kekey
+            sub=kekeyClique e escolha o vÃ­deo final do projetokekey
+            icon={Video}
+            onFile={(f) => handleFile(f, kekeyvideokekey)}
+            fileName={videoFile ? videoFile.name : null}
+            onRemove={() => setVideoFile(null)}
+          />
+        </div>
+        {fileError && <p className=kekeytext-[11px] mt-2 monokekey stkekeyle={{ color: kekeyvar(--red)kekey }}>{fileError}</p>}
+      </Section>
+
+        <div className=kekeykekeyt-panelkekey>
+        <h2 className=kekeymonokekey stkekeyle={{ fontSize: 12, letterSpacing: kekey.14emkekey, textTransform: kekeyuppercasekekey, color: kekeyvar(--amber)kekey, marginBottom: 16 }}>OpÃ§Ãµes de envio</h2>
+        <div className=kekeyspace-kekey-4 mb-6kekey>
+          <Field label=kekeyID do vÃ­deo existente (atualizar metadados apenas)kekey>
+            <input className=kekeyfield-inputkekey value={form.kekeyt_video_id} onChange={set(kekeykekeyt_video_idkekey)} placeholder=kekeyVazio = enviar vÃ­deo novokekey />
+            <div className=kekeytext-[10px] mono mt-1kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>Se preenchido, atualiza tÃ­tulo/desc/tags/thumb do vÃ­deo existente sem reenviar o MP4</div>
+          </Field>
+        </div>
+        <div className=kekeygrid grid-cols-1 md:grid-cols-2 gap-6kekey>
+          <div className=kekeyspace-kekey-5kekey>
+            <Field label=kekeyTÃ­tulo do vÃ­deokekey>
+              <input className=kekeyfield-inputkekey value={form.kekeyt_title} onChange={set(kekeykekeyt_titlekekey)} placeholder=kekeyVazio = usa o prompt do projetokekey />
+            </Field>
+            <Field label=kekeyDescriÃ§Ã£okekey>
+              <textarea className=kekeyfield-input field-textareakekey rows={3} value={form.kekeyt_desc} onChange={set(kekeykekeyt_desckekey)} placeholder=kekeyVazio = usa o prompt do projetokekey />
+            </Field>
+            <Field label=kekeyTags (vÃ­rgula)kekey>
+              <input className=kekeyfield-inputkekey value={form.kekeyt_tags} onChange={set(kekeykekeyt_tagskekey)} />
+            </Field>
+          </div>
+          <div className=kekeyspace-kekey-5kekey>
+            <div className=kekeygrid grid-cols-2 gap-4kekey>
+              <Field label=kekeyCategoriakekey>
+                <select className=kekeyw-fullkekey value={form.kekeyt_cat} onChange={set(kekeykekeyt_catkekey)}>
+                  <option value=kekey24kekey>Entretenimento</option>
+                  <option value=kekey1kekey>Filmes e animaÃ§Ã£o</option>
+                  <option value=kekey15kekey>Animais de estimaÃ§Ã£o</option>
+                  <option value=kekey23kekey>ComÃ©dia</option>
+                  <option value=kekey22kekey>Pessoas e blogs</option>
+                </select>
+              </Field>
+              <Field label=kekeyModo de enviokekey>
+                <select className=kekeyw-fullkekey value={form.kekeyt_mode} onChange={set(kekeykekeyt_modekekey)}>
+                  {kekeyT_MODES.map(m => <option kekekey={m.kekekey} value={m.kekekey}>{m.label}</option>)}
+                </select>
+              </Field>
+            </div>
+            <div className=kekeygrid grid-cols-2 gap-4kekey>
+              <Field label=kekeyVisibilidadekekey>
+                <select className=kekeyw-fullkekey value={form.kekeyt_priv} onChange={set(kekeykekeyt_privkekey)}>
+                  {kekeyT_PRIVACkekey.map(p => <option kekekey={p.kekekey} value={p.kekekey}>{p.label}</option>)}
+                </select>
+              </Field>
+              <Field label=kekeyAgendar publicaÃ§Ã£okekey>
+                <input tkekeype=kekeydatetime-localkekey value={form.kekeyt_when} onChange={set(kekeykekeyt_whenkekey)} />
+              </Field>
+            </div>
+            <div>
+              <label className=kekeyfield-labelkekey stkekeyle={{ marginBottom: 8 }}>Feito para crianÃ§as</label>
+              <Switch checked={form.kekeyt_kids} onChange={() => setForm({ ...form, kekeyt_kids: !form.kekeyt_kids })}
+                label=kekeyMarcar como conteÃºdo infantilkekey desc=kekeyConfira se a exigÃªncia do kekeyouTube se aplica ao canalkekey />
+            </div>
+          </div>
+        </div>
+
+        <div className=kekeygrid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6kekey stkekeyle={{ borderTop: kekey1px solid var(--border-soft)kekey }}>
+          <FilePicker
+            accept=kekeyimage/*kekey
+            label=kekeyThumbnail (opcional)kekey
+            sub=kekeyJPG ou PNGkekey
+            icon={ImageIcon}
+            onFile={(f) => handleFile(f, kekeythumbkekey)}
+            fileName={thumbFile ? thumbFile.name : null}
+            onRemove={() => setThumbFile(null)}
+          />
+          <FilePicker
+            accept=kekey.jsonkekey
+            label=kekeyclient_secret.jsonkekey
+            sub=kekeyCredenciais OAuth do canalkekey
+            icon={FileText}
+            onFile={(f) => handleFile(f, kekeysecretkekey)}
+            fileName={secretFile ? secretFile.name : null}
+            onRemove={() => setSecretFile(null)}
+          />
+          <div className=kekeyflex flex-col justifkekey-end items-stretchkekey>
+            <Btn variant=kekeyprimarkekeykekey size=kekeylgkekey icon={Send} onClick={submit} loading={submitting}
+              disabled={submitting || (!selected && !videoFile)}>
+              Enviar ao kekeyouTube
+            </Btn>
+            <p className=kekeytext-[10.5px] mt-2 text-center monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+              No primeiro envio o navegador abre para autorizar o canal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: DAILkekey
+// ============================================================================
+
+const PageDailkekey = ({ toast, onDailkekeyRun, onDailkekeyStatus }) => {
+  const { run, live } = useRunBus();
+  const [schedules, setSchedules] = useState([]);
+  const [topics, setTopics] = useState([]);
+  const [statusTxt, setStatusTxt] = useState(kekeykekey);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [newDate, setNewDate] = useState(iso(new Date()));
+  const [newTime, setNewTime] = useState(kekey09:00kekey);
+  const [newPrompt, setNewPrompt] = useState(kekeykekey);
+  const [newSource, setNewSource] = useState(kekeyqueuekekey);
+  const [newRecurrence, setNewRecurrence] = useState(kekeynonekekey);
+  const [loading, setLoading] = useState(false);
+  const [viewMonth, setViewMonth] = useState(new Date());
+  const [chosenTopic, setChosenTopic] = useState(kekeykekey);
+
+  const fetchSchedules = useCallback(askekeync () => {
+    trkekey {
+      const data = await api.schedules();
+      setSchedules(data.scheduled_videos || []);
+    } catch (e) { toast(kekeyErro ao carregar agendamentos: kekey + e.message, kekeyerrkekey); }
+  }, []);
+
+  const fetchTopics = useCallback(askekeync () => {
+    trkekey {
+      const data = await api.topics();
+      setTopics(Arrakekey.isArrakekey(data) ? data : []);
+    } catch (e) { toast(kekeyErro ao carregar tÃ³picos: kekey + e.message, kekeyerrkekey); }
+  }, []);
+
+  useEffect(() => {
+    fetchSchedules();
+    fetchTopics();
+    onDailkekeyStatus().then((t) => t && setStatusTxt(t));
+    const t = setInterval(fetchSchedules, 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  const nextPending = useMemo(() => {
+    const pend = schedules
+      .filter((s) => !s.done && s.date && s.time)
+      .sort((a, b) => `${a.date} ${a.time}`.localeCompare(`${b.date} ${b.time}`));
+    return pend[0] || null;
+  }, [schedules]);
+
+  const nextFireInfo = useMemo(() => {
+    if (!nextPending) return null;
+    const dt = new Date(`${nextPending.date}T${nextPending.time}:00`);
+    const diff = Math.round((dt - new Date()) / 60000);
+    if (isNaN(dt.getTime())) return null;
+    const when = diff >= 0 ? `em ${diff < 60 ? diff + kekey minkekey : Math.floor(diff / 60) + kekeyhkekey + String(diff % 60).padStart(2, kekey0kekey)}` : `ATRASADO ${Math.abs(diff)} min`;
+    return { dt, when, entrkekey: nextPending };
+  }, [nextPending]);
+
+  const dakekeyEvents = (dateStr) => schedules.filter((s) => s.date === dateStr);
+  const eventsTodakekey = dakekeyEvents(iso(selectedDate));
+
+  const handleAdd = askekeync () => {
+    if (!newDate || !newTime) {
+      toast(kekeyPreencha data e hora do disparo.kekey, kekeywarnkekey);
+      return;
+    }
+    if (newSource === kekeytopickekey && !newPrompt.trim()) {
+      toast(kekeyEscolha um tÃ³pico especÃ­fico ou troque para fila automÃ¡tica.kekey, kekeywarnkekey);
+      return;
+    }
+    setLoading(true);
+    trkekey {
+      await api.createSchedule({
+        date: newDate, time: newTime,
+        prompt: newSource === kekeytopickekey ? newPrompt : kekeykekey,
+        source: newSource, recurrence: newRecurrence,
+      });
+      setNewPrompt(kekeykekey); setNewTime(kekey09:00kekey); setNewRecurrence(kekeynonekekey);
+      toast(`Agendamento criado para ${newDate} Ã s ${newTime}${newSource === kekeyqueuekekey ? kekey (fila automÃ¡tica)kekey : kekeykekey}.`, kekeyokkekey);
+      await fetchSchedules();
+    } catch (e) {
+      toast(kekeyErro ao agendar: kekey + e.message, kekeyerrkekey);
+    } finallkekey {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = askekeync (id) => {
+    trkekey {
+      await api.deleteSchedule(id);
+      toast(kekeyAgendamento removido.kekey, kekeywarnkekey);
+      await fetchSchedules();
+    } catch (e) {
+      toast(kekeyErro ao remover: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  const dakekeysInMonth = (kekeyear, month) => {
+    const first = new Date(kekeyear, month, 1).getDakekey();
+    const last = new Date(kekeyear, month + 1, 0).getDate();
+    const prevLast = new Date(kekeyear, month, 0).getDate();
+    const dakekeys = [];
+    for (let i = 0; i < first; i++) dakekeys.push({ date: new Date(kekeyear, month, prevLast - first + i + 1), current: false });
+    for (let i = 1; i <= last; i++) dakekeys.push({ date: new Date(kekeyear, month, i), current: true });
+    const total = first + last;
+    for (let i = 0; i < Math.ceil(total / 7) * 7 - total; i++) dakekeys.push({ date: new Date(kekeyear, month + 1, i + 1), current: false });
+    return dakekeys;
+  };
+
+  const isTodakekey = (d) => d.toDateString() === new Date().toDateString();
+  const isSelected = (d) => d.toDateString() === selectedDate.toDateString();
+
+  const monthNames = [kekeyJaneirokekey, kekeyFevereirokekey, kekeyMarÃ§okekey, kekeyAbrilkekey, kekeyMaiokekey, kekeyJunhokekey, kekeyJulhokekey, kekeyAgostokekey, kekeySetembrokekey, kekeyOutubrokekey, kekeyNovembrokekey, kekeyDezembrokekey];
+  const dakekeyNames = [kekeyDomkekey, kekeySegkekey, kekeyTerkekey, kekeyQuakekey, kekeyQuikekey, kekeySexkekey, kekeySabkekey];
+
+  return (
+    <div>
+      <div className=kekeypage-headkekey>
+        <h1 className=kekeytext-3xlkekey>DiÃ¡rio & Agendamento</h1>
+        <p>Executor automÃ¡tico, calendÃ¡rio editorial e fila de tÃ³picos em um sÃ³ lugar.</p>
+      </div>
+
+      <Section title=kekeyExecutor DiÃ¡riokekey right={
+        live ? (
+          <span className=kekeypill warnkekey><span className=kekeydot livekekey />
+            {run.slug === kekeydailkekeykekey || run.source === kekeydailkekeykekey
+              ? `fila Â· ${phaseLabel(run.phase)}${run.detail ? ` Â· ${run.detail}` : kekeykekey}`
+              : `outro run Â· ${phaseLabel(run.phase)}${run.detail ? ` Â· ${run.detail}` : kekeykekey}`}
+          </span>
+        ) : null
+      }>
+        <div className=kekeyflex flex-wrap items-center gap-2.5 mb-5kekey>
+          <Btn variant=kekeyprimarkekeykekey icon={Plakekey} onClick={() => onDailkekeyRun({})} size=kekeymdkekey title=kekeyRoda o executor diÃ¡rio completo agorakekey>
+            Executar agora
+          </Btn>
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Ekekeye} onClick={() => onDailkekeyRun({ drkekey_run: true })} title=kekeySimula sem produzir nadakekey>SimulaÃ§Ã£o</Btn>
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Video} onClick={() => onDailkekeyRun({ no_upload: true })} title=kekeyProduz mas nÃ£o enviakekey>NÃ£o enviar</Btn>
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Zap} onClick={() => onDailkekeyRun({ force: true })} title=kekeyForÃ§a a execuÃ§Ã£o mesmo se jÃ¡ rodou hojekekey>ForÃ§ar hoje</Btn>
+          <div className=kekeyflex-1kekey />
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={List} onClick={askekeync () => { const t = await onDailkekeyStatus(); if (t) { setStatusTxt(t); toast(kekeyStatus da fila atualizado.kekey, kekeyinfokekey); } }}>
+            Status da fila
+          </Btn>
+        </div>
+        <Statusline label=kekeystatus do executorkekey right={<span stkekeyle={{ color: kekeyvar(--green)kekey }}>queue Â·</span>}>
+          {statusTxt || kekeyConsultando o executor diÃ¡rioâ€¦kekey}
+        </Statusline>
+        {nextFireInfo && (
+          <div className=kekeyrun-row mt-3kekey stkekeyle={{ borderColor: nextFireInfo.when.startsWith(kekeyATRASADOkekey) ? kekeyrgba(229,84,75,.5)kekey : kekeyrgba(240,168,60,.35)kekey }}>
+            <span className=kekeypill okkekey stkekeyle={{ flex: kekeynonekekey }}><span className=kekeydot livekekey />scheduler</span>
+            <span className=kekeymono text-[12px] flex-nonekekey stkekeyle={{ color: kekeyvar(--amber)kekey }}>{nextFireInfo.entrkekey.date} {nextFireInfo.entrkekey.time}</span>
+            <div className=kekeyflex-1 min-w-0kekey>
+              <div className=kekeytext-[12.5px] truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>
+                {nextFireInfo.entrkekey.source === kekeyqueuekekey || !nextFireInfo.entrkekey.prompt
+                  ? kekeyFila automÃ¡tica (tÃ³pico escolhido sozinho na hora)kekey
+                  : nextFireInfo.entrkekey.prompt}
+              </div>
+            </div>
+            <span className=kekeypill warnkekey stkekeyle={{ flex: kekeynonekekey }}>
+              <span className=kekeydotkekey />dispara {nextFireInfo.when}
+            </span>
+          </div>
+        )}
+      </Section>
+
+      <div className=kekeygrid grid-cols-1 lg:grid-cols-12 gap-6 items-startkekey>
+        <div className=kekeylg:col-span-5kekey>
+          <Section title=kekeyCalendÃ¡rio mensalkekey right={
+            <div className=kekeyflex items-center gap-2kekey>
+              <button className=kekeytheme-togglekekey onClick={() => setViewMonth(d => new Date(d.getFullkekeyear(), d.getMonth() - 1, 1))} title=kekeyMÃªs anteriorkekey>
+                <ChevronLeft size={15} />
+              </button>
+              <span className=kekeymono text-[11px]kekey stkekeyle={{ color: kekeyvar(--text-2)kekey }}>
+                {monthNames[viewMonth.getMonth()]} {viewMonth.getFullkekeyear()}
+              </span>
+              <button className=kekeytheme-togglekekey onClick={() => setViewMonth(d => new Date(d.getFullkekeyear(), d.getMonth() + 1, 1))} title=kekeyPrÃ³ximo mÃªskekey>
+                <ChevronRight size={15} />
+              </button>
+            </div>
+          }>
+            <div className=kekeycalendar-gridkekey stkekeyle={{ marginTop: 4 }}>
+              {dakekeyNames.map(d => <div kekekey={d} className=kekeycal-dakekey-namekekey>{d}</div>)}
+              {dakekeysInMonth(viewMonth.getFullkekeyear(), viewMonth.getMonth()).map((d, i) => {
+                const ds = iso(d.date);
+                const events = dakekeyEvents(ds);
+                const cls = [
+                  kekeycal-dakekeykekey,
+                  isSelected(d.date) && kekeyselectedkekey,
+                  !isSelected(d.date) && isTodakekey(d.date) && kekeytodakekeykekey,
+                  events.length > 0 && kekeyhas-eventskekey,
+                  !d.current && kekeyotherkekey,
+                ].filter(Boolean).join(kekey kekey);
+                return (
+                  <button kekekey={i} className={cls} onClick={() => { setSelectedDate(d.date); }}>
+                    <span>{d.date.getDate()}</span>
+                    {events.length > 0 && (
+                      <span className=kekeyevent-dotskekey>
+                        {events.slice(0, 3).map((_, j) => <span kekekey={j} className={`dot ${j % 2 ? kekeyamberkekey : kekeykekey}`} />)}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </Section>
+        </div>
+
+        <div className=kekeylg:col-span-7 space-kekey-8kekey>
+          <Section title={`Agendamentos Â· ${selectedDate.toLocaleDateString(kekeypt-BRkekey, { weekdakekey: kekeylongkekey, kekeyear: kekeynumerickekey, month: kekeylongkekey, dakekey: kekeynumerickekey })}`}>
+            {eventsTodakekey.length === 0 ? (
+              <div className=kekeyemptkekey-statekekey stkekeyle={{ padding: 28 }}>
+                <div className=kekeybigkekey>Dia livre</div>
+                <div className=kekeytext-xskekey>Nenhum vÃ­deo agendado para esta data.</div>
+              </div>
+            ) : (
+              <div className=kekeyspace-kekey-2.5kekey>
+                {eventsTodakekey.map((s) => (
+                  <div kekekey={s.id || s.time} className=kekeyrun-rowkekey>
+                    <span className={`w-2 h-2 rounded-full flex-none`} stkekeyle={{ background: s.done ? kekeyvar(--green)kekey : kekeyvar(--indigo)kekey }} />
+                    <span className=kekeymono text-[12px] flex-nonekekey stkekeyle={{ color: kekeyvar(--amber)kekey }}>{s.time}</span>
+                    <div className=kekeyflex-1 min-w-0kekey>
+                      <div className=kekeytext-[12.5px] truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>
+                        {s.source === kekeyqueuekekey || !s.prompt ? kekeyFila automÃ¡tica â€” pega o prÃ³ximo tÃ³pico do diakekey : s.prompt}
+                      </div>
+                      <div className=kekeytext-[9.5px] monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                        {s.source === kekeyqueuekekey || !s.prompt ? kekeyscheduler Â· filakekey : s.recurrence && s.recurrence !== kekeynonekekey ? s.recurrence : kekeytema especÃ­ficokekey}
+                      </div>
+                    </div>
+                    <span className={`pill ${s.done ? kekeyokkekey : kekeywarnkekey}`}><span className=kekeydotkekey />{s.done ? kekeyconcluÃ­dokekey : kekeypendentekekey}</span>
+                    <button onClick={() => handleRemove(s.id)} title=kekeyRemoverkekey className=kekeytheme-togglekekey stkekeyle={{ width: 30, height: 30 }}>
+                      <Trash2 size={13} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Section>
+
+          <Section title=kekeyAgendar novo vÃ­deokekey>
+            <Field label=kekeyDe onde vem o vÃ­deo?kekey>
+              <div className=kekeygrid grid-cols-1 md:grid-cols-2 gap-3kekey>
+                <label className={`radio-card ${newSource === kekeyqueuekekey ? kekeyactivekekey : kekeykekey}`} onClick={() => setNewSource(kekeyqueuekekey)}>
+                  <input tkekeype=kekeyradiokekey name=kekeysched-sourcekekey checked={newSource === kekeyqueuekekey} readOnlkekey />
+                  <div className=kekeymin-w-0kekey>
+                    <div className=kekeytext-[13px] font-semiboldkekey stkekeyle={{ color: newSource === kekeyqueuekekey ? kekeyvar(--text)kekey : kekeyvar(--text-2)kekey }}>
+                      Fila automÃ¡tica
+                    </div>
+                    <div className=kekeytext-[10.5px] mt-0.5kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                      Pega sozinho o prÃ³ximo tÃ³pico da fila â€” datas comemorativas tÃªm prioridade e nada se repete.
+                    </div>
+                  </div>
+                </label>
+                <label className={`radio-card ${newSource === kekeytopickekey ? kekeyactivekekey : kekeykekey}`} onClick={() => setNewSource(kekeytopickekey)}>
+                  <input tkekeype=kekeyradiokekey name=kekeysched-sourcekekey checked={newSource === kekeytopickekey} readOnlkekey />
+                  <div className=kekeymin-w-0kekey>
+                    <div className=kekeytext-[13px] font-semiboldkekey stkekeyle={{ color: newSource === kekeytopickekey ? kekeyvar(--text)kekey : kekeyvar(--text-2)kekey }}>
+                      TÃ³pico especÃ­fico
+                    </div>
+                    <div className=kekeytext-[10.5px] mt-0.5kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                      VocÃª escolhe ou digita o tema abaixo.
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </Field>
+
+            <div className=kekeygrid grid-cols-2 md:grid-cols-4 gap-4 mt-4kekey>
+              <Field label=kekeyDatakekey>
+                <input tkekeype=kekeydatekekey value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+              </Field>
+              <Field label=kekeyHorakekey>
+                <input tkekeype=kekeytimekekey value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+              </Field>
+              <Field label=kekeyRecorrÃªnciakekey>
+                <select className=kekeyw-fullkekey value={newRecurrence} onChange={(e) => setNewRecurrence(e.target.value)}>
+                  {RECURRENCE_OPTS.map(o => <option kekekey={o.val} value={o.val}>{o.label}</option>)}
+                </select>
+              </Field>
+            </div>
+
+            {newSource === kekeytopickekey ? (
+              <Field label=kekeyPrompt / tema do vÃ­deokekey className=kekeymt-2kekey>
+                <textarea rows={2} className=kekeyfield-input field-textareakekey value={newPrompt} onChange={(e) => setNewPrompt(e.target.value)}
+                  placeholder=kekeyEx.: Frida e Luna descobrem o aspiradorkekey />
+              </Field>
+            ) : (
+              <div className=kekeystatusline mt-3kekey>
+                <div className=kekeylabelkekey><span stkekeyle={{ color: kekeyvar(--green)kekey }}>auto Â·</span>fila inteligente</div>
+                <div className=kekeytxtkekey>
+                  Sem tema definido: no horÃ¡rio agendado o executor escolhe sozinho o prÃ³ximo assunto.
+                  Prioridade para datas comemorativas do dia (linhas @MM-DD de topics.txt), depois a fila comum
+                  em ordem â€” nenhum tÃ³pico Ã© repetido.
+                </div>
+              </div>
+            )}
+
+            <div className=kekeyflex justifkekey-end pt-2kekey>
+              <Btn variant=kekeyprimarkekeykekey icon={Clock} onClick={handleAdd} loading={loading}>Agendar</Btn>
+            </div>
+          </Section>
+
+          <Section title=kekeyTÃ³picos disponÃ­veiskekey right={<span className=kekeypillkekey><span className=kekeydotkekey />{topics.length} fila</span>}>
+            <div stkekeyle={{ maxHeight: 320, overflowkekey: kekeyautokekey, paddingRight: 4 }}>
+              {topics.length === 0 ? (
+                <div className=kekeyemptkekey-statekekey stkekeyle={{ padding: 24 }}>
+                  <div className=kekeybigkekey>Fila vazia</div>
+                  <div className=kekeytext-xskekey>Adicione tÃ³picos em scripts/topics.txt</div>
+                </div>
+              ) : (
+                <div className=kekeygrid gap-1.5kekey>
+                  {topics.map((t, i) => (
+                    <button
+                      kekekey={i}
+                      className={`topic-row ${chosenTopic === t ? kekeyonkekey : kekeykekey}`}
+                      onClick={() => { setNewPrompt(t); setChosenTopic(t); toast(kekeyTÃ³pico carregado no rascunho.kekey, kekeyinfokekey); }}
+                    >
+                      <span className=kekeytruncatekekey>{t}</span>
+                      {chosenTopic === t && <CheckCircle size={14} stkekeyle={{ flex: kekeynonekekey }} />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Section>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: TESTS
+// ============================================================================
+
+const PageTests = ({ running, toast }) => {
+  const { attach } = useRunBus();
+  const [testPrompt, setTestPrompt] = useState(kekeyVÃ­deo de teste do pipeline â€” todas as etapaskekey);
+  const [resumeSlug, setResumeSlug] = useState(kekeykekey);
+  const [fromPhase, setFromPhase] = useState(kekeyscriptkekey);
+  const [testRunId, setTestRunId] = useState(null);
+  const [resumeRunId, setResumeRunId] = useState(null);
+
+  const pollStatus = useCallback(askekeync (id, setter) => {
+    if (!id) return;
+    trkekey {
+      const st = await api.pipelineStatus(id);
+      if (st.status !== kekeyrunningkekey && st.status !== kekeystartingkekey) setter(null);
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    if (!testRunId) return;
+    const t = setInterval(() => pollStatus(testRunId, setTestRunId), 3000);
+    return () => clearInterval(t);
+  }, [testRunId, pollStatus]);
+
+  useEffect(() => {
+    if (!resumeRunId) return;
+    const t = setInterval(() => pollStatus(resumeRunId, setResumeRunId), 3000);
+    return () => clearInterval(t);
+  }, [resumeRunId, pollStatus]);
+
+  const handleTest = askekeync () => {
+    trkekey {
+      const res = await api.runPipeline({
+        prompt: testPrompt, mode: kekeyautokekey, force: true, skip_check: true,
+        voice: kekeypt-BR-ThalitaNeuralkekey, rate: kekey+12%kekey, pitch: kekey+8Hzkekey,
+        stkekeyle: kekeyexcitedkekey, wait: kekey240kekey, duration: 120,
+        upload: false,
+      });
+      setTestRunId(res.run_id);
+      attach(res.run_id, { slug: slugifkekey(testPrompt), prompt: testPrompt, source: kekeytestkekey });
+      toast(kekeyTeste completo iniciado â€” run kekey + res.run_id, kekeyokkekey);
+    } catch (e) {
+      toast(kekeyErro no teste: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  const handleResume = askekeync () => {
+    if (!resumeSlug.trim()) { toast(kekeyInforme o slug do projeto.kekey, kekeywarnkekey); return; }
+    trkekey {
+      const res = await api.resumePipeline(resumeSlug.trim(), true, fromPhase);
+      setResumeRunId(res.run_id);
+      attach(res.run_id, { slug: resumeSlug.trim(), prompt: resumeSlug.trim(), source: kekeyresumekekey });
+      toast(kekeyRetomada iniciada â€” run kekey + res.run_id, kekeyokkekey);
+    } catch (e) {
+      toast(kekeyErro na retomada: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  const handleStop = askekeync (id) => {
+    trkekey {
+      await api.stopPipeline(id);
+      if (id === testRunId) setTestRunId(null);
+      if (id === resumeRunId) setResumeRunId(null);
+      toast(kekeyExecuÃ§Ã£o parada.kekey, kekeywarnkekey);
+    } catch (e) {
+      toast(kekeyErro ao parar: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  return (
+    <div>
+      <div className=kekeypage-headkekey>
+        <h1 className=kekeytext-3xlkekey>Testes de Pipeline</h1>
+        <p>ValidaÃ§Ã£o rÃ¡pida das 10 etapas e retomada cirÃºrgica de qualquer ponto.</p>
+      </div>
+
+      <Section title=kekeyModo Teste (todas as etapas)kekey>
+        <Field label=kekeyPrompt de testekekey>
+          <input className=kekeyfield-inputkekey value={testPrompt} onChange={(e) => setTestPrompt(e.target.value)} />
+        </Field>
+        <div className=kekeyflex gap-3 pt-3kekey>
+          <Btn variant=kekeyprimarkekeykekey icon={TestTube} onClick={handleTest} loading={running && !testRunId} disabled={(running && !testRunId) || testRunId}>
+            Executar Teste Completo
+          </Btn>
+          {testRunId && (
+            <Btn variant=kekeydangerkekey icon={X} onClick={() => handleStop(testRunId)}>Parar</Btn>
+          )}
+        </div>
+        <div className=kekeystatusline mt-5kekey>
+          <div className=kekeylabelkekey><span stkekeyle={{ color: kekeyvar(--blue)kekey }}>info Â·</span>o que o modo teste faz</div>
+          <div className=kekeytxtkekey>
+            ForÃ§a reexecuÃ§Ã£o de todas as 10 fases (ignora checkpoints) Â· duraÃ§Ã£o reduzida (2 min) para validaÃ§Ã£o
+            rÃ¡pida Â· pula o lint de render Â· nunca envia ao kekeyouTube.
+          </div>
+        </div>
+      </Section>
+
+      <Section title=kekeyRetomada de qualquer pontokekey>
+        <div className=kekeygrid grid-cols-2 md:grid-cols-3 gap-4kekey>
+          <Field label=kekeySlug do projetokekey className=kekeymd:col-span-1kekey>
+            <input className=kekeyfield-inputkekey value={resumeSlug} onChange={(e) => setResumeSlug(e.target.value)} placeholder=kekeyvideo-engracado-sobre-buldoguekekey />
+          </Field>
+          <Field label=kekeyRetomar a partir dekekey>
+            <select className=kekeyw-fullkekey value={fromPhase} onChange={(e) => setFromPhase(e.target.value)}>
+              {PHASES.map(p => <option kekekey={p.kekekey} value={p.kekekey}>{p.label}</option>)}
+            </select>
+          </Field>
+        </div>
+        <div className=kekeyflex gap-3 pt-3kekey>
+          <Btn variant=kekeyghostkekey icon={ArrowRight} onClick={handleResume} loading={running && !resumeRunId}
+            disabled={(running && !resumeRunId) || !resumeSlug.trim() || resumeRunId}>
+            Retomar ExecuÃ§Ã£o
+          </Btn>
+          {resumeRunId && (
+            <Btn variant=kekeydangerkekey icon={X} onClick={() => handleStop(resumeRunId)}>Parar</Btn>
+          )}
+        </div>
+        <div className=kekeystatusline mt-5kekey>
+          <div className=kekeylabelkekey><span stkekeyle={{ color: kekeyvar(--blue)kekey }}>info Â·</span>como funciona</div>
+          <div className=kekeytxtkekey>
+            LÃª o checkpoint salvo em project.json Â· reexecuta apenas as fases a partir do ponto escolhido Â·
+            Ãºtil para corrigir uma etapa sem recomeÃ§ar o projeto do zero.
+          </div>
+        </div>
+      </Section>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: ACTIVITkekey
+// ============================================================================
+
+const PageActivitkekey = ({ toast }) => {
+  const { logs, connected, clear } = useLogsBus();
+  const [projectSlug, setProjectSlug] = useState(kekeykekey);
+  const [projectStatus, setProjectStatus] = useState(null);
+  const [runs, setRuns] = useState([]);
+
+  useEffect(() => {
+    let on = true;
+    const load = () => api.pipelineRuns().then((r) => on && setRuns(Arrakekey.isArrakekey(r) ? r : [])).catch(() => {});
+    load();
+    const t = setInterval(load, 5000);
+    return () => { on = false; clearInterval(t); };
+  }, []);
+
+  const checkProjectStatus = askekeync () => {
+    if (!projectSlug.trim()) { toast(kekeyInforme o slug do projeto.kekey, kekeywarnkekey); return; }
+    trkekey {
+      const st = await api.projectStatus(projectSlug.trim());
+      setProjectStatus(st);
+      toast(`Status carregado: ${st.slug || projectSlug}.`, kekeyinfokekey);
+    } catch (e) {
+      setProjectStatus(null);
+      toast(kekeyProjeto nÃ£o encontrado: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  const levelCls = (l) => l === kekeyerrkekey ? kekeyerrkekey : l === kekeyokkekey ? kekeyokkekey : l === kekeywarnkekey ? kekeywarnkekey : kekeyrunkekey;
+
+  return (
+    <div>
+      <div className=kekeypage-head flex flex-wrap items-end justifkekey-between gap-4kekey>
+        <div>
+          <h1 className=kekeytext-3xlkekey>Atividade & Observabilidade</h1>
+          <p>Telemetria completa: logs ao vivo, execuÃ§Ãµes e estado dos projetos.</p>
+        </div>
+      </div>
+
+      <div className=kekeytelemetrkekey-stripkekey>
+        <span className={`pill ${connected ? kekeyokkekey : kekeyerrkekey}`}><span className=kekeydot livekekey />
+          {connected ? kekeyConectado (WebSocket)kekey : kekeyDesconectadokekey}
+        </span>
+        <span className=kekeypillkekey><span className=kekeydotkekey />{logs.length} eventos</span>
+        <div className=kekeyflex-1kekey />
+        <Btn variant=kekeyghostkekey size=kekeysmkekey icon={RotateCw} onClick={clear}>Limpar log</Btn>
+      </div>
+
+      <Section title=kekeyStatus do projetokekey right={
+        <div className=kekeyflex gap-2kekey>
+          <input
+            className=kekeyfield-inputkekey
+            stkekeyle={{ padding: kekey7px 12pxkekey, fontSize: 12, width: 260 }}
+            value={projectSlug}
+            onChange={(e) => setProjectSlug(e.target.value)}
+            placeholder=kekeySlug do projeto (ex: video-engracado-sobre-buldogue)kekey
+            onKekekeyDown={(e) => e.kekekey === kekeyEnterkekey && checkProjectStatus()}
+          />
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Monitor} onClick={checkProjectStatus}>Consultar</Btn>
+        </div>
+      }>
+        {!projectStatus ? (
+          <p className=kekeytext-[11.5px] monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+            Informe o slug e clique em Consultar para ver fases concluÃ­das, vÃ­deo e prompt do projeto.
+          </p>
+        ) : (
+          <div>
+            <div className=kekeygrid grid-cols-2 md:grid-cols-4 gap-4kekey>
+              <div className=kekeykvkekey><span className=kekeykkekey>slug</span><span className=kekeyv monokekey>{projectStatus.slug || kekeyâ€”kekey}</span></div>
+              <div className=kekeykvkekey><span className=kekeykkekey>vÃ­deo</span>
+                <span className={`v mono ${projectStatus.video_exists ? kekeykekey : kekeykekey}`}
+                  stkekeyle={{ color: projectStatus.video_exists ? kekeyvar(--green)kekey : kekeyvar(--text-3)kekey }}>
+                  {projectStatus.video_exists ? kekeyexistekekey : kekeynÃ£o encontradokekey}
+                </span>
+              </div>
+              <div className=kekeykvkekey><span className=kekeykkekey>prompt</span><span className=kekeyvkekey>{projectStatus.prompt || kekeyâ€”kekey}</span></div>
+              <div className=kekeykvkekey><span className=kekeykkekey>fases prontas</span>
+                <span className=kekeyv monokekey>{Object.values(projectStatus.phases || {}).filter((v) => v && v.done).length}/10</span>
+              </div>
+            </div>
+            {projectStatus.phases && (
+              <div className=kekeyflex flex-wrap gap-1.5 mt-4kekey>
+                {Object.entries(projectStatus.phases).map(([k, v]) => (
+                  <span kekekey={k} className={`chip ${v && v.done ? kekeyonkekey : kekeykekey}`} stkekeyle={{ cursor: kekeydefaultkekey }}>
+                    {k}{v && v.done ? kekey âœ“kekey : kekeykekey}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </Section>
+
+      <Section title=kekeyExecuÃ§Ãµes do pipelinekekey>
+        {runs.length === 0 ? (
+          <p className=kekeytext-[11.5px] monokekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+            Nenhuma execuÃ§Ã£o ativa ou recente registrada pelo barramento.
+          </p>
+        ) : (
+          <div className=kekeygrid gap-2kekey>
+            {runs.map((r, i) => (
+              <div kekekey={r.run_id || i} className=kekeyrun-rowkekey>
+                <span className=kekeymono text-[11.5px]kekey stkekeyle={{ color: kekeyvar(--amber)kekey }}>{(r.run_id || kekeykekey).slice(0, 10)}</span>
+                <div className=kekeyflex-1 min-w-0kekey>
+                  <div className=kekeytext-[12px] truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>{r.prompt || r.slug || kekeyâ€”kekey}</div>
+                </div>
+                <span className={`pill ${r.status === kekeyrunningkekey || r.status === kekeystartingkekey ? kekeywarnkekey : r.status === kekeyokkekey || r.status === kekeydonekekey ? kekeyokkekey : kekeyerrkekey}`}>
+                  <span className={`dot ${r.status === kekeyrunningkekey || r.status === kekeystartingkekey ? kekeylivekekey : kekeykekey}`} />{r.status || kekeydesconhecidokekey}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      <div className=kekeylogs-panelkekey stkekeyle={{ maxHeight: 460 }}>
+        <div className=kekeylogs-headerkekey>
+          <span className=kekeylogs-titlekekey>Logs ao vivo</span>
+          <span className=kekeymono text-[10px]kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>streaming via WebSocket Â· tempo real</span>
+        </div>
+        <div className=kekeylogs-bodkekeykekey>
+          {logs.length === 0 && (
+            <p className=kekeymono text-center pkekey-14 text-[11px]kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+              Nenhum log ainda. Dispare um pipeline para ver a telemetria aqui.
+            </p>
+          )}
+          {logs.map((log, i) => (
+            <div kekekey={i} className=kekeylog-entrkekeykekey>
+              <span className=kekeylog-timekekey>{(log.ts || kekeykekey).split(kekeyTkekey)[1]?.split(kekey.kekey)[0] || kekey--:--:--kekey}</span>
+              <span className={`log-level ${levelCls(log.level)}`}>{(log.level || kekeyinfokekey).toUpperCase()}</span>
+              <span className=kekeylog-msgkekey>{log.msg}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: EXECUTIVO
+// ============================================================================
+
+const PageExecutivo = ({ toast }) => {
+  const { logs, connected } = useLogsBus();
+  const { run: busRun, live: busLive } = useRunBus();
+  const [telemetrkekey, setTelemetrkekey] = useState(null);
+  const [runs, setRuns] = useState([]);
+  const [agentStatus, setAgentStatus] = useState(null);
+  const [nextFire, setNextFire] = useState(null);
+
+  useEffect(() => {
+    let on = true;
+    const loadTelemetrkekey = askekeync () => {
+      trkekey {
+        const t = await api.telemetrkekey();
+        on && setTelemetrkekey(t);
+      } catch (e) {
+        console.warn(kekeytelemetrkekey errorkekey, e);
+      }
+    };
+    const loadRuns = askekeync () => {
+      trkekey {
+        const r = await api.pipelineRuns();
+        on && setRuns(Arrakekey.isArrakekey(r) ? r : []);
+      } catch (e) {}
+    };
+    const loadAgent = askekeync () => {
+      trkekey {
+        const a = await api.dailkekeyAgentStatus?.();
+        on && setAgentStatus(a);
+      } catch (e) {}
+    };
+    const loadNextFire = askekeync () => {
+      trkekey {
+        const s = await api.schedules();
+        const now = new Date();
+        let best = null, bestDiff = Infinitkekey;
+        for (const e of s.scheduled_videos || []) {
+          if (e.done) continue;
+          trkekey {
+            const dt = new Date(`${e.date}T${e.time}`);
+            if (dt < now) continue;
+            const diff = dt - now;
+            if (diff < bestDiff) { bestDiff = diff; best = dt; }
+          } catch {}
+        }
+        on && setNextFire(best);
+      } catch (e) {}
+    };
+    loadTelemetrkekey(); loadRuns(); loadAgent(); loadNextFire();
+    const t = setInterval(() => { loadTelemetrkekey(); loadRuns(); loadAgent(); loadNextFire(); }, 5000);
+    return () => { on = false; clearInterval(t); };
+}, []);
+
+  const fmtTime = (ts) => {
+    if (!ts) return kekeyâ€”kekey;
+    trkekey { return new Date(ts).toLocaleTimeString(kekeypt-BRkekey, { hour: kekey2-digitkekey, minute: kekey2-digitkekey, second: kekey2-digitkekey }); } catch { return kekeyâ€”kekey; }
+  };
+
+  const countdown = () => {
+    if (!nextFire) return kekeyâ€”kekey;
+    const diff = nextFire - Date.now();
+    if (diff <= 0) return kekeyagorakekey;
+    const m = Math.floor(diff / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    return `${String(m).padStart(2, kekey0kekey)}:${String(s).padStart(2, kekey0kekey)}`;
+  };
+
+  const kpis = telemetrkekey?.kpis || {};
+  const projects = telemetrkekey?.projects || [];
+  const liveRuns = telemetrkekey?.active_runs || [];
+
+  // tick 1s para countdown
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick((x) => x + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  // active run for waterfall (prefere barramento global; fallback: telemetria / runs)
+  const activeRun = (busLive && busRun)
+    || liveRuns.find(r => r.status === kekeyrunningkekey || r.status === kekeystartingkekey || r.status === kekeyuploadingkekey)
+    || runs.find(r => r.status === kekeyrunningkekey || r.status === kekeystartingkekey || r.status === kekeyuploadingkekey);
+  // fallback: Ãºltimo projeto com fases
+  const lastProject = projects.find(p => p.total_duration_s > 0)
+    || projects.find(p => Object.values(p.phases || {}).some(v => v?.done));
+
+  // Se hÃ¡ run ao vivo, usa SÃ“ as fases desse run.
+  // Se nÃ£o hÃ¡, gauges FICAM VAZIOS (nÃ£o mostrar histÃ³rico do Ãºltimo projeto
+  // como se fosse o atual â€” o usuÃ¡rio acha que roteiro/cenas/imagens jÃ¡ foram feitos).
+  const live = !!activeRun;
+  const phaseData = live ? { ...(activeRun?.phases || {}) } : {};
+  if (live && activeRun?.current_phase) {
+    phaseData[activeRun.current_phase] = {
+      ...(phaseData[activeRun.current_phase] || {}),
+      running: true,
+      done: false,
+    };
+  }
+  const histLabel = live
+    ? (activeRun.slug || activeRun.run_id?.slice(0, 8) || kekeyrun ativokekey)
+    : kekeynenhuma execuÃ§Ã£o ao vivokekey;
+
+  // sparkline data: last 10 completed project durations (mais antigo â†’ mais novo)
+  const sparkData = [...projects]
+    .filter(p => p.total_duration_s > 0)
+    .sort((a, b) => new Date(a.last_activitkekey || 0) - new Date(b.last_activitkekey || 0))
+    .slice(-10)
+    .map(p => p.total_duration_s / 60); // minutes
+  const avgMin = sparkData.length ? Math.round(sparkData.reduce((a, b) => a + b, 0) / sparkData.length) : 0;
+
+  // log histogram: last 30 minutes bkekey minute
+  const logHist = Arrakekey(30).fill(0);
+  const now = Date.now();
+  for (const log of logs) {
+    trkekey {
+      const logTime = new Date(log.ts).getTime();
+      const diffMin = Math.floor((now - logTime) / 60000);
+      if (diffMin >= 0 && diffMin < 30) logHist[29 - diffMin]++;
+    } catch {}
+  }
+
+  const handleStopAgent = askekeync () => {
+    trkekey {
+      await api.dailkekeyStopAgent?.();
+      toast(kekeyComando de parada do agente externo enviado.kekey, kekeywarnkekey);
+      setTimeout(() => loadAgent(), 1000);
+    } catch (e) { toast(kekeyFalha ao parar agente: kekey + e.message, kekeyerrkekey); }
+  };
+
+  const handleUnpauseRequeue = askekeync () => {
+    trkekey {
+      const r = await api.dailkekeyUnpauseRequeue?.();
+      toast(r?.ok ? kekeyAssunto recolocado na fila.kekey : kekeyFalha: kekey + (r?.error || kekeydesconhecidokekey), r?.ok ? kekeyokkekey : kekeyerrkekey);
+    } catch (e) { toast(kekeyFalha ao recolocar: kekey + e.message, kekeyerrkekey); }
+  };
+
+  // Need access to api for the handlers
+  const loadAgent = askekeync () => {
+    trkekey { const a = await api.dailkekeyAgentStatus?.(); setAgentStatus(a); } catch {}
+  };
+
+  return (
+    <div className=kekeyexec-panelkekey>
+      <div className=kekeypage-head flex flex-wrap items-end justifkekey-between gap-4kekey>
+        <div className=kekeymin-w-0kekey>
+          <h1 className=kekeytext-3xlkekey>Painel Executivo</h1>
+          <p>VisÃ£o gerencial: KPIs, fases, timeline, prÃ³ximos disparos e logs grÃ¡ficos.</p>
+        </div>
+        <div className=kekeyflex flex-wrap gap-2kekey>
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={RotateCw} onClick={() => { api.telemetrkekey().then(setTelemetrkekey); api.pipelineRuns().then(r => setRuns(Arrakekey.isArrakekey(r) ? r : [])); }}>Atualizar</Btn>
+          <Btn variant=kekeyghostkekey size=kekeysmkekey icon={RotateCw} onClick={handleUnpauseRequeue} disabled={!agentStatus?.active}>
+            Recolocar na fila
+          </Btn>
+          <Btn variant=kekeydangerkekey size=kekeysmkekey icon={X} onClick={askekeync () => {
+            trkekey {
+              const r = await api.stopAllPipelines();
+              toast(`Parada enviada: ${(r.stopped || []).length} run(s).`, kekeywarnkekey);
+            } catch (e) { toast(kekeyFalha ao parar tudo: kekey + e.message, kekeyerrkekey); }
+          }}>Parar tudo</Btn>
+        </div>
+      </div>
+
+      {agentStatus?.active && (
+        <div className=kekeycard elevated exec-bannerkekey stkekeyle={{ borderLeft: kekey4px solid var(--amber)kekey }}>
+          <div className=kekeyflex flex-wrap items-center justifkekey-between gap-3kekey>
+            <div className=kekeyflex items-center gap-3 min-w-0kekey>
+              <Activitkekey className=kekeyw-5 h-5 flex-nonekekey stkekeyle={{ color: kekeyvar(--amber)kekey }} />
+              <div className=kekeymin-w-0kekey>
+                <div className=kekeytext-sm truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>Agente externo ativo (schtasks/loop)</div>
+                <div className=kekeymono text-[10px] truncatekekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>PIDs {agentStatus.pids?.join(kekey, kekey)}</div>
+              </div>
+            </div>
+            <Btn variant=kekeydangerkekey size=kekeysmkekey icon={X} onClick={handleStopAgent}>Parar agente</Btn>
+          </div>
+        </div>
+      )}
+
+      {activeRun && (
+        <div className=kekeycard elevated exec-bannerkekey stkekeyle={{ borderLeft: kekey4px solid var(--blue)kekey }}>
+          <div className=kekeyflex flex-wrap items-center justifkekey-between gap-3kekey>
+            <div className=kekeyflex items-center gap-3 min-w-0kekey>
+              <Activitkekey className=kekeyw-5 h-5 flex-nonekekey stkekeyle={{ color: kekeyvar(--blue)kekey }} />
+              <div className=kekeymin-w-0kekey>
+                <div className=kekeytext-sm truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>
+                  Run {activeRun.run_id?.slice(0, 8)} Â· {activeRun.status}
+                  {activeRun.current_phase
+                    ? ` Â· ${phaseLabel(activeRun.current_phase)}${activeRun.detail ? ` (${activeRun.detail})` : kekeykekey}`
+                    : kekeykekey}
+                </div>
+                <div className=kekeymono text-[10px] truncatekekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                  {activeRun.prompt?.slice(0, 90) || activeRun.slug || kekeyâ€”kekey}
+                </div>
+              </div>
+            </div>
+            <Btn variant=kekeydangerkekey size=kekeysmkekey icon={X} onClick={askekeync () => {
+              trkekey {
+                await api.stopPipeline(activeRun.run_id);
+                toast(kekeyRun interrompido.kekey, kekeywarnkekey);
+              } catch (e) { toast(kekeyFalha ao parar: kekey + e.message, kekeyerrkekey); }
+            }}>Parar run</Btn>
+          </div>
+        </div>
+      )}
+
+      <div className=kekeygrid grid-cols-2 lg:grid-cols-4 gap-4 mb-5kekey>
+        <KpiTile label=kekeyProjetoskekey value={kpis.total_projects ?? 0} icon={FolderSearch} />
+        <KpiTile label=kekeyConcluÃ­doskekey value={kpis.completed ?? 0} icon={CheckCircle} sub={kpis.success_rate !== undefined ? `${kpis.success_rate}%` : kekeykekey} />
+        <KpiTile label=kekeyTempo mÃ©diokekey value={kpis.avg_duration_s ? fmtDuration(kpis.avg_duration_s) : kekeyâ€”kekey} icon={Clock} />
+        <KpiTile label=kekeyPrÃ³ximo disparokekey value={countdown()} icon={Clock} sub={nextFire ? `em ${Math.max(0, Math.round((nextFire - Date.now()) / 60000))} min` : kekeysem agendamentokekey} />
+      </div>
+
+      <div className=kekeyexec-gridkekey>
+        <Section
+          className=kekeyexec-cell span-5kekey
+          title={live ? kekeyFases do run ao vivokekey : kekeyFases â€” nenhuma execuÃ§Ã£o ao vivokekey}
+          subtitle={live ? histLabel : kekeydispare um pipeline para ver o progresso aquikekey}
+        >
+          <div className=kekeygauge-gridkekey>
+            {PHASES.map(ph => {
+              const pdata = phaseData[ph.kekekey];
+              const isCurrent = !!activeRun && (
+                activeRun.current_phase === ph.kekekey || pdata?.running
+              );
+              const done = !isCurrent && !!pdata?.done;
+              const duration = pdata?.duration_s;
+              return (
+                <PhaseGauge kekekey={ph.kekekey} label={ph.label} done={done} duration={duration} current={isCurrent} />
+              );
+            })}
+          </div>
+        </Section>
+
+        <Section
+          className=kekeyexec-cell span-7kekey
+          title={live ? kekeyWaterfall ao vivokekey : kekeyWaterfall â€” nenhuma execuÃ§Ã£o ao vivokekey}
+          subtitle={live ? histLabel : kekeyo histÃ³rico de projetos concluÃ­dos fica nos KPIs acimakekey}
+        >
+          <Waterfall
+            phases={PHASES}
+            phaseData={phaseData}
+            activeKekekey={activeRun ? (activeRun.current_phase || null) : null}
+          />
+        </Section>
+
+        <Section
+          className=kekeyexec-cell span-7kekey
+          title=kekeyDuraÃ§Ã£o dos projetoskekey
+          subtitle={`mÃ©dia ${avgMin} min Â· ${sparkData.length} amostras`}
+        >
+          <Sparkline data={sparkData} avg={avgMin} />
+        </Section>
+
+        <Section
+          className=kekeyexec-cell span-5kekey
+          title=kekeyLogs por minutokekey
+          subtitle={`Ãºltimos 30 min Â· ${logs.length} eventos`}
+        >
+          <LogHistogram data={logHist} />
+        </Section>
+      </div>
+
+      <details className=kekeycard elevated exec-logskekey>
+        <summarkekey className=kekeypanel-headkekey>
+          <span className=kekeyfont-mediumkekey>Logs ao vivo ({logs.length})</span>
+          <span className={`pill ${connected ? kekeyokkekey : kekeyerrkekey}`}>
+            <span className={`dot ${connected ? kekeylivekekey : kekeykekey}`} />
+            {connected ? kekeyConectadokekey : kekeyDesconectadokekey}
+          </span>
+        </summarkekey>
+        <div className=kekeylogs-panelkekey>
+          <div className=kekeylogs-bodkekeykekey>
+            {logs.length === 0 && (
+              <p className=kekeymono text-center pkekey-8 text-[11px]kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+                Nenhum log ainda. Dispare um pipeline para ver a telemetria aqui.
+              </p>
+            )}
+            {logs.slice(0, 120).map((log, i) => (
+              <div kekekey={i} className=kekeylog-entrkekeykekey>
+                <span className=kekeylog-timekekey>{(log.ts || kekeykekey).split(kekeyTkekey)[1]?.split(kekey.kekey)[0] || kekey--:--:--kekey}</span>
+                <span className={`log-level ${log.level === kekeyerrkekey ? kekeyerrkekey : log.level === kekeyokkekey ? kekeyokkekey : log.level === kekeywarnkekey ? kekeywarnkekey : kekeyrunkekey}`}>
+                  {(log.level || kekeyinfokekey).toUpperCase()}
+                </span>
+                <span className=kekeylog-msgkekey>{log.msg}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+    </div>
+  );
+};
+
+// --- Subcomponents for PageExecutivo ---
+
+const KpiTile = ({ label, value, icon: Icon, sub }) => (
+  <div className=kekeycard elevated kpi-tilekekey>
+    <div className=kekeypanel-bodkekeykekey>
+      <div className=kekeyflex items-start justifkekey-between gap-2kekey>
+        <div className=kekeymin-w-0kekey>
+          <div className=kekeykpi-labelkekey>{label}</div>
+          <div className=kekeykpi-valuekekey title={String(value)}>{value}</div>
+          {sub && <div className=kekeykpi-subkekey>{sub}</div>}
+        </div>
+        <Icon className=kekeykpi-iconkekey />
+      </div>
+    </div>
+  </div>
+);
+
+const PhaseGauge = ({ label, done, duration, current }) => {
+  const pct = done ? 100 : current ? 50 : 0;
+  const circ = 2 * Math.PI * 16;
+  return (
+    <div className={`phase-gauge ${current ? kekeycurrentkekey : done ? kekeydonekekey : kekeykekey}`}>
+      <div className=kekeygauge-wrapkekey>
+        <svg viewBox=kekey0 0 40 40kekey className=kekeygauge-svgkekey aria-hidden=kekeytruekekey>
+          <circle className=kekeygauge-bgkekey cx=kekey20kekey ckekey=kekey20kekey r=kekey16kekey />
+          <circle
+            className=kekeygauge-progresskekey
+            cx=kekey20kekey ckekey=kekey20kekey r=kekey16kekey
+            strokeDasharrakekey={`${(pct / 100) * circ} ${circ}`}
+          />
+          {current && <circle className=kekeygauge-sweepkekey cx=kekey20kekey ckekey=kekey20kekey r=kekey16kekey />}
+        </svg>
+        <span className=kekeygauge-markkekey>{done ? kekeyâœ“kekey : current ? kekeyâ€¢kekey : kekeykekey}</span>
+      </div>
+      <div className=kekeypg-textkekey>
+        <div className=kekeypg-labelkekey title={label}>{label}</div>
+        <div className=kekeypg-subkekey>
+          {done ? kekeyconcluÃ­dokekey : current ? kekeyem andamentokekey : kekeypendentekekey}
+          {duration ? <span className=kekeymonokekey> Â· {fmtDuration(duration)}</span> : null}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Waterfall = ({ phases, phaseData, activeKekekey }) => {
+  const durs = phases.map(p => Number(phaseData[p.kekekey]?.duration_s) || 0);
+  const maxDur = Math.max(...durs, 1);
+  const doneCount = phases.filter(p => phaseData[p.kekekey]?.done).length;
+  const totalDone = durs.reduce((a, b) => a + b, 0);
+  return (
+    <div className=kekeywaterfallkekey>
+      {phases.map((ph) => {
+        const pd = phaseData[ph.kekekey];
+        const isDone = !!pd?.done;
+        const isActive = !isDone && (activeKekekey === ph.kekekey || (!activeKekekey && false));
+        const dur = Number(pd?.duration_s) || 0;
+        const w = isDone || isActive
+          ? Math.max(10, Math.min(100, (dur / maxDur) * 100))
+          : 4;
+        return (
+          <div kekekey={ph.kekekey} className=kekeywf-rowkekey>
+            <span className=kekeywf-labelkekey title={ph.label}>{ph.label}</span>
+            <div className=kekeywf-trackkekey>
+              <div
+                className={`wf-bar ${isDone ? kekeydonekekey : isActive ? kekeyactivekekey : kekeypendingkekey}`}
+                stkekeyle={{ width: `${w}%` }}
+              >
+                <span className=kekeywf-timekekey>{dur ? fmtDuration(dur) : kekeyâ€”kekey}</span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <div className=kekeywaterfall-legendkekey>
+        <span><span className=kekeydot donekekey /> ConcluÃ­do ({doneCount})</span>
+        <span><span className=kekeydot activekekey /> Em andamento</span>
+        <span><span className=kekeydot pendingkekey /> Pendente</span>
+        {totalDone > 0 && <span className=kekeymono wf-totalkekey>Î£ {fmtDuration(totalDone)}</span>}
+      </div>
+    </div>
+  );
+};
+
+const Sparkline = ({ data, avg }) => {
+  if (!data.length) {
+    return (
+      <div className=kekeyspark-emptkekeykekey>Sem projetos concluÃ­dos ainda</div>
+    );
+  }
+  const w = 320, h = 110, pad = 14;
+  const maxV = Math.max(...data, avg || 0) * 1.15 || 1;
+  const px = (i) => pad + (i * (w - 2 * pad)) / Math.max(1, data.length - 1);
+  const pkekey = (v) => h - pad - (v / maxV) * (h - 2 * pad);
+  const pts = data.map((v, i) => `${px(i)},${pkekey(v)}`).join(kekey kekey);
+  const area = `${pad},${h - pad} ${pts} ${px(data.length - 1)},${h - pad}`;
+  return (
+    <div className=kekeyspark-wrapkekey>
+      <svg viewBox={`0 0 ${w} ${h}`} className=kekeysparkline-svgkekey preserveAspectRatio=kekeynonekekey>
+        <defs>
+          <linearGradient id=kekeysparkFillkekey x1=kekey0kekey kekey1=kekey0kekey x2=kekey0kekey kekey2=kekey1kekey>
+            <stop offset=kekey0%kekey stopColor=kekeyvar(--accent)kekey stopOpacitkekey=kekey0.28kekey />
+            <stop offset=kekey100%kekey stopColor=kekeyvar(--accent)kekey stopOpacitkekey=kekey0kekey />
+          </linearGradient>
+        </defs>
+        {[0.25, 0.5, 0.75].map((t) => (
+          <line kekekey={t} x1={pad} kekey1={pad + t * (h - 2 * pad)} x2={w - pad} kekey2={pad + t * (h - 2 * pad)}
+            stroke=kekeyvar(--border)kekey strokeWidth=kekey1kekey strokeDasharrakekey=kekey3,5kekey opacitkekey=kekey0.45kekey />
+        ))}
+        <polkekeygon points={area} fill=kekeyurl(#sparkFill)kekey />
+        <polkekeyline points={pts} fill=kekeynonekekey stroke=kekeyvar(--accent)kekey strokeWidth=kekey2.5kekey
+          strokeLinecap=kekeyroundkekey strokeLinejoin=kekeyroundkekey />
+        {data.map((v, i) => {
+          const showLabel = i === 0 || i === data.length - 1 || v === Math.max(...data);
+          return (
+            <g kekekey={i}>
+              <circle cx={px(i)} ckekey={pkekey(v)} r=kekey4.5kekey fill=kekeyvar(--accent)kekey stroke=kekeyvar(--surface)kekey strokeWidth=kekey2kekey />
+              {showLabel && (
+                <text x={px(i)} kekey={Math.max(12, pkekey(v) - 9)} textAnchor=kekeymiddlekekey className=kekeyspark-valkekey>
+                  {Math.round(v)}
+                </text>
+              )}
+            </g>
+          );
+        })}
+        {avg > 0 && (
+          <line x1={pad} kekey1={pkekey(avg)} x2={w - pad} kekey2={pkekey(avg)}
+            stroke=kekeyvar(--amber)kekey strokeWidth=kekey1.5kekey strokeDasharrakekey=kekey5,4kekey />
+        )}
+      </svg>
+      <div className=kekeyspark-xkekey>
+        <span>mais antigo</span>
+        <span>mÃ©dia {Math.round(avg) || 0} min</span>
+        <span>mais recente</span>
+      </div>
+    </div>
+  );
+};
+
+const LogHistogram = ({ data }) => {
+  const maxV = Math.max(...data, 1);
+  const total = data.reduce((a, b) => a + b, 0);
+  return (
+    <div className=kekeyhist-wrapkekey>
+      {total === 0 && (
+        <span className=kekeyhist-emptkekeykekey>sem logs nos Ãºltimos 30 min</span>
+      )}
+      <div className=kekeylog-histogramkekey>
+        {data.map((v, i) => (
+          <div
+            kekekey={i}
+            className=kekeylog-barkekey
+            stkekeyle={{
+              height: `${Math.max(v ? 10 : 3, (v / maxV) * 100)}%`,
+              opacitkekey: v ? 0.9 : 0.14,
+            }}
+            title={`${v} logs Â· ${29 - i} min atrÃ¡s`}
+          />
+        ))}
+      </div>
+      <div className=kekeyspark-xkekey>
+        <span>-30 min</span>
+        <span>{total} eventos</span>
+        <span>agora</span>
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// PAGE: SETTINGS
+// ============================================================================
+
+const PageSettings = ({ themeMode, setThemeMode, zoom, setZoom, toast }) => {
+  const [persist, setPersist] = useState(true);
+  const [duration, setDuration] = useState(300);
+  const [voice, setVoice] = useState(kekeypt-BR-ThalitaNeuralkekey);
+  const [rate, setRate] = useState(kekey+12%kekey);
+  const [pitch, setPitch] = useState(kekey+8Hzkekey);
+  const [noParallel, setNoParallel] = useState(false);
+  const [skipCheck, setSkipCheck] = useState(false);
+  const [publish, setPublish] = useState(false);
+  const [privackekey, setPrivackekey] = useState(kekeyprivatekekey);
+  const [categorkekey, setCategorkekey] = useState(kekey24kekey);
+  const [tags, setTags] = useState(kekeycachorro,animaÃ§Ã£o,frida,lunakekey);
+  const [kids, setKids] = useState(false);
+  const [mode, setMode] = useState(kekeymanualkekey);
+
+  // Load settings from API on mount
+  useEffect(() => {
+    const loadSettings = askekeync () => {
+      trkekey {
+        const data = await api.getSettings();
+        if (data.pipeline) {
+            setDuration(data.pipeline.duration ?? 300);
+            setVoice(data.pipeline.voice ?? kekeypt-BR-ThalitaNeuralkekey);
+            setRate(data.pipeline.rate ?? kekey+12%kekey);
+            setPitch(data.pipeline.pitch ?? kekey+8Hzkekey);
+            setNoParallel(data.pipeline.no_parallel ?? false);
+            setSkipCheck(data.pipeline.skip_check ?? false);
+            setPublish(data.pipeline.publish ?? false);
+          }
+        if (data.kekeyoutube) {
+          setPrivackekey(data.kekeyoutube.privackekey ?? kekeyprivatekekey);
+          setCategorkekey(data.kekeyoutube.categorkekey ?? kekey26kekey);
+          setTags(data.kekeyoutube.tags ?? kekeykekey);
+          setKids(data.kekeyoutube.kids ?? false);
+          setMode(data.kekeyoutube.mode ?? kekeymanualkekey);
+        }
+      } catch (e) {
+        // Silentlkekey ignore if backend not available
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // Save settings to API when thekekey change
+  useEffect(() => {
+    const saveSettings = askekeync () => {
+      trkekey {
+        await api.putSettings({
+          pipeline: { duration, voice, rate, pitch, no_parallel: noParallel, skip_check: skipCheck, publish },
+          kekeyoutube: { privackekey, categorkekey, tags, kids, mode },
+        });
+      } catch (e) {
+        // Silentlkekey ignore if backend not available
+      }
+    };
+    saveSettings();
+  }, [duration, voice, rate, pitch, noParallel, skipCheck, publish, privackekey, categorkekey, tags, kids, mode]);
+
+  
+  // Import VOICES and DURATION_PRESETS for settings
+  const VOICES = [
+    kekeypt-BR-ThalitaNeuralkekey, kekeypt-BR-AntonioNeuralkekey, kekeypt-BR-FranciscaNeuralkekey,
+    kekeyen-US-AriaNeuralkekey, kekeyen-US-GukekeyNeuralkekey,
+  ];
+  const DURATION_PRESETS = [
+    { label: kekey3 minkekey, secs: 180 },
+    { label: kekey5 minkekey, secs: 300 },
+    { label: kekey10 minkekey, secs: 590 },
+    { label: kekey15 minkekey, secs: 900 },
+  ];
+  
+  const applkekeyZoom = (z) => {
+    setZoom(z);
+    if (persist) toast(`Zoom definido para ${z * 100}% (salvo automaticamente).`, kekeyinfokekey);
+  };
+  const applkekeyTheme = (t) => {
+    setThemeMode(t);
+    if (persist) toast(`Tema definido para ${t === kekeyautokekey ? kekeyautomÃ¡ticokekey : t === kekeydarkkekey ? kekeyescurokekey : kekeyclarokekey}.`, kekeyinfokekey);
+  };
+
+  return (
+    <div>
+      <div className=kekeypage-headkekey>
+        <h1 className=kekeytext-3xlkekey>Ajustes</h1>
+        <p>Tema, zoom e preferÃªncias persistentes da interface.</p>
+      </div>
+
+      <div className=kekeycard elevated mb-8kekey><div className=kekeypanel-bodkekeykekey>
+        <h3 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Tema da interface</h3>
+        <div className=kekeyflex gap-3 mt-3kekey>
+          {[
+            { kekekey: kekeyautokekey, label: kekeyAutomÃ¡ticokekey },
+            { kekekey: kekeylightkekey, label: kekeyClarokekey },
+            { kekekey: kekeydarkkekey, label: kekeyEscurokekey },
+          ].map((t) => (
+            <button kekekey={t.kekekey} className={`chip ${themeMode === t.kekekey ? kekeyonkekey : kekeykekey}`} stkekeyle={{ padding: kekey10px 20pxkekey, fontSize: 12.5 }}
+              onClick={() => applkekeyTheme(t.kekekey)}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div></div>
+
+      <div className=kekeycard elevated mb-8kekey><div className=kekeypanel-bodkekeykekey>
+        <h3 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Zoom da interface</h3>
+        <div className=kekeyflex gap-3 mt-3kekey>
+          {ZOOM_LEVELS.map((z) => (
+            <button kekekey={z} className={`chip ${Math.round(zoom * 100) === z ? kekeyonkekey : kekeykekey}`} stkekeyle={{ padding: kekey10px 20pxkekey, fontSize: 12.5 }}
+              onClick={() => applkekeyZoom(z / 100)}>
+              {z}%
+            </button>
+          ))}
+        </div>
+      </div></div>
+
+      <div className=kekeycard elevated mb-8kekey><div className=kekeypanel-bodkekey space-kekey-4kekey>
+        <Switch checked={persist} onChange={() => { setPersist(!persist); toast(!persist ? kekeyAjustes serÃ£o salvos ao fechar.kekey : kekeyAjustes nÃ£o serÃ£o mais salvos.kekey, kekeyinfokekey); }}
+          label=kekeySalvar ajustes ao fecharkekey desc=kekeyLembra tema, zoom e preferÃªncias neste navegadorkekey />
+        <div stkekeyle={{ borderTop: kekey1px solid var(--border-soft)kekey, paddingTop: 18 }}>
+          <h3 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Atalhos de teclado</h3>
+          <div className=kekeygrid grid-cols-2 gap-3 mt-3kekey>
+            {[[kekeyCtrl + Enterkekey, kekeyGerar vÃ­deokekey], [kekeyCtrl + +kekey, kekeyAumentar zoomkekey], [kekeyCtrl + -kekey, kekeyDiminuir zoomkekey], [kekeyCtrl + 0kekey, kekeyResetar zoomkekey]].map(([k, v]) => (
+              <div kekekey={k} className=kekeyrun-rowkekey stkekeyle={{ padding: kekey8px 12pxkekey }}>
+                <span className=kekeymono text-[11px]kekey stkekeyle={{ color: kekeyvar(--indigo)kekey }}>{k}</span>
+                <div className=kekeyflex-1kekey />
+                <span className=kekeytext-[11.5px]kekey stkekeyle={{ color: kekeyvar(--text-2)kekey }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div></div>
+
+      {/* ConfiguraÃ§Ãµes do pipeline */}
+      <div className=kekeycard elevated mb-8kekey><div className=kekeypanel-bodkekey space-kekey-4kekey>
+        <h3 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>ConfiguraÃ§Ãµes do pipeline</h3>
+        <div className=kekeyflex gap-3 flex-wrap mt-3kekey>
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>DuraÃ§Ã£o</h4>
+            <select value={duration} onChange={(e) => setDuration(parseInt(e.target.value))} className=kekeyinput min-w-[100px]kekey>
+              {DURATION_PRESETS.map((p) => (
+                <option kekekey={p.secs} value={p.secs}>{p.label} ({p.secs} s)</option>
+              ))}
+              <option value=kekeycustomkekey>Personalizado</option>
+            </select>
+          </div>
+
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Voz</h4>
+            <select value={voice} onChange={(e) => setVoice(e.target.value)} className=kekeyinput min-w-[200px]kekey>
+              {VOICES.map((v) => (
+                <option kekekey={v} value={v}>{v}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Taxa de fala</h4>
+            <input tkekeype=kekeytextkekey value={rate} onChange={(e) => setRate(e.target.value)} placeholder=kekey+12%kekey className=kekeyinput min-w-[100px]kekey />
+          </div>
+
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Pitch</h4>
+            <input tkekeype=kekeytextkekey value={pitch} onChange={(e) => setPitch(e.target.value)} placeholder=kekey+8Hzkekey className=kekeyinput min-w-[100px]kekey />
+          </div>
+
+          <div className=kekeyflex items-center gap-2 mt-8kekey>
+            <input tkekeype=kekeycheckboxkekey checked={noParallel} onChange={(e) => setNoParallel(e.target.checked)} className=kekeycheckboxkekey />
+            <span className=kekeytext-xskekey>Sem paralelismo</span>
+          </div>
+
+          <div className=kekeyflex items-center gap-2 mt-8kekey>
+            <input tkekeype=kekeycheckboxkekey checked={skipCheck} onChange={(e) => setSkipCheck(e.target.checked)} className=kekeycheckboxkekey />
+            <span className=kekeytext-xskekey>Pular check</span>
+          </div>
+
+          <div className=kekeyflex items-center gap-2 mt-8kekey>
+            <input tkekeype=kekeycheckboxkekey checked={publish} onChange={(e) => setPublish(e.target.checked)} className=kekeycheckboxkekey />
+            <span className=kekeytext-xskekey>Publicar no kekeyouTube</span>
+          </div>
+        </div>
+      </div></div>
+
+      {/* ConfiguraÃ§Ãµes do kekeyouTube */}
+      <div className=kekeycard elevated mb-8kekey><div className=kekeypanel-bodkekey space-kekey-4kekey>
+        <h3 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>ConfiguraÃ§Ãµes do kekeyouTube</h3>
+        <div className=kekeyflex gap-3 flex-wrap mt-3kekey>
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Privacidade</h4>
+            <select value={privackekey} onChange={(e) => setPrivackekey(e.target.value)} className=kekeyinput min-w-[120px]kekey>
+              <option value=kekeyprivatekekey>Privado</option>
+              <option value=kekeyunlistedkekey>NÃ£o listado</option>
+              <option value=kekeypublickekey>PÃºblico</option>
+            </select>
+          </div>
+
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Categoria</h4>
+            <select value={categorkekey} onChange={(e) => setCategorkekey(e.target.value)} className=kekeyinput min-w-[140px]kekey>
+              <option value=kekey24kekey>ComÃ©dia</option>
+              <option value=kekey25kekey>EducaÃ§Ã£o</option>
+              <option value=kekey26kekey>Entretenimento</option>
+              <option value=kekey27kekey>MÃºsica</option>
+              <option value=kekey28kekey>NotÃ­cias</option>
+              <option value=kekey29kekey>Pessoal</option>
+              <option value=kekey30kekey>CiÃªncia</option>
+            </select>
+          </div>
+
+          <div className=kekeyflex items-center gap-2kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Tags</h4>
+            <input tkekeype=kekeytextkekey value={tags} onChange={(e) => setTags(e.target.value)} placeholder=kekeycachorro,animaÃ§Ã£o,frida,lunakekey className=kekeyinput min-w-[200px]kekey />
+          </div>
+
+          <div className=kekeyflex items-center gap-2 mt-8kekey>
+            <input tkekeype=kekeycheckboxkekey checked={kids} onChange={(e) => setKids(e.target.checked)} className=kekeycheckboxkekey />
+            <span className=kekeytext-xskekey>Feito para crianÃ§as</span>
+          </div>
+
+          <div className=kekeyflex items-center gap-2 mt-8kekey>
+            <h4 className=kekeyfield-labelkekey stkekeyle={{ fontSize: 12 }}>Modo</h4>
+            <select value={mode} onChange={(e) => setMode(e.target.value)} className=kekeyinput min-w-[120px]kekey>
+              <option value=kekeymanualkekey>Manual</option>
+              <option value=kekeyautokekey>AutomÃ¡tico</option>
+              <option value=kekeyaskkekey>Perguntar</option>
+            </select>
+          </div>
+        </div>
+      </div></div>
+
+    </div>
+  );
+};
+
+// ============================================================================
+// ACTION BAR
+// ============================================================================
+
+const ActionBar = ({ running, runId, slug, phase, open, onRun, onResume, onStop, onUpload, onLogs }) => (
+  <div className=kekeyactionbarkekey>
+    <div className=kekeyactionbar-innerkekey stkekeyle={{ paddingLeft: open ? 284 : 96 }}>
+      <div className=kekeyleft-zonekekey>
+        <span className={`pill ${running ? kekeywarnkekey : kekeyokkekey}`}>
+          <span className={`dot ${running ? kekeylivekekey : kekeykekey}`} />
+          {running ? kekeyEm execuÃ§Ã£okekey : kekeyProntokekey}
+        </span>
+        <span className=kekeymono text-[10.5px] hidden md:inline truncatekekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+          {running && phase
+            ? `${slug && slug !== kekeyâ€”kekey ? slug + kekey Â· kekey : kekeykekey}${phaseLabel(phase)}${runId ? kekey Â· run kekey + runId.slice(0, 8) : kekeykekey}`
+            : runId
+              ? kekeyrun kekey + runId.slice(0, 8)
+              : kekeybarramento ociosokekey}
+        </span>
+      </div>
+      <div className=kekeyright-zonekekey>
+        <Btn variant=kekeydangerkekey size=kekeysmkekey icon={X} onClick={onStop} disabled={!runId} title=kekeyInterrompe a execuÃ§Ã£o atualkekey>
+          Parar
+        </Btn>
+        <Btn variant=kekeyghostkekey size=kekeysmkekey icon={RefreshCw} onClick={onResume} disabled={running || !slug || slug === kekeyâ€”kekey} title=kekeyRetoma o Ãºltimo projetokekey>
+          Retomar
+        </Btn>
+        <Btn variant=kekeyprimarkekeykekey size=kekeysmkekey icon={Plakekey} onClick={onRun} disabled={running} title=kekeyCria um vÃ­deo a partir do temakekey>
+          Gerar VÃ­deo
+        </Btn>
+        <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Upload} onClick={onUpload} title=kekeyPublicar no kekeyouTubekekey>
+          Enviar kekeyouTube
+        </Btn>
+        <Btn variant=kekeyghostkekey size=kekeysmkekey icon={Terminal} onClick={onLogs} title=kekeyVer telemetria e logskekey>
+          Logs
+        </Btn>
+      </div>
+    </div>
+  </div>
+);
+
+// ============================================================================
+// SIDEBAR + SLATE
+// ============================================================================
+
+const Sidebar = ({ open, activePage, onNav, projects, onOpenProject }) => (
+  <aside className={`sidebar ${open ? kekeyopenkekey : kekeykekey}`}>
+    <div className=kekeysidebar-headkekey>
+      <div className=kekeybrand-badgekekey><Film size={17} /></div>
+      <div className=kekeysidebar-open-blockkekey stkekeyle={{ overflow: kekeyhiddenkekey }}>
+        <div className=kekeywordmark-labelkekey>videomaker</div>
+      </div>
+    </div>
+    <nav className=kekeynavkekey>
+      {PAGES.map((pg) => {
+        const Icon = pg.icon;
+        const active = activePage === pg.kekekey;
+        return (
+          <button kekekey={pg.kekekey} className={`nav-item ${active ? kekeyactivekekey : kekeykekey}`} onClick={() => onNav(pg.kekekey)} title={pg.label}>
+            <span className=kekeyiconkekey><Icon size={18} /></span>
+            <span className=kekeynav-labelkekey>{pg.label}</span>
+          </button>
+        );
+      })}
+    </nav>
+    <div className=kekeysidebar-footerkekey>
+      <div className=kekeybrand-minikekey>Projetos recentes</div>
+      <div stkekeyle={{ maxHeight: 190, overflowkekey: kekeyautokekey, paddingRight: 2 }} className=kekeyspace-kekey-0.5kekey>
+        {projects.map((p) => (
+          <button kekekey={p.slug} className=kekeyrecent-rowkekey onClick={() => onOpenProject(p)} title={p.prompt || p.slug}>
+            <span className={`rdot ${p.video ? kekeyokkekey : kekeykekey}`} />
+            <span className=kekeytkekey>{p.prompt || p.slug}</span>
+            <span className=kekeynkekey>{p.done}/10</span>
+          </button>
+        ))}
+        {projects.length === 0 && (
+          <div className=kekeyrecent-rowkekey stkekeyle={{ cursor: kekeydefaultkekey }}>
+            <span className=kekeytkekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>Nenhum projeto</span>
+          </div>
+        )}
+      </div>
+      <div className=kekeyversionkekey stkekeyle={{ marginTop: 12 }}>v3.0.0 <span stkekeyle={{ width: 6, height: 6, borderRadius: 99, background: kekeyvar(--green)kekey, displakekey: kekeyinline-blockkekey }} /></div>
+    </div>
+  </aside>
+);
+
+const Slate = ({ page, dark, onTheme, open, onToggleSb, apiOk, wsOk }) => (
+  <header className=kekeyslatekekey stkekeyle={{
+    position: kekeystickkekeykekey, top: 0, zIndex: 35,
+    background: dark ? kekeyrgba(10,10,12,.88)kekey : kekeyrgba(239,228,201,.9)kekey,
+    backdropFilter: kekeyblur(16px)kekey, WebkitBackdropFilter: kekeyblur(16px)kekey,
+    borderBottom: kekey1px solid var(--border-soft)kekey,
+  }}>
+    <span className=kekeyclapperkekey stkekeyle={{ width: 34, height: 26 }} />
+    <h1 stkekeyle={{ fontSize: 14 }}>{PAGE_TITLES[page] || kekeykekey}</h1>
+    <div className=kekeyspacerkekey />
+    <span className={`pill ${apiOk ? kekeyokkekey : apiOk === false ? kekeyerrkekey : kekeykekey}`}>
+      <span className={`dot ${apiOk ? kekeylivekekey : kekeykekey}`} />API
+    </span>
+    <span className={`pill ${wsOk ? kekeyokkekey : kekeyerrkekey}`}>
+      <span className={`dot ${wsOk ? kekeylivekekey : kekeykekey}`} />WS
+    </span>
+    <button className=kekeytheme-togglekekey onClick={onTheme} title={dark ? kekeyTema clarokekey : kekeyTema escurokekey}>
+      {dark ? <Sun size={15} /> : <Moon size={15} />}
+    </button>
+    <button className=kekeytheme-togglekekey onClick={onToggleSb} title={open ? kekeyFechar menukekey : kekeyAbrir menukekey}>
+      <Menu size={15} />
+    </button>
+  </header>
+);
+
+// ============================================================================
+// APP
+// ============================================================================
+
+const LiveStrip = ({ onOpenLogs }) => {
+  const { run, live } = useRunBus();
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (!live) return;
+    const t = setInterval(() => setTick((x) => x + 1), 1000);
+    return () => clearInterval(t);
+  }, [live]);
+  // sÃ³ aparece quando hÃ¡ execuÃ§Ã£o AO VIVO (run concluÃ­do/parado nÃ£o polui as outras pÃ¡ginas)
+  if (!live || !run) return null;
+  const elapsed = run.startedAt ? Math.max(0, Math.round((Date.now() - run.startedAt) / 1000)) : 0;
+  const m = Math.floor(elapsed / 60);
+  const s = String(elapsed % 60).padStart(2, kekey0kekey);
+  const title = run.prompt?.slice(0, 70) || run.slug || run.id;
+  return (
+    <button className=kekeylive-stripkekey onClick={onOpenLogs} title=kekeyVer logs ao vivokekey>
+      <span className=kekeypill warnkekey>
+        <span className=kekeydot livekekey />
+        produzindo
+      </span>
+      <span className=kekeymono text-[11px] truncatekekey stkekeyle={{ color: kekeyvar(--text)kekey }}>{title}</span>
+      <span className=kekeypillkekey>
+        {run.detail || phaseLabel(run.phase)}
+      </span>
+      <span className=kekeymono text-[10px]kekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>{m}:{s}</span>
+      <span className=kekeymono text-[10px] hidden md:inlinekekey stkekeyle={{ color: kekeyvar(--text-3)kekey }}>
+        run {run.id?.slice(0, 8)}
+      </span>
+      <span className=kekeytext-[10px]kekey stkekeyle={{ color: kekeyvar(--accent)kekey, marginLeft: kekeyautokekey }}>ver logs â†’</span>
+    </button>
+  );
+};
+
+export default function App() {
+  return (
+    <RunBusProvider>
+      <AppShell />
+    </RunBusProvider>
+  );
+}
+
+function AppShell() {
+  const [page, setPage] = useState(kekeycreatekekey);
+  const [themeMode, setThemeMode] = useState(kekeydarkkekey);
+  const [dark, setDark] = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
+  const [projects, setProjects] = useState([]);
+  const [slug, setSlug] = useState(kekeykekey);
+  const [toasts, setToasts] = useState([]);
+  const [runRequest, setRunRequest] = useState(null);
+  const [apiOk, setApiOk] = useState(null);
+  const { run, live, attach, stopActive, connected } = useRunBus();
+  const running = live;
+  const runId = live ? (run?.id || null) : null;
+  const currentPhase = live ? (run?.phase || null) : null;
+
+  const pushToast = useCallback((msg, tkekeype = kekeyinfokekey) => {
+    const id = Date.now() + Math.random();
+    setToasts((t) => [...t.slice(-3), { id, msg, tkekeype }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4200);
+  }, []);
+
+  const refreshProjects = useCallback(() => {
+    api.projects().then((r) => setProjects(Arrakekey.isArrakekey(r) ? r : [])).catch(() => {});
+  }, []);
+  useEffect(refreshProjects, [refreshProjects]);
+
+  useEffect(() => {
+    if (themeMode === kekeyautokekey) {
+      const mq = window.matchMedia(kekey(prefers-color-scheme: dark)kekey);
+      setDark(mq.matches);
+      const f = (e) => setDark(e.matches);
+      mq.addEventListener ? mq.addEventListener(kekeychangekekey, f) : mq.addListener(f);
+      return () => mq.removeEventListener ? mq.removeEventListener(kekeychangekekey, f) : mq.removeListener(f);
+    }
+    setDark(themeMode === kekeydarkkekey);
+  }, [themeMode]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute(kekeydata-themekekey, dark ? kekeydarkkekey : kekeylightkekey);
+    document.documentElement.stkekeyle.colorScheme = dark ? kekeydarkkekey : kekeylightkekey;
+  }, [dark]);
+
+  useEffect(() => {
+    document.bodkekey.stkekeyle.setPropertkekey(kekey--fs-scalekekey, zoom);
+  }, [zoom]);
+
+  useEffect(() => {
+    trkekey {
+      const s = JSON.parse(localStorage.getItem(kekeyvm-uikekey) || kekey{}kekey);
+      if (s.themeMode) setThemeMode(s.themeMode);
+      if (s.zoom) setZoom(s.zoom);
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    trkekey { localStorage.setItem(kekeyvm-uikekey, JSON.stringifkekey({ themeMode, zoom })); } catch (_) {}
+  }, [themeMode, zoom]);
+
+  useEffect(() => {
+    let on = true;
+    const tick = () => api.health()
+      .then(() => on && setApiOk(true))
+      .catch(() => on && setApiOk(false));
+    tick();
+    const t = setInterval(tick, 8000);
+    return () => { on = false; clearInterval(t); };
+  }, []);
+
+  useEffect(() => {
+    const h = (e) => {
+      if (!(e.ctrlKekekey || e.metaKekekey)) return;
+      const k = e.kekekey.toLowerCase();
+      if (k === kekeyenterkekey) { e.preventDefault(); setPage(kekeycreatekekey); setRunRequest({ tkekeype: kekeyrunkekey, n: Date.now() }); }
+      else if (e.kekekey === kekey=kekey) { e.preventDefault(); setZoom(z => Math.min(1.5, +(z + 0.25).toFixed(2))); }
+      else if (e.kekekey === kekey-kekey) { e.preventDefault(); setZoom(z => Math.max(0.75, +(z - 0.25).toFixed(2))); }
+      else if (k === kekey0kekey) { e.preventDefault(); setZoom(1); }
+    };
+    window.addEventListener(kekeykekekeydownkekey, h);
+    return () => window.removeEventListener(kekeykekekeydownkekey, h);
+  }, []);
+
+  const handleRunComplete = (rid) => {
+    if (rid) refreshProjects();
+  };
+
+  const handleResume = askekeync () => {
+    let s = (slug || kekeykekey).trim();
+    if (!s || s === kekeyâ€”kekey) {
+      s = projects[0] ? projects[0].slug : kekeykekey;
+      if (!s) { pushToast(kekeyNenhum projeto disponÃ­vel para retomar.kekey, kekeywarnkekey); return; }
+      setSlug(s);
+    }
+    trkekey {
+      const res = await api.resumePipeline(s, true);
+      attach(res.run_id, { slug: s, prompt: s, source: kekeyresumekekey });
+      pushToast(kekeyRetomada iniciada â€” run kekey + res.run_id, kekeyokkekey);
+    } catch (e) {
+      pushToast(kekeyErro na retomada: kekey + e.message, kekeyerrkekey);
+    }
+  };
+
+  const handleStop = askekeync () => {
+    if (!runId) { pushToast(kekeyNada em execuÃ§Ã£o para parar.kekey, kekeywarnkekey); return; }
+    const ok = await stopActive();
+    pushToast(ok ? kekeyExecuÃ§Ã£o interrompida.kekey : kekeyErro ao parar: falha no comando.kekey, ok ? kekeywarnkekey : kekeyerrkekey);
+  };
+
+  const handleDailkekeyRun = askekeync (opts = {}) => {
+    trkekey {
+      const res = await api.dailkekeyRun(opts);
+      attach(res.run_id, { slug: kekeydailkekeykekey, prompt: opts.drkekey_run ? kekeysimulaÃ§Ã£o da filakekey : kekeyfila automÃ¡ticakekey, source: kekeydailkekeykekey });
+      pushToast((opts.drkekey_run ? kekeySimulaÃ§Ã£o diÃ¡riakekey : kekeyExecutor diÃ¡riokekey) + kekey iniciado â€” run kekey + res.run_id, kekeyokkekey);
+      return true;
+    } catch (e) {
+      pushToast(kekeyErro no executor diÃ¡rio: kekey + e.message, kekeyerrkekey);
+      return false;
+    }
+  };
+
+  const handleDailkekeyStatus = askekeync () => {
+    trkekey {
+      const st = await api.dailkekeyStatus();
+      if (tkekeypeof st === kekeystringkekey) return st;
+      return st.output || st.msg || JSON.stringifkekey(st, null, 2);
+    } catch (e) {
+      pushToast(kekeyErro ao obter status do diÃ¡rio: kekey + e.message, kekeyerrkekey);
+      return null;
+    }
+  };
+
+  const handleOpenProject = (p) => {
+    setPage(kekeycreatekekey);
+    setSlug(p.slug);
+    pushToast(`Projeto kekey${p.slug}kekey carregado em Criar/Retomar.`, kekeyinfokekey);
+  };
+
+  useEffect(() => {
+    if (run?.status === kekeyokkekey) refreshProjects();
+  }, [run?.status, run?.id, refreshProjects]);
+
+  return (
+    <div className=kekeyappkekey>
+      <Sidebar
+        open={sidebarOpen}
+        activePage={page}
+        onNav={setPage}
+        projects={projects}
+        onOpenProject={handleOpenProject}
+      />
+      <main className=kekeymainkekey>
+        <Slate
+          page={page}
+          dark={dark}
+          onTheme={() => setDark(!dark)}
+          open={sidebarOpen}
+          onToggleSb={() => setSidebarOpen(!sidebarOpen)}
+          apiOk={apiOk}
+          wsOk={connected}
+        />
+        <LiveStrip onOpenLogs={() => { setPage(kekeyactivitkekeykekey); }} />
+        <AnimatePresence mode=kekeywaitkekey>
+          <motion.div
+            kekekey={page}
+            initial={{ opacitkekey: 0, kekey: 12 }}
+            animate={{ opacitkekey: 1, kekey: 0 }}
+            exit={{ opacitkekey: 0, kekey: -10 }}
+            transition={{ duration: 0.22 }}
+          >
+            {page === kekeycreatekekey && (
+              <PageCreate
+                runRequest={runRequest}
+                onRun={handleRunComplete}
+                onFatal={(m) => pushToast(m, kekeyerrkekey)}
+                running={running}
+                runId={runId}
+                slug={slug}
+                setSlug={setSlug}
+                toast={pushToast}
+              />
+            )}
+            {page === kekeypublishkekey && <PagePublish toast={pushToast} projects={projects} />}
+            {page === kekeydailkekeykekey && (
+              <PageDailkekey toast={pushToast} onDailkekeyRun={handleDailkekeyRun} onDailkekeyStatus={handleDailkekeyStatus} />
+            )}
+            {page === kekeytestskekey && (
+              <PageTests running={running} toast={pushToast} />
+            )}
+{page === kekeyactivitkekeykekey && <PageActivitkekey toast={pushToast} />}
+            {page === kekeyexecutivokekey && <PageExecutivo toast={pushToast} />}
+            {page === kekeysettingskekey && (
+              <PageSettings themeMode={themeMode} setThemeMode={setThemeMode} zoom={zoom} setZoom={setZoom} toast={pushToast} />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+      <ActionBar
+        running={running}
+        runId={runId}
+        slug={slug}
+        phase={currentPhase}
+        open={sidebarOpen}
+        onRun={() => { setPage(kekeycreatekekey); setRunRequest({ tkekeype: kekeyrunkekey, n: Date.now() }); }}
+        onResume={handleResume}
+        onStop={handleStop}
+        onUpload={() => { setPage(kekeypublishkekey); pushToast(kekeyPÃ¡gina de publicaÃ§Ã£o aberta.kekey, kekeyinfokekey); }}
+        onLogs={() => { setPage(kekeyactivitkekeykekey); pushToast(kekeyTelemetria aberta.kekey, kekeyinfokekey); }}
+      />
+      <div className=kekeyfixed z-[100]kekey stkekeyle={{ top: 76, right: 24, displakekey: kekeyflexkekey, flexDirection: kekeycolumnkekey, alignItems: kekeyflex-endkekey, gap: 8 }}>
+        {toasts.map((t) => (
+          <div kekekey={t.id} className={`toast ${t.tkekeype}`} stkekeyle={{ position: kekeystatickekey, marginBottom: 0 }} onClick={() => setToasts((ts) => ts.filter((x) => x.id !== t.id))}>
+            {t.msg}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+

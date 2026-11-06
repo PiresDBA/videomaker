@@ -1,0 +1,214 @@
+# -*- coding: utf-8 -*-
+"""
+Gera artifacts/script.json a partir de um prompt, usando o Gemini WEB
+(chrome via CDP, scripts/gemini_fetch.py --kind text) — sem chamar API direta.
+
+Fluxo:
+  1. Monta um SYSTEM prompte pedindo ao Gemini um roteiro estruturado em JSON.
+  2. Chama gemini_fetch.py --kind text --prompt "<SYSTEM>\n\nTEMA: ...".
+  3. Le o .md gerado em artifacts/gemini/, extrai o JSON e grava artifacts/script.json.
+
+Uso:
+  python scripts/generate_script_from_prompt.py --prompt "Video engraçado sobre buldogue inglês"
+  python scripts/generate_script_from_prompt.py --prompt "..." --out artifacts/script.json
+"""
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+PROJECT = HERE.parent
+
+from narration_contract import apply_contract, validate_contract
+
+
+SYSTEM = (
+    "Voce e um escritor de historias infantis, em portugues do Brasil. "
+    "Escreva uma HISTORIA ORIGINAL, divertida e carinhosa sobre o tema do usuario. "
+    "Voce trabalha apenas com palavras: o texto da historia sera lido em voz alta "
+    "por um narrador, por isso use frases curtas, pausas e exclamacoes.\n\n"
+    "Responda SEMPRE com um JSON valido puro, sem markdown, sem texto antes ou depois, "
+    "com exatamente esta estrutura:\n"
+    '{"title": "Titulo curto e chamativo",\n'
+    ' "sections": [\n'
+    '  {"id": "s0", "label": "Apresentação do Canal",\n'
+    '   "text": "Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>. <uma frase curta e empolgada sobre o que vem por ai>.",\n'
+    '   "delivery_cues": {"pace": "conversational", "energy": "alegre e acolhedor",\n'
+    '                     "emphasis_words": ["amiguinho", "hoje"],\n'
+    '                     "pause_after_seconds": 0.6}},\n'
+    '  {"id": "s1", "label": "Gancho", "text": "...",\n'
+    '   "delivery_cues": {"pace": "brisk", "energy": "alegre",\n'
+    '                     "emphasis_words": ["..."], "pause_after_seconds": 0.6}},\n'
+    '  {"id": "s_outro", "label": "Agradecimento",\n'
+    '   "text": "Agradecimento carinhoso ao publico (texto final aplicado pelo contrato do canal).",\n'
+    '   "delivery_cues": {"pace": "measured", "energy": "carinhoso",\n'
+    '                     "emphasis_words": ["obrigado", "coração", "Deus", "aventura"],\n'
+    '                     "pause_after_seconds": 0.8}}\n'
+    ' ]}\n\n'
+    "Regras obrigatorias de abertura e encerramento (contrato do canal):\n"
+    "- A PRIMEIRA secao e SEMPRE a s0, label 'Apresentação do Canal', e o text\n"
+"  comeca EXATAMENTE assim: \"Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>.\"\n"
+"- E PROIBIDO comecar com \"Olá, família!\", \"Olá, amiguinhos!\" ou qualquer\n"
+    "  outro cumprimento generico. Use o cumprimento humanizado acima.\n"
+    "- A ULTIMA secao e SEMPRE a s_outro, label 'Agradecimento'. Escreva um\n"
+    "  fechamento carinhoso curto; o texto humanizado final e aplicado\n"
+    "  automaticamente pelo contrato do canal (nao precisa copiar palavra por palavra).\n"
+    "- Nao escreva risadas (Hahaha!) na s0 nem na s_outro.\n\n"
+    "Regras gerais:\n"
+    "- Gere de 8 a 14 secoes de HISTORIA (s0, s1, s2, ...), MAIS a s_outro final.\n"
+    "- **Cada secao de historia deve ter de 55 a 80 palavras** (a s0, de 25 a 45).\n"
+    "- ids: s0, s1, s2, ... para a historia; a ultima secao SEMPRE tem id s_outro.\n"
+    "- Texto: frases curtas, com pausas (...) e exclamacoes para dar energia.\n"
+    "- O text de cada secao e APENAS o que o narrador fala em voz alta. PROIBIDO\n"
+    "  incluir ficha de personagens ou descricao fisica no text.\n"
+    "- delivery_cues.pace: uma de slow, measured, conversational, brisk, fast.\n"
+    "- delivery_cues.emphasis_words: palavras que o narrador deve destacar.\n"
+    "- delivery_cues.pause_after_seconds: apos a secao (0.4 a 1.2).\n"
+    "- Tom: alegre, envolvente, como um documentario que vira piada.\n"
+    "- Inclua risadas: ao menos uma Hahaha! em cada secao de historia, logo apos\n"
+    "  uma frase engraçada ou surpreendente. A risada deve ser lida em voz alta\n"
+    "  pelo narrador (nunca na s0 nem na s_outro).\n"
+    "- Use exclamacoes (!) para dar energia.\n"
+    "- PROIBIDO citar Pixar, Disney, Ghibli, DreamWorks, Illumination ou qualquer "
+    "estudio/marca.\n"
+    "- Se o tema for sobre Frida e Luna: Frida é buldogue inglês (cachorra) e "
+    "Luna é salsicha/dachshund (cachorra). NUNCA as chame de gata, gatinha ou felina. "
+    "Sem humanos na historia (nada de vovó, tutor, dono).\n"
+    "- Apelidos carinhosos do canal: Frida é a Fridóca e Luna é a Luninha. Use os "
+    "apelidos com carinho na narração, sem trocar os nomes oficiais.\n"
+)
+
+
+DEFAULT_STYLE_NOTES = "ilustracao colorida, luz suave, clima alegre e acolhedor"
+
+
+FICHA_RE = re.compile(
+    r"^(?:\s*Luna[,:]\s*.{0,400}?Frida[,:]\s*.{0,400}?Visual\s*:.*?exagerad\w*\.?\s*)",
+    re.I | re.S,
+)
+
+
+def strip_character_sheet_prefix(text):
+    """Remove prefixo de ficha de personagens que o modelo pode colar no text
+    de cada secao (ex.: 'Luna: cadela dachshund..., Frida: ..., Visual: ...').
+    So age quando a secao comeca com o padrao; texto de historia intacto nao
+    e alterado."""
+    t = (text or "").strip()
+    for _ in range(2):
+        m = FICHA_RE.match(t)
+        if not m:
+            break
+        t = t[m.end():].strip()
+    return t if len(t) >= 20 else (text or "")
+
+
+def extract_json(text):
+    """Extrai o melhor objeto JSON valido com 'sections' de um texto.
+
+    Tolera markdown fences, prosa e respostas concatenadas (uma versao truncada
+    seguida de uma versao completa). Usa raw_decode a partir de cada ocorrencia
+    de '{"title"' e fica com o objeto de mais secoes.
+    """
+    dec = json.JSONDecoder()
+    melhor = None
+    for m in re.finditer(r'\{\s*"title"', text):
+        try:
+            obj, _ = dec.raw_decode(text[m.start():])
+        except Exception:
+            continue
+        if isinstance(obj, dict) and obj.get("sections"):
+            if melhor is None or len(obj["sections"]) >= len(melhor["sections"]):
+                melhor = obj
+    if melhor is not None:
+        return melhor
+
+    # Tenta achar fences de codigo
+    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", text, re.S)
+    if m:
+        blob = m.group(1)
+    else:
+        # fallback: primeiro '{' ate o ultimo '}'
+        start = text.find("{")
+        end = text.rfind("}")
+        if start == -1 or end == -1 or end < start:
+            raise ValueError("nenhum objeto JSON encontrado na resposta")
+        blob = text[start:end + 1]
+    return json.loads(blob)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--prompt", required=True)
+    ap.add_argument("--out", default=str(PROJECT / "artifacts" / "script.json"))
+    ap.add_argument("--name", default="script_text")
+    ap.add_argument("--wait", type=int, default=120)
+    args = ap.parse_args()
+
+    fetch = HERE / "gemini_fetch.py"
+    out_dir = Path(args.out).parent
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    full_prompt = SYSTEM + "\n\nTEMA DO USUARIO: " + args.prompt
+
+    cmd = [
+        sys.executable, str(fetch),
+        "--kind", "text",
+        "--prompt", full_prompt,
+        "--name", args.name,
+        "--out-dir", str(out_dir),
+        "--wait", str(args.wait),
+    ]
+    print("== Chamando gemini_fetch.py --kind text ...")
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        print("FALHOU: gemini_fetch.py")
+        print(r.stdout[-2000:])
+        print(r.stderr[-2000:])
+        return 1
+    print(r.stdout[-1500:])
+
+    # Encontra o arquivo .md gerado (o mais recente com o name informado).
+    # gemini_fetch salva em <out-dir>/<name>.md (ou <out-dir>/gemini/<name>.md se out-dir for o padrão).
+    candidates = []
+    for d in (out_dir, out_dir / "gemini"):
+        if d.exists():
+            candidates += sorted(d.glob(args.name + ".*"), key=lambda p: p.stat().st_mtime, reverse=True)
+    if not candidates:
+        print("ERRO: nao achei arquivo gerado em", out_dir, "ou", out_dir / "gemini")
+        return 1
+    md = candidates[0]
+    print("== Lendo resposta em:", md)
+    text = md.read_text(encoding="utf-8", errors="ignore")
+
+    script = extract_json(text)
+    script.setdefault("style_notes", DEFAULT_STYLE_NOTES)
+    for s in script.get("sections", []):
+        limpo = strip_character_sheet_prefix(s.get("text", ""))
+        if limpo != s.get("text", ""):
+            print("SANITIZADO: secao %s tinha prefixo de ficha de personagens (removido)" % s.get("id", "?"))
+            s["text"] = limpo
+
+    # Contrato de abertura/encerramento: garante o texto humanizado mesmo que
+    # o modelo ignore as instrucoes (fonte unica: narration_contract.py).
+    script, mudancas = apply_contract(script, theme=script.get("title") or args.prompt)
+    for c in mudancas:
+        print("CONTRATO:", c)
+    problemas = validate_contract(script)
+    if problemas:
+        print("ERRO: contrato de narracao invalido:", "; ".join(problemas))
+        return 1
+
+    out = Path(args.out)
+    out.write_text(json.dumps(script, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("roteiro gravado:", out, "| secoes:", len(script.get("sections", [])))
+    for s in script.get("sections", []):
+        print("  %-4s %-22s %4d palavras" % (s.get("id", ""), s.get("label", ""), len(s.get("text", "").split())))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

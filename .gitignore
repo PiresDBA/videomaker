@@ -1,0 +1,74 @@
+# ============================================================
+# .gitignore — Videomaker (subir apenas código-fonte)
+# ============================================================
+
+# --- Ambientes virtuais e dependências ---
+.venv/
+venv/
+env/
+node_modules/
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Build / dist ---
+ui/dist/
+build/
+dist/
+*.pyc
+__pycache__/
+
+# --- Perfil do Chrome (credenciais, sessão Gemini) ---
+.chrome-gemini-profile/
+
+# --- Credenciais e configurações locais (NUNCA subir) ---
+scripts/client_secret*.json
+scripts/config.json
+scripts/daily_config.json
+scripts/pipeline_ui_settings.json
+scripts/user_settings.json
+scripts/youtube_token.json
+.env
+.env.local
+
+# --- Projetos gerados (não subir) ---
+projects/
+projects-deliveries.json*
+scheduled_videos.json*
+daily_state.json
+
+# --- Banco de mídia local (não subir) ---
+"banco de imagens"/
+"banco de musicas"/
+
+# --- Binários e executáveis (não subir) ---
+ffmpeg/
+
+# --- Espaço de trabalho do HyperFrames (gerado) ---
+hyperframes-workspace/
+
+# --- Vídeos e imagens gerados (não subir) ---
+*.mp4
+*.jpg
+*.jpeg
+*.png
+*.wav
+*.m4a
+
+# --- Temporário ---
+*.tmp

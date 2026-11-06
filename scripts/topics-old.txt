@@ -1,0 +1,117 @@
+# Fila de assuntos do canal. Uma linha = um episódio (o título do YouTube sai daqui).
+# Linhas começando com # e linhas vazias são ignoradas.
+# Para acrescentar mais, basta colar novas linhas no FINAL do arquivo.
+
+# ===== 1. Aventuras engraçadas da Frida e da Luna =====
+A Frida e a Luna descobrem que o aspirador de pó é um monstro
+Luna tenta pegar o biscoito que está em cima da geladeira
+A Frida decide fazer dieta (e o petisco some do pote)
+O dia em que a Luna cavou um túnel até a casa do vizinho
+Frida contra o espelho: quem é esse cachorro bravo?
+Frida e Luna tentam abrir a geladeira sozinhas
+A Luna vira detetive: quem comeu o sanduíche?
+Frida e Luna e a noite do trovão
+O primeiro dia de chuva: as duas descobrem as poças
+Frida tenta subir no sofá alto (missão impossível)
+A Luna e o mistério da meia sumida
+Frida e Luna organizam uma festa surpresa de aniversário
+As duas contra o robô aspirador
+A visita do gato valentão: Frida e Luna dão um jeito
+Frida e Luna ficam sozinhas em casa por um dia inteiro
+O dia em que a Frida aprendeu a nadar na piscina
+Luna e a pizza voadora
+Frida e Luna criam um clube secreto de cães
+A grande fuga do banho: Frida e Luna contra a banheira
+Frida e Luna vão ao salão de beleza pet
+
+# ===== 2. Por que os cachorros fazem isso? =====
+Por que o cachorro gira antes de deitar?
+Por que cachorros inclinam a cabeça quando você fala?
+Por que o cachorro lambe o seu rosto?
+Por que cachorros cheiram o bumbum uns dos outros?
+Por que o cachorro uiva quando ouve uma sirene?
+Por que o cachorro abana o rabo? O que cada movimento significa
+Por que o cachorro enterra comida e ossos?
+Por que o cachorro come grama?
+Por que o cachorro se sacode todo quando está molhado?
+Por que o cachorro fica tão feliz quando você chega em casa?
+Por que o cachorro sonha e mexe as patinhas dormindo?
+Por que o cachorro te segue até no banheiro?
+Os superpoderes do nariz do cachorro
+O que os cachorros enxergam? As cores do mundo canino
+Quantas palavras um cachorro entende de verdade?
+Por que cachorros bocejam quando você boceja?
+Por que o cachorro faz zoomies de repente?
+Por que cachorros roubam seus chinelos e meias?
+Por que o cachorro fica te olhando fixo enquanto você come?
+Cachorros têm ciúmes? Veja o que a ciência descobriu
+
+# ===== 3. Raças =====
+Bulldog inglês: o cachorro mais preguiçoso e fofo do mundo
+Salsicha: o caçador de texugos de patinhas curtas
+Golden Retriever: por que ele é o melhor amigo do mundo
+Husky siberiano: o cachorro que conversa e faz drama
+Pug: o palhaço da família
+Border Collie: o cachorro mais inteligente do planeta
+Chihuahua: pequeno no tamanho, gigante na coragem
+Vira-lata caramelo: o herói do Brasil
+São Bernardo: o cachorro que resgata pessoas nos Alpes
+Pastor Alemão: o guardião mais leal
+Shih Tzu: o cachorrinho da realeza chinesa
+Corgi: o cachorro de patinhas curtas que conquistou a realeza britânica
+Labrador: o cachorro que ama água e comida
+Dálmata: por que ele nasce branco e ganha pintinhas?
+Poodle: o cachorro mais esperto que parece fresco
+
+# ===== 4. Histórias emocionantes e heróis reais =====
+Hachiko: o cachorro que esperou o dono por 9 anos
+Balto e Togo: os cães que salvaram uma cidade na neve
+Cães-guia: os olhos de quem não enxerga
+Cães de resgate: como eles salvam vidas em terremotos
+Bobbie: o cachorro que voltou para casa a pé por milhares de quilômetros
+O cachorro que adotou uma família de patinhos
+O filhote abandonado que encontrou um lar no Natal
+Cães terapeutas: os abraços que curam
+O cachorro herói que avisou o perigo a tempo
+Cães policiais e bombeiros: a equipe de quatro patas
+A cachorrinha que perdeu uma patinha e aprendeu a correr de novo
+Do abrigo para uma vida nova: a adoção que mudou tudo
+Cachorros que ajudam crianças a aprender a ler
+Amizade improvável: o cachorro e o gatinho que viraram melhores amigos
+O cachorro que esperava o ônibus escolar todos os dias
+
+# ===== 5. Cuidados e educação (crianças e famílias) =====
+Como escovar os dentes do seu cachorro (sem drama)
+Hora do banho: como deixar o cachorro feliz na água
+A primeira ida ao veterinário: tudo o que acontece lá
+Alimentos que cachorro nunca pode comer
+Como ensinar seu cachorro a sentar, dar a pata e ficar
+Como brincar com seu cachorro do jeito certo
+Como saber se o seu cachorro está feliz
+Passeios seguros: como levar o cachorro para passear
+Cachorros e calor: como proteger seu pet no verão
+Cachorros e frio: precisa de roupinha mesmo?
+Como receber um filhote novo em casa
+O que fazer quando o cachorro tem medo de fogos
+Como ensinar uma criança a tratar bem um cachorro
+Cachorro idoso: como cuidar do seu velhinho de patas
+Vacinas e vermífugo: por que são tão importantes?
+
+# ===== 6. Datas e temporadas =====
+O Natal da Frida e da Luna: o presente perdido
+Halloween: Frida e Luna e a casa mal-assombrada dos petiscos
+Páscoa: a caça aos ovos mais bagunçada do mundo
+Carnaval: Frida e Luna caem na folia
+Festa junina: as duas e a pipoca misteriosa
+Dia das Crianças: Frida e Luna e a festa no quintal
+Ano Novo: as resoluções da Frida e da Luna
+Dia dos Namorados: a Luna e o cachorro do vizinho
+Volta às aulas: Frida e Luna esperando a criança chegar
+Férias de verão: Frida e Luna vão à praia
+
+# ===== 7. Fantasia =====
+E se os cachorros pudessem falar por um dia?
+Frida e Luna viram super-heroínas da vizinhança
+Um dia na vida de um cachorro, do ponto de vista dele
+A escola dos cachorros: o primeiro dia de aula
+Frida e Luna encontram um mapa do tesouro no quintal

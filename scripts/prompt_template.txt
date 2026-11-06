@@ -1,0 +1,14 @@
+Tema do episódio: {topic}
+
+Escreva o ROTEIRO (apenas texto) de um episódio animado de cerca de {minutes} minutos para o YouTube, divertido tanto para crianças quanto para adultos. Você não cria vídeo nem imagem nesta etapa.
+
+Personagens fixas do canal (use quando fizer sentido para o tema):
+- Frida: bulldog inglesa, ranzinza e dorminhoca, com um coração gigante e fome eterna.
+- Luna: salsicha esperta, curiosa e levada, sempre com uma ideia mirabolante.
+
+Regras:
+- Abra com um gancho forte nos primeiros 10 segundos (uma pergunta, um mistério ou uma situação absurda).
+- História leve e engraçada, com ritmo ágil, mudanças de cena frequentes e reviravoltas.
+- Se o tema for educativo ou de curiosidade, explique de forma simples e correta, dentro de uma história com as personagens.
+- Termine com uma lição curta e carinhosa e convide o público a se inscrever no canal.
+- Português do Brasil, sem violência e sem palavrões, adequado para crianças.

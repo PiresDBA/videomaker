@@ -1,0 +1,371 @@
+# Fila de 365 assuntos do canal (1 por dia, por 1 ano).
+# - Linhas comuns saem na ordem, uma por dia. As séries estão intercaladas (comédia, curiosidades,
+#   fantasia, histórias reais, raças, convivência e sagas em partes) para o canal não ficar repetitivo.
+# - Linhas com "@MM-DD" são datas especiais: saem exatamente naquele dia (ex.: @12-25 = Natal).
+#   Se o dia passar sem rodar, elas voltam na fila quando acabarem as linhas comuns.
+# - Para acrescentar mais assuntos, cole novas linhas no FINAL. Linhas com # e linhas vazias são ignoradas.
+
+Por que o cachorro gira antes de deitar?
+E se os cachorros pudessem falar por um dia?
+Hachiko: o cachorro que esperou o dono por 9 anos
+Como ensinar seu cachorro a sentar, dar a pata e ficar
+Saga do Osso de Ouro (1/4): o mapa misterioso
+Dachshund marrom Luna tenta pegar o biscoito que está em cima da geladeira
+Por que cachorros inclinam a cabeça quando você fala?
+A Bulldogue Inglês Frida decide fazer dieta (e o petisco some do pote)
+Bulldogue Inglês Frida e Dachshund marrom Luna viram super-heroínas da vizinhança
+Balto e Togo: os cães que salvaram uma cidade na neve
+Como brincar com seu cachorro do jeito certo
+Saga do Osso de Ouro (2/4): a floresta do quintal
+O dia em que a Dachshund marrom Luna cavou um túnel até a casa do vizinho
+Por que o cachorro lambe o seu rosto?
+Golden Retriever: por que ele é o melhor amigo do mundo
+Um dia na vida de um cachorro, do ponto de vista dele
+Cães-guia: os olhos de quem não enxerga
+Como saber se o seu cachorro está feliz
+Saga do Osso de Ouro (3/4): o guardião do tesouro
+# BLOQUEADO (tema de espelho ja usado em 2 videos): Bulldogue Inglês Frida contra o espelho: quem é esse cachorro bravo?
+Por que cachorros cheiram o bumbum uns dos outros?
+Husky siberiano: o cachorro que conversa e faz drama
+Bulldogue Inglês Frida e Dachshund marrom Luna tentam abrir a geladeira sozinhas
+A escola dos cachorros: o primeiro dia de aula
+Cães de resgate: como eles encontram pessoas depois de terremotos
+Passeios seguros: como levar o cachorro para passear
+Saga do Osso de Ouro (4/4): o grande final
+Por que o cachorro uiva quando ouve uma sirene?
+Pug: o palhaço da família
+A Dachshund marrom Luna vira detetive: quem comeu o sanduíche?
+Bulldogue Inglês Frida e Dachshund marrom Luna e a noite do trovão
+Por que o cachorro abana o rabo? O que cada movimento significa
+Border Collie: o cachorro mais inteligente do planeta
+Bulldogue Inglês Frida e Dachshund marrom Luna encontram um mapa do tesouro no quintal
+Bobbie: o cachorro que voltou para casa a pé por milhares de quilômetros
+Como receber um filhote novo em casa
+Saga da Ilha dos Biscoitos Perdidos (1/4): o naufrágio da cozinha
+O primeiro dia de chuva: as duas descobrem as poças
+Por que o cachorro enterra comida e ossos?
+Chihuahua: pequeno no tamanho, gigante na coragem
+Bulldogue Inglês Frida tenta subir no sofá alto (missão impossível)
+E se os cachorros mandassem na casa?
+O cachorro que fez amizade com uma família de patinhos
+O que fazer quando o cachorro tem medo de fogos
+Saga da Ilha dos Biscoitos Perdidos (2/4): a praia de migalhas
+A Dachshund marrom Luna e o mistério da meia sumida
+Por que o cachorro come grama?
+Vira-lata caramelo: o herói do Brasil
+Bulldogue Inglês Frida e Dachshund marrom Luna organizam uma festa surpresa de aniversário
+E se a Bulldogue Inglês Frida e a Dachshund marrom Luna tivessem emprego?
+O filhote que ganhou um lar no Natal
+Como ensinar uma criança a tratar bem um cachorro
+Saga da Ilha dos Biscoitos Perdidos (3/4): o vulcão de pasta de amendoim
+Por que o cachorro se sacode todo quando está molhado?
+São Bernardo: o cachorro que resgata pessoas nos Alpes
+As duas contra o robô aspirador
+E se o mundo fosse do tamanho de um cachorro?
+Cães terapeutas: os abraços que alegram hospitais
+Como cuidar com carinho do seu velhinho de patas
+Saga da Ilha dos Biscoitos Perdidos (4/4): o banquete final
+Por que o cachorro fica tão feliz quando você chega em casa?
+Pastor Alemão: o guardião mais leal
+A visita do gato valentão: Bulldogue Inglês Frida e Dachshund marrom Luna dão um jeito
+Bulldogue Inglês Frida e Dachshund marrom Luna ficam sozinhas em casa por um dia inteiro
+Por que o cachorro sonha e mexe as patinhas dormindo?
+Shih Tzu: o cachorrinho da realeza chinesa
+Dachshund marrom Luna, a salsicha, e a confusão na barraca de cachorro-quente
+O cachorro que avisou a família a tempo (e virou herói)
+Hora do banho: como deixar o cachorro feliz na água
+Saga da Casa que Range (1/4): os barulhos da madrugada
+O dia em que a Bulldogue Inglês Frida aprendeu a nadar na piscina
+Por que o cachorro te segue até no banheiro?
+Corgi: o cachorro de patinhas curtas que conquistou a realeza britânica
+Dachshund marrom Luna e a pizza voadora
+Bulldogue Inglês Frida e Dachshund marrom Luna viajam para a Lua
+Cães policiais e bombeiros: a equipe de quatro patas
+Como escovar os dentes do seu cachorro (sem drama)
+Saga da Casa que Range (2/4): pistas no corredor
+Bulldogue Inglês Frida e Dachshund marrom Luna criam um clube secreto de cães
+Os superpoderes do nariz do cachorro
+Labrador: o cachorro que ama água e comida
+A grande fuga do banho: Bulldogue Inglês Frida e Dachshund marrom Luna contra a banheira
+Bulldogue Inglês Frida e Dachshund marrom Luna descobrem um portal dentro do armário
+A cachorrinha de três patas que adora correr
+Cachorros e calor: como deixar o seu pet confortável no verão
+Saga da Casa que Range (3/4): o suspeito número um
+O que os cachorros enxergam? As cores do mundo canino
+Dálmata: por que ele nasce branco e ganha pintinhas?
+Bulldogue Inglês Frida e Dachshund marrom Luna vão ao salão de beleza pet
+Bulldogue Inglês Frida e Dachshund marrom Luna e a máquina de fazer petiscos
+Do abrigo para uma vida nova: a adoção que mudou tudo
+Cachorros e frio: precisa de roupinha mesmo?
+Saga da Casa que Range (4/4): a verdade por trás da porta
+Segunda-feira: Bulldogue Inglês Frida e Dachshund marrom Luna não querem sair da cama
+Quantas palavras um cachorro entende de verdade?
+Poodle: o cachorro mais esperto que parece fresco
+Bulldogue Inglês Frida finge um machucado para ganhar petisco
+Por que cachorros bocejam quando você boceja?
+Yorkshire: pequenininho, mas manda em tudo
+A cidade onde só moram cachorros
+Cachorros que ajudam crianças a aprender a ler
+Como montar o cantinho perfeito do seu cachorro
+Saga da Viagem Mais Maluca do Mundo (1/4): quem trancou a mala?
+Dachshund marrom Luna descobre o que tem atrás da porta de vidro
+Por que o cachorro faz zoomies de repente?
+Maltês: o cachorrinho de algodão
+Bulldogue Inglês Frida e Dachshund marrom Luna disputam a caminha mais fofa
+Bulldogue Inglês Frida e Dachshund marrom Luna detetives: o caso do osso dourado
+Amizade improvável: o cachorro e o gatinho que viraram melhores amigos
+Dez brinquedos caseiros para o seu cachorro
+Saga da Viagem Mais Maluca do Mundo (2/4): uma parada inesperada
+O carteiro misterioso: por que ele vem todo dia?
+Por que cachorros roubam seus chinelos e meias?
+Lhasa Apso: o pequeno guardião dos monges
+Dachshund marrom Luna usa o celular do tutor e liga para a pizzaria
+O dia em que um cachorro virou prefeito
+O cachorro que esperava o ônibus escolar todos os dias
+Jogos de nariz: brincadeiras de farejar em casa
+Saga da Viagem Mais Maluca do Mundo (3/4): a pousada dos bichos
+Por que o cachorro fica te olhando fixo enquanto você come?
+Lulu da Pomerânia: a bolinha de pelo mais corajosa
+Bulldogue Inglês Frida e Dachshund marrom Luna e a bolinha que sumiu debaixo do sofá
+A Bulldogue Inglês Frida vira chef e o petisco vira um desastre
+Bulldogue Inglês Frida e Dachshund marrom Luna e o submarino de banheira
+Greyfriars Bobby: o cachorrinho fiel de Edimburgo
+Como ensinar o cachorro a não pular nas visitas
+Saga da Viagem Mais Maluca do Mundo (4/4): a chegada à praia
+Cachorros têm ciúmes? Veja o que a ciência descobriu
+Pinscher: o valente de bolso
+Dachshund marrom Luna tenta ensinar a Bulldogue Inglês Frida a correr (a Bulldogue Inglês Frida prefere rolar)
+Por que o cachorro fareja tudo na rua?
+Beagle: o nariz mais curioso do mundo
+Bulldogue Inglês Frida e Dachshund marrom Luna na selva: pequenas exploradoras
+Stubby: o cachorrinho que virou herói de uniforme
+Como ensinar o cachorro a vir quando chamado
+Saga do Campeonato Mundial de Cães (1/4): a inscrição
+As duas escondem o osso... e esquecem onde
+O dia em que Bulldogue Inglês Frida e Dachshund marrom Luna trocaram de lugar
+Por que o cachorro late para o nada à noite?
+Cocker Spaniel: as orelhas mais lindas do mundo
+Bulldogue Inglês Frida e Dachshund marrom Luna no reino dos biscoitos
+Rin Tin Tin: o cachorro que virou astro de cinema
+Como o cachorro aprende: o poder do petisco e do elogio
+Saga do Campeonato Mundial de Cães (2/4): o treino mais desastrado
+Bulldogue Inglês Frida e Dachshund marrom Luna contra a mosca invencível
+Por que o cachorro tem medo de aspirador e secador?
+Boxer: o eterno filhote que nunca para
+Dachshund marrom Luna e o grande segredo do pote de petiscos
+Bulldogue Inglês Frida e Dachshund marrom Luna astronautas na cozinha espacial
+Cães polares: os exploradores do gelo
+Como ajudar o cachorro a ficar sozinho com tranquilidade
+Saga do Campeonato Mundial de Cães (3/4): a grande rival
+Por que o cachorro escolhe uma pessoa favorita?
+Rottweiler: o gigante que é um bobão
+A mudança de casa: Bulldogue Inglês Frida e Dachshund marrom Luna e as caixas misteriosas
+Bulldogue Inglês Frida e Dachshund marrom Luna tentam ficar acordadas até a meia-noite
+Bulldogue Inglês Frida e Dachshund marrom Luna e o cachorro-robô
+Cães farejadores: os detetives dos aeroportos
+Como apresentar um cachorro novo aos outros bichinhos da casa
+Saga do Campeonato Mundial de Cães (4/4): o dia da final
+Por que o cachorro dorme em cima dos seus pés?
+Doberman: elegante, rápido e atento
+O dia em que a Dachshund marrom Luna quis ser gato
+Por que o cachorro empurra você com o focinho?
+Dogue Alemão: o gigante gentil
+Bulldogue Inglês Frida e Dachshund marrom Luna viajam no tempo e conhecem o primeiro cachorro do mundo
+Cães pastores: os maestros do rebanho
+Caça ao tesouro de petiscos: brincadeira para fazer em casa
+Saga da Escola de Heróis Peludos (1/4): a carta misteriosa
+Bulldogue Inglês Frida e a árvore que não queria soltar o graveto
+Dachshund marrom Luna e o aniversário esquecido da Bulldogue Inglês Frida
+Por que o cachorro esconde o brinquedo favorito?
+Akita: o cachorro que ficou famoso pela lealdade
+Bulldogue Inglês Frida e Dachshund marrom Luna num mundo de gigantes
+Cães salva-vidas: os nadadores que ajudam na água
+A linguagem do cachorro: o que as orelhas dizem
+Saga da Escola de Heróis Peludos (2/4): as provas do primeiro dia
+A Dachshund marrom Luna descobre o que é uma escada
+Por que o cachorro faz carinha de pidão?
+Shiba Inu: o cachorro que faz careta
+Bulldogue Inglês Frida e Dachshund marrom Luna e o gato do vizinho que não sai do muro
+A varinha mágica de petiscos
+Iditarod: a grande corrida de cães de trenó
+A linguagem do cachorro: o que o corpo diz
+Saga da Escola de Heróis Peludos (3/4): o desafio do recreio
+Por que o cachorro fica de língua para fora?
+Chow-chow: o leãozinho de língua azul
+Dia de faxina: Bulldogue Inglês Frida e Dachshund marrom Luna ajudam (ou atrapalham)
+Bulldogue Inglês Frida e Dachshund marrom Luna contra o ventilador que faz vento
+O campeonato de cães mais maluco do mundo
+Dez profissões de quatro patas
+Como cumprimentar um cachorro que você não conhece
+Saga da Escola de Heróis Peludos (4/4): a formatura
+Por que cachorro adora passear de carro?
+Samoieda: o cachorro que sempre sorri
+O dia em que acabou a energia
+Por que o cachorro cava o sofá e a cama?
+Malamute do Alasca: o puxador de trenó
+Bulldogue Inglês Frida e Dachshund marrom Luna e o circo dos animais
+Cães no Egito Antigo: amigos dos faraós
+Como passear com mais de um cachorro sem enrolar a guia
+Saga do Circo que Chegou à Cidade (1/4): a lona colorida
+Dachshund marrom Luna aprende o truque de dar a pata (do jeito dela)
+Bulldogue Inglês Frida tenta passar despercebida pela cozinha
+Por que o cachorro espirra quando está brincando?
+Terra Nova: o urso nadador
+A banda dos cachorros: Bulldogue Inglês Frida na bateria e Dachshund marrom Luna no violão
+Os cachorros escondidos em quadros famosos
+Como acostumar o cachorro a andar de carro com tranquilidade
+Saga do Circo que Chegou à Cidade (2/4): os ensaios
+O grande concurso de latidos do bairro
+Por que o cachorro suspira fundo e deita?
+Boiadeiro de Berna: o doce montanhês
+Bulldogue Inglês Frida e Dachshund marrom Luna e o presente embrulhado que não era delas
+Bulldogue Inglês Frida e Dachshund marrom Luna no restaurante dos cães
+Os cães que viraram prefeitos de verdade
+A rotina de um cachorro feliz: sono, passeio e brincadeira
+Saga do Circo que Chegou à Cidade (3/4): o número que deu errado
+Dachshund marrom Luna e o mistério do barulho no armário
+Por que cachorros se estranham e depois viram amigos?
+Basset Hound: as orelhas que varrem o chão
+Bulldogue Inglês Frida e Dachshund marrom Luna descobrem o poder do olhar de dó
+Bulldogue Inglês Frida e Dachshund marrom Luna e o castelo de almofadas
+Chaser: a cachorra que aprendeu mil palavras
+Dia de chuva: como entreter o cachorro em casa
+Saga do Circo que Chegou à Cidade (4/4): o espetáculo da noite
+Por que o cachorro corre atrás do próprio rabo?
+Greyhound: o mais rápido dos cachorros
+A caminha nova que ninguém quer usar
+Por que o cachorro late para a televisão?
+Jack Russell: o pequeno foguete
+O dia em que a Bulldogue Inglês Frida decidiu virar atleta
+A corrida de trenó no sofá
+Belka e Strelka: as cachorrinhas que voltaram do espaço
+Cachorro e criança: cinco regras de ouro para brincar juntos
+Saga da Expedição ao Fundo do Quintal (1/4): o equipamento de exploradoras
+Dachshund marrom Luna e o balão que não podia estourar
+Por que o cachorro fica de barriga para cima?
+Schnauzer: o cachorro de bigode
+O gênio da coleira: três desejos para Bulldogue Inglês Frida e Dachshund marrom Luna
+Cães de assistência: amigos que ajudam no dia a dia
+Como escolher o nome perfeito para o seu cachorro
+Saga da Expedição ao Fundo do Quintal (2/4): a trilha das formigas
+Bulldogue Inglês Frida e Dachshund marrom Luna e a bola gigante do parque
+Por que cachorro de focinho curto ronca?
+Fila Brasileiro: o guardião do Brasil
+Duas amigas, um bicho de pelúcia e uma grande briga
+Bulldogue Inglês Frida e Dachshund marrom Luna no parque de diversões dos cachorros
+Cães farejadores na floresta: como encontram quem se perdeu
+Como o cachorro escolhe a caminha (e como ajudar)
+Saga da Expedição ao Fundo do Quintal (3/4): a toca misteriosa
+Bulldogue Inglês Frida e Dachshund marrom Luna e a visita da tia com perfume forte
+Como o cachorro sabe a hora que você chega?
+Buldogue francês: o morcego fofo
+Bulldogue Inglês Frida e Dachshund marrom Luna e o primeiro cubo de gelo
+O biscoito que fala
+Cães que protegem ovelhas: guardiões do campo
+A primeira ida ao veterinário: como deixar o cachorro tranquilo
+Saga da Expedição ao Fundo do Quintal (4/4): a descoberta
+Por que o cachorro traz o brinquedo mas não solta?
+Pastor de Shetland: o mini pastor esperto
+O dia em que Bulldogue Inglês Frida e Dachshund marrom Luna foram ao cinema (da sala)
+Dachshund marrom Luna e a pipoca fujona
+Para que servem os bigodes do cachorro?
+Weimaraner: o fantasma cinza
+O dia sem nenhum "não"
+Fiéis para sempre: histórias de lealdade de cães pelo mundo
+Alimentos que cachorro não pode comer: o que todo mundo precisa saber
+Saga do Dia sem Petiscos (1/4): o pote vazio
+Bulldogue Inglês Frida e Dachshund marrom Luna e a grande maratona de sonecas
+Por que os cachorros têm tantos tamanhos e cores?
+Setter Irlandês: o cachorro de pelo de seda
+O reino dos cachorros preguiçosos
+Cachorros atletas: agility, frisbee e mergulho
+Como ensinar o cachorro a pegar e trazer a bolinha
+Saga do Dia sem Petiscos (2/4): a investigação nas casas
+Bulldogue Inglês Frida e Dachshund marrom Luna descobrem o que é fim de semana
+Do lobo ao sofá: como os cachorros viraram nossos amigos
+Papillon: o cachorro com orelhas de borboleta
+Dachshund marrom Luna e o papagaio que imita o latido
+Bulldogue Inglês Frida e Dachshund marrom Luna no mundo ao contrário
+Cães surfistas e skatistas: os atletas mais fofos do mundo
+Como ensinar o cachorro a ficar quieto sem gritar
+Saga do Dia sem Petiscos (3/4): o culpado inesperado
+Bulldogue Inglês Frida e Dachshund marrom Luna e o espirro que virou barulhão
+Por que o cachorro fica com cara de culpado depois da bagunça?
+Bichon Frisé: a nuvenzinha animada
+Bulldogue Inglês Frida e o latido que sumiu
+A ilha dos ossos: Bulldogue Inglês Frida e Dachshund marrom Luna piratas
+Os cachorros da Pré-História: os primeiros amigos do homem
+Como fazer uma festa de aniversário para o cachorro
+Saga do Dia sem Petiscos (4/4): petiscos para todos
+Por que o cachorro abana o rabo para um lado ou para o outro?
+Cavalier King Charles: o cachorrinho dos nobres
+Bulldogue Inglês Frida e Dachshund marrom Luna e o jardim secreto atrás do muro
+Dachshund marrom Luna e a minhoca que queria ser amiga
+Por que o nariz do cachorro é molhado e gelado?
+Basenji: o cachorro que não late
+Bulldogue Inglês Frida e Dachshund marrom Luna cozinham para a rainha dos cães
+Cães e idosos: a amizade que aquece o coração
+O que o seu cachorro faz enquanto você trabalha
+Saga do Castelo da Rainha das Almofadas (1/4): a convocação real
+Bulldogue Inglês Frida e Dachshund marrom Luna na viagem de carro: quem vai na janela?
+Por que o cachorro adora rolar em coisas fedidas?
+Boston Terrier: o cavalheiro de smoking
+Bulldogue Inglês Frida e Dachshund marrom Luna e o ladrão de meias do varal
+Bulldogue Inglês Frida e Dachshund marrom Luna e o telescópio das estrelas
+O cachorro que virou mascote da cidade
+Como tirar fotos incríveis do seu cachorro
+Saga do Castelo da Rainha das Almofadas (2/4): a ponte de travesseiros
+Por que o cachorro faz xixi em cada poste?
+Collie: o cachorro que virou estrela das telas
+Dachshund marrom Luna e o espantalho que parecia vivo
+A fábrica de cócegas
+Cães que trabalham nas fazendas do Brasil
+Viajando com o cachorro: o que levar na mala
+Saga do Castelo da Rainha das Almofadas (3/4): o enigma do trono
+Bulldogue Inglês Frida e Dachshund marrom Luna e a caixa de papelão misteriosa
+Um ano de cachorro vale sete anos de gente? Mito ou verdade
+Pastor Belga: o atleta incansável
+Bulldogue Inglês Frida e Dachshund marrom Luna ganham um irmãozinho filhote
+Bulldogue Inglês Frida e Dachshund marrom Luna e a montanha de bolinhas
+O vira-lata que virou campeão
+Como a gente conversa com o cachorro: palavras, gestos e carinho
+Saga do Castelo da Rainha das Almofadas (4/4): a coroa de pelúcia
+Cachorros entendem quando a gente está triste?
+Whippet: o velocista de sofá
+Bulldogue Inglês Frida e Dachshund marrom Luna e o relógio da hora do jantar
+
+# ----- datas especiais -----
+@01-01 Ano Novo: as resoluções da Bulldogue Inglês Frida e da Dachshund marrom Luna
+@01-06 Dia de Reis: Bulldogue Inglês Frida e Dachshund marrom Luna seguem a estrela
+@01-21 Dia do Abraço: o abraço mais difícil da Bulldogue Inglês Frida
+@02-06 Carnaval: Bulldogue Inglês Frida e Dachshund marrom Luna caem na folia
+@02-09 Carnaval: o bloco dos cachorros
+@03-22 Dia da Água: Dachshund marrom Luna e a torneira que pinga
+@03-28 Páscoa: a caça aos ovos mais bagunçada do mundo
+@04-01 Dia da Mentira: a pegadinha da Dachshund marrom Luna
+@04-18 Dia do Livro Infantil: Bulldogue Inglês Frida e Dachshund marrom Luna e a biblioteca encantada
+@04-22 Dia da Terra: Bulldogue Inglês Frida e Dachshund marrom Luna plantam uma árvore
+@04-28 Dia do Cão-Guia: a história de um herói de coleira
+@05-01 Dia do Trabalho: o primeiro emprego da Bulldogue Inglês Frida e da Dachshund marrom Luna
+@05-09 Dia das Mães: Bulldogue Inglês Frida e Dachshund marrom Luna e o presente para a mamãe
+@05-25 Dia da Adoção: a família que escolheu a Bulldogue Inglês Frida e a Dachshund marrom Luna
+@06-05 Dia do Meio Ambiente: Bulldogue Inglês Frida e Dachshund marrom Luna e o quintal sem lixo
+@06-12 Dia dos Namorados: a Dachshund marrom Luna e o cachorro do vizinho
+@06-24 Festa junina: as duas e a pipoca misteriosa
+@07-02 Dia do Bombeiro: Bulldogue Inglês Frida e Dachshund marrom Luna visitam o quartel
+@07-20 Dia do Amigo: Bulldogue Inglês Frida e Dachshund marrom Luna, amigas para sempre
+@08-08 Dia dos Pais: Bulldogue Inglês Frida e Dachshund marrom Luna e o presente do papai
+@08-13 Sexta-feira 13: Bulldogue Inglês Frida e Dachshund marrom Luna e o azar que não existe
+@08-22 Dia do Folclore: Bulldogue Inglês Frida e Dachshund marrom Luna e as lendas do quintal
+@08-26 Dia Internacional do Cachorro: a festa de todos os cães
+@09-07 Independência: Bulldogue Inglês Frida e Dachshund marrom Luna no desfile da vizinhança
+@09-09 Dia do Veterinário: Bulldogue Inglês Frida e Dachshund marrom Luna e o doutor mais querido
+@09-21 Dia da Árvore: a árvore que abrigava todo mundo
+@10-04 Dia dos Animais: a festa de todos os bichinhos
+@10-12 Dia das Crianças: Bulldogue Inglês Frida e Dachshund marrom Luna e a festa no quintal
+@10-15 Dia do Professor: Bulldogue Inglês Frida e Dachshund marrom Luna e a aula mais divertida
+@10-31 Halloween: Bulldogue Inglês Frida e Dachshund marrom Luna e a casa mal-assombrada dos petiscos
+@11-13 Dia da Gentileza: Bulldogue Inglês Frida e Dachshund marrom Luna e o gesto mais bonito do bairro
+@12-24 A véspera de Natal da Bulldogue Inglês Frida e da Dachshund marrom Luna
+@12-25 O Natal da Bulldogue Inglês Frida e da Dachshund marrom Luna: o presente perdido
+@12-31 Réveillon: a coragem da Dachshund marrom Luna na noite dos fogos
