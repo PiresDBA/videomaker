@@ -23,6 +23,13 @@ INTRO_PREFIX = (
 )
 INTRO_LABEL = "Apresentação do Canal"
 
+# Nova secao de introducao (hook) que vem ANTES da saudacao
+HOOK_PREFIX = (
+    "E se "
+)
+HOOK_LABEL = "Introdução do Vídeo"
+HOOK_ID = "s_intro"
+
 OUTRO_TEXT = (
     "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, "
     "fique com Deus e até a nossa próxima aventura, tchau tchau!!"
@@ -37,6 +44,7 @@ _BAD_OPEN_RE = re.compile(
     r"|oi,?\s*(?:fam[íi]lia|pessoal|galera))",
     re.I,
 )
+_HOOK_RE = re.compile(r"^\s*e\s*se\s+[^\?]+\?", re.I)
 _LAUGH_RE = re.compile(r"(?i)\b(?:ha[\s\-!]*){2,}[!\.,]?")
 _OUTRO_HINTS = (
     "obrigad",
@@ -84,6 +92,27 @@ def build_intro(theme):
     return _strip_laugh(INTRO_PREFIX + t + suffix)
 
 
+def build_hook(theme):
+    """Frase de introducao (hook) que vem ANTES da saudacao.
+
+    Usada como fallback se o Gemini nao gerar a secao s_intro.
+    O ideal eh que o Gemini crie um gancho unico baseado no assunto.
+    """
+    t = clean_theme(theme)
+    if not t:
+        t = "uma aventura nova com a Frida e a Luna"
+    t = t.rstrip(".!?")
+    return "E se " + t + "? Ja imaginou como sera?"
+
+    
+    t = clean_theme(theme)
+    if not t:
+        t = "uma aventura nova com a Frida e a Luna"
+    # Remove pontuação final se houver, pois já adicionamos interrogação
+    t = t.rstrip(".!?")
+    return "E se " + t + "? Já imaginou como será?"
+
+
 def _looks_like_outro(text, label):
     low = _fold((label or "") + " " + (text or ""))
     return any(h in low for h in _OUTRO_HINTS)
@@ -116,14 +145,31 @@ def apply_contract(script, theme=None):
         return script, ["script sem secoes"]
 
     assunto = theme or script.get("title") or script.get("theme") or ""
+    hook = build_hook(assunto)
     intro = build_intro(assunto)
 
     if len(sections) < 2:
         script["sections"] = sections
         return script, ["script com menos de 2 secoes; contrato nao aplicado"]
 
+    # ---------- secao de introducao (s_intro) ----------
+    # Adiciona NO INICIO, antes de tudo
+    hook_section = {
+        "id": HOOK_ID,
+        "label": HOOK_LABEL,
+        "text": hook,
+        "delivery_cues": {
+            "pace": "brisk",
+            "energy": "curioso e empolgado",
+            "emphasis_words": [],
+            "pause_after_seconds": 0.8,
+        },
+    }
+    sections.insert(0, hook_section)
+    changes.append("secao de introducao adicionada (s_intro)")
+
     # ---------- abertura (s0) ----------
-    first = sections[0]
+    first = sections[1]  # s_intro esta na posicao 0, s0 na posicao 1
     used = {s.get("id") for s in sections if s is not first}
     if first.get("id") != "s0":
         first["id"] = "s0"
@@ -137,7 +183,7 @@ def apply_contract(script, theme=None):
     last_idx = len(sections) - 1
     outro_idx = None
     for i, s in enumerate(sections):
-        if i == 0:
+        if i <= 1:  # pula s_intro (0) e s0 (1)
             continue
         if s.get("id") == OUTRO_ID or _fold(s.get("label", "")).find("agradec") >= 0:
             outro_idx = i
@@ -184,16 +230,30 @@ def validate_contract(script):
     if not sections:
         return ["script sem secoes"]
 
+    # ---------- validacao da secao de introducao (s_intro) ----------
     first = sections[0]
-    if first.get("id") != "s0":
-        issues.append("a primeira secao deve ter id 's0'")
-    intro_text = first.get("text", "")
-    if not _INTRO_RE.match(intro_text):
-        issues.append("s0 nao comeca com 'Oi, amiguinho! Tudo bem com você...'")
-    if _BAD_OPEN_RE.match(intro_text):
-        issues.append("s0 ainda comeca com cumprimento antigo ('Olá, família!')")
-    if "hahaha" in _fold(intro_text):
-        issues.append("s0 nao pode ter risada escrita")
+    if first.get("id") != HOOK_ID:
+        issues.append("a primeira secao deve ter id '%s'" % HOOK_ID)
+    hook_text = first.get("text", "").strip()
+    if not hook_text:
+        issues.append("s_intro nao pode ficar vazia")
+    elif len(hook_text.split()) < 3:
+        issues.append("s_intro precisa ter pelo menos 3 palavras (gancho muito curto)")
+
+    # ---------- validacao da abertura (s0) ----------
+    if len(sections) < 2:
+        issues.append("script precisa ter pelo menos s_intro e s0")
+    else:
+        s0 = sections[1]
+        if s0.get("id") != "s0":
+            issues.append("a segunda secao deve ter id 's0'")
+        intro_text = s0.get("text", "")
+        if not _INTRO_RE.match(intro_text):
+            issues.append("s0 nao comeca com 'Olá amiguinhos e amiguinhas!'")
+        if _BAD_OPEN_RE.match(intro_text):
+            issues.append("s0 ainda comeca com cumprimento antigo ('Olá, família!')")
+        if "hahaha" in _fold(intro_text):
+            issues.append("s0 nao pode ter risada escrita")
 
     last = sections[-1]
     if last.get("id") != OUTRO_ID:

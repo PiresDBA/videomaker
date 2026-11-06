@@ -35,6 +35,10 @@ SYSTEM = (
     "com exatamente esta estrutura:\n"
     '{"title": "Titulo curto e chamativo",\n'
     ' "sections": [\n'
+    '  {"id": "s_intro", "label": "Introdução do Vídeo",\n'
+   '   "text": "<gancho de entrada inteligente, criado com base no assunto. Deve despertar curiosidade nos primeiros segundos, fazer uma pergunta intrigante ou criar uma situacao inesperada relacionada ao tema. Exemplo: se o tema for escola de cachorros, algo como: E se um cachorro pudesse ir para a escola? Ja imaginou como seria?. Nao use sempre a mesma frase - crie algo unico para cada topico.>."',
+    '   "delivery_cues": {"pace": "brisk", "energy": "curioso e empolgado",\n'
+    '                     "emphasis_words": [], "pause_after_seconds": 0.8}},\n'
     '  {"id": "s0", "label": "Apresentação do Canal",\n'
     '   "text": "Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>. <uma frase curta e empolgada sobre o que vem por ai>.",\n'
     '   "delivery_cues": {"pace": "conversational", "energy": "alegre e acolhedor",\n'
@@ -50,14 +54,15 @@ SYSTEM = (
     '                     "pause_after_seconds": 0.8}}\n'
     ' ]}\n\n'
     "Regras obrigatorias de abertura e encerramento (contrato do canal):\n"
-    "- A PRIMEIRA secao e SEMPRE a s0, label 'Apresentação do Canal', e o text\n"
-"  comeca EXATAMENTE assim: \"Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>.\"\n"
-"- E PROIBIDO comecar com \"Olá, família!\", \"Olá, amiguinhos!\" ou qualquer\n"
+    "- A PRIMEIRA secao e SEMPRE a s_intro, label 'Introdução do Vídeo'. Crie um gancho inteligente e unico baseado no assunto do video, despertando curiosidade nos primeiros segundos. Nao use sempre a mesma frase.\n"
+    "- A SEGUNDA secao e SEMPRE a s0, label 'Apresentação do Canal', e o text\n"
+    "  comeca EXATAMENTE assim: \"Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>.\"\n"
+    "- E PROIBIDO comecar com \"Olá, família!\", \"Olá, amiguinhos!\" ou qualquer\n"
     "  outro cumprimento generico. Use o cumprimento humanizado acima.\n"
     "- A ULTIMA secao e SEMPRE a s_outro, label 'Agradecimento'. Escreva um\n"
     "  fechamento carinhoso curto; o texto humanizado final e aplicado\n"
     "  automaticamente pelo contrato do canal (nao precisa copiar palavra por palavra).\n"
-    "- Nao escreva risadas (Hahaha!) na s0 nem na s_outro.\n\n"
+    "- Nao escreva risadas (Hahaha!) na s_intro, s0 nem na s_outro.\n\n"
     "Regras gerais:\n"
     "- Gere de 8 a 14 secoes de HISTORIA (s0, s1, s2, ...), MAIS a s_outro final.\n"
     "- **Cada secao de historia deve ter de 55 a 80 palavras** (a s0, de 25 a 45).\n"
