@@ -230,8 +230,30 @@ Conteúdo infantil (feito para crianças).
 **Arquivos alterados:** `scripts/youtube_upload.py` (parâmetros de idioma, defaults automáticos, busca de thumbnail),
 `scripts/pipeline.py` (`phase_youtube` e `publish_to_youtube` — delegam para o `youtube_upload.py` que cuida dos defaults).
 
+---
+
+### 1.10.5. Nova seção de introdução (s_intro) — saudação com gancho
+
+A partir desta versão, o roteiro inclui uma **nova seção s_intro** que vem **antes** da saudação s0. Seu objetivo é despertar curiosidade nos primeiros segundos do vídeo.
+
+| Campo | Valor |
+|-------|-------|
+| id | `s_intro` |
+| label | `Introdução do Vídeo` |
+| texto | Gerado pelo Gemini com base no assunto. Exemplo: "E se um cachorro pudesse ir para a escola? Já imaginou como será?" |
+| delivery_cues | pace: brisk, energy: curioso e empolgado |
+
+**Regras do contrato:**
+- A primeira seção é SEMPRE a `s_intro`
+- A segunda seção é SEMPRE a `s0` (saudação "Olá amiguinhos e amiguinhas!")
+- A última seção é SEMPRE a `s_outro` (agradecimento)
+
+**Arquivos alterados:**
+- `scripts/generate_script_from_prompt.py` — template SYSTEM atualizado para instruir o Gemini a criar ganchos inteligentes
+- `scripts/narration_contract.py` — função `apply_contract()` agora insere `s_intro` no início das seções; `build_hook()` gera fallback se o Gemini não criar; `validate_contract()` valida a ordem s_intro → s0 → ... → s_outro
 
 ---
+
 
 ## 2. Inventário dos projetos
 
@@ -250,7 +272,7 @@ Conteúdo infantil (feito para crianças).
 
 ```mermaid
 flowchart TD
-    P[Prompt do usuário] --> S1[1. script<br/>generate_script_from_prompt.py<br/>print: == FASE script: iniciando]
+    P[Prompt do usuário] --> S1[1. script<br/>generate_script_from_prompt.py<br/>print: == FASE script: iniciando<br/>s_intro → s0 → s1... → s_outro]
     S1 --> A1[(artifacts/script.json)]
     A1 --> S2[2. scenes<br/>generate_scenes_and_prompts.py<br/>print: == FASE scenes: iniciando]
     S2 --> A2[(scenes.json + image_prompts.json)]
