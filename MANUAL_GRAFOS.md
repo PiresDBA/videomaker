@@ -2505,8 +2505,25 @@ python scripts/flow_fetch.py --login
 
 **Argumentos:** `--kind`, `--prompt`, `--name`, `--prompts-file`, `--only`,
 `--project`, `--project-dir`, `--root`, `--out-dir`, `--cdp-url`, `--wait`,
-`--retries`, `--ref-image`, `--pause`, `--check`, `--login`, `--profile`,
-`--no-launch`.
+`--retries`, `--ref-image`/`--force-ref`, `--characters`, `--aspect`, `--pause`,
+`--check`, `--login`, `--setup`, `--skip-confirm`, `--profile`, `--no-launch`.
+
+**Personagens padrão (Frida e Luna):** todo prompt de imagem recebe
+automaticamente o bloco `REFERENCIA DE PERSONAGENS (OBRIGATORIA)` apontando para
+os personagens **Frida** e **Luna** já criados dentro do Flow. A referência por
+arquivo é opcional: `--ref-image <arquivo>` (alias `--force-ref`) anexa uma
+imagem somente quando o usuário quiser forçar a referência. O padrão (sem
+`--ref-image`) **não anexa arquivo** — usa os personagens criados no Flow. Para
+customizar/desativar os nomes, use `--characters "Nome1 e Nome2"` (vazio
+desativa).
+
+**Seleção de modo Imagem (obrigatória):** antes de enviar qualquer prompt, o
+`flow_fetch.py` abre o painel pelo `Gatilho de configurações` (ícone ao lado de
+"Nano Banana ... x1" na barra de prompt), seleciona o toggle **Imagem** (nunca
+**Vídeo**), define **16:9** (`--aspect`) e **x1**. Se não conseguir confirmar o
+modo Imagem, o envio é abortado. O prompt é preenchido com `fill()` no
+`ProseMirror` (digitação por teclado não funcionava) e a imagem gerada é
+capturada da rede (`flow-content.google`) e salva em disco.
 
 **Salvamento duplo:** cada imagem gerada é salva em
 `projects/<slug>/assets/images/gemini/scenes/` **e** copiada para
@@ -2525,7 +2542,7 @@ sobre stdio, robusto e resistente a falhas.
 
 | Ferramenta | Descrição |
 |-----------|-----------|
-| `flow_generate_image` | Gera imagem estática via Google Flow |
+| `flow_generate_image` | Gera imagem estática via Google Flow (parâmetros `ref_image` opcional e `characters`, padrão `Frida e Luna`) |
 | `flow_generate_video` | Gera vídeo via Google Flow |
 | `flow_generate_audio` | Gera áudio/voz via Google Flow |
 | `flow_check` | Testa conexão CDP + login no Flow |

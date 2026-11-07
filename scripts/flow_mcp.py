@@ -76,6 +76,7 @@ async def _run_flow_fetch(
     wait_s: int = DEFAULT_TIMEOUT_S,
     ref_image: Optional[str] = None,
     retries: int = MAX_RETRIES,
+    characters: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Executa o flow_fetch.py como subprocesso com retry e backoff."""
     import subprocess
@@ -89,11 +90,14 @@ async def _run_flow_fetch(
         "--wait", str(wait_s),
         "--retries", str(retries),
         "--cdp-url", DEFAULT_CDP,
+        "--skip-confirm",
     ]
     if project_dir:
         args += ["--project-dir", project_dir]
     if ref_image:
         args += ["--ref-image", ref_image]
+    if characters is not None:
+        args += ["--characters", characters]
 
     last_error = ""
     for attempt in range(retries + 1):
@@ -181,10 +185,12 @@ class MCPServer:
         project_dir = args.get("project_dir")
         wait_s = int(args.get("wait_s", DEFAULT_TIMEOUT_S))
         ref_image = args.get("ref_image")
+        characters = args.get("characters")
         retries = int(args.get("retries", MAX_RETRIES))
 
         _log("info", "flow_generate_image", name=name, wait_s=wait_s, project_dir=project_dir)
-        return await _run_flow_fetch("image", prompt, name, project_dir, wait_s, ref_image, retries)
+        return await _run_flow_fetch("image", prompt, name, project_dir, wait_s, ref_image,
+                                     retries, characters=characters)
 
     async def _tool_generate_video(self, args: Dict[str, Any]) -> Dict[str, Any]:
         prompt = _validate_prompt(args.get("prompt"))
@@ -266,7 +272,8 @@ class MCPServer:
                                     "name": {"type": "string", "description": "Nome do arquivo de saída"},
                                     "project_dir": {"type": "string", "description": "Diretório do projeto"},
                                     "wait_s": {"type": "integer", "description": "Tempo de espera em segundos"},
-                                    "ref_image": {"type": "string", "description": "Imagem de referência"},
+                                    "ref_image": {"type": "string", "description": "Imagem de referência (força o anexo)"},
+                                    "characters": {"type": "string", "description": "Personagens já criados no Flow usados como referência (padrão: Frida e Luna)"},
                                     "retries": {"type": "integer", "description": "Número de tentativas"},
                                 },
                                 "required": ["prompt"],

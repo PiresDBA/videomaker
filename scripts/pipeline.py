@@ -876,7 +876,8 @@ def phase_images(args, p: Project):
                     "--project-dir", str(p.dir),
                     "--out-dir", str(out_dir),
                     "--wait", str(args.wait),
-                    "--pause", str(args.pause)]
+                    "--pause", str(args.pause),
+                    "--skip-confirm"]
         r = subprocess.run(cmd_flow)
         jpg = out_dir / (nome + ".jpg")
         size = jpg.stat().st_size if jpg.exists() else 0

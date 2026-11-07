@@ -46,6 +46,8 @@ scripts/daily_config.json
 scripts/pipeline_ui_settings.json
 scripts/user_settings.json
 scripts/youtube_token.json
+# Estado local do setup do Google Flow (URL do projeto/lições por máquina)
+.flow_learned_state.json
 .env
 .env.local
 

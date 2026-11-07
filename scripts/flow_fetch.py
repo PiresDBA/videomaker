@@ -48,6 +48,26 @@ IMAGE_ONLY_PREFIX = (
     "de quadros ou storyboard animado. Retorne apenas uma imagem.\n\n"
 )
 
+# Personagens padrão já criados dentro do Flow. Todo prompt de imagem usa esta
+# referência; anexar arquivo só quando o usuário pedir (--ref-image / --force-ref).
+DEFAULT_CHARACTERS = "Frida e Luna"
+CHARACTER_REF_MARKER = "REFERENCIA DE PERSONAGENS (OBRIGATORIA)"
+CHARACTER_REF_TEMPLATE = (
+    CHARACTER_REF_MARKER + ": use como base os personagens ja criados neste Google "
+    "Flow chamados {names}. Mantenha exatamente a mesma aparencia dos dois "
+    "personagens (Frida: buldogue inglesa amarelo-fawn, tranquila; Luna: salsicha "
+    "marrom-chocolate, pelo curto e liso, focinho com pelinhos brancos) em todas "
+    "as imagens. Nao altere raca, cor, tamanho, idade nem tracos dos personagens.\n\n"
+)
+
+
+def _enforce_characters(prompt: str, characters: str = DEFAULT_CHARACTERS) -> str:
+    """Garante no prompt a referência aos personagens Frida e Luna criados no Flow."""
+    out = prompt or ""
+    if not characters or CHARACTER_REF_MARKER in out:
+        return out
+    return CHARACTER_REF_TEMPLATE.format(names=characters) + out
+
 VIDEO_REQUEST_PATTERNS = (
     (r"\b(?:crie|criar|gere|gerar|fa[çc]a|fazer|produza|produzir)\s+(?:um|uma)\s+v[íi]deo(?:\s+(?:animado|curto|em movimento))?\b",
      "crie uma imagem estatica"),
@@ -72,7 +92,7 @@ def _enforce_image_only(prompt: str) -> str:
 
 DEFAULT_CDP = os.environ.get("GEMINI_CDP_URL", "http://127.0.0.1:18800")
 EDITORS = ['div[role="textbox"].ProseMirror', '[role="textbox"]', 'div[contenteditable="true"]']
-IMG_DL_LABELS = ["Baixar imagem no tamanho original", "Download original image"]
+IMG_DL_LABELS = ["Baixar imagem no tamanho original", "Download original image", "Baixar mídia", "Fazer o download", "Download media", "Baixar", "Download", "Download image", "Baixar imagem"]
 SEND_HINTS = ["Enviar", "Send"]
 STOP_HINTS = ["Parar", "Stop"]
 RESPONSE_SEL = "message-content, .model-response-text"
@@ -226,8 +246,20 @@ async def get_page(ctx):
     return page
 
 
+async def _flow_target_url() -> str:
+    """URL do Flow a usar: a página do projeto salva no setup, se houver."""
+    try:
+        state = _load_flow_state()
+        if state.get("ready") and state.get("url", "").startswith("https://flow.google.com"):
+            return state["url"]
+    except Exception:
+        pass
+    return URLS["default"]
+
+
 async def open_fresh(page, kind: str):
-    await page.goto(URLS.get(kind, URLS["default"]), wait_until="domcontentloaded", timeout=45000)
+    url = await _flow_target_url() if kind == "image" else URLS.get(kind, URLS["default"])
+    await page.goto(url, wait_until="domcontentloaded", timeout=45000)
     try:
         await page.wait_for_load_state("networkidle", timeout=20000)
     except Exception:
@@ -235,6 +267,9 @@ async def open_fresh(page, kind: str):
     await page.wait_for_timeout(1200)
     if await needs_login(page):
         raise LoginRequired("Sessão do Google Flow não está logada. Rode uma vez: python flow_fetch.py --login")
+    # Fecha pop-ups de propaganda/permissão e força modo Imagem (nunca vídeo)
+    await dismiss_ads_and_permissions(page)
+    await select_image_mode(page)
 
 
 async def editor(page):
@@ -258,20 +293,152 @@ async def _dismiss_overlays(page):
         pass
 
 
-async def submit_flow_prompt(page, prompt: str, clear: bool = True) -> bool:
-    """Envia o prompt no campo de texto do Google Flow."""
+async def dismiss_ads_and_permissions(page) -> None:
+    """Fecha pop-ups de propaganda, aceita permissões e libera a tela do Flow."""
+    try:
+        # 1) Botão "Try it now!" / "Experimente agora" (primeira tela)
+        try_it_btn = page.locator(
+            'button:has-text("Try it now!"), button:has-text("Experimente agora"), '
+            '[aria-label*="Try it now" i], [aria-label*="Experimente agora" i]'
+        ).first
+        if await try_it_btn.count() > 0 and await try_it_btn.is_visible():
+            await try_it_btn.click()
+            await page.wait_for_timeout(2000)
+            print("  'Try it now!' clicado - tela liberada", flush=True)
+    except Exception:
+        pass
+
+    try:
+        # 2) Outros botões de aceitar/fechar permissões
+        for hint in ["Aceitar", "Concordar", "OK", "Fechar", "Permitir", "Allow", "Accept", "Sim", "Continue"]:
+            btn = page.locator(f'button:has-text("{hint}"), [aria-label*="{hint}" i]').first
+            if await btn.count() > 0 and await btn.is_visible():
+                try:
+                    await btn.click()
+                    await page.wait_for_timeout(800)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+
+async def _toggle_checked(toggle) -> bool:
+    try:
+        return await toggle.evaluate(
+            "e => e.classList.contains('mat-button-toggle-checked') || "
+            "((e.querySelector('button')||{}).getAttribute && "
+            "e.querySelector('button').getAttribute('aria-checked') === 'true')"
+        )
+    except Exception:
+        return False
+
+
+async def select_image_mode(page, aspect: str = "16:9") -> bool:
+    """Seleciona 'Imagem' no painel de configurações do Google Flow.
+
+    O painel abre pelo ícone (Gatilho de configurações) ao lado de
+    "Nano Banana ... x1" na barra de prompt. NUNCA deixar em Vídeo.
+    """
+    try:
+        toggle = page.locator('mat-button-toggle:has-text("Imagem")').first
+        if await toggle.count() == 0:
+            trig = page.locator(
+                'button[aria-label="Gatilho de configurações"], button.settings-trigger-button'
+            ).first
+            if await trig.count() == 0:
+                print("  AVISO: painel de configurações não encontrado; abortando para não gerar vídeo", flush=True)
+                return False
+            try:
+                await trig.click(timeout=5000)
+            except Exception:
+                await trig.evaluate("(el) => el.click()")
+            await page.wait_for_timeout(900)
+            toggle = page.locator('mat-button-toggle:has-text("Imagem")').first
+
+        if await toggle.count() == 0:
+            print("  AVISO: opção 'Imagem' não apareceu no painel; abortando para não gerar vídeo", flush=True)
+            return False
+
+        if not await _toggle_checked(toggle):
+            btn = toggle.locator("button").first
+            try:
+                if await btn.count():
+                    await btn.click(timeout=5000)
+                else:
+                    await toggle.click(timeout=5000)
+            except Exception:
+                await toggle.evaluate("(el) => el.click()")
+            await page.wait_for_timeout(700)
+
+        if not await _toggle_checked(toggle):
+            print("  AVISO: não foi possível confirmar o modo Imagem; abortando para não gerar vídeo", flush=True)
+            return False
+
+        if aspect:
+            asp = page.locator(f'mat-button-toggle:has-text("{aspect}")').first
+            if await asp.count() and not await _toggle_checked(asp):
+                try:
+                    await asp.locator("button").first.click(timeout=4000)
+                except Exception:
+                    try:
+                        await asp.evaluate("(el) => el.click()")
+                    except Exception:
+                        pass
+                await page.wait_for_timeout(300)
+
+        try:
+            await page.keyboard.press("Escape")
+        except Exception:
+            pass
+        await page.wait_for_timeout(300)
+        print(f"  modo Imagem selecionado (x1, {aspect or 'aspecto atual'}) (nunca vídeo)", flush=True)
+        return True
+    except Exception as e:
+        print(f"  AVISO: falha ao selecionar modo Imagem ({str(e)[:80]})", flush=True)
+        return False
+
+
+async def submit_flow_prompt(page, prompt: str, clear: bool = True,
+                             aspect: str = "16:9") -> dict:
+    """Envia o prompt no campo de texto do Google Flow.
+
+    Retorna dict com {ok: bool, error: str|None}.
+    Se não conseguir selecionar modo Imagem, retorna ok=False para evitar gerar vídeo.
+    """
+    result = {"ok": False, "error": None}
     await _dismiss_overlays(page)
     ed = await editor(page)
     await ed.click()
-    await page.wait_for_timeout(400)
-    if clear:
-        await page.keyboard.press("Control+a")
-        await page.keyboard.press("Delete")
+    await page.wait_for_timeout(300)
+    # fill() funciona em contenteditable (ProseMirror) e garante o texto visível
+    try:
+        await ed.fill(prompt)
+    except Exception:
+        if clear:
+            await page.keyboard.press("Control+a")
+            await page.keyboard.press("Delete")
         await page.keyboard.insert_text(prompt)
+    await page.wait_for_timeout(400)
     typed = (await ed.inner_text()).strip()
     if len(typed) < min(20, len(prompt)):
         await ed.click()
+        await page.keyboard.press("Control+a")
+        await page.keyboard.press("Delete")
         await page.keyboard.insert_text(prompt)
+        await page.wait_for_timeout(300)
+        typed = (await ed.inner_text()).strip()
+    if len(typed) < 5:
+        result["error"] = "campo de prompt vazio após digitação"
+        print(f"  ⚠ {result['error']}", flush=True)
+        return result
+    # Garantir modo Imagem (NUNCA vídeo) antes de selecionar quantidade
+    image_ok = await select_image_mode(page, aspect)
+    if not image_ok:
+        result["error"] = "não foi possível selecionar modo Imagem - abortando para evitar gerar vídeo"
+        print(f"  ⚠ {result['error']}", flush=True)
+        return result
+    # Selecionar x1 (gerar apenas 1 imagem) antes de enviar
+    await select_x1(page)
     # Clicar no botão "Iniciar geração" (arrow_forward)
     for attempt in range(3):
         await page.wait_for_timeout(1500)
@@ -283,7 +450,8 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True) -> bool:
                 await page.wait_for_timeout(1500)
                 if len((await ed.inner_text()).strip()) < 5:
                     print(f"  envio confirmado (tentativa {attempt + 1})", flush=True)
-                    return True
+                    result["ok"] = True
+                    return result
             except Exception:
                 pass
         # Fallback: Enter
@@ -291,12 +459,70 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True) -> bool:
         await page.wait_for_timeout(1500)
         if len((await ed.inner_text()).strip()) < 5:
             print(f"  envio confirmado (tentativa {attempt + 1})", flush=True)
-            return True
-    return False
+            result["ok"] = True
+            return result
+    result["error"] = "não foi possível enviar o prompt"
+    return result
+
+
+async def select_x1(page) -> bool:
+    """Seleciona 'x1' (gerar apenas 1 imagem) no painel de configurações."""
+    trig = page.locator(
+        'button[aria-label="Gatilho de configurações"], button.settings-trigger-button'
+    ).first
+    try:
+        if await trig.count():
+            txt = (await trig.inner_text()).lower()
+            if "x1" in txt:
+                print("  x1 já selecionado (1 imagem)", flush=True)
+                return True
+    except Exception:
+        pass
+    try:
+        if not await trig.count():
+            return False
+        try:
+            await trig.click(timeout=5000)
+        except Exception:
+            await trig.evaluate("(el) => el.click()")
+        await page.wait_for_timeout(800)
+        toggle = page.locator('mat-button-toggle:has-text("x1")').first
+        if await toggle.count() == 0:
+            await page.keyboard.press("Escape")
+            return False
+        if not await _toggle_checked(toggle):
+            try:
+                await toggle.locator("button").first.click(timeout=4000)
+            except Exception:
+                await toggle.evaluate("(el) => el.click()")
+            await page.wait_for_timeout(500)
+        await page.keyboard.press("Escape")
+        await page.wait_for_timeout(300)
+        print("  x1 selecionado (1 imagem)", flush=True)
+        return True
+    except Exception:
+        try:
+            await page.keyboard.press("Escape")
+        except Exception:
+            pass
+        return False
 
 
 async def count_dl(page) -> int:
-    return sum([await page.locator(f'[aria-label="{l}"]').count() for l in IMG_DL_LABELS])
+    """Conta botões de download visíveis (por aria-label ou ícone de download)."""
+    try:
+        count = 0
+        # Por aria-label
+        for label in IMG_DL_LABELS:
+            count += await page.locator(f'[aria-label="{label}"]').count()
+        # Por ícone de download (mat-icon com "download" ou "file_download")
+        try:
+            count += await page.locator('button:has(mat-icon:has-text("download")), button:has(mat-icon:has-text("file_download"))').count()
+        except Exception:
+            pass
+        return count
+    except Exception:
+        return 0
 
 
 def save_bytes(out_dir: Path, name: str, ext: str, data: bytes) -> Path:
@@ -439,10 +665,43 @@ async def attach_reference(page, ref_path) -> bool:
                 except Exception as pe:
                     print("  ref-image: colagem via clipboard falhou (%s); seguindo sem anexo" % str(pe)[:80], flush=True)
                     return False
-            async with page.expect_file_chooser(timeout=15000) as fc:
-                await btn.click()
-            chooser = await fc.value
-            await chooser.set_files(str(p))
+            # Tentar file chooser com timeout curto; se travar, cai para JS
+            try:
+                async with page.expect_file_chooser(timeout=8000) as fc:
+                    await btn.click()
+                chooser = await fc.value
+                await chooser.set_files(str(p))
+            except Exception as fc_err:
+                print("  ref-image: file chooser travou (%s), tentando via JS..." % str(fc_err)[:80], flush=True)
+                try:
+                    await btn.evaluate("(el) => el.click()")
+                    await page.wait_for_timeout(2000)
+                    # Tentar definir diretamente via input[type=file] se existir
+                    file_inputs = page.locator('input[type="file"]')
+                    if await file_inputs.count() > 0:
+                        await file_inputs.first.set_input_files(str(p))
+                    else:
+                        # Fallback: colar via clipboard
+                        ed = await editor(page)
+                        await ed.click()
+                        await page.wait_for_timeout(500)
+                        img_b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+                        await page.evaluate(
+                            """async (b64) => {
+                                const bin = atob(b64);
+                                const bytes = new Uint8Array(bin.length);
+                                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                                const blob = new Blob([bytes], { type: 'image/png' });
+                                const item = new ClipboardItem({ 'image/png': blob });
+                                await navigator.clipboard.write([item]);
+                            }""",
+                            img_b64,
+                        )
+                        await page.keyboard.press("Control+v")
+                        await page.wait_for_timeout(3500)
+                except Exception as js_err:
+                    print("  ref-image: JS fallback falhou (%s); seguindo sem anexo" % str(js_err)[:80], flush=True)
+                    return False
         await page.wait_for_timeout(3500)
         for _ in range(20):
             busy = await page.locator('[role="progressbar"]:visible,.upload-indicator:visible').count()
@@ -519,7 +778,7 @@ def _generic_prompt(prompt: str):
     return "\n".join([
         "CENA (gere exatamente esta cena): %s" % short,
         "Ilustração fofa e divertida de desenho animado das duas personagens "
-        "(cachorrinhas) da imagem de referência anexada, na situação descrita.",
+        "(cachorrinhas Frida e Luna) já criadas neste Flow, na situação descrita.",
     ] + [r for r in resto if r.startswith("Uma única")])
 
 
@@ -532,27 +791,36 @@ STRATEGY_NAMES = ("original", "suave", "simplificada", "generica")
 VIDEO_EXTS = (".mp4", ".webm", ".mov", ".m4v")
 
 
-async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None) -> dict:
+async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
+                     characters: str = DEFAULT_CHARACTERS,
+                     aspect: str = "16:9") -> dict:
     prompt = _enforce_image_only(prompt)
     await open_fresh(page, "image")
     before = await count_dl(page)
     captured = {"body": None, "ct": ""}
 
     async def on_resp(resp):
-        if captured["body"] or "googleusercontent.com" not in resp.url:
+        if captured["body"]:
+            return
+        url = resp.url or ""
+        if not ("flow-content.google" in url or "googleusercontent.com" in url
+                or "gstatic.com" in url and "flow" in url):
+            return
+        if "perlin" in url:
             return
         try:
             ct = (resp.headers or {}).get("content-type", "")
             if ct.startswith("image/") and resp.status == 200:
                 body = await resp.body()
-                if body and len(body) > 10000:
+                if body and len(body) > 20000:
                     captured.update(body=body, ct=ct)
         except Exception:
             pass
 
     page.on("response", on_resp)
     try:
-        strategies = _strategy_prompts(prompt)
+        strategies = [_enforce_image_only(_enforce_characters(sp, characters))
+                      for sp in _strategy_prompts(prompt)]
         attempt_log = []
         for attempt, sp in enumerate(strategies):
             strategy = STRATEGY_NAMES[min(attempt, len(STRATEGY_NAMES) - 1)]
@@ -567,8 +835,20 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None) -> dic
                 ok_ref = await attach_reference(page, ref_image)
                 if not ok_ref:
                     ref_image = None
-            if not await submit_flow_prompt(page, sp, clear=bool(ref_image)):
-                attempt_log.append(f"{strategy}:prompt não enviado")
+            try:
+                submit_result = await submit_flow_prompt(page, sp, clear=bool(ref_image),
+                                                         aspect=aspect)
+            except Exception as e:
+                err_msg = str(e)
+                if "Target page, context or browser has been closed" in err_msg:
+                    print(f"  ⚠ Navegador fechado inesperadamente durante envio de prompt", flush=True)
+                    return {"ok": False, "error": "navegador fechado inesperadamente", "retried": attempt > 0}
+                raise
+            if not submit_result.get("ok"):
+                attempt_log.append(f"{strategy}:{submit_result.get('error', 'prompt não enviado')}")
+                # Se o erro é sobre modo Imagem, não tentar próxima estratégia - abortar
+                if "modo Imagem" in str(submit_result.get("error", "")):
+                    return {"ok": False, "error": submit_result.get("error"), "retried": attempt > 0}
                 continue
             # espera adaptativa
             waited = 0
@@ -588,7 +868,8 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None) -> dic
                 attempt_log.append(f"{strategy}:recusa ({waited}s)")
                 continue
             if await count_dl(page) > before:
-                btn = page.locator(f'[aria-label="{IMG_DL_LABELS[0]}"], [aria-label="{IMG_DL_LABELS[1]}"]').last
+                dl_sel = ", ".join(f'[aria-label="{l}"]' for l in IMG_DL_LABELS)
+                btn = page.locator(dl_sel).last
                 try:
                     await btn.wait_for(state="visible", timeout=60000)
                     for _ in range(120):
@@ -616,12 +897,50 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None) -> dic
                 p = save_bytes(out_dir, name, MIME_EXT.get(captured["ct"], ".jpg"), captured["body"])
                 _copiar_para_banco(p)
                 return {"ok": True, "path": str(p), "bytes": p.stat().st_size, "method": "network_fallback", "strategy": strategy, "retried": attempt > 0}
+            # ESTRATÉGIA FINAL: tentar baixar qualquer elemento <img> visível na tela
+            try:
+                img_src = await page.evaluate("""() => {
+                    const imgs = Array.from(document.querySelectorAll('img'));
+                    for (const img of imgs) {
+                        if (img.offsetWidth > 0 && img.offsetHeight > 0 && img.src && img.src.startsWith('http')) {
+                            return img.src;
+                        }
+                    }
+                    return null;
+                }""")
+                if img_src:
+                    print(f"  baixando imagem direta da tela: {img_src[:80]}...", flush=True)
+                    data, ct = await fetch_url(page, img_src)
+                    if data and len(data) > 10000:
+                        ext = ".jpg"
+                        if ct and "png" in ct.lower():
+                            ext = ".png"
+                        elif ct and "webp" in ct.lower():
+                            ext = ".webp"
+                        p = save_bytes(out_dir, name, ext, data)
+                        _copiar_para_banco(p)
+                        return {"ok": True, "path": str(p), "bytes": len(data), "method": "screen_img", "strategy": strategy, "retried": attempt > 0}
+            except Exception as e:
+                print(f"  download de imagem da tela falhou ({str(e)[:80]})", flush=True)
             attempt_log.append(f"{strategy}:sem download ({waited}s)")
             if attempt < len(strategies) - 1:
                 continue
+            # Debug: capturar tela quando tudo falhar
+            try:
+                await page.screenshot(path=str(out_dir / f"_{name}_debug.png"))
+                print(f"  debug: screenshot salvo em {out_dir / f'_{name}_debug.png'}", flush=True)
+                # Listar botões visíveis
+                buttons = await page.evaluate("""() => Array.from(document.querySelectorAll('button,[role="button"]'))
+                    .filter(e => e.offsetWidth > 0 && e.offsetHeight > 0)
+                    .map(e => ({text: e.innerText.trim().slice(0,60), aria: e.getAttribute('aria-label')||''}))
+                    .slice(0, 30)""")
+                print(f"  debug: botões visíveis: {buttons}", flush=True)
+            except Exception:
+                pass
             return {"ok": False, "error": "todas as estratégias falharam: " + "; ".join(attempt_log), "retried": attempt > 0}
     finally:
         page.remove_listener("response", on_resp)
+    return {"ok": False, "error": "grab_image terminou inesperadamente sem retorno", "retried": False}
 
 
 def _copiar_para_banco(caminho_gerado: Path):
@@ -644,8 +963,9 @@ def _copiar_para_banco(caminho_gerado: Path):
 async def grab_text(page, name, prompt, out_dir, wait_s) -> dict:
     await open_fresh(page, "text")
     before = await page.locator(RESPONSE_SEL).count()
-    if not await submit_flow_prompt(page, prompt):
-        return {"ok": False, "error": "prompt não enviado"}
+    submit_result = await submit_flow_prompt(page, prompt)
+    if not submit_result.get("ok"):
+        return {"ok": False, "error": submit_result.get("error", "prompt não enviado")}
     last, stable, waited = "", 0, 0
     while waited < wait_s:
         await page.wait_for_timeout(2000)
@@ -734,8 +1054,9 @@ async def grab_media(page, name, prompt, out_dir, wait_s, kind) -> dict:
 
     page.on("response", on_resp)
     try:
-        if not await submit_flow_prompt(page, prompt):
-            return {"ok": False, "error": "prompt não enviado"}
+        submit_result = await submit_flow_prompt(page, prompt)
+        if not submit_result.get("ok"):
+            return {"ok": False, "error": submit_result.get("error", "prompt não enviado")}
         print(f"  prompt enviado; aguardando geração (até {wait_s}s)...", flush=True)
         t0 = time.time()
         first_signal = None
@@ -855,6 +1176,128 @@ async def _login_with_user_confirmation(ctx) -> int:
     return 4
 
 
+# ----------------------------------------------------------------- setup / aprendizado
+FLOW_STATE_FILE = Path(DEFAULT_ROOT) / ".flow_learned_state.json"
+
+
+def _load_flow_state() -> dict:
+    """Carrega as 'lições aprendidas' de configurações do Flow."""
+    try:
+        if FLOW_STATE_FILE.exists():
+            return json.loads(FLOW_STATE_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return {}
+
+
+def _save_flow_state(state: dict) -> None:
+    """Salva as lições aprendidas para reutilizar nas próximas execuções."""
+    try:
+        FLOW_STATE_FILE.write_text(
+            json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        print(f"  estado do Flow salvo em {FLOW_STATE_FILE}", flush=True)
+    except Exception as e:
+        print(f"  aviso: não foi salvar estado do Flow ({e})", flush=True)
+
+
+async def _prompt_user_confirm(message: str) -> bool:
+    """Pede confirmação do usuário no console."""
+    try:
+        resp = input(f"\n{message} (s/n): ").strip().lower()
+        return resp in ("s", "sim", "y", "yes", "")
+    except EOFError:
+        return False
+
+
+async def run_setup_learning(ctx) -> int:
+    """Modo de aprendizado: o usuário configura o Flow manualmente e confirma
+    quando estiver pronto. Salva as lições para reutilizar."""
+    page = await get_page(ctx)
+    await page.goto(URLS["default"], wait_until="domcontentloaded", timeout=45000)
+
+    print("\n" + "=" * 70)
+    print("MODO DE APRENDIZADO - Google Flow")
+    print("=" * 70)
+    print("1. O Flow será aberto no navegador.")
+    print("2. Navegue até a tela de criação de projeto.")
+    print("3. Clique em 'Imagem' (não Vídeo).")
+    print("4. Selecione 'x1' (gerar apenas 1 imagem).")
+    print("5. Aceite permissões e feche pop-ups de propaganda.")
+    print("6. Deixe o campo de prompt visível e pronto.")
+    print("7. Quando tudo estiver configurado, volte aqui e pressione Enter.")
+    print("=" * 70)
+
+    # Aguardar login se necessário
+    if await needs_login(page):
+        print("\nLOGIN NECESSÁRIO. Faça login no Google no Chrome.")
+        if not await _prompt_user_confirm("Pressione Enter após concluir o login?"):
+            return 4
+        await page.wait_for_timeout(3000)
+        await page.goto("https://flow.google.com", wait_until="domcontentloaded", timeout=45000)
+        await page.wait_for_timeout(2000)
+
+    # Aguardar o usuário configurar tudo
+    if not await _prompt_user_confirm("Já configurou o Flow (Imagem, x1, sem pop-ups)? Pressione Enter para continuar"):
+        return 4
+
+    # Validar se está pronto
+    try:
+        ed = await editor(page)
+        ready = await ed.count() > 0
+    except Exception:
+        ready = False
+
+    if ready:
+        print("\n✓ Campo de prompt detectado. O Flow está pronto!", flush=True)
+        _save_flow_state({
+            "ready": True,
+            "url": page.url,
+            "title": await page.title(),
+            "learned_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            "editors_found": [sel for sel in EDITORS if await page.locator(sel).count() > 0],
+        })
+        return 0
+    else:
+        print("\n✗ Campo de prompt NÃO detectado. Tente novamente.", flush=True)
+        _save_flow_state({"ready": False})
+        return 1
+
+
+async def validate_flow_ready(page) -> bool:
+    """Valida se o Flow está pronto usando as lições aprendidas."""
+    state = _load_flow_state()
+    if not state.get("ready"):
+        return False
+
+    async def _has_editor() -> bool:
+        try:
+            for sel in state.get("editors_found", EDITORS):
+                if await page.locator(sel).count() > 0:
+                    return True
+        except Exception:
+            pass
+        return False
+
+    if await _has_editor():
+        return True
+
+    # Se veio para a home (sem editor), tenta abrir a página do projeto salva.
+    target = state.get("url", "")
+    if target.startswith("https://flow.google.com") and target.rstrip("/") != page.url.rstrip("/"):
+        try:
+            await page.goto(target, wait_until="domcontentloaded", timeout=45000)
+            try:
+                await page.wait_for_load_state("networkidle", timeout=20000)
+            except Exception:
+                pass
+            await page.wait_for_timeout(2500)
+            return await _has_editor()
+        except Exception:
+            return False
+    return False
+
+
 async def run_check(ctx):
     print(f"Abas abertas: {len(ctx.pages)}")
     page = next((p for p in ctx.pages if "flow.google.com" in p.url), None)
@@ -883,10 +1326,19 @@ async def main() -> int:
     ap.add_argument("--cdp-url", default=DEFAULT_CDP)
     ap.add_argument("--wait", type=int, default=0, help="segundos de espera por item")
     ap.add_argument("--retries", type=int, default=1)
-    ap.add_argument("--ref-image", default="", help="imagem anexada como referência dos personagens (modo image)")
+    ap.add_argument("--ref-image", "--force-ref", dest="ref_image", default="",
+                    help="anexa uma imagem de referência (força a referência). Padrão: não anexa; "
+                         "usa os personagens Frida e Luna já criados no Flow")
+    ap.add_argument("--characters", default=DEFAULT_CHARACTERS,
+                    help="personagens criados no Flow usados como referência no prompt "
+                         f"(padrão: {DEFAULT_CHARACTERS!r}; passe vazio para desativar)")
+    ap.add_argument("--aspect", default="16:9",
+                    help="proporção da imagem no painel do Flow (padrão: 16:9; vazio mantém)")
     ap.add_argument("--pause", type=float, default=3.0)
     ap.add_argument("--check", action="store_true", help="só testa a conexão com o Chrome/Flow")
     ap.add_argument("--login", action="store_true", help="abre o Chrome para você logar no Google (uma única vez)")
+    ap.add_argument("--setup", action="store_true", help="modo de aprendizado: configura o Flow interativamente e salva as lições")
+    ap.add_argument("--skip-confirm", action="store_true", help="pula a confirmação do usuário antes de enviar o prompt")
     ap.add_argument("--profile", help="pasta do perfil do Chrome (padrão: <root>/.chrome-gemini-profile)")
     ap.add_argument("--no-launch", action="store_true", help="não abrir o Chrome automaticamente")
     args = ap.parse_args()
@@ -920,6 +1372,11 @@ async def main() -> int:
             await browser.close()
             return rc
 
+        if args.setup:
+            rc = await run_setup_learning(ctx)
+            await browser.close()
+            return rc
+
         project = resolve_project_dir(args)
         default_sub = {"image": "public/assets/images", "text": "artifacts/gemini",
                        "audio": "public/assets/music", "video": "public/assets/video"}[args.kind]
@@ -929,11 +1386,49 @@ async def main() -> int:
         prompts = load_prompts(args)
         wait_s = args.wait or {"image": 480, "text": 180, "audio": 600, "video": 900}[args.kind]
         print(f"flow_fetch versão {SCRIPT_VERSION}\nProjeto: {project}\nSaída:   {out_dir}\nItens:   {len(prompts)}", flush=True)
+        if args.kind == "image":
+            ref_txt = args.ref_image or "nenhuma (usa personagens do Flow)"
+            print(f"Personagens: {args.characters or 'desativado'}\nReferência forçada: {ref_txt}", flush=True)
 
         log_path = out_dir / "_flow_log.json"
         out_dir.mkdir(parents=True, exist_ok=True)
         log = json.loads(log_path.read_text(encoding="utf-8")) if log_path.exists() else {}
         page = await get_page(ctx)
+        # Garantir que estamos no Flow (navegar se necessário)
+        if "flow.google.com" not in page.url:
+            await page.goto(await _flow_target_url(), wait_until="domcontentloaded", timeout=45000)
+            await page.wait_for_timeout(2000)
+
+        # Validar se o Flow está pronto usando as lições aprendidas
+        ready = await validate_flow_ready(page)
+        if not ready:
+            print("\n" + "=" * 70)
+            print("O Google Flow ainda não foi configurado.")
+            print("Execute: python scripts/flow_fetch.py --setup")
+            print("para configurar interativamente antes de gerar imagens.")
+            print("=" * 70 + "\n")
+            await browser.close()
+            return 1
+
+        # Validar com o usuário antes de enviar o prompt (pode ser desabilitado com --skip-confirm)
+        if not getattr(args, "skip_confirm", False):
+            print("\n" + "=" * 70)
+            print("VALIDAÇÃO - Google Flow pronto para enviar prompt")
+            print("=" * 70)
+            print("Verifique se:")
+            print("  - O Flow está na tela de criação (não Vídeo)")
+            print("  - A opção 'x1' (1 imagem) está selecionada")
+            print("  - O campo de prompt está visível")
+            print("  - Não há pop-ups de propaganda bloqueando")
+            print("=" * 70)
+            if not await _prompt_user_confirm("Tudo está pronto? Posso enviar o prompt agora?"):
+                print("Operação cancelada pelo usuário.", flush=True)
+                await browser.close()
+                return 1
+            print("✓ Usuário confirmou. Enviando prompt...", flush=True)
+        else:
+            print("\n✓ --skip-confirm ativado. Enviando prompt automaticamente...", flush=True)
+
         results = {}
 
         for i, (name, prompt) in enumerate(prompts.items()):
@@ -946,7 +1441,9 @@ async def main() -> int:
                 try:
                     if args.kind == "image":
                         res = await grab_image(page, name, prompt, out_dir, wait_s,
-                                               ref_image=(args.ref_image or None))
+                                               ref_image=(args.ref_image or None),
+                                               characters=args.characters,
+                                               aspect=args.aspect)
                     elif args.kind == "text":
                         res = await grab_text(page, name, prompt, out_dir, wait_s)
                     else:
@@ -956,7 +1453,12 @@ async def main() -> int:
                     await browser.close()
                     return 4
                 except Exception as e:
-                    res = {"ok": False, "error": str(e)}
+                    err_msg = str(e)
+                    if "Target page, context or browser has been closed" in err_msg:
+                        print(f"  ⚠ Navegador fechado inesperadamente", flush=True)
+                        res = {"ok": False, "error": "navegador fechado inesperadamente"}
+                        break  # Não tenta retry se o navegador fechou
+                    res = {"ok": False, "error": err_msg}
                 if res.get("ok"):
                     break
                 print(f"  falhou: {res.get('error')}", flush=True)
