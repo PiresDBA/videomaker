@@ -2,12 +2,56 @@
 
 > Documento de consulta rápida. Guarda **onde** cada elemento visual nasce, **como** o
 > pipeline se conecta e **como** refazer/renderizar sem precisar investigar de novo.
-> Última análise: 2026-11-05.
+> Última análise: 2026-11-06.
+
+---
+
+## 0. CONTRATO — leia isto antes de qualquer coisa
+
+> **Regra de ouro: antes de escrever qualquer linha de código, leia este manual
+> inteiro (ou a seção relevante) e o `CONTRATO.md`.**
 >
-> **Novidades desta sessão:** correção de overlays duplicados (título aparecendo em cenas
-> não-intro), correção de mix de áudio sendo copiado para o banco de músicas, saudação do
-> canal atualizada ("Olá amiguinhos e amiguinhas!"), upload do YouTube com idioma pt-BR,
-> descrição automática completa e thumbnail automática.
+> Aqui está **tudo** que já foi feito, como está e por quê. Se algo está
+> documentado aqui, **já foi feito** — não refaça. Se está documentado aqui,
+> **não está quebrado** — não desfaça.
+>
+> Tudo o que o pipeline faz também está documentado **dentro do próprio
+> `scripts/pipeline.py`** (docstring do topo com todos os comandos, argumentos e
+> exemplos + docstring em cada função). Um comando mostra isso:
+>
+> ```powershell
+> python scripts/pipeline.py contract   # o contrato e o indice do manual
+> python scripts/check_manual.py        # o manual ainda esta em dia com o codigo?
+> ```
+
+**As 4 regras que economizam mais tempo e token:**
+
+1. **Leia antes de mexer.** Manual + `CONTRATO.md` + docstring do `pipeline.py`.
+2. **Branch antes de alterar** qualquer arquivo
+   (`git checkout -b feature/nome-curto`).
+3. **O manual vai no mesmo commit da mudança.** Se mudou fluxo, fase,
+   dependência, CLI ou regra → §3, §4, §30.7, §36, §37, §38 ou seção nova.
+4. **Push só depois do manual** e dos checks. Ordem fixa:
+   **branch → código → grafo/manual → checks → commit → push.**
+
+**O manual é a memória do produto. Se não está aqui, não existe.**
+
+O contrato completo, com proibições e checklist de push, está em
+**`CONTRATO.md`**. As regras de branch/grafo/push, em **§38**.
+
+### 0.1. Índice rápido
+
+| Quer... | Vá para |
+|---------|---------|
+| o grafo do pipeline (Mermaid) | §3 |
+| as dependências entre fases | §4 |
+| resolver um problema | §10 |
+| o executor diário | §11 |
+| voz / música / fallback de narração | §1.7, §1.8, §34 |
+| o padrão de descrição do YouTube | §36 |
+| a CLI do pipeline (comandos e argumentos) | §37 |
+| a regra branch → grafo → push | §38 |
+| o contrato de trabalho | §39 + `CONTRATO.md` |
 
 ---
 
@@ -322,6 +366,10 @@ Mudanças do grafo em relação à versão anterior:
 A fase `youtube` fica **fora** da lista `PHASES` de propósito: ela é opcional
 e roda por último, depois do `render`.
 
+> **Antes de mexer em qualquer fase deste grafo:** leia o contrato (§0 e §39).
+> Toda mudança neste grafo tem que ser registrada aqui **no mesmo commit**,
+> e conferida com `python scripts/check_manual.py`.
+
 ---
 
 ## 4. Grafo de dependências (invalidação em cascata)
@@ -337,6 +385,7 @@ flowchart LR
     scenes --> preprocess
     scenes --> compose
     images --> preprocess
+    music --> mix
     narration --> timeline
     timeline --> mix
     timeline --> compose
@@ -350,6 +399,7 @@ Leitura prática:
 - Mexeu no texto/roteiro → `reset --phase script` → `full` refaz o resto.
 - Mexeu nos overlays → `reset --phase scenes` ou `compose` → `full`.
 - Mexeu só no visual dos overlays → `reset --phase compose` → `full`.
+- Trocou a trilha sonora → `reset --phase music` → `full` refaz a mix e o render.
 - Quer só uma variante sem tocar no original → renderize com outro `-Slug`
   (ver §7).
 
@@ -835,7 +885,7 @@ O prompt de cada episódio é gerado automaticamente por prompt_gen.build_script
 
 ---
 
-## 16. Arquivos alterados/gerados nesta correção
+### 17.6. Arquivos alterados/gerados nesta correção
 
 `
 scripts/generate_scene_htmls.py                     chips desativados por padrão (--chips opcional)
@@ -2184,6 +2234,7 @@ alguém abre o código) e no `--help` do argparse.
 
 | Comando | O que faz | Exemplo |
 |---------|-----------|---------|
+| `contract` | Mostra o contrato de trabalho e o índice do manual (**primeiro comando de qualquer sessão**) | `python scripts/pipeline.py contract` |
 | `full` | Pipeline completo; cria o projeto pelo `--prompt` e retoma de onde parou | `python scripts/pipeline.py full --prompt "Cachorro engraçado"` |
 | `resume` | Retoma um projeto existente pelo `--slug` (sem `--prompt`) | `python scripts/pipeline.py resume --slug caes-de-resgate` |
 | `status` | Mostra os checkpoints (o que já foi feito, o que falta, o que está inválido) | `python scripts/pipeline.py status --slug caes-de-resgate` |
@@ -2205,6 +2256,10 @@ alguém abre o código) e no `--help` do argparse.
 
 Cada argumento tem exemplo real no docstring do módulo e no `--help`.
 
+O comando `contract` não recebe argumentos: ele imprime as regras de trabalho,
+o que atualizar no manual a cada tipo de mudança, o índice rápido do manual e
+os checks que devem rodar antes do push.
+
 ### 37.3. Correção aplicada junto com a documentação
 
 Ao documentar o `phase_youtube` foi encontrado um bug: a função montava a
@@ -2224,6 +2279,8 @@ Teste de regressão: `scripts/smoke_test_pipeline_description.py`.
 ## 38. Convenção de trabalho: branch → grafo → push (2026-11-06)
 
 Esta é a regra de processo do projeto. Ela vale para **toda** mudança nova.
+O contrato completo (com proibições e checklist de push) está em
+**`CONTRATO.md`**; o resumo está no **§0** e no **§39**.
 
 ### 38.1. A regra em 3 passos
 
@@ -2298,6 +2355,95 @@ git push -u origin docs/grafo-fluxo-git
 - Nunca commitar segredos (`.env`, `client_secret*.json`, `youtube_token.json`
   já estão no `.gitignore`).
 - Antes de commitar: `git status`, `git diff` e `git log --oneline -10`.
+
+---
+
+## 39. Contrato de trabalho (2026-11-06)
+
+O contrato existe para **não gastar tempo e token com o que já está
+resolvido** e para **não desfazer o que já estava funcionando**.
+
+### 39.1. Onde mora o contrato
+
+| Arquivo | Papel |
+|---------|-------|
+| `CONTRATO.md` | o contrato completo (regras, proibições, checklist de push) |
+| `AGENTS.md` | resumo de 30 segundos, lido automaticamente por agentes |
+| `MANUAL_GRAFOS.md` §0 | a regra de ouro no **topo** do manual (primeira coisa que se lê) |
+| `scripts/pipeline.py` (docstring) | tudo o que o pipeline faz, com exemplos |
+| `python scripts/pipeline.py contract` | imprime o contrato + o índice do manual |
+| `python scripts/check_manual.py` | confere se o manual ainda está em dia com o código |
+
+Antes desta seção, o contrato era **apenas** uma frase no final do manual
+("Ler este manual antes de cada sessão"), o que não é suficiente: quem abria o
+repositório não tinha nenhum ponto de entrada, e o aviso ficava escondido
+depois de 2.300 linhas.
+
+### 39.2. A regra de ouro
+
+> **Antes de escrever qualquer linha de código, ler:**
+> 1. `MANUAL_GRAFOS.md` — o que já foi feito, como está e por quê;
+> 2. `CONTRATO.md` — as regras do jogo;
+> 3. `scripts/pipeline.py` (docstring do topo) — comandos, argumentos, fases.
+>
+> Se algo está documentado no manual, **já foi feito** → não refaça.
+> Se algo está documentado no manual, **não está quebrado** → não desfaça.
+
+### 39.3. As 4 regras
+
+1. **Leia antes de mexer.** Manual + contrato + docstring do pipeline.
+2. **Branch antes de alterar** qualquer arquivo.
+3. **O `MANUAL_GRAFOS.md` vai no mesmo commit da mudança.**
+4. **Push só depois do manual e dos checks.**
+   Ordem fixa: **branch → código → grafo/manual → checks → commit → push**.
+
+### 39.4. O manual é a memória do produto
+
+**Se não está no manual, não existe.** Cada mudança precisa do seu registro:
+
+| A mudança mexeu em... | Atualizar no manual |
+|------------------------|---------------------|
+| fluxo / fase / dependência | §3 e §4 (grafo) + §30.7 |
+| CLI / argumento | §37 |
+| descrição do YouTube | §3 (fase `youtube`) + §36 |
+| narração / voz / música | §3 + §1.7 / §1.8 |
+| regra de processo | nova seção no fim do manual |
+| **não mexeu no fluxo** | ainda assim registrar em seção nova |
+
+### 39.5. Checks antes do push
+
+```powershell
+python scripts/check_manual.py            # o manual está em dia com o código?
+python scripts/check_projects.py          # as descrições estão no padrão?
+python scripts/smoke_test_description.py  # o padrão de descrição está ok?
+```
+
+`check_manual.py` é o que dá força à regra: ele compara o `MANUAL_GRAFOS.md`
+com o `pipeline.py` e falha se algo divergir. Ele checa:
+
+- existência de `CONTRATO.md`, `AGENTS.md` e `MANUAL_GRAFOS.md`;
+- presença das seções obrigatórias (§3, §4, §30.7, §36, §37, §38);
+- se **todas as fases** do `PHASES` aparecem no manual;
+- se **todas as dependências** do `DEPS` aparecem no grafo de dependências;
+- se as referências `arquivo.py:linha` do manual apontam para linhas válidas;
+- se as seções do manual estão em ordem crescente.
+
+> O `check_manual.py` já pagou o custo: na primeira execução ele acusou
+> **duas divergências reais** que estavam no manual desde antes:
+> 1. a dependência `music → mix` **não existia** no grafo do §4 (só no código);
+> 2. havia **duas seções "## 16."** no manual (§16 duplicado), quebrando a
+>    numeração.
+> Ambas foram corrigidas.
+
+### 39.6. Comandos do contrato
+
+```powershell
+# mostra o contrato + o índice do manual (primeiro comando da sessão)
+python scripts/pipeline.py contract
+
+# confere se o manual ainda está em dia com o código
+python scripts/check_manual.py
+```
 
 ---
 

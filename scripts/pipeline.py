@@ -38,11 +38,16 @@ COMANDOS (resumo)
   resume   retoma um projeto ja existente, localizado pelo --slug
   status   mostra os checkpoints (o que ja foi feito e o que falta)
   reset    limpa checkpoints para refazer fases
+  contract mostra o CONTRATO de trabalho e o indice do manual (leia antes
+           de mexer em qualquer coisa)
 
 
 ===============================================================================
 EXEMPLOS DE USO
 ===============================================================================
+
+  # 0) PRIMEIRO COMANDO DE QUALQUER SESSAO: leia o contrato e o indice
+  python scripts/pipeline.py contract
 
   # 1) Pipeline completo automatico (retoma de onde parou)
   python scripts/pipeline.py full --prompt "Vídeo engraçado sobre buldogue inglês"
@@ -351,6 +356,25 @@ YT_TAGS_PADRAO = (
     "videoengraçado,conteúdocriativo,petspride,familia,criancas,"
     "cachorroengraçado,diversão,aprendizado"
 )
+
+# Indice do MANUAL_GRAFOS.md, mostrado pelo comando `contract`.
+# Serve para o proximo nao gastar token vasculhando o manual inteiro.
+INDICE_MANUAL = [
+    "§0    CONTRATO - a regra de ouro (leia primeiro)",
+    "§1    Resumo do problema e das correcoes",
+    "§1.7  Voz recomendada / §1.8 Musica procedural",
+    "§3    Grafo do pipeline (Mermaid)",
+    "§4    Grafo de dependencias (invalidacao em cascata)",
+    "§10   Solucao de problemas",
+    "§11   Executor diario (daily_runner.py)",
+    "§20   Calendario de agendamento de videos",
+    "§23   Atualizar metadados de video ja enviado",
+    "§34   Narração em portugues com caracteres especiais",
+    "§36   Padrao oficial de descricao do canal",
+    "§37   Documentacao do pipeline (comandos e argumentos)",
+    "§38   Convenção: branch -> grafo -> push",
+    "§39   Contrato de trabalho (detalhe)",
+]
 
 SCRIPTS = {
     "script_from_prompt": HERE / "generate_script_from_prompt.py",
@@ -1896,6 +1920,57 @@ def cmd_reset(args):
     print("== reset concluido:", args.phase)
 
 
+def cmd_contract(args):
+    """Comando `contract` - mostra o contrato de trabalho e o indice do manual.
+
+    E o ponto de partida de qualquer sessao: imprime as regras que evitam
+    refazer o que ja esta pronto, desfazer o que ja estava ok e gastar token
+    com o que ja esta documentado.
+
+    Exemplo:
+        python scripts/pipeline.py contract
+    """
+    print("=" * 74)
+    print("CONTRATO DE TRABALHO - Videomaker")
+    print("=" * 74)
+    print("")
+    print("REGRA DE OURO")
+    print("  Antes de escrever qualquer codigo, leia:")
+    print("    1) MANUAL_GRAFOS.md  - o que ja foi feito, como esta e por que")
+    print("    2) CONTRATO.md       - as regras do jogo")
+    print("    3) este arquivo      - docstring do topo: comandos e argumentos")
+    print("")
+    print("  O que esta documentado no manual JA ESTA FEITO: nao refaca.")
+    print("  O que esta documentado no manual NAO ESTA QUEBRADO: nao desfaca.")
+    print("")
+    print("AS 4 REGRAS")
+    print("  1. Leia antes de mexer (manual + contrato + docstring do pipeline)")
+    print("  2. Branch antes de alterar:  git checkout -b feature/nome-curto")
+    print("  3. O MANUAL_GRAFOS.md vai no MESMO COMMIT da mudanca")
+    print("  4. Push so depois do manual e dos checks")
+    print("     Ordem fixa: branch -> codigo -> grafo/manual -> checks -> commit -> push")
+    print("")
+    print("O QUE ATUALIZAR NO MANUAL QUANDO MEXER EM...")
+    print("  fluxo / fase / dependencia .... §3 e §4 (grafo) + §30.7")
+    print("  CLI / argumento ................ §37")
+    print("  descricao do YouTube ........... §3 (fase youtube) + §36")
+    print("  narracao / voz / musica ........ §3 + §1.7 / §1.8")
+    print("  regra de processo .............. nova secao no fim do manual")
+    print("")
+    print("INDICE RAPIDO DO MANUAL")
+    for linha in INDICE_MANUAL:
+        print("  %s" % linha)
+    print("")
+    print("CHECKS ANTES DO PUSH")
+    print("  python scripts/check_manual.py           # manual em dia com o codigo?")
+    print("  python scripts/check_projects.py         # descricoes no padrao?")
+    print("  python scripts/smoke_test_description.py # padrao de descricao ok?")
+    print("")
+    print("O manual e a memoria do produto. Se nao esta la, nao existe.")
+    print("=" * 74)
+    return 0
+
+
 def main():
     """Ponto de entrada da CLI: monta o argparse e despacha para o comando.
 
@@ -2072,6 +2147,14 @@ def main():
     z.add_argument("--all", action="store_true",
                    help="limpa o checkpoint de todas as fases")
     z.set_defaults(func=cmd_reset)
+
+    c = sub.add_parser(
+        "contract",
+        help="mostra o CONTRATO de trabalho e o indice do manual (leia antes de mexer)",
+        description="Leitura obrigatoria antes de qualquer mudanca. Ex: "
+                    "python scripts/pipeline.py contract",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    c.set_defaults(func=cmd_contract)
 
     args = ap.parse_args()
     if not getattr(args, "prompt", None) and not getattr(args, "slug", None):
