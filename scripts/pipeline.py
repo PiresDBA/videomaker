@@ -381,6 +381,7 @@ SCRIPTS = {
     "scenes_from_script": HERE / "generate_scenes_and_prompts.py",
     "scene_htmls": HERE / "generate_scene_htmls.py",
     "fetch_images": HERE / "fetch_images.py",
+    "flow_fetch": HERE / "flow_fetch.py",
     "preprocess_images": HERE / "preprocess_images.py",
     "fetch_music": HERE / "fetch_music_gemini.py",
     "gen_narration": HERE / "gen_narration_edge.py",
@@ -857,25 +858,41 @@ def phase_images(args, p: Project):
             except Exception as e:
                 print(f"  [{nome}] falhou ao copiar do banco ({e}), tenta Gemini", flush=True)
 
-        # 2) Nao achou no banco: gera via Gemini
-        rc, name, size = run_single_fetch(nome, out_dir, args)
+        # 2) Nao achou no banco: gera via Flow (principal) ou Gemini (fallback)
+        prompt_texto = prompts.get(nome, "")
+        rc, name, size = run_single_fetch(nome, prompt_texto, out_dir, args)
         ok = rc == 0 and size > 0
         status = "OK" if ok else f"FALHA (rc={rc} bytes={size})"
         print(f"  [{name}] {status}", flush=True)
         return ok
 
-    def run_single_fetch(nome: str, out_dir: Path, args) -> tuple:
-        """Chama fetch_images.py --single para uma imagem (stdout ao vivo)."""
-        cmd = [sys.executable, str(SCRIPTS["fetch_images"]),
-               "--proj", str(p.dir),
-               "--single", nome,
-               "--wait", str(args.wait),
-               "--pause", str(args.pause)]
-        r = subprocess.run(cmd)
-        # arquivo gerado?
+    def run_single_fetch(nome: str, prompt_texto: str, out_dir: Path, args) -> tuple:
+        """Chama flow_fetch.py (principal) ou fetch_images.py (fallback Gemini) para uma imagem."""
+        # 1) Tentar Google Flow primeiro
+        cmd_flow = [sys.executable, str(SCRIPTS["flow_fetch"]),
+                    "--kind", "image",
+                    "--prompt", prompt_texto,
+                    "--name", nome,
+                    "--project-dir", str(p.dir),
+                    "--out-dir", str(out_dir),
+                    "--wait", str(args.wait),
+                    "--pause", str(args.pause)]
+        r = subprocess.run(cmd_flow)
         jpg = out_dir / (nome + ".jpg")
         size = jpg.stat().st_size if jpg.exists() else 0
-        return r.returncode, nome, size
+        if r.returncode == 0 and size > 0:
+            return r.returncode, nome, size
+
+        # 2) Fallback: Gemini Web
+        print(f"  [{nome}] flow_fetch falhou (rc={r.returncode}), tentando Gemini como fallback", flush=True)
+        cmd_gemini = [sys.executable, str(SCRIPTS["fetch_images"]),
+                      "--proj", str(p.dir),
+                      "--single", nome,
+                      "--wait", str(args.wait),
+                      "--pause", str(args.pause)]
+        r2 = subprocess.run(cmd_gemini)
+        size = jpg.stat().st_size if jpg.exists() else 0
+        return r2.returncode, nome, size
 
     # primeira passagem: todas as imagens
     quarantine = []

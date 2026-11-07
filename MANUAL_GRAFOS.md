@@ -2476,6 +2476,107 @@ Arquivos alterados:
 
 ---
 
+## 41. Google Flow — geração de imagens via flow_fetch + MCP (2026-11-07)
+
+A partir desta versão, a fase `images` do pipeline usa o **Google Flow**
+(`https://flow.google.com`) como buscador principal de imagens, com o
+`gemini_fetch.py` (Gemini Web) como fallback automático. O acesso ao Flow é
+feito via automação de navegador (Playwright + CDP), seguindo o mesmo padrão do
+`gemini_fetch.py`.
+
+### 41.1. flow_fetch.py — buscador de imagens do Google Flow
+
+Arquivo novo (`scripts/flow_fetch.py`), não modifica o `gemini_fetch.py`.
+
+**Uso direto:**
+```powershell
+# Gerar uma imagem
+python scripts/flow_fetch.py --kind image --prompt "Prompt detalhado..." --name cena_1 --project-dir projects/<slug>
+
+# Gerar múltiplas imagens a partir de um arquivo
+python scripts/flow_fetch.py --kind image --prompts-file projects/<slug>/artifacts/image_prompts.json --only cena_1,cena_2
+
+# Testar conexão
+python scripts/flow_fetch.py --check
+
+# Login (primeira vez)
+python scripts/flow_fetch.py --login
+```
+
+**Argumentos:** `--kind`, `--prompt`, `--name`, `--prompts-file`, `--only`,
+`--project`, `--project-dir`, `--root`, `--out-dir`, `--cdp-url`, `--wait`,
+`--retries`, `--ref-image`, `--pause`, `--check`, `--login`, `--profile`,
+`--no-launch`.
+
+**Salvamento duplo:** cada imagem gerada é salva em
+`projects/<slug>/assets/images/gemini/scenes/` **e** copiada para
+`C:\videomaker\banco de imagens\`.
+
+**Login:** se não houver sessão válida, o script para e solicita que o usuário
+faça login no Google no Chrome. Após o login, o usuário pressiona Enter e o
+script testa a conexão antes de prosseguir. Se falhar, pede o login novamente.
+
+### 41.2. flow_mcp.py — servidor MCP para o Google Flow
+
+Arquivo novo (`scripts/flow_mcp.py`). Servidor MCP (Model Context Protocol)
+sobre stdio, robusto e resistente a falhas.
+
+**Ferramentas expostas:**
+
+| Ferramenta | Descrição |
+|-----------|-----------|
+| `flow_generate_image` | Gera imagem estática via Google Flow |
+| `flow_generate_video` | Gera vídeo via Google Flow |
+| `flow_generate_audio` | Gera áudio/voz via Google Flow |
+| `flow_check` | Testa conexão CDP + login no Flow |
+| `flow_login` | Solicita login do usuário no Google Flow |
+
+**Robustez:**
+- Timeout configurável por ferramenta (padrão: 300s)
+- Retry exponencial em falhas de rede/CDP (máx. 3 tentativas)
+- Detecção de Chrome travado → reinício limpo
+- Validação de entrada (prompt não vazio, nome de arquivo sanitizado)
+- Logs estruturados em JSON para diagnóstico
+
+**Iniciar o MCP:**
+```powershell
+python scripts/flow_mcp.py
+```
+
+O MCP é iniciado automaticamente pelo pipeline quando a fase `images` começa.
+
+### 41.3. Fluxo de fallback na fase images
+
+A fase `images` (`scripts/pipeline.py`, função `phase_images`) agora segue esta ordem:
+
+1. Banco de imagens local (BM25) — se achar imagem adequada, copia e pula a geração
+2. **Google Flow** (`flow_fetch.py`) — buscador principal
+3. **Gemini Web** (`fetch_images.py` / `gemini_fetch.py`) — fallback automático se o Flow falhar
+
+Se o `flow_fetch.py` retornar `rc != 0` ou não gerar arquivo válido, o pipeline
+tenta automaticamente o `gemini_fetch.py` com os mesmos parâmetros.
+
+### 41.4. Exemplos de uso
+
+```powershell
+# Pipeline completo com Flow como buscador de imagens
+python scripts/pipeline.py full --prompt "Cachorro engraçado" --slug cachorro-engracado
+
+# Apenas fase images (usará Flow primeiro, Gemini como fallback)
+python scripts/pipeline.py resume --slug cachorro-engracado --only images
+
+# Gerar imagem individual via Flow
+python scripts/flow_fetch.py --kind image --prompt "Cachorro salsicha marrom brincando" --name s1_cena --project-dir projects/cachorro-engracado
+```
+
+Arquivos alterados/gerados:
+- `scripts/flow_fetch.py` — novo (buscador de imagens do Google Flow)
+- `scripts/flow_mcp.py` — novo (servidor MCP para o Flow)
+- `scripts/pipeline.py` — `flow_fetch` adicionado ao SCRIPTS; `run_single_fetch` tenta Flow primeiro, Gemini como fallback
+- `MANUAL_GRAFOS.md` — esta seção
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 
