@@ -59,7 +59,7 @@ Fluxo correto quando só a narração muda:
 ```
 narration → timeline (reescreve timeline.json) → compose (reconstrói composition.html) → render
 ```
-O grafo de dependências em `scripts/pipeline.py:414` já modela isso (`narration → timeline → compose → render`).
+O grafo de dependências em `scripts/pipeline.py:1304` já modela isso (`narration → timeline → compose → render`).
 
 ---
 
@@ -268,7 +268,7 @@ A partir desta versão, o roteiro inclui uma **nova seção s_intro** que vem **
 
 ---
 
-## 3. Grafo do pipeline (10 fases)
+## 3. Grafo do pipeline (10 fases + youtube)
 
 ```mermaid
 flowchart TD
@@ -278,12 +278,12 @@ flowchart TD
     S2 --> A2[(scenes.json + image_prompts.json)]
     A2 --> S3[generate_scene_htmls.py<br/>overlays sN.html]
     S3 --> A3[(projects/slug/scenes/sN.html)]
-    A2 --> S4[3. images<br/>fetch_images.py --single por imagem<br/>print: == FASE images + == IMAGEM i/N]
+    A2 --> S4[3. images<br/>banco local (BM25) → fetch_images.py --single<br/>quarentena 4 loops<br/>print: == FASE images + == IMAGEM i/N]
     S4 --> A4[(assets/images/gemini/scenes/*.jpg)]
-    P --> S5[4. music<br/>fetch_music_gemini.py<br/>print: == FASE music: iniciando]
+    P --> S5[4. music<br/>banco local (rotação LRU) → fetch_music_gemini.py → procedural<br/>print: == FASE music: iniciando]
     S5 --> A5[(assets/audio/gemini/bgm_gemini.wav)]
-    A1 --> S6[5. narration<br/>gen_narration_edge.py]
-    S6 --> A6[(assets/audio/narration/sN.mp3<br/>narration_timing.json)]
+    A1 --> S6[5. narration<br/>gen_narration_gemini_sections.py (Gemini TTS)<br/>ou gen_narration_edge.py (Edge-TTS local)<br/>fallback: Gemini → Edge]
+    S6 --> A6[(assets/audio/narration/sN.wav ou .mp3<br/>narration_timing.json)]
     A6 --> S7[6. timeline<br/>build_timeline.py]
     S7 --> A7[(narration_full.wav + timeline.json)]
     A7 --> S8[7. mix<br/>mix_audio.py]
@@ -299,6 +299,8 @@ flowchart TD
     A8 --> S11
     A10 --> S11
     S11 --> A11[(output/slug.mp4)]
+    A11 -. só com --publish .-> S12[[11. youtube<br/>youtube_upload.py<br/>descrição no padrão do canal<br/>description_template.build_description()]]
+    S12 --> A13[(YouTube: título, descrição, tags, thumbnail)]
 
     S1 & S2 & S4 & S5 -. stdout ao vivo .-> WS[[WS /api/logs<br/>RunBus → LiveStrip<br/>Criar · Diário · Executivo · Atividade]]
 ```
@@ -308,12 +310,24 @@ emite `== IMAGEM i/N: <nome>` e o stdout do `gemini_fetch` **não é mais captur
 (streaming direto para o log). Checkpoints válidos imprimem
 `== CHECKPOINT <nome>: feito ... -> pulando` e **não** emitem `FASE ... iniciando`.
 
+Mudanças do grafo em relação à versão anterior:
+
+| Fase | Antes | Agora |
+|------|-------|-------|
+| `images` | só Gemini Web | banco local (BM25) primeiro, depois Gemini Web, com quarentena de 4 loops |
+| `music` | só Gemini Web | banco local (rotação sem repetir) → Gemini Web → procedural local |
+| `narration` | só Edge-TTS | Gemini TTS (Achernar/Leda alternando) **ou** Edge-TTS, com fallback automático do Gemini para o Edge |
+| `youtube` | não estava no grafo | fase opcional (só com `--publish`), grava a descrição no padrão oficial do canal |
+
+A fase `youtube` fica **fora** da lista `PHASES` de propósito: ela é opcional
+e roda por último, depois do `render`.
+
 ---
 
 ## 4. Grafo de dependências (invalidação em cascata)
 
 Quando uma fase é refeita, as fases abaixo dela são marcadas como pendentes no
-`project.json` (a cascata está em `DEPS`, `scripts/pipeline.py:414`).
+`project.json` (a cascata está em `DEPS`, `scripts/pipeline.py:1304`).
 
 ```mermaid
 flowchart LR
@@ -1814,12 +1828,16 @@ Ao concluir, cada projeto grava `projects/<slug>/project-control.json` com:
 ### 30.7. Grafo atualizado do pipeline
 
 ```
-prompt → script → scenes → music → images(2×/cena, quarentena 4 loops) →
-narration → timeline → mix → compose → preprocess → render → [publish YouTube público]
+prompt → script → scenes → music → images(banco local + 2×/cena, quarentena 4 loops) →
+narration(Gemini TTS ou Edge-TTS, com fallback) → timeline → mix → compose →
+preprocess → render → [youtube (--publish): descrição no padrão do canal]
 ```
 
 Todas as fases gravam checkpoint em `project.json`; a fase `images` pula arquivos `.jpg`
 já existentes (retomada rápida sem re-gerar tudo).
+
+> Grafo completo em Mermaid na **§3**. A fase `youtube` é opcional e fica fora
+> da lista `PHASES` (roda só com `--publish`, depois do `render`).
 
 ---
 
@@ -2200,6 +2218,86 @@ O `publish_to_youtube()` (função legada sem uso) passou a delegar para
 `phase_youtube()` — ele também tinha um `AttributeError` latente (`p.yt_desc`).
 
 Teste de regressão: `scripts/smoke_test_pipeline_description.py`.
+
+---
+
+## 38. Convenção de trabalho: branch → grafo → push (2026-11-06)
+
+Esta é a regra de processo do projeto. Ela vale para **toda** mudança nova.
+
+### 38.1. A regra em 3 passos
+
+```powershell
+# 1) CRIAR A BRANCH com um nome fácil de lembrar (antes de mexer no código)
+git checkout -b feature/nome-da-mudanca
+
+# 2) FAZER A MUDANÇA + ATUALIZAR O GRAFO no MANUAL_GRAFOS.md
+#    (o grafo vem ANTES do push, nunca depois)
+$EDITOR MANUAL_GRAFOS.md
+
+# 3) COMMITAR E SUBIR PARA O GITHUB
+git add -A
+git commit -m "tipo: descrição curta da mudança"
+git push -u origin feature/nome-da-mudanca
+```
+
+**A ordem é obrigatória:** branch → código → grafo → commit → push.
+Nunca dar push sem atualizar o grafo antes.
+
+### 38.2. Padrão de nome das branches
+
+O nome deve ser curto e óbvio — é para lembrar depois sem consultar o histórico.
+
+| Prefixo | Quando usar | Exemplo |
+|---------|-------------|---------|
+| `feature/` | funcionalidade nova | `feature/narração-gemini` |
+| `fix/` | correção de bug | `fix/descricao-curta-youtube` |
+| `docs/` | documentação e manual | `docs/grafo-fluxo-git` |
+| `refactor/` | reorganização sem mudar comportamento | `refactor/modulos-pipeline` |
+
+Regras:
+
+- até 3 palavras, minúsculas, hifens, sem acento (`narracao` e não `narração`);
+- o nome descreve **o que mudou**, não quem fez nem a data;
+- uma mudança = uma branch (não misturar temas diferentes);
+- a branch nasce **antes** da primeira alteração de arquivo.
+
+### 38.3. O que é "atualizar o grafo"
+
+O grafo do produto está no **MANUAL_GRAFOS.md**. Sempre que a mudança mexer em
+fluxo, fase, dependência, arquivo ou contrato, atualizar o grafo **antes** do
+push:
+
+| A mudança mexeu em... | Atualizar no MANUAL_GRAFOS.md |
+|------------------------|-------------------------------|
+| Fases, ordem ou dependências | §3 (Grafo do pipeline, Mermaid) e §4 (Grafo de dependências) |
+| Resumo textual do fluxo | §30.7 (Grafo atualizado do pipeline) |
+| Narração (voz, fallback, arquivo) | §3 + §1.7 / §1.8 |
+| Descrição do YouTube | §3 (fase `youtube`) + §36 (padrão oficial) |
+| CLI / argumentos | §37 (documentação do pipeline) |
+| Nova regra de processo | nova seção no fim do manual |
+
+Se a mudança **não** mexe no fluxo, não há grafo para atualizar — mas registre
+a mudança em uma seção nova do manual mesmo assim (o manual é a memória do
+produto entre as sessões).
+
+### 38.4. Exemplo real (esta mudança)
+
+```powershell
+git checkout -b docs/grafo-fluxo-git
+# ... atualização do §3, §4, §30.7 e criação do §38 ...
+git add MANUAL_GRAFOS.md
+git commit -m "docs: convencao branch-grafo-push e grafo do pipeline atualizado"
+git push -u origin docs/grafo-fluxo-git
+```
+
+### 38.5. Regras de git que continuam valendo
+
+- `main` recebe merge quando a branch está pronta e o grafo já está atualizado.
+- Nunca `git push --force` em branch compartilhada.
+- Nunca commitar segredos (`.env`, `client_secret*.json`, `youtube_token.json`
+  já estão no `.gitignore`).
+- Antes de commitar: `git status`, `git diff` e `git log --oneline -10`.
 
 ---
 
