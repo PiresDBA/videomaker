@@ -14,6 +14,7 @@ se o pipeline parar no meio, rodar de novo retoma de onde parou.
 Diretorio por projeto:
 
   projects/<slug>/project.json                    checkpoints + historico
+  projects/<slug>/project-control.json            controle final (observabilidade)
   projects/<slug>/artifacts/script.json           roteiro (IA gratuita via Chrome)
   projects/<slug>/artifacts/scenes.json           cenas (local, deterministico)
   projects/<slug>/artifacts/image_prompts.json    prompts de imagem
@@ -28,25 +29,280 @@ Diretorio por projeto:
   projects/<slug>/composition.html                composicao HyperFrames
   projects/<slug>/output/<slug>.mp4               VIDEO FINAL
 
-Uso (CLI):
-  Rodar tudo automatico (retoma de onde parou):
-    python scripts/pipeline.py full --prompt "Vidoe engraçado sobre buldogue ingles"
-  Começar de uma fase especifica:
-    python scripts/pipeline.py full --prompt P --from narration
-  Rodar somente determinadas fases:
-    python scripts/pipeline.py full --prompt P --only mix,compose
-  Pular fases:
-    python scripts/pipeline.py full --prompt P --skip music
-  Ignorar checkpoints e refazer:
-    python scripts/pipeline.py full --prompt P --from script --force
-  Ver status dos checkpoints:
-    python scripts/pipeline.py status --prompt P
-  Resetar checkpoints de uma fase (refaz na proxima rodada):
-    python scripts/pipeline.py reset --prompt P --phase images
-  Retomar projeto ja existente pelo slug (sem prompt):
-    python scripts/pipeline.py resume --slug buldogue-ingles
-Fases: script, scenes, images, music, narration, timeline, mix, compose,
-       preprocess, render
+
+===============================================================================
+COMANDOS (resumo)
+===============================================================================
+
+  full     roda o pipeline completo, criando o projeto a partir do prompt
+  resume   retoma um projeto ja existente, localizado pelo --slug
+  status   mostra os checkpoints (o que ja foi feito e o que falta)
+  reset    limpa checkpoints para refazer fases
+
+
+===============================================================================
+EXEMPLOS DE USO
+===============================================================================
+
+  # 1) Pipeline completo automatico (retoma de onde parou)
+  python scripts/pipeline.py full --prompt "Vídeo engraçado sobre buldogue inglês"
+
+  # 2) Comecar de uma fase especifica (todas as anteriores sao puladas)
+  python scripts/pipeline.py full --prompt "Por que o cachorro lambe o seu rosto?" --from narration
+
+  # 3) Rodar somente determinadas fases
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --only mix,compose
+
+  # 4) Pular fases (mantem os demais checkpoints)
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --skip music
+
+  # 5) Ignorar checkpoints e refazer tudo
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --from script --force
+
+  # 6) Retomar projeto existente pelo slug (sem passar prompt de novo)
+  python scripts/pipeline.py resume --slug buldogue-ingles-divertido
+
+  # 7) Ver o status dos checkpoints
+  python scripts/pipeline.py status --prompt "Cachorro engraçado"
+
+  # 8) Resetar o checkpoint de uma fase (refaz na proxima rodada)
+  python scripts/pipeline.py reset --prompt "Cachorro engraçado" --phase images
+
+  # 9) Resetar todos os checkpoints (os arquivos continuam no disco)
+  python scripts/pipeline.py reset --prompt "Cachorro engraçado" --all
+
+  # 10) Gerar E publicar no YouTube na mesma rodada
+  python scripts/pipeline.py full --prompt "Husky siberiano engraçado" --publish
+
+  # 11) Re-render rapido: refaz mix/compose/render sem o check do HyperFrames
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --from mix --skip-check
+
+  # 12) Narracao com a voz Gemini (alterna Achernar/Leda a cada video)
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --narration-provider gemini
+
+  # 13) Forcar uma voz especifica
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --narration-provider gemini --voice Leda
+
+  # 14) Re-render sem nada mais (so as ultimas fases, em paralelo)
+  python scripts/pipeline.py full --prompt "Cachorro engraçado" --from timeline --no-parallel
+
+  # 15) Atualizar so os metadados de um video ja publicado (sem reenviar)
+  python scripts/pipeline.py full --slug buldogue-ingles-divertido --yt-video-id kJztp7A7xWI
+
+
+===============================================================================
+ARGUMENTOS COMUNS (valem para full, resume, status e reset)
+===============================================================================
+
+--prompt TEXTO
+    Assunto do video. Define o nome da pasta do projeto (via slugify) e o
+    prompt enviado ao Gemini na fase `script`.
+    Exemplo: --prompt "Por que cachorros cheiram o bumbum uns dos outros?"
+
+--slug NOME
+    Força o nome da pasta do projeto, ignorando o slug derivado do prompt.
+    Comandos que exigem --slug: `resume` (obrigatório), `full` (opcional).
+    Exemplo: --slug caes-de-resgate-como-eles-encontram-pess
+
+--wait SEGUNDOS
+    Espera máxima por resposta do Gemini Web durante a geração de imagens.
+    Padrão: 420. Aumentar quando a conexão estiver lenta.
+    Exemplo: --wait 600
+
+--pause SEGUNDOS
+    Pausa entre as chamadas ao Gemini Web (evita bloqueio por automacao).
+    Padrão: 8. Em conta gratuita do Google, valores menores podem dar 429.
+    Exemplo: --pause 15
+
+--voice NOME
+    Voz da narração.
+      - Edge-TTS (local, sem API): pt-BR-ThalitaNeural, pt-BR-AntonioNeural,
+        pt-BR-FranciscaNeural, pt-BR-ThiagoNeural...
+      - Gemini TTS (Google AI Studio, precisa de GOOGLE_TTS_API_KEY):
+        Leda, Achernar, Kore, Zephyr, Despina...
+    Se a voz começar com "pt-BR-" ou terminar em "Neural", o motor Edge e
+    usado mesmo com --narration-provider gemini.
+    Exemplo: --voice pt-BR-FranciscaNeural
+
+--narration-provider {edge,gemini}
+    Motor da narração. "edge" = Edge-TTS local (padrão seguro, sem API).
+    "gemini" = Google AI Studio TTS (qualidade superior, consome cota).
+    Se omitido, vale config.json -> tts.provider (hoje: "gemini"), com
+    fallback automático para Edge-TTS em qualquer falha do Gemini.
+    Exemplo: --narration-provider edge
+
+--rate VELOCIDADE
+    Velocidade da fala na sintese Edge-TTS (formato Edge: +12%, -10%, +0%).
+    Padrão: +12%. Só se aplica ao motor Edge.
+    Exemplo: --rate "+0%"
+
+--pitch TOM
+    Tom da fala na sintese Edge-TTS (formato Edge: +8Hz, -5Hz, +0Hz).
+    Padrão: +8Hz. Só se aplica ao motor Edge.
+    Exemplo: --pitch "+0Hz"
+
+--style ESTILO
+    Estilo de fala usado pelo gerador Edge-TTS (excited, cheerful, friendly,
+    narration, etc.). Affects o emphasis automatico da voz.
+    Padrão: excited.
+    Exemplo: --style narration
+
+--workers N
+    Quantidade de secoes de narracao processadas em paralelo.
+    Padrão: 4. Mais workers = mais rapido, mas mais carga de CPU/rede.
+    Exemplo: --workers 8
+
+--provider {gemini,procedural}
+    Origem da trilha musical.
+      - gemini: gera a trilha pelo Gemini Web (Chrome, conta gratuita).
+      - procedural: gera a trilha localmente (sem API, sempre disponível).
+    Se omitido, usa a trilha do banco local quando houver; o procedural e o
+    fallback automatico quando o Gemini falha.
+    Exemplo: --provider procedural
+
+--gain DB
+    Ganho de audio aplicado na mixagem (narracao + trilha). Negativo abaixa
+    a trilha. Exemplo: --gain -6.0 (voz em primeiro plano).
+
+--duration SEGUNDOS
+    Duracao alvo do video. Sobrescreve config.json -> target_duration_s e
+    guia o roteiro para caber no tempo. Exemplo: --duration 90
+
+--skip-check
+    Pula o "npm run check" do HyperFrames na fase render (re-render rapido).
+    Útil quando só mudou a narração ou a trilha, não o layout.
+    Exemplo: --skip-check
+
+--publish
+    Publica no YouTube automaticamente depois do render (adiciona a fase
+    `youtube` ao plano). Sem esta flag o video é apenas renderizado.
+    Exemplo: --publish
+
+--privacy {private,unlisted,public}
+    Visibilidade do video no YouTube. Padrão: public.
+    Exemplo: --privacy unlisted
+
+--yt-title TITULO
+    Título exato do video no YouTube. Se omitido, usa o titulo do roteiro
+    (script.json). Exemplo: --yt-title "Husky siberiano: o cachorro que faz drama"
+
+--yt-tags LISTA
+    Tags do video, separadas por virgula. Se omitido, usa a lista padrão do
+    canal (15 tags). Exemplo: --yt-tags "husky,siberiano,cachorro,pet,infantil"
+
+--yt-desc DESCRICAO
+    Descrição completa do YouTube. Se omitido, é gerada no padrão oficial do
+    canal (scripts/description_template.py) a partir do roteiro do projeto.
+    Exemplo: --yt-desc "Descrição customizada que substitui a automática."
+
+--yt-thumb CAMINHO
+    Imagem de thumbnail (JPG/PNG). Se omitido, usa a primeira imagem de cena
+    gerada no projeto. Exemplo: --yt-thumb "C:/videomaker/projects/meu-projeto/capa.jpg"
+
+--default-language IDIOMA
+    Idioma padrão do vídeo no YouTube (metadados). Padrão: pt-BR.
+    Exemplo: --default-language pt-BR
+
+--default-audio-language IDIOMA
+    Idioma do áudio/narração no YouTube (metadados). Padrão: pt-BR.
+    Exemplo: --default-audio-language pt-BR
+
+--yt-secret CAMINHO
+    Caminho do client_secret.json do canal do YouTube.
+    Padrão: scripts/client_secret.json.
+    Exemplo: --yt-secret "C:/videomaker/scripts/client_secret-xanpires.json"
+
+--yt-video-id ID
+    ID de um vídeo já publicado, para atualizar apenas os metadados
+    (título, descrição, tags, thumbnail) sem reenviar o arquivo.
+    Exemplo: --yt-video-id kJztp7A7xWI
+
+--yt-kids
+    Marca o vídeo como "feito para crianças" (COPPA). É o padrão.
+    Exemplo: --yt-kids
+
+--nao-kids
+    Desliga a marcação "feito para crianças" (sobrescreve --yt-kids).
+    Exemplo: --nao-kids
+
+--sem-texto
+    Não gera texto sobreposto nas cenas (apenas imagem + narração). É o
+    padrão do canal. Exemplo: --sem-texto
+
+
+===============================================================================
+ARGUMENTOS EXCLUSIVOS DE `full` e `resume`
+===============================================================================
+
+--from FASE
+    Começa em uma fase específica (auto = primeira pendente).
+    Fases: script, scenes, music, images, narration, timeline, mix, compose,
+    preprocess, render.
+    Exemplo: --from narration
+
+--only LISTA
+    Roda apenas estas fases, separadas por vírgula.
+    Exemplo: --only mix,compose,render
+
+--skip LISTA
+    Pula estas fases, separadas por vírgula (o resto continua).
+    Exemplo: --skip music,images
+
+--force
+    Ignora os checkpoints e refaz as fases do plano (os arquivos são
+    sobrescritos). Exemplo: --force
+
+--no-parallel
+    Desativa o paralelismo (fases uma por vez, em ordem). Útil para depurar
+    ou quando o Gemini Web bloqueia com várias abas abertas.
+    Exemplo: --no-parallel
+
+
+===============================================================================
+ARGUMENTOS EXCLUSIVOS DE `reset`
+===============================================================================
+
+--phase LISTA
+    Fases cujo checkpoint será limpo, separadas por vírgula.
+    Exemplo: --phase images,music
+
+--all
+    Limpa o checkpoint de todas as fases (os arquivos físicos são mantidos).
+    Exemplo: --all
+
+
+===============================================================================
+AS FASES (ordem de execucao)
+===============================================================================
+
+  script       roteiro (s0 abertura, s_intro gancho, s1..sN, s_outro) via
+               Gemini Web. Produz artifacts/script.json.
+  scenes       divide o roteiro em cenas + prompts de imagem + overlays HTML.
+               Produz artifacts/scenes.json, image_prompts.json, scenes/*.html.
+  music        trilha instrumental (banco local, Gemini Web ou procedural).
+               Produz assets/audio/gemini/bgm_gemini.wav.
+  images       uma imagem por cena: banco local (BM25) primeiro, Gemini Web
+               depois, com loop de quarentena de 4 tentativas.
+  narration    narracao por secao (Edge-TTS local ou Gemini TTS), gera
+               assets/audio/narration/*.wav e artifacts/narration_timing.json.
+  timeline     linha do tempo com inicio/fim de cada secao.
+  mix          mix de narracao + trilha -> assets/audio/final_mix.m4a.
+  compose      composicao HyperFrames -> composition.html.
+  preprocess   copia/prepara as imagens para o HyperFrames.
+  render       renderiza o MP4 final -> output/<slug>.mp4.
+  youtube      publica no YouTube (so com --publish). Fora da lista PHASES
+               porque e opcional e roda por ultimo.
+
+Grafo de dependencias (DEPS): refazer uma fase caduca as descendentes.
+  script    -> scenes, narration, timeline
+  scenes    -> preprocess, compose
+  images    -> preprocess
+  music     -> mix
+  narration -> timeline
+  timeline  -> mix, compose
+  mix       -> render
+  compose   -> render
+  preprocess-> render
 """
 import argparse
 import json
@@ -88,6 +344,14 @@ except Exception:
 PHASES = ["script", "scenes", "music", "images", "narration",
           "timeline", "mix", "compose", "preprocess", "render"]
 
+# Tags padrao do canal (canal "Frida e Luna"). Usadas quando --yt-tags nao e
+# informado. Mesma lista ampliada do youtube_upload.py.
+YT_TAGS_PADRAO = (
+    "cachorro,animacao,infantil,frida,luna,cachorrinho,desenhoanimado,"
+    "videoengraçado,conteúdocriativo,petspride,familia,criancas,"
+    "cachorroengraçado,diversão,aprendizado"
+)
+
 SCRIPTS = {
     "script_from_prompt": HERE / "generate_script_from_prompt.py",
     "scenes_from_script": HERE / "generate_scenes_and_prompts.py",
@@ -117,11 +381,14 @@ def slugify(text, max_len=40):
 
 
 def load_json(p):
+    """Le um JSON do disco (UTF-8). Levanta excecao se o arquivo estiver corrompido."""
     with open(p, encoding="utf-8") as f:
         return json.load(f)
 
 
 def save_json(p, data):
+    """Grava um JSON no disco (UTF-8, indent=2, sem escapar acentos),
+    criando o diretorio pai se preciso."""
     Path(p).parent.mkdir(parents=True, exist_ok=True)
     with open(p, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
@@ -140,6 +407,8 @@ def extrair_palavras_chave(texto: str) -> list:
 
 
 def normalizar_texto_local(t: str) -> str:
+    """Normaliza um texto para comparacao: sem acento, minusculo, sem
+    espacos duplicados. Usado na busca do banco de imagens."""
     import unicodedata
     t = unicodedata.normalize("NFKD", t or "").encode("ascii","ignore").decode()
     return re.sub(r"\s+"," ",t).strip().lower()
@@ -282,6 +551,11 @@ def copiar_para_projeto(origem: Path, destino_dir: Path, nome: str) -> Path:
 
 # ---------------------------------------------------------------- estado ---
 def run(cmd, label=""):
+    """Executa um comando externo (subprocess) e levanta RuntimeError se falhar.
+
+    cmd    lista de argumentos (ex: [sys.executable, "script.py", "--x", "1"])
+    label  texto mostrado no log e usado na mensagem de erro
+    """
     print(f"== {label or ' '.join(cmd)}", flush=True)
     r = subprocess.run(cmd)
     if r.returncode != 0:
@@ -293,9 +567,24 @@ def run(cmd, label=""):
 # ---------------------------------------------------------------- estado ---
 
 class Project:
-    """Estado do projeto: caminhos + checkpoints (project.json)."""
+    """Estado do projeto: caminhos + checkpoints (project.json).
+
+    Cada instancia sabe onde ficam os artefatos do projeto (roteiro, cenas,
+    imagens, audio, composicao, video) e carrega o project.json, que guarda
+    quais fases ja foram concluidas.
+
+    Exemplo:
+        p = Project("cachorro-engracado", "Vídeo engraçado sobre cachorro")
+        p.ensure_dirs()
+        print(p.checkpoint("script"))   # True se a fase script ja esta ok
+    """
 
     def __init__(self, slug, prompt=None):
+        """Cria o objeto Project e carrega o project.json (se existir).
+
+        slug    nome da pasta do projeto (ex: "cachorro-engracado")
+        prompt  assunto original do video (usado como fallback)
+        """
         self.slug = slug
         self.prompt = prompt
         self.dir = ROOT / "projects" / slug
@@ -323,6 +612,8 @@ class Project:
 
     # ---------- estado ----------
     def _load_state(self):
+        """Carrega o project.json (checkpoints + historico). Cria um vazio se
+        o arquivo ainda nao existir ou estiver corrompido."""
         if self.state_file.exists():
             try:
                 return load_json(self.state_file)
@@ -332,6 +623,7 @@ class Project:
         return st
 
     def save_state(self):
+        """Grava o project.json com os checkpoints e o historico atualizados."""
         st = self.state
         st.setdefault("phases", {})
         st.setdefault("history", [])
@@ -340,6 +632,12 @@ class Project:
         save_json(self.state_file, st)
 
     def mark(self, phase, ok=True, detail=""):
+        """Marca uma fase como concluida (ou nao) e registra no historico.
+
+        phase   nome da fase (script, scenes, images, ...)
+        ok      True = concluida, False = pendente
+        detail  texto livre com o caminho do artefato gerado
+        """
         st = self.state
         st["phases"][phase] = {"done": bool(ok), "ts": time.strftime("%Y-%m-%d %H:%M:%S"),
                                "detail": detail}
@@ -349,17 +647,24 @@ class Project:
         self.save_state()
 
     def reset_phase(self, phase):
+        """Apaga o checkpoint de uma fase (os arquivos fisicos sao mantidos).
+        A fase volta a ser executada na proxima rodada."""
         self.state.setdefault("phases", {}).pop(phase, None)
         self.save_state()
 
     def is_done(self, phase, force=False):
+        """True se a fase esta marcada como concluida (force ignora o estado)."""
         if force:
             return False
         rec = self.state.get("phases", {}).get(phase)
         return bool(rec and rec.get("done"))
 
     def validate_file_phase(self, phase):
-        """Validacao fisica extra: arquivos existem / JSON valido / contagem."""
+        """Validacao fisica extra: arquivos existem / JSON valido / contagem.
+
+        Retorna None quando a fase esta integra, ou a mensagem do problema
+        (ex: "faltam imagens: [...]", "arquivo ausente").
+        """
         try:
             if phase == "script":
                 d = load_json(self.script)
@@ -406,7 +711,10 @@ class Project:
         return None  # ok
 
     def checkpoint(self, phase, force=False):
-        """True = pode pular (checkpoint valido). False = precisa rodar."""
+        """True = pode pular (checkpoint valido). False = precisa rodar.
+
+        Alem do flag do project.json, roda a validacao fisica dos arquivos:
+        se o checkpoint diz "feito" mas o artefato sumiu, a fase e refeita."""
         if self.is_done(phase, force=force):
             err = self.validate_file_phase(phase)
             if err is None:
@@ -416,11 +724,13 @@ class Project:
         return False
 
     def ensure_dirs(self):
+        """Cria (se preciso) todos os diretorios do projeto."""
         for d in (self.dir, self.artifacts, self.scenes_dir, self.images_src,
                   self.narration_dir, self.audio_dir, self.output_dir):
             d.mkdir(parents=True, exist_ok=True)
 
     def tree(self):
+        """Imprime no console a arvore de arquivos do projeto."""
         print(f"\n== Projeto: {self.dir}")
         for p in (self.script, self.scenes_json, self.image_prompts,
                   self.narration_timing, self.timeline_json, self.bgm,
@@ -433,6 +743,16 @@ class Project:
 # ---------------------------------------------------------------- fases ----
 
 def phase_script(args, p: Project):
+    """FASE 1/10 - Roteiro.
+
+    Chama generate_script_from_prompt.py (Gemini Web via Chrome, conta
+    gratuita) e grava artifacts/script.json com o titulo e as secoes
+    (s0 abertura, s_intro gancho, s1..sN conteudo, s_outro encerramento).
+    O contrato de narracao e validado aqui (validate_contract).
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only script
+    """
     run([sys.executable, str(SCRIPTS["script_from_prompt"]),
          "--prompt", args.prompt or p.prompt or p.slug,
          "--out", str(p.script)],
@@ -441,6 +761,15 @@ def phase_script(args, p: Project):
 
 
 def phase_scenes(args, p: Project):
+    """FASE 2/10 - Cenas e overlays (100% local, deterministico).
+
+    1) generate_scenes_and_prompts.py: divide o roteiro em cenas, grava
+       artifacts/scenes.json e artifacts/image_prompts.json.
+    2) generate_scene_htmls.py: gera os overlays de texto scenes/sN.html.
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only scenes
+    """
     run([sys.executable, str(SCRIPTS["scenes_from_script"]),
          "--script", str(p.script),
          "--scenes-out", str(p.scenes_json),
@@ -455,10 +784,19 @@ def phase_scenes(args, p: Project):
 
 
 def phase_images(args, p: Project):
-    """Gera imagens uma por uma com loop de quarentena (ate 4 tentativas).
+    """FASE 3/10 - Imagens das cenas.
+
+    Gera imagens uma por uma com loop de quarentena (ate 4 tentativas).
     Antes de gerar via Gemini, verifica se existe imagem adequada no banco
-    local (banco de imagens / indice_midia.db). Se achar, copia para o
-    projeto e pula a geracao."""
+    local (banco de imagens / indice_midia.db, busca BM25). Se achar, copia para o
+    projeto e pula a geracao.
+
+    Argumentos usados:
+        --wait / --pause  repassados ao fetch_images.py (Gemini Web)
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only images
+    """
     prompts = load_json(p.image_prompts)
     # ids de imagem = chaves do image_prompts.json (sem o _help)
     image_ids = [k for k in prompts.keys() if not k.startswith("_")]
@@ -559,6 +897,23 @@ def _music_prompt(p: Project, args) -> str:
 
 
 def phase_music(args, p: Project):
+    """FASE 4/10 - Trilha sonora instrumental.
+
+    Ordem de preferencia:
+      1) Banco local ("banco de musicas"), com rotacao sem repetir trilha
+         entre projetos (LRU quando o acervo esgota);
+      2) Gemini Web (fetch_music_gemini.py), 2 tentativas;
+      3) Trilha procedural local (gen_music_procedural.py) - sempre disponivel.
+
+    Argumentos usados:
+        --provider {gemini,procedural}  forca a origem da trilha
+        --wait                          espera pelo Gemini Web
+
+    Saida: assets/audio/gemini/bgm_gemini.wav (ou assets/audio/music/bgm_procedural.wav)
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only music --provider procedural
+    """
     prompt = _music_prompt(p, args)
     p.dir.mkdir(parents=True, exist_ok=True)
     p.audio_dir.mkdir(parents=True, exist_ok=True)
@@ -655,6 +1010,27 @@ def _pick_gemini_voice(cfg):
 
 
 def phase_narration(args, p: Project):
+    """FASE 5/10 - Narracao por secao.
+
+    Motor escolhido por --narration-provider (ou config.json -> tts.provider):
+      - "edge":  gen_narration_edge.py, local e sem API (padrao seguro).
+      - "gemini": gen_narration_gemini_sections.py, Google AI Studio
+                  (GOOGLE_TTS_API_KEY). A voz alterna entre
+                  config.json -> tts.gemini_voices (Achernar/Leda) a cada
+                  video, a menos que --voice force uma voz especifica.
+      - Se o Gemini falhar (429/401/...) e config.json -> tts.edge_fallback
+        estiver ligado, cai automaticamente para o Edge-TTS e registra
+        "fallback_from": "gemini" no project.json.
+
+    Argumentos usados:
+        --voice / --narration-provider / --rate / --pitch / --style / --workers
+
+    Saida: assets/audio/narration/*.wav + artifacts/narration_timing.json
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only narration \
+            --narration-provider gemini --voice Leda
+    """
     cfg = load_json(HERE / "config.json")
     tts = cfg.get("tts", {})
     provider = (getattr(args, "narration_provider", None) or tts.get("provider") or "edge").lower()
@@ -666,6 +1042,7 @@ def phase_narration(args, p: Project):
         or voice_arg.lower().endswith("neural")
 
     def _run_edge(voice, rate, pitch, style, workers, label):
+        """Gera a narracao com Edge-TTS (local, sem API) e registra no estado."""
         run([sys.executable, str(SCRIPTS["gen_narration"]),
              "--proj", str(p.dir),
              "--voice", voice,
@@ -710,6 +1087,16 @@ def phase_narration(args, p: Project):
 
 
 def phase_timeline(args, p: Project):
+    """FASE 6/10 - Linha do tempo (local).
+
+    build_timeline.py calcula o inicio/fim de cada secao a partir da duracao
+    real da narracao e grava artifacts/timeline.json.
+    IMPORTANTE: a timeline e reescrita aqui, entao refazer a narracao
+    invalida timeline, mix e compose (ver DEPS).
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only timeline
+    """
     run([sys.executable, str(SCRIPTS["build_timeline"]),
          "--proj", str(p.dir)],
         "FASE timeline: linha do tempo (local)")
@@ -717,6 +1104,18 @@ def phase_timeline(args, p: Project):
 
 
 def phase_mix(args, p: Project):
+    """FASE 7/10 - Mix de audio (narracao + trilha).
+
+    mix_audio.py combina a narracao concatenada com a trilha e normaliza o
+    volume, gravando assets/audio/final_mix.m4a.
+
+    Argumentos usados:
+        --provider {gemini,procedural}  origem da trilha na mixagem
+        --gain DB                        ganho aplicado na mix (padrao do mix_audio.py)
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only mix --gain -6.0
+    """
     cmd = [sys.executable, str(SCRIPTS["mix_audio"]),
            "--proj", str(p.dir),
            "--hf-dir", str(HF_DIR)]
@@ -729,6 +1128,15 @@ def phase_mix(args, p: Project):
 
 
 def phase_compose(args, p: Project):
+    """FASE 8/10 - Composicao HyperFrames (local).
+
+    build_composition.py monta composition.html a partir da timeline, das
+    cenas e dos overlays HTML. Se a timeline mudou, a composicao PRECISA
+    ser refeita antes do render (ver MANUAL_GRAFOS.md secao 1.5).
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only compose
+    """
     run([sys.executable, str(SCRIPTS["build_composition"]),
          "--timeline", str(p.timeline_json),
          "--scenes", str(p.scenes_json),
@@ -740,6 +1148,15 @@ def phase_compose(args, p: Project):
 
 
 def phase_preprocess(args, p: Project):
+    """FASE 9/10 - Preprocessamento das imagens (local).
+
+    preprocess_images.py copia/ajusta as imagens do projeto para a pasta de
+    assets do HyperFrames (HF_DIR/assets/images), no tamanho e formato que o
+    renderizador espera.
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only preprocess
+    """
     run([sys.executable, str(SCRIPTS["preprocess_images"]),
          "--proj", str(p.dir),
          "--scenes", str(p.scenes_json),
@@ -749,12 +1166,23 @@ def phase_preprocess(args, p: Project):
 
 
 def phase_render(args, p: Project):
+    """FASE 10/10 - Render do video final.
+
+    Chama render.ps1 (HyperFrames) com a composicao e o mix, gerando
+    output/<slug>.mp4. Depois roda verify_output.py para checar o arquivo.
+
+    Argumentos usados:
+        --skip-check  pula o "npm run check" do HyperFrames (re-render rapido)
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only render --skip-check
+    """
     cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File",
-         str(HERE / "render.ps1"),
-         "-ProjectDir", str(p.dir),
-         "-Slug", p.slug,
-         "-CompFile", str(p.composition),
-         "-MixFile", str(p.final_mix)]
+           str(HERE / "render.ps1"),
+           "-ProjectDir", str(p.dir),
+           "-Slug", p.slug,
+           "-CompFile", str(p.composition),
+           "-MixFile", str(p.final_mix)]
     if getattr(args, "skip_check", False):
         cmd.append("-SkipCheck")
     run(cmd, "FASE render: renderizando video (HyperFrames)")
@@ -768,7 +1196,25 @@ def phase_render(args, p: Project):
 
 
 def phase_youtube(args, p: Project):
-    """Fase youtube: publica no YouTube com descricao, thumbnail e privacidade publica."""
+    """FASE EXTRA (youtube) - Publica o MP4 no YouTube.
+
+    So roda quando o comando usa --publish. Chama youtube_upload.py com o
+    titulo, a descricao no padrao oficial do canal, as tags, a thumbnail e a
+    privacidade pedidas.
+
+    Descricao: usa --yt-desc se informado; senao gera no padrao do canal
+    (scripts/description_template.py) a partir do roteiro do projeto.
+    Thumbnail: usa --yt-thumb se informado; senao a primeira imagem de cena.
+
+    Argumentos usados:
+        --publish --privacy --yt-title --yt-desc --yt-tags --yt-thumb
+        --yt-secret --yt-kids --nao-kids --default-language
+        --default-audio-language
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --publish \
+            --privacy unlisted --yt-title "Husky que faz drama"
+    """
     print("== FASE youtube: iniciando", flush=True)
     if not p.video.exists():
         print("== YOUTUBE: video ausente, nada para publicar", flush=True)
@@ -783,18 +1229,16 @@ def phase_youtube(args, p: Project):
     if not title:
         title = p.prompt or p.slug
 
-    # Descricao completa: conteudo, marcacao de IA, sem promocao paga, idioma
-    auto_desc = (
-        f"{title}\n\n"
-        f"{p.prompt or title}\n\n"
-        "Vídeo gerado por inteligência artificial (IA).\n"
-        "Não contém promoção paga.\n"
-        "Idioma da narração e das legendas: Português do Brasil.\n"
-        "Conteúdo infantil (feito para crianças).\n\n"
-        "#cachorro #animacao #infantil #frida #luna #desenhoanimado"
-    )
-    desc = getattr(args, "yt_desc", "") or auto_desc
-    tags = getattr(args, "yt_tags", "") or "cachorro,animacao,infantil"
+    # Descricao no PADRAO OFICIAL DO CANAL (scripts/description_template.py).
+    # IMPORTANTE: sem isto o pipeline passaria uma descricao curta e o
+    # youtube_upload.py nunca usaria o roteiro do projeto (que e o que gera a
+    # descricao rica). Nunca montar a descricao na mao aqui.
+    from description_template import build_description, extract_storyline, read_script
+
+    script = read_script(p.dir) or {}
+    auto_desc = build_description(title, extract_storyline(script))
+    desc = (getattr(args, "yt_desc", "") or "").strip() or auto_desc
+    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
     privacy = getattr(args, "privacy", "public")
     category = "24"
     made_for_kids = bool(getattr(args, "yt_kids", True)) and not getattr(args, "nao_kids", False)
@@ -875,6 +1319,7 @@ def invalidate_downstream(p: Project, phase):
     """Marca fases dependentes como pendentes (o conteudo fisico permanece,
     mas os checkpoints deixam de valer ate serem refeito em cima da nova fase)."""
     def walk(node):
+        """Percorre o grafo DEPS recursivamente, caducando os descendentes."""
         for child in DEPS.get(node, []):
             rec = p.state.get("phases", {}).get(child)
             if rec and rec.get("done"):
@@ -913,6 +1358,16 @@ def _validate_prereq(p: Project, phase, missing_ok=None):
 
 
 def execute_phases(args, p: Project, phases_to_run, force=False):
+    """Executa as fases do plano, respeitando os checkpoints.
+
+    Paralelismo: a fase `music` pode rodar em paralelo com script/scenes,
+    mas SEMPRE antes de `images` (evita conflito de Chrome/Gemini Web).
+    As demais fases rodam em sequencia, porque cada uma depende da
+    anterior.
+
+    phases_to_run  lista de fases a executar (inclui "youtube" se for extra)
+    force          ignora os checkpoints e refaz as fases
+    """
     run_parallel = not getattr(args, "no_parallel", False)
     only = set(phases_to_run)
 
@@ -980,6 +1435,11 @@ def execute_phases(args, p: Project, phases_to_run, force=False):
 
 
 def get_project(args):
+    """Monta o objeto Project a partir dos argumentos (--slug tem prioridade).
+
+    Se nenhum dos dois for informado, encerra com uma mensagem de erro
+    explicando o uso correto.
+    """
     if getattr(args, "slug", None):
         return Project(args.slug, getattr(args, "prompt", None))
     if getattr(args, "prompt", None):
@@ -1026,58 +1486,29 @@ def next_topic_in_queue(current_prompt):
 
 
 def publish_to_youtube(p: Project, args):
-    """Fase publish: envia o MP4 para o YouTube (youtube_upload.py)."""
-    print("== FASE publish: iniciando", flush=True)
-    if not p.video.exists():
-        print("== YOUTUBE: video ausente, nada para publicar", flush=True)
-        return
-    title = (getattr(args, "yt_title", "") or "").strip()
-    if not title:
-        try:
-            title = load_json(p.script).get("title", "")
-        except Exception:
-            title = ""
-    if not title:
-        title = p.prompt or p.slug
+    """Fase publish: envia o MP4 para o YouTube (youtube_upload.py).
 
-    auto_desc = (
-        f"{title}\n\n"
-        f"{p.prompt or title}\n\n"
-        "Vídeo gerado por inteligência artificial (IA).\n"
-        "Não contém promoção paga.\n"
-        "Idioma da narração e das legendas: Português do Brasil.\n"
-        "Conteúdo infantil (feito para crianças).\n\n"
-        "#cachorro #animacao #infantil #frida #luna #desenhoanimado"
-    )
-    desc = p.yt_desc if hasattr(args, "yt_desc") and args.yt_desc else auto_desc
-    desc = getattr(args, "yt_desc", "") or auto_desc
-    tags = getattr(args, "yt_tags", "") or "cachorro,animação"
-    privacy = getattr(args, "privacy", "private")
-    default_language = getattr(args, "default_language", "pt-BR") or "pt-BR"
-    default_audio_language = getattr(args, "default_audio_language", "pt-BR") or "pt-BR"
-    cmd = [
-        sys.executable, str(HERE / "youtube_upload.py"),
-        "--video", str(p.video),
-        "--title", title,
-        "--description", desc,
-        "--tags", tags,
-        "--privacy", privacy,
-        "--category", "24",
-        "--default-language", default_language,
-        "--default-audio-language", default_audio_language,
-    ]
-    if getattr(args, "yt_kids", False):
-        cmd.append("--made-for-kids")
-    print(f"== YOUTUBE: publicando '{title[:80]}' (privacidade={privacy}, lang={default_language})", flush=True)
-    r = subprocess.run(cmd)
-    if r.returncode == 0:
-        print("== YOUTUBE: PUBLICADO COM SUCESSO", flush=True)
-    else:
-        print(f"== YOUTUBE: FALHOU codigo {r.returncode} — publique manualmente em Publicar", flush=True)
+    Atalho legado: delega para phase_youtube(), que e a implementacao
+    mantida. Existe para compatibilidade com quem chamava esta funcao
+    diretamente.
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Cachorro engraçado" --publish
+    """
+    return phase_youtube(args, p)
 
 
 def update_youtube_metadata(p: Project, args):
-    """Atualiza metadados (titulo, descricao, tags, thumbnail) de um video ja enviado ao YouTube."""
+    """Atualiza metadados (titulo, descricao, tags, thumbnail) de um video ja enviado ao YouTube.
+
+    Nao reenvia o video: so chama youtube_update.py com o --yt-video-id.
+    A descricao usa --yt-desc se informado; senao e gerada no padrao oficial
+    do canal a partir do roteiro do projeto.
+
+    Exemplo:
+        python scripts/pipeline.py full --slug cachorro-engracado \
+            --yt-video-id kJztp7A7xWI --yt-title "Novo titulo"
+    """
     print("== FASE yt-meta: atualizando metadados do YouTube", flush=True)
     video_id = getattr(args, "yt_video_id", "") or ""
     if not video_id:
@@ -1093,11 +1524,16 @@ def update_youtube_metadata(p: Project, args):
     if not title:
         title = p.prompt or p.slug
 
-    desc = getattr(args, "yt_desc", "") or ""
-    if not desc:
-        desc = p.prompt or title
+    # Descricao: usa --yt-desc se informado; senao gera no padrao do canal
+    # a partir do roteiro do projeto (fonte unica da verdade).
+    from description_template import build_description, extract_storyline, read_script
 
-    tags = getattr(args, "yt_tags", "") or "cachorro,animacao"
+    script = read_script(p.dir) or {}
+    desc = (getattr(args, "yt_desc", "") or "").strip()
+    if not desc:
+        desc = build_description(title, extract_storyline(script))
+
+    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
     privacy = getattr(args, "privacy", "public")
     category = "24"
     made_for_kids = bool(getattr(args, "yt_kids", True)) and not getattr(args, "nao_kids", False)
@@ -1166,6 +1602,7 @@ def write_control_json(p: Project, args, t0: float, elapsed: float, publish_resu
 
         # Artefatos existentes
         def exists(path):
+            """True se o caminho existir no disco (nunca levanta excecao)."""
             try:
                 return Path(path).exists()
             except Exception:
@@ -1216,6 +1653,7 @@ def write_control_json(p: Project, args, t0: float, elapsed: float, publish_resu
 
 
 def cfg_ffmpeg_dir():
+    """Caminho da pasta do ffmpeg configurada em config.json -> ffmpeg_dir."""
     try:
         import json as _json
         cfg = _json.loads((HERE / "config.json").read_text(encoding="utf-8"))
@@ -1237,6 +1675,7 @@ def load_deliveries():
 
 
 def save_deliveries(data):
+    """Grava a lista global de entregas em projects-deliveries.json."""
     DELIVERIES_FILE.parent.mkdir(parents=True, exist_ok=True)
     save_json(DELIVERIES_FILE, data)
 
@@ -1303,6 +1742,23 @@ def find_duplicate_by_prompt(prompt):
 
 
 def cmd_full(args):
+    """Comando `full` / `resume` - executa o pipeline.
+
+    Fluxo:
+      1) detecta duplicidade (tema ja entregue -> avanca para a fila de
+         topics.txt);
+      2) monta o plano de fases conforme --from / --only / --skip;
+      3) executa as fases com checkpoint (pula o que ja esta pronto);
+      4) grava project-control.json e registra a entrega;
+      5) sincroniza os bancos globais de imagens e musicas;
+      6) publica no YouTube se --publish (ou atualiza metadados se
+         --yt-video-id).
+
+    Exemplos:
+        python scripts/pipeline.py full --prompt "Cachorro engraçado"
+        python scripts/pipeline.py full --prompt "Cachorro engraçado" --from narration
+        python scripts/pipeline.py resume --slug cachorro-engracado --only mix,compose
+    """
     # === DETECAO DE DUPLICIDADE ===
     # Varre projetos existentes antes de iniciar: se o topico ja foi usado,
     # avanca automaticamente para o proximo topico da fila de topics.txt.
@@ -1387,6 +1843,16 @@ def cmd_full(args):
 
 
 def cmd_status(args):
+    """Comando `status` - mostra os checkpoints do projeto.
+
+    Para cada fase mostra a data e se o checkpoint ainda e valido (a
+    validacao fisica dos arquivos pode invalidar um checkpoint marcado como
+    feito). No fim mostra o caminho e o tamanho do video final.
+
+    Exemplo:
+        python scripts/pipeline.py status --prompt "Cachorro engraçado"
+        python scripts/pipeline.py status --slug cachorro-engracado
+    """
     p = get_project(args)
     if not p.state_file.exists():
         print(f"Projeto {p.slug}: sem estado (nunca rodou).")
@@ -1407,6 +1873,16 @@ def cmd_status(args):
 
 
 def cmd_reset(args):
+    """Comando `reset` - limpa checkpoints para refazer fases.
+
+    Só o checkpoint e apagado: os arquivos continuam no disco e sao
+    reaproveitados na proxima execucao (quando a fase roda de novo).
+
+    Exemplos:
+        python scripts/pipeline.py reset --prompt "Cachorro engraçado" --phase images
+        python scripts/pipeline.py reset --prompt "Cachorro engraçado" --phase images,music
+        python scripts/pipeline.py reset --prompt "Cachorro engraçado" --all
+    """
     p = get_project(args)
     if getattr(args, "all", False):
         for ph in PHASES:
@@ -1421,6 +1897,20 @@ def cmd_reset(args):
 
 
 def main():
+    """Ponto de entrada da CLI: monta o argparse e despacha para o comando.
+
+    Comandos:
+        full     pipeline completo (cria/retoma o projeto pelo --prompt)
+        resume   retoma um projeto existente pelo --slug
+        status   mostra os checkpoints do projeto
+        reset    limpa checkpoints de fases
+
+    Exemplos:
+        python scripts/pipeline.py full --prompt "Cachorro engraçado"
+        python scripts/pipeline.py resume --slug cachorro-engracado
+        python scripts/pipeline.py status --slug cachorro-engracado
+        python scripts/pipeline.py reset --slug cachorro-engracado --phase images
+    """
     # Força UTF-8 no stdout/stderr para evitar erro de codificação no Windows
     if sys.platform == "win32":
         sys.stdout.reconfigure(encoding="utf-8")
@@ -1430,83 +1920,157 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
     def common(sp, need_prompt=True):
+        """Registra os argumentos compartilhados por full/resume/status/reset.
+
+        As strings de help sao o "manual" visivel em --help; a explicacao
+        completa com exemplos esta no docstring do modulo (topo do arquivo).
+        """
         if need_prompt:
-            sp.add_argument("--prompt", help="assunto do video (define o nome do projeto)")
-        sp.add_argument("--slug", help="forca o nome do projeto (senao vem do prompt)")
-        sp.add_argument("--wait", type=int, default=420)
-        sp.add_argument("--pause", type=int, default=8)
-        sp.add_argument("--voice", default="pt-BR-ThalitaNeural",
-                        help="voz Edge (pt-BR-*) ou voz Gemini (Leda, Achernar, ...)")
-        sp.add_argument("--narration-provider", default=None, choices=["edge", "gemini"],
-                        help="motor de narracao (padrao: config tts.provider)")
-        sp.add_argument("--rate", default="+12%")
-        sp.add_argument("--pitch", default="+8Hz")
-        sp.add_argument("--style", default="excited")
-        sp.add_argument("--workers", type=int, default=4)
-        sp.add_argument("--provider", default=None, choices=["gemini", "procedural"])
-        sp.add_argument("--gain", type=float, default=None)
-        sp.add_argument("--duration", type=int, default=None,
-                        help="duracao alvo do video (s) - sobrescreve config.json")
-        sp.add_argument("--skip-check", action="store_true",
-                        help="pula o npm run check no render (re-render rapido)")
-        sp.add_argument("--publish", action="store_true",
-                        help="publica no YouTube apos o render")
-        sp.add_argument("--privacy", default="public",
-                        choices=["private", "unlisted", "public"])
-        sp.add_argument("--yt-title", default="")
-        sp.add_argument("--yt-tags", default="cachorro,animação,frida,luna")
-        sp.add_argument("--yt-desc", default="",
-                        help="descricao completa do video (sobrescreve a gerada automaticamente)")
-        sp.add_argument("--yt-thumb", default="",
-                        help="caminho da imagem de thumbnail (JPG/PNG)")
-        sp.add_argument("--default-language", default="pt-BR",
-                        help="idioma padrao do video no YouTube (ex: pt-BR)")
-        sp.add_argument("--default-audio-language", default="pt-BR",
-                        help="idioma do audio/narracao no YouTube (ex: pt-BR)")
-        sp.add_argument("--yt-secret", default="",
-                        help="caminho do client_secret.json do canal")
-        sp.add_argument("--yt-video-id", default="",
-                        help="ID de video existente para atualizar apenas metadados (sem upload)")
-        sp.add_argument("--yt-kids", action="store_true", default=True,
-                        help="marca o video como feito para criancas (COPPA)")
-        sp.add_argument("--nao-kids", action="store_true",
-                        help="desativa o modo feito para criancas")
-        sp.add_argument("--sem-texto", action="store_true", default=True,
-                        help="nao gera texto sobreposta nas cenas (apenas imagem + narracao)")
+            sp.add_argument(
+                "--prompt",
+                help='assunto do video (define a pasta do projeto). Ex: --prompt "Por que o cachorro lambe o seu rosto?"')
+        sp.add_argument(
+            "--slug",
+            help="forca o nome da pasta do projeto (sem derivar do prompt). Ex: --slug caes-de-resgate")
+        sp.add_argument(
+            "--wait", type=int, default=420,
+            help="espera maxima (s) por resposta do Gemini Web nas imagens. Padrao: 420. Ex: --wait 600")
+        sp.add_argument(
+            "--pause", type=int, default=8,
+            help="pausa (s) entre chamadas ao Gemini Web (anti-bloqueio). Padrao: 8. Ex: --pause 15")
+        sp.add_argument(
+            "--voice", default="pt-BR-ThalitaNeural",
+            help="voz da narracao. Edge: pt-BR-ThalitaNeural, pt-BR-FranciscaNeural. "
+                 "Gemini: Leda, Achernar, Kore, Zephyr. Ex: --voice Leda")
+        sp.add_argument(
+            "--narration-provider", default=None, choices=["edge", "gemini"],
+            help="motor da narracao. edge = local sem API (padrao seguro); "
+                 "gemini = Google AI Studio (fallback automatico para edge). "
+                 "Padrao: config.json tts.provider. Ex: --narration-provider edge")
+        sp.add_argument(
+            "--rate", default="+12%",
+            help="velocidade da fala (Edge-TTS). Padrao: +12%%. Ex: --rate +0%%")
+        sp.add_argument(
+            "--pitch", default="+8Hz",
+            help="tom da fala (Edge-TTS). Padrao: +8Hz. Ex: --pitch +0Hz")
+        sp.add_argument(
+            "--style", default="excited",
+            help="estilo de fala do Edge-TTS (excited, cheerful, narration). Padrao: excited")
+        sp.add_argument(
+            "--workers", type=int, default=4,
+            help="secoes de narracao em paralelo. Padrao: 4. Ex: --workers 8")
+        sp.add_argument(
+            "--provider", default=None, choices=["gemini", "procedural"],
+            help="origem da trilha musical. gemini = Gemini Web; procedural = local sem API. "
+                 "Ex: --provider procedural")
+        sp.add_argument(
+            "--gain", type=float, default=None,
+            help="ganho (dB) da mix narracao+trilha; negativo abaixa a trilha. Ex: --gain -6.0")
+        sp.add_argument(
+            "--duration", type=int, default=None,
+            help="duracao alvo do video (s) - sobrescreve config.json target_duration_s. Ex: --duration 90")
+        sp.add_argument(
+            "--skip-check", action="store_true",
+            help="pula o 'npm run check' do HyperFrames no render (re-render rapido)")
+        sp.add_argument(
+            "--publish", action="store_true",
+            help="publica no YouTube depois do render (adiciona a fase youtube)")
+        sp.add_argument(
+            "--privacy", default="public", choices=["private", "unlisted", "public"],
+            help="visibilidade no YouTube. Padrao: public. Ex: --privacy unlisted")
+        sp.add_argument(
+            "--yt-title", default="",
+            help="titulo exato no YouTube (padrao: titulo do roteiro). Ex: --yt-title 'Husky que faz drama'")
+        sp.add_argument(
+            "--yt-tags", default="",
+            help="tags do YouTube separadas por virgula (padrao: lista do canal). "
+                 "Ex: --yt-tags 'husky,siberiano,cachorro,pet'")
+        sp.add_argument(
+            "--yt-desc", default="",
+            help="descricao completa do video (padrao: gerada no padrao oficial do canal). "
+                 "Ex: --yt-desc 'Descricao customizada.'")
+        sp.add_argument(
+            "--yt-thumb", default="",
+            help="imagem de thumbnail JPG/PNG (padrao: primeira imagem de cena). "
+                 "Ex: --yt-thumb 'C:\\videomaker\\projects\\meu-projeto\\capa.jpg'")
+        sp.add_argument(
+            "--default-language", default="pt-BR",
+            help="idioma padrao do video no YouTube. Padrao: pt-BR")
+        sp.add_argument(
+            "--default-audio-language", default="pt-BR",
+            help="idioma do audio/narracao no YouTube. Padrao: pt-BR")
+        sp.add_argument(
+            "--yt-secret", default="",
+            help="caminho do client_secret.json do canal (padrao: scripts/client_secret.json). "
+                 "Ex: --yt-secret 'C:\\videomaker\\scripts\\client_secret-xanpires.json'")
+        sp.add_argument(
+            "--yt-video-id", default="",
+            help="ID de video existente para atualizar apenas metadados (sem upload). "
+                 "Ex: --yt-video-id kJztp7A7xWI")
+        sp.add_argument(
+            "--yt-kids", action="store_true", default=True,
+            help="marca o video como feito para criancas (COPPA) - padrao do canal")
+        sp.add_argument(
+            "--nao-kids", action="store_true",
+            help="desativa o modo feito para criancas (sobrescreve --yt-kids)")
+        sp.add_argument(
+            "--sem-texto", action="store_true", default=True,
+            help="nao gera texto sobreposta nas cenas (apenas imagem + narracao) - padrao")
 
     sub = ap.add_subparsers(dest="cmd", required=True)
 
-    f = sub.add_parser("full", help="pipeline completo com checkpoints")
+    f = sub.add_parser(
+        "full",
+        help="pipeline completo com checkpoints (cria/retoma o projeto pelo --prompt)",
+        description="Roda o pipeline completo. Ex: "
+                    "python scripts/pipeline.py full --prompt \"Cachorro engraçado\"",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     common(f)
     f.add_argument("--from", dest="from_phase", default="auto",
                    choices=["auto"] + PHASES,
-                   help="comeca em uma fase (auto = primeira pendente)")
-    f.add_argument("--only", help="roda apenas estas fases, ex: mix,compose")
-    f.add_argument("--skip", help="pula estas fases")
+                   help="comeca em uma fase (auto = primeira pendente). Ex: --from narration")
+    f.add_argument("--only", help="roda apenas estas fases, ex: --only mix,compose,render")
+    f.add_argument("--skip", help="pula estas fases, ex: --skip music,images")
     f.add_argument("--force", action="store_true", help="ignora checkpoints e refaz")
     f.add_argument("--no-parallel", action="store_true", help="desativa paralelismo")
     f.set_defaults(func=cmd_full)
 
-    r = sub.add_parser("resume", help="retoma projeto existente pelo slug")
+    r = sub.add_parser(
+        "resume",
+        help="retoma projeto existente pelo slug (sem passar --prompt)",
+        description="Retoma um projeto ja existente. Ex: "
+                    "python scripts/pipeline.py resume --slug caes-de-resgate-como-eles-encontram-pess",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     common(r, need_prompt=False)
     r.add_argument("--from", dest="from_phase", default="auto",
                    choices=["auto"] + PHASES,
-                   help="comeca em uma fase (auto = primeira pendente)")
-    r.add_argument("--only", help="roda apenas estas fases, ex: mix,compose")
-    r.add_argument("--skip", help="pula estas fases")
+                   help="comeca em uma fase (auto = primeira pendente). Ex: --from narration")
+    r.add_argument("--only", help="roda apenas estas fases, ex: --only mix,compose,render")
+    r.add_argument("--skip", help="pula estas fases, ex: --skip music,images")
     r.add_argument("--force", action="store_true", help="ignora checkpoints e refaz")
     r.add_argument("--no-parallel", action="store_true", help="desativa paralelismo")
     r.set_defaults(func=cmd_full)
 
-    s = sub.add_parser("status", help="mostra checkpoints do projeto")
+    s = sub.add_parser(
+        "status",
+        help="mostra os checkpoints do projeto (o que ja foi feito e o que falta)",
+        description="Mostra o status das fases. Ex: "
+                    "python scripts/pipeline.py status --prompt \"Cachorro engraçado\"",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     common(s)
     s.set_defaults(func=cmd_status)
 
-    z = sub.add_parser("reset", help="limpa checkpoints de fases")
+    z = sub.add_parser(
+        "reset",
+        help="limpa checkpoints de fases (os arquivos fisicos sao mantidos)",
+        description="Limpa checkpoints. Ex: "
+                    "python scripts/pipeline.py reset --prompt \"Cachorro engraçado\" --phase images",
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     common(z)
     z.add_argument("--phase", default="",
-                   help="fases separadas por virgula")
-    z.add_argument("--all", action="store_true")
+                   help="fases separadas por virgula. Ex: --phase images,music")
+    z.add_argument("--all", action="store_true",
+                   help="limpa o checkpoint de todas as fases")
     z.set_defaults(func=cmd_reset)
 
     args = ap.parse_args()

@@ -2088,8 +2088,15 @@ Funções públicas do módulo:
 ### 36.3. Consumers
 
 - `scripts/youtube_upload.py` — descrição do upload (causa raiz corrigida).
+- `scripts/pipeline.py` — fase `youtube` e `update_youtube_metadata` (passa a
+  gerar a descrição no padrão a partir do `script.json` do projeto).
 - `scripts/standardize_descriptions.py` — padronização em massa dos projetos.
 - `scripts/audit_youtube.py` — auditoria e correção do canal publicado.
+
+> **Regra:** nunca montar a descrição do YouTube na mão dentro de outro
+> script. Sempre chamar `description_template.build_description()`. Sem isso
+> a descrição curta volta a ser publicada (foi exatamente o que acontecia no
+> `pipeline.py`, que passava `--description` e anulava o template do upload).
 
 ### 36.4. Comandos
 
@@ -2146,6 +2153,53 @@ Canal **Frida e Luna** (`@fridaeluna`, `UCt8f_9bKINYilXvp063Ik3A`):
   padrão sem enredo detalhado.
 - `ZBnPARaNtCs` ("O Segredo para Acabar com o Hálito de Onça do Seu Cão") está
   com **10 segundos** de duração no canal — upload quebrado, vale reenviar.
+
+---
+
+## 37. Documentação do pipeline (`scripts/pipeline.py`) (2026-11-06)
+
+O `pipeline.py` é o orquestrador do produto. A referência completa de comandos
+e argumentos está no **docstring do topo do arquivo** (é o que aparece quando
+alguém abre o código) e no `--help` do argparse.
+
+### 37.1. Comandos
+
+| Comando | O que faz | Exemplo |
+|---------|-----------|---------|
+| `full` | Pipeline completo; cria o projeto pelo `--prompt` e retoma de onde parou | `python scripts/pipeline.py full --prompt "Cachorro engraçado"` |
+| `resume` | Retoma um projeto existente pelo `--slug` (sem `--prompt`) | `python scripts/pipeline.py resume --slug caes-de-resgate` |
+| `status` | Mostra os checkpoints (o que já foi feito, o que falta, o que está inválido) | `python scripts/pipeline.py status --slug caes-de-resgate` |
+| `reset` | Limpa checkpoints para refazer fases (os arquivos ficam no disco) | `python scripts/pipeline.py reset --slug caes-de-resgate --phase images` |
+
+### 37.2. Argumentos por categoria
+
+| Categoria | Argumentos |
+|-----------|------------|
+| Projeto | `--prompt`, `--slug` |
+| Gemini Web | `--wait`, `--pause` |
+| Narração | `--voice`, `--narration-provider`, `--rate`, `--pitch`, `--style`, `--workers` |
+| Música/mix | `--provider`, `--gain` |
+| Duração/render | `--duration`, `--skip-check` |
+| YouTube | `--publish`, `--privacy`, `--yt-title`, `--yt-tags`, `--yt-desc`, `--yt-thumb`, `--yt-secret`, `--yt-video-id`, `--yt-kids`, `--nao-kids`, `--default-language`, `--default-audio-language` |
+| Seleção de fases | `--from`, `--only`, `--skip`, `--force`, `--no-parallel` |
+| Reset | `--phase`, `--all` |
+| Visual | `--sem-texto` |
+
+Cada argumento tem exemplo real no docstring do módulo e no `--help`.
+
+### 37.3. Correção aplicada junto com a documentação
+
+Ao documentar o `phase_youtube` foi encontrado um bug: a função montava a
+descrição curta na mão e sempre passava `--description` ao `youtube_upload.py`,
+**anulando** o template do padrão oficial.Ou seja, vídeos publicados pelo
+pipeline ainda saíam com a descrição fraca.
+
+Corrigido em `phase_youtube` e `update_youtube_metadata`: agora chamam
+`description_template.build_description()` com o enredo do `script.json`.
+O `publish_to_youtube()` (função legada sem uso) passou a delegar para
+`phase_youtube()` — ele também tinha um `AttributeError` latente (`p.yt_desc`).
+
+Teste de regressão: `scripts/smoke_test_pipeline_description.py`.
 
 ---
 
