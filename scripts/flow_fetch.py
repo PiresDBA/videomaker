@@ -12,6 +12,7 @@ Exemplos:
   python flow_fetch.py --project-dir C:\videomaker\projects\x --kind image --prompt "..."
   python flow_fetch.py --kind image --prompts-file prompts.json
   python flow_fetch.py --kind text --prompt "Escreva um roteiro..."
+  python flow_fetch.py --busca-audio --prompt "Narre este texto..." --name s1
 
 Requisitos: pip install playwright   (usa o Chrome já aberto com --remote-debugging-port e já logado)
 """
@@ -38,7 +39,8 @@ try:
 except Exception:
     pass
 
-SCRIPT_VERSION = "r1-2026-11-07 (Google Flow via CDP + Playwright)"
+SCRIPT_VERSION = "r2-2026-11-07 (Google Flow via CDP + Playwright + Gemini TTS)"
+GEMINI_TTS_MODEL = "gemini-2.5-flash-preview-tts"
 
 # REGRA DO PROJETO: o flow_fetch nunca pede vídeo ao Google Flow no modo image.
 # Para material visual, usa --kind image (imagem estática).
@@ -530,6 +532,58 @@ def save_bytes(out_dir: Path, name: str, ext: str, data: bytes) -> Path:
     p = out_dir / f"{name}{ext}"
     p.write_bytes(data)
     return p
+
+
+def _read_env_value(name: str) -> str:
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    raw = b""
+    try:
+        raw = env_path.read_bytes()
+    except Exception:
+        pass
+    if not raw:
+        return (os.environ.get(name) or "").strip()
+    text = raw.decode("utf-16-le", errors="ignore") if raw[:2] in (b"\xff\xfe", b"\xfe\xff") else raw.decode("utf-8", errors="ignore")
+    for ln in text.splitlines():
+        s = ln.strip().replace("\ufeff", "").strip()
+        if s.startswith(name + "="):
+            v = s.split("=", 1)[1].strip().strip('"').strip("'")
+            if v:
+                return v
+    return (os.environ.get(name) or "").strip()
+
+
+def _gemini_tts_key() -> str:
+    """Chave da API do Gemini TTS (Google AI Studio) usada no geracao de audio."""
+    key = (os.environ.get("GOOGLE_TTS_API_KEY") or "").strip()
+    if not key:
+        key = (os.environ.get("GEMINI_API_KEY") or "").strip()
+    if not key:
+        try:
+            import json as _json
+            cfg_path = Path(__file__).resolve().parent / "config.json"
+            if cfg_path.exists():
+                cfg = _json.loads(cfg_path.read_text(encoding="utf-8"))
+                tts_cfg = cfg.get("tts") or {}
+                env_name = str(tts_cfg.get("key_env") or "GOOGLE_TTS_API_KEY")
+                key = _read_env_value(env_name)
+        except Exception:
+            pass
+    return key
+
+
+def generate_audio_gemini(text: str, api_key: str = "", model: str = GEMINI_TTS_MODEL) -> dict:
+    """Gera um arquivo de audio via Gemini TTS (Text-to-Speech) usando a Google AI API."""
+    from google import genai
+    key = (api_key or _gemini_tts_key()).strip()
+    if not key:
+        raise RuntimeError("Chave GOOGLE_TTS_API_KEY ausente (veja .env / scripts/config.json).")
+    client = genai.Client(api_key=key)
+    resp = client.models.generate_content(model=model, contents=text, config={"response_modalities": ["AUDIO"]})
+    cand = resp.candidates[0]
+    part = cand.content.parts[0]
+    data = part.inline_data.data
+    return {"bytes": data, "mime_type": (part.inline_data.mime_type or "audio/wav"), "model": model}
 
 
 # ----------------------------------------------------------------- imagem
@@ -1334,6 +1388,8 @@ async def main() -> int:
                          f"(padrão: {DEFAULT_CHARACTERS!r}; passe vazio para desativar)")
     ap.add_argument("--aspect", default="16:9",
                     help="proporção da imagem no painel do Flow (padrão: 16:9; vazio mantém)")
+    ap.add_argument("--busca-audio", dest="busca_audio", action="store_true",
+                    help="busca/gera audio de narracao via Gemini TTS (API) e salva o wav (usa --prompt e --name)")
     ap.add_argument("--pause", type=float, default=3.0)
     ap.add_argument("--check", action="store_true", help="só testa a conexão com o Chrome/Flow")
     ap.add_argument("--login", action="store_true", help="abre o Chrome para você logar no Google (uma única vez)")
@@ -1347,6 +1403,33 @@ async def main() -> int:
     if args.kind == "video":
         print("REGRA: flow_fetch nunca cria vídeo. Use --kind image para imagens.")
         return 2
+
+    # NOVO: --busca-audio gera audio de narracao via Gemini TTS (API) e salva o wav.
+    if getattr(args, "busca_audio", False):
+        if not args.prompt:
+            print("ERRO: --busca-audio precisa de --prompt (texto de narracao) e --name (arquivo).")
+            return 2
+        project = _resolve_project_dir(args)
+        if args.out_dir and Path(args.out_dir).is_absolute():
+            out_dir = Path(args.out_dir)
+        else:
+            out_dir = project / "public" / "assets" / "audio" / "narration"
+        text = args.prompt.strip()
+        if not text:
+            print("ERRO: --prompt vazio para --busca-audio.")
+            return 2
+        try:
+            res_audio = generate_audio_gemini(text)
+        except Exception as e:
+            print(f"ERRO no Gemini TTS: {e}")
+            return 5
+        data = res_audio.get("bytes") or b""
+        if not data:
+            print("ERRO: Gemini TTS nao retornou audio.")
+            return 5
+        p = save_bytes(out_dir, args.name, ".wav", data)
+        print(f"OK --busca-audio: audio salvo em {p} ({len(data)} bytes) modelo {res_audio.get('model')}")
+        return 0
 
     if not cdp_alive(args.cdp_url):
         if args.no_launch:

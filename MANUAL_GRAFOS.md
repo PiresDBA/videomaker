@@ -2505,8 +2505,8 @@ python scripts/flow_fetch.py --login
 
 **Argumentos:** `--kind`, `--prompt`, `--name`, `--prompts-file`, `--only`,
 `--project`, `--project-dir`, `--root`, `--out-dir`, `--cdp-url`, `--wait`,
-`--retries`, `--ref-image`/`--force-ref`, `--characters`, `--aspect`, `--pause`,
-`--check`, `--login`, `--setup`, `--skip-confirm`, `--profile`, `--no-launch`.
+`--retries`, `--ref-image`/`--force-ref`, `--characters`, `--aspect`, `--busca-audio`,
+`--pause`, `--check`, `--login`, `--setup`, `--skip-confirm`, `--profile`, `--no-launch`.
 
 **Personagens padrão (Frida e Luna):** todo prompt de imagem recebe
 automaticamente o bloco `REFERENCIA DE PERSONAGENS (OBRIGATORIA)` apontando para
@@ -2524,6 +2524,8 @@ desativa).
 modo Imagem, o envio é abortado. O prompt é preenchido com `fill()` no
 `ProseMirror` (digitação por teclado não funcionava) e a imagem gerada é
 capturada da rede (`flow-content.google`) e salva em disco.
+
+**Busca/geracao de audio (`--busca-audio`):** gera um arquivo de narracao via Gemini TTS (Google AI API, SDK `google-genai`, modelo `gemini-2.5-flash-preview-tts`, key `GOOGLE_TTS_API_KEY` em `.env` ou `scripts/config.json`). Usa-se `--prompt` (texto) e `--name` (arquivo). Saida padrao: `<proj>/public/assets/audio/narration/`.
 
 **Salvamento duplo:** cada imagem gerada é salva em
 `projects/<slug>/assets/images/gemini/scenes/` **e** copiada para
