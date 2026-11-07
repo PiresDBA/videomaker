@@ -157,7 +157,7 @@ def main():
     out_dir = Path(args.out).parent
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    full_prompt = SYSTEM + "\n\nTEMA DO USUARIO: " + args.prompt
+    full_prompt = "".join(SYSTEM) + "\n\nTEMA DO USUARIO: " + args.prompt
 
     cmd = [
         sys.executable, str(fetch),
