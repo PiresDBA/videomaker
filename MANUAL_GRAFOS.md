@@ -2447,6 +2447,35 @@ python scripts/check_manual.py
 
 ---
 
+## 40. Trocar a primeira foto (capa) de um vídeo já renderizado (2026-11-07)
+
+Para substituir a primeira foto (capa `intro-capa` e cena `s0`) de um projeto já
+renderizado sem gerar duplicidade:
+
+1. Copie a imagem desejada do `banco de imagens/` para
+   `projects/<slug>/assets/images/` (raiz, não `scenes/`), ex.:
+   `canal-frida-e-luna.jpg`
+2. Copie a mesma imagem para `hyperframes-workspace/assets/images/` (onde o
+   render roda).
+3. Edite `projects/<slug>/composition.html` trocando o `src` da imagem nas cenas
+   `intro-capa` e `s0` (duas ocorrências de `apresenta_o_do_canal_scene.jpg`).
+4. Re-renderize com `-Slug` diferente para não sobrescrever o original (§7.4):
+   ```
+   .\scripts\render.ps1 -SkipCheck -ProjectDir <proj> -Slug <slug>-com-nova-capa `
+     -CompFile "<proj>\composition.html" -MixFile "<proj>\assets\audio\final_mix.m4a"
+   ```
+
+**Exemplo real:** `caes-de-resgate-como-eles-encontram-pess` teve a capa trocada de
+`apresenta_o_do_canal_scene.jpg` para `canal-frida-e-luna.jpg`, gerando
+`caes-de-resgate-como-eles-encontram-pess-com-canal-frida-e-luna.mp4` no `output/`.
+
+Arquivos alterados:
+- `projects/<slug>/composition.html` (referência de imagem)
+- `projects/<slug>/assets/images/canal-frida-e-luna.jpg` (cópia da imagem)
+- `hyperframes-workspace/assets/images/canal-frida-e-luna.jpg` (cópia para render)
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 
