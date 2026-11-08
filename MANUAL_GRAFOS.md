@@ -551,6 +551,11 @@ python scripts/build_composition.py `
 .\scripts\render.ps1 -ProjectDir $proj -Slug "<slug>-v2" -CompFile ... -MixFile ...
 ```
 
+> **Gotcha 2026-11-08:** editar `scenes.json` e rodar `--from compose` pode não
+> rebuildar (checkpoint da fase compose). Force com
+> `pipeline.py reset --slug <slug> --phase compose` antes (ou use `--from compose --force`)
+> e confira as classes `cam-1..cam-N` no `composition.html`. Ver §42.6.
+
 ### 7.8 Voz engraçada (narração)
 
 ```powershell
@@ -1825,6 +1830,10 @@ O `scenes.json` grava `images: ["<cena>.jpg", "<cena>_b.jpg"]`, `split: 0.5` e `
 duas entradas (push-in padrão para a A, movimento lateral para a B). Na composição, a B entra
 com fade (`cam-1`) no ponto do split.
 
+> **Atualização 2026-11-08:** a composição aceita **2 a 4 imagens por cena**. Com 2
+> respeita `split`; com 3+ distribui as revelações (`cam-1..cam-N`) uniformemente.
+> Cenas também aceitam `.mp4`. Ver §42.
+
 **Arquivo:** `scripts/generate_scenes_and_prompts.py` — `build_prompt(..., variant="a"|"b")`.
 
 ### 30.3. Capa (intro-capa) com imagem de fundo + sem transição inicial
@@ -2022,6 +2031,13 @@ python "C:\videomaker\banco de imagens\indexar_midia.py" "C:\videomaker\banco de
 ```
 python scripts/buscar_banco_imagens.py --descricao "cachorro salsicha brincando" --listar
 ```
+
+> **Atualização 2026-11-08:** o índice correto é `indice_midia.db` (não
+> `indice_mdia.db`/`indexar_midia.db`, que são arquivos vazios). O indexador novo é
+> `indexar_midia_ui.py` (OpenRouter, 4 workers, filtro por nome). A busca é BM25, não
+> semântica: para cenas importantes, selecione por título e grave a proveniência em
+> `image_prompts.json` (`_sources`). Para a fase images não gerar nada fora do banco,
+> use `--apenas-banco`. Ver §42.
 
 ### 33.2. Banco de músicas
 
@@ -2253,6 +2269,7 @@ alguém abre o código) e no `--help` do argparse.
 | Seleção de fases | `--from`, `--only`, `--skip`, `--force`, `--no-parallel` |
 | Reset | `--phase`, `--all` |
 | Visual | `--sem-texto` |
+| Banco de imagens | `--apenas-banco` |
 
 Cada argumento tem exemplo real no docstring do módulo e no `--help`.
 
@@ -2610,6 +2627,123 @@ Arquivos alterados/gerados:
 - `scripts/flow_mcp.py` — novo (servidor MCP para o Flow)
 - `scripts/pipeline.py` — `flow_fetch` adicionado ao SCRIPTS; `run_single_fetch` tenta Flow primeiro, Gemini como fallback
 - `MANUAL_GRAFOS.md` — esta seção
+
+---
+
+## 42. Imagens do banco local: título, 2–4 por cena, mp4 e `--apenas-banco` (2026-11-08)
+
+Esta seção consolida as mudanças feitas para reaproveitar o banco local de imagens
+com qualidade (sem cair em buscas BM25 genéricas) e para permitir cenas com mais de
+duas imagens.
+
+### 42.1. Índice do banco: caminho correto e indexador novo
+
+**Fonte de verdade do índice:** `C:\videomaker\banco de imagens\indice_midia.db`
+(tabelas `midia` + FTS5 `busca`). O `pipeline.py` usa exatamente esse caminho
+(`DB_IMAGENS = BANCO_IMAGENS / "indice_midia.db"`).
+
+> **Gotcha:** existem arquivos com nomes parecidos e **0 bytes** que não são o índice:
+> `indice_mdia.db` (sem o "i") e `indexar_midia.db`. Se a busca voltar vazia ou um
+> `sqlite3.DatabaseError`, confira qual arquivo está sendo aberto. O correto é
+> `indice_midia.db` com ~6,8 MB e centenas de linhas.
+
+**Indexador recomendado:** `banco de imagens/indexar_midia_ui.py` (versão nova, com
+lógica organizada e suporte a OpenRouter). Ele usa o modelo configurado em
+`banco de imagens/indexar_midia_ui_config.json` (`nvidia/nemotron-3.5-super-vl:free`,
+4 workers) e aceita filtro por nome de arquivo. O `indexar_midia.py` antigo continua
+no repositório, mas o fluxo novo é o da UI.
+
+> **Regra:** não usar Ollama para indexar (não lida bem com muitas imagens/sem memória);
+> o provedor é o OpenRouter. A chave fica só no `indexar_midia_ui_config.json`
+> (ignorado pelo git) — nunca imprimir nem commitar.
+
+Os arquivos do banco e o índice são **ignorados pelo git** (`.gitignore`), então
+indexar não gera mudança para commit; é operação local.
+
+### 42.2. Seleção curada por título (não só por busca BM25)
+
+A busca FTS/BM25 do banco é por palavra-chave, não semântica: cenas ambíguas
+(ex.: "Frida e Luna olham a Lua") podem retornar imagens de cozinha/quarto. Por isso,
+para produções importantes, a seleção é **curada pelo título/nome do arquivo**:
+
+1. Listar candidatos no banco por tema (`espaco|lua|astronauta|foguete|...`).
+2. Escolher manualmente 2 a 4 arquivos por cena, olhando o título/descrição indexada.
+3. Gravar `scenes.json` do projeto com a lista `images` na ordem desejada.
+4. Copiar os arquivos para `assets/images/gemini/scenes/` do projeto.
+5. Gravar `image_prompts.json` com o prompt de cada cena **e** a proveniência em
+   `_sources` (ex.: `titulo_banco`, `arquivo`) para auditoria posterior.
+
+Esse mapeamento curado foi gerado por um script auxiliar temporário
+(`build_bank_scenes.py`, fora do repositório); o que é durável é o contrato dos
+artefatos: `scenes.json` (imagens/câmera/split) + `image_prompts.json` (prompt +
+`_sources`).
+
+### 42.3. Duas a quatro imagens por cena (revelação `cam-1..cam-N`)
+
+Antes, `build_composition.py` só revelava `.cam-1` (a segunda imagem). As imagens
+`cam-2+` ficavam com `opacity:0` (CSS `.cam-b`) e nunca apareciam. Agora a
+composição revela **cada imagem extra** dentro da cena:
+
+- **2 imagens:** respeita `split` do `scenes.json` (a `cam-1` entra no ponto do split).
+- **3+ imagens:** distribui as revelações uniformemente (`frac = i / n_img`).
+- A revelação de cada imagem continua sendo fade de ~1s (`power1.inOut`), com o
+  movimento de câmera próprio de cada `camera`.
+
+Arquivo: `scripts/build_composition.py` (bloco de timeline das cenas).
+
+### 42.4. Suporte a vídeo (`.mp4`) nas cenas
+
+Cenas podem conter clipes `.mp4`, não só `.jpg`:
+
+- `scripts/build_composition.py`: renderiza `<video class="cam ..." muted playsinline>`
+  para arquivos `.mp4` (CSS `video.cam`), e **não** aplica tween de zoom nessas cenas
+  (o vídeo toca como está). Se a cena tem vídeo, a revelação multi-imagem é ignorada.
+- `scripts/preprocess_images.py`: para `.mp4`, apenas copia o arquivo para
+  `hyperframes-workspace/assets/images` (sem passar pelo `ffmpeg` de resize), já que
+  o arquivo precisa chegar intacto ao render.
+
+### 42.5. `--apenas-banco` (fase images só no banco local)
+
+Novo argumento de `scripts/pipeline.py`:
+
+```powershell
+python scripts/pipeline.py resume --slug <slug> --only images --apenas-banco
+```
+
+Com `--apenas-banco`, a fase `images` pesquisa **somente** no banco local. Se não
+achar imagem adequada, registra "não encontrado no banco local (apenas-banco)" e
+**não** tenta Google Flow nem Gemini. Sem o flag, o fluxo continua:
+banco local → Flow → Gemini (fallback).
+
+### 42.6. Gotcha: recompor depois de editar `scenes.json`
+
+Editar `scenes.json` (ou trocar imagens em `assets/images/gemini/scenes/`) **não**
+basta rodar `--from compose`: o checkpoint pode considerar a fase `compose` já feita
+e manter o `composition.html` antigo. Para forçar:
+
+```powershell
+python scripts/pipeline.py reset --slug <slug> --phase compose
+python scripts/pipeline.py resume --slug <slug> --from compose
+# ou: pipeline.py ... --from compose --force
+```
+
+Sempre confira o `composition.html` gerado (nº de cenas e classes `cam-1..cam-N`)
+antes de renderizar.
+
+### 42.7. Efeito no grafo do pipeline
+
+```
+images (banco local → Flow → Gemini; com --apenas-banco: só banco) →
+... → compose (revela cam-1..cam-N; aceita .jpg e .mp4) →
+preprocess (copia .jpg redimensionado; .mp4 intacto) → render
+```
+
+### 42.8. Arquivos alterados nesta mudança
+
+- `scripts/build_composition.py` — revelação `cam-1..cam-N`; suporte a `.mp4`.
+- `scripts/preprocess_images.py` — copia `.mp4` sem resize.
+- `scripts/pipeline.py` — flag `--apenas-banco` na fase `images`.
+- `MANUAL_GRAFOS.md` — esta seção + notas em §7.7, §30.2, §33.1 e §37.2.
 
 ---
 

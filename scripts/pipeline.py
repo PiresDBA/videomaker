@@ -856,7 +856,11 @@ def phase_images(args, p: Project):
                 print(f"  [{nome}] OK (banco local: {Path(caminho_banco).name})", flush=True)
                 return True
             except Exception as e:
-                print(f"  [{nome}] falhou ao copiar do banco ({e}), tenta Gemini", flush=True)
+                print(f"  [{nome}] falhou ao copiar do banco ({e})", flush=True)
+        if getattr(args, "apenas_banco", False):
+            # apenas banco: nao gera via Flow nem Gemini se nao achar no banco local
+            print(f"  [{nome}] nao encontrado no banco local (apenas-banco, pulando geracao)", flush=True)
+            return False
 
         # 2) Nao achou no banco: gera via Flow (principal) ou Gemini (fallback)
         prompt_texto = prompts.get(nome, "")
@@ -2109,6 +2113,11 @@ def main():
         sp.add_argument(
             "--sem-texto", action="store_true", default=True,
             help="nao gera texto sobreposta nas cenas (apenas imagem + narracao) - padrao")
+        sp.add_argument(
+            "--apenas-banco", action="store_true",
+            help="fase imagens pesquisa SOMENTE no banco de imagens local; "
+                 "nao gera via Google Flow nem Gemini se nao encontrar no banco. "
+                 "Ex: --apenas-banco")
 
     sub = ap.add_subparsers(dest="cmd", required=True)
 

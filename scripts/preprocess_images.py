@@ -9,6 +9,7 @@ Uso:
 """
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -59,6 +60,10 @@ def main():
             print("FALTA:", src)
             continue
         dst = dst_dir / name
+        if name.lower().endswith(".mp4"):
+            shutil.copy2(src, dst)
+            print("%-24s -> %s (video copiado)" % (name, dst.name))
+            continue
         subprocess.run([ff, "-y", "-hide_banner", "-loglevel", "error", "-i", str(src),
                         "-vf", "scale=%d:%d:force_original_aspect_ratio=increase,crop=%d:%d" % (w, h, w, h),
                         "-q:v", "2", str(dst)], check=True)

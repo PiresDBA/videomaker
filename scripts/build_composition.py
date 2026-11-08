@@ -32,6 +32,7 @@ body{font-family:"Segoe UI","Trebuchet MS",sans-serif;-webkit-font-smoothing:ant
 #root{position:relative;width:1920px;height:1080px;overflow:hidden;background:#0A0705}
 .scene{position:absolute;inset:0;overflow:hidden;background:#0A0705}
 .cam{position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;will-change:transform;transform-origin:50% 50%}
+video.cam{object-fit:cover;width:106%;height:106%;left:-3%;top:-3%;position:absolute;will-change:transform;background:#000}
 .cam-b{opacity:0}
 .ov{position:absolute;inset:0;pointer-events:none}
 .scrim-b{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(0deg,rgba(8,5,3,.88) 0%,rgba(8,5,3,.55) 24%,rgba(8,5,3,.12) 50%,rgba(8,5,3,0) 70%)}
@@ -201,7 +202,10 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
                  % (sid, start, dur_ext, track)]
         for i, name in enumerate(images):
             cls = "cam cam-%d%s" % (i, " cam-b" if i > 0 else "")
-            parts.append('<img class="%s" src="assets/images/%s" alt="">' % (cls, name))
+            if name.lower().endswith(".mp4"):
+                parts.append('<video class="%s" src="assets/images/%s" muted playsinline></video>' % (cls, name))
+            else:
+                parts.append('<img class="%s" src="assets/images/%s" alt="">' % (cls, name))
 
         overlay = overlays.get(sid, "")
         parts.append(overlay)
@@ -210,6 +214,8 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
         scenes.append("".join(parts))
 
         for i, name in enumerate(images):
+            if name.lower().endswith(".mp4"):
+                continue
             cam = cams[i] if i < len(cams) else [1.02, 1.10, 0, 14, 0, -8]
             s0, s1, x0, x1, y0, y1 = cam
             js.append(
@@ -218,9 +224,18 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
                 % (sid, i, s0, x0, y0, s1, x1, y1, dur_ext + 0.4, start)
             )
 
-        if len(images) > 1 and split is not None:
-            js.append('tl.to("#%s .cam-1",{opacity:1,duration:1.0,ease:"power1.inOut"},%.3f);'
-                      % (sid, start + split * dur - 0.5))
+        has_video = any(n.lower().endswith(".mp4") for n in images)
+        if len(images) > 1 and not has_video:
+            # Revela cada imagem extra (cam-1, cam-2, cam-3...) ao longo da cena.
+            # Com 2 imagens respeita "split"; com 3+ distribui uniformemente.
+            n_img = len(images)
+            for i in range(1, n_img):
+                if split is not None and n_img == 2:
+                    frac = float(split)
+                else:
+                    frac = i / float(n_img)
+                js.append('tl.to("#%s .cam-%d",{opacity:1,duration:1.0,ease:"power1.inOut"},%.3f);'
+                          % (sid, i, start + frac * dur - 0.5))
 
         js.append('tl.set("#%s",{opacity:0},0);' % sid)
         js.append('tl.from("#%s",{opacity:0,duration:0.8,ease:"power1.out"},%.3f);'
