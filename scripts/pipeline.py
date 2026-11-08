@@ -827,7 +827,9 @@ def phase_images(args, p: Project):
     image_ids = [k for k in prompts.keys() if not k.startswith("_")]
     out_dir = p.dir / "assets" / "images" / "gemini" / "scenes"
     out_dir.mkdir(parents=True, exist_ok=True)
-    print(f"== FASE images: {len(image_ids)} imagem(ns) (banco local primeiro, Gemini se nao achar)", flush=True)
+    fonte = ("Google Flow (sem banco local)" if getattr(args, "sem_banco", False)
+             else "banco local primeiro, Flow/Gemini se nao achar")
+    print(f"== FASE images: {len(image_ids)} imagem(ns) ({fonte})", flush=True)
 
     def tentar(nome: str, idx=None) -> bool:
         """Tenta gerar/obter UNA imagem. Retorna True se sucesso (arquivo > 0 bytes).
@@ -849,7 +851,9 @@ def phase_images(args, p: Project):
             if desc_busca.startswith(prefixo):
                 desc_busca = desc_busca[len(prefixo):]
                 break
-        caminho_banco = buscar_imagem_banco(desc_busca, limite=5)
+        caminho_banco = None
+        if not getattr(args, "sem_banco", False):
+            caminho_banco = buscar_imagem_banco(desc_busca, limite=5)
         if caminho_banco:
             try:
                 copiar_para_projeto(Path(caminho_banco), out_dir, nome + ".jpg")
@@ -2118,6 +2122,10 @@ def main():
             help="fase imagens pesquisa SOMENTE no banco de imagens local; "
                  "nao gera via Google Flow nem Gemini se nao encontrar no banco. "
                  "Ex: --apenas-banco")
+        sp.add_argument(
+            "--sem-banco", action="store_true",
+            help="fase imagens IGNORA o banco local e gera todas as imagens novas "
+                 "via Google Flow (com fallback Gemini). Ex: --sem-banco")
 
     sub = ap.add_subparsers(dest="cmd", required=True)
 

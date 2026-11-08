@@ -2269,7 +2269,7 @@ alguém abre o código) e no `--help` do argparse.
 | Seleção de fases | `--from`, `--only`, `--skip`, `--force`, `--no-parallel` |
 | Reset | `--phase`, `--all` |
 | Visual | `--sem-texto` |
-| Banco de imagens | `--apenas-banco` |
+| Banco de imagens | `--apenas-banco`, `--sem-banco` |
 
 Cada argumento tem exemplo real no docstring do módulo e no `--help`.
 
@@ -2715,6 +2715,16 @@ achar imagem adequada, registra "não encontrado no banco local (apenas-banco)" 
 **não** tenta Google Flow nem Gemini. Sem o flag, o fluxo continua:
 banco local → Flow → Gemini (fallback).
 
+O oposto também existe: `--sem-banco` ignora o banco local e gera **todas** as
+imagens novas via Google Flow (com fallback Gemini):
+
+```powershell
+python scripts/pipeline.py resume --slug <slug> --only images --sem-banco
+```
+
+Use quando o banco estiver trazendo imagens fora do tema. Lembre de apagar as
+imagens antigas antes (a fase `images` pula arquivos `.jpg` já existentes).
+
 ### 42.6. Gotcha: recompor depois de editar `scenes.json`
 
 Editar `scenes.json` (ou trocar imagens em `assets/images/gemini/scenes/`) **não**
@@ -2733,16 +2743,32 @@ antes de renderizar.
 ### 42.7. Efeito no grafo do pipeline
 
 ```
-images (banco local → Flow → Gemini; com --apenas-banco: só banco) →
+images (banco local → Flow → Gemini; com --apenas-banco: só banco;
+com --sem-banco: só Flow/Gemini) →
 ... → compose (revela cam-1..cam-N; aceita .jpg e .mp4) →
 preprocess (copia .jpg redimensionado; .mp4 intacto) → render
 ```
 
-### 42.8. Arquivos alterados nesta mudança
+### 42.8. Roteiro: premissa obrigatória (anti-drift)
+
+O gerador de roteiro (`scripts/generate_script_from_prompt.py`) ganhou uma regra
+explícita no SYSTEM prompt: **seguir exatamente a premissa do TEMA**, sem trocar o
+elemento central por outro. Exemplo real que motivou a regra: o tema pedia
+"cachorro astronauta verde" e o modelo gerou uma história sobre um osso mágico de
+queijo. Agora o prompt proíbe substituir o elemento central (osso mágico, tesouro,
+etc.) e exige que o personagem/objeto pedido conduza a história.
+
+Ao refazer um vídeo do zero por divergência de roteiro, apague `script.json`,
+`scenes.json`, `image_prompts.json`, `narration_timing.json`, `timeline.json`,
+as imagens e a narração antigas antes de rodar (os checkpoints sozinhos não
+apagam os arquivos físicos).
+
+### 42.9. Arquivos alterados nesta mudança
 
 - `scripts/build_composition.py` — revelação `cam-1..cam-N`; suporte a `.mp4`.
 - `scripts/preprocess_images.py` — copia `.mp4` sem resize.
-- `scripts/pipeline.py` — flag `--apenas-banco` na fase `images`.
+- `scripts/pipeline.py` — flags `--apenas-banco` e `--sem-banco` na fase `images`.
+- `scripts/generate_script_from_prompt.py` — regra de premissa obrigatória.
 - `MANUAL_GRAFOS.md` — esta seção + notas em §7.7, §30.2, §33.1 e §37.2.
 
 ---
