@@ -150,6 +150,17 @@ MIME_EXT = {"image/png": ".png", "image/jpeg": ".jpg", "image/webp": ".webm",
             "audio/mp3": ".mp3", "audio/x-m4a": ".m4a", "audio/x-wav": ".wav", "audio/aac": ".aac"}
 
 
+# Labels aceitos para o toggle de modo Imagem no painel de configuracoes do Flow.
+IMAGE_MODE_LABELS = ("Imagem", "Gerar imagem", "Modo imagem", "Imagem estatica")
+# Seletores do botao que abre o painel de configuracoes (Gatilho de configuracoes).
+SETTINGS_TRIGGER_SELECTORS = (
+    'button[aria-label="Gatilho de configuracoes"]',
+    'button.settings-trigger-button',
+    'button[aria-label*="configuracoes" i]',
+    'button[aria-label*="settings" i]',
+    '[role="button"][aria-label*="configuracoes" i]',
+)
+
 class LoginRequired(Exception):
     pass
 
@@ -331,6 +342,11 @@ async def editor(page):
 async def _dismiss_overlays(page):
     """Fecha overlays/modais que possam bloquear cliques."""
     try:
+        await page.keyboard.press("Escape")
+        await page.wait_for_timeout(400)
+    except Exception:
+        pass
+    try:
         backdrop = page.locator('.cdk-overlay-backdrop').first
         if await backdrop.count() > 0:
             await backdrop.click()
@@ -379,6 +395,21 @@ async def _toggle_checked(toggle) -> bool:
         return False
 
 
+async def _loc_first_visible(page, selectors, timeout_ms: int = 4000):
+    """Retorna o primeiro locator visivel dentre os seletores informados."""
+    for sel in selectors:
+        try:
+            loc = page.locator(sel).first
+            if await loc.count() > 0:
+                try:
+                    await loc.wait_for(state="visible", timeout=timeout_ms)
+                    return loc
+                except Exception:
+                    continue
+        except Exception:
+            continue
+    return None
+
 async def select_image_mode(page, aspect: str = "16:9") -> bool:
     """Seleciona 'Imagem' no painel de configurações do Google Flow.
 
@@ -386,23 +417,30 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
     "Nano Banana ... x1" na barra de prompt. NUNCA deixar em Vídeo.
     """
     try:
-        toggle = page.locator('mat-button-toggle:has-text("Imagem")').first
-        if await toggle.count() == 0:
-            trig = page.locator(
-                'button[aria-label="Gatilho de configurações"], button.settings-trigger-button'
-            ).first
-            if await trig.count() == 0:
-                print("  AVISO: painel de configurações não encontrado; abortando para não gerar vídeo", flush=True)
-                return False
-            try:
-                await trig.click(timeout=5000)
-            except Exception:
-                await trig.evaluate("(el) => el.click()")
-            await page.wait_for_timeout(900)
-            toggle = page.locator('mat-button-toggle:has-text("Imagem")').first
+        await _dismiss_overlays(page)
+        # Abrir o painel de configuracoes tentando todos os seletores conhecidos.
+        trig = await _loc_first_visible(page, SETTINGS_TRIGGER_SELECTORS, timeout_ms=5000)
+        if trig is None:
+            print("  AVISO: painel de configuracoes nao encontrado; abortando para nao gerar video", flush=True)
+            return False
+        try:
+            await trig.click(timeout=5000)
+        except Exception:
+            await trig.evaluate("(el) => el.click()")
+        await page.wait_for_timeout(900)
 
-        if await toggle.count() == 0:
-            print("  AVISO: opção 'Imagem' não apareceu no painel; abortando para não gerar vídeo", flush=True)
+        # Procurar o toggle de modo Imagem entre os labels conhecidos.
+        toggle = None
+        for label in IMAGE_MODE_LABELS:
+            cand = page.locator(f'mat-button-toggle:has-text("{label}")').first
+            try:
+                if await cand.count() > 0:
+                    toggle = cand
+                    break
+            except Exception:
+                continue
+        if toggle is None:
+            print("  AVISO: opcao 'Imagem' nao apareceu no painel; abortando para nao gerar video", flush=True)
             return False
 
         if not await _toggle_checked(toggle):
@@ -417,7 +455,7 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
             await page.wait_for_timeout(700)
 
         if not await _toggle_checked(toggle):
-            print("  AVISO: não foi possível confirmar o modo Imagem; abortando para não gerar vídeo", flush=True)
+            print("  AVISO: nao foi possivel confirmar o modo Imagem; abortando para nao gerar video", flush=True)
             return False
 
         if aspect:
@@ -437,7 +475,7 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
         except Exception:
             pass
         await page.wait_for_timeout(300)
-        print(f"  modo Imagem selecionado (x1, {aspect or 'aspecto atual'}) (nunca vídeo)", flush=True)
+        print(f"  modo Imagem selecionado (x1, {aspect or 'aspecto atual'}) (nunca video)", flush=True)
         return True
     except Exception as e:
         print(f"  AVISO: falha ao selecionar modo Imagem ({str(e)[:80]})", flush=True)
@@ -965,6 +1003,11 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                 print(f"  ⚠ recusa lida da tela ({waited}s): {txt}", flush=True)
                 attempt_log.append(f"{strategy}:recusa ({waited}s)")
                 continue
+            # Fecha overlays remanescentes antes de tentar o botao de download
+            try:
+                await _dismiss_overlays(page)
+            except Exception:
+                pass
             if await count_dl(page) > before:
                 dl_sel = ", ".join(f'[aria-label="{l}"]' for l in IMG_DL_LABELS)
                 btn = page.locator(dl_sel).last

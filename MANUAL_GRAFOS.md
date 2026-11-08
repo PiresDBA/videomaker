@@ -2525,6 +2525,13 @@ modo Imagem, o envio é abortado. O prompt é preenchido com `fill()` no
 `ProseMirror` (digitação por teclado não funcionava) e a imagem gerada é
 capturada da rede (`flow-content.google`) e salva em disco.
 
+**Download confiável:** antes de interagir com o editor (enviar prompt) e antes
+de clicar no botão de download, o `flow_fetch.py` fecha overlays/modais
+remanescentes via `_dismiss_overlays` (`Escape` + backdrop), evitando que overlay
+do Material intercepte cliques e impeça o download da imagem gerada. O seletor
+do modo Imagem e do gatilho de configurações tenta vários labels/seletores
+conhecidos, evitando abortos quando o painel não traz o toggle esperado.
+
 **Busca/geracao de audio (`--busca-audio`):** gera um arquivo de narracao via Gemini TTS (Google AI API, SDK `google-genai`, modelo `gemini-2.5-flash-preview-tts`, key `GOOGLE_TTS_API_KEY` em `.env` ou `scripts/config.json`). Usa-se `--prompt` (texto) e `--name` (arquivo). Saida padrao: `<proj>/public/assets/audio/narration/`.
 
 **Estilo 3D cartoon (injeção obrigatória):** todo prompt de imagem com os
