@@ -61,14 +61,53 @@ CHARACTER_REF_TEMPLATE = (
     "marrom-chocolate, pelo curto e liso, focinho com pelinhos brancos) em todas "
     "as imagens. Nao altere raca, cor, tamanho, idade nem tracos dos personagens.\n\n"
 )
+CHARACTER_STYLE_MARKER = "ESTILO PERSONAGENS (OBRIGATORIA)"
+CHARACTER_STYLE_POSITIVE = (
+    "Two recurring female dog characters. Luna: A stylized dachshund dog, dark "
+    "chocolate brown coat with warm tan markings on muzzle, eyebrows, chest and "
+    "paws, elongated body, very short legs, long floppy ears, elegant slim muzzle, "
+    "large expressive almond-shaped eyes, long eyelashes, delicate golden necklace "
+    "with small pendants, intelligent and charismatic appearance.\n\n"
+    "Frida: A stylized bulldog dog, compact and robust body, large head, soft "
+    "facial folds, short muzzle, fawn beige coat with lighter cream muzzle and "
+    "chest, large expressive eyes, long eyelashes, pearl necklace with floral "
+    "pendant, gentle and elegant appearance.\n\n"
+    "Style: High-end cinematic 3D animation, Pixar-quality character design, "
+    "Disney-style appeal, DreamWorks-level character modeling, soft global "
+    "illumination, realistic fur shading, physically based rendering, highly "
+    "expressive faces, polished character turnaround quality, premium animated "
+    "feature film look.\n\n"
+    "Requirements: Maintain exact proportions, facial features, coat colors, "
+    "necklaces, eye shape, eyelashes and body structure in every image. Keep "
+    "character identity unchanged. Consistent character design across all poses, "
+    "expressions and scenes."
+)
+CHARACTER_STYLE_NEGATIVE = (
+    "different breed, realistic dog, photorealistic, different coat color, different "
+    "eyes, different body proportions, missing necklace, extra accessories, long "
+    "legs, short body, different muzzle, different ears, male dog, aggressive "
+    "appearance, low quality, deformed face, different character design, character "
+    "redesign, different eye color, missing eyelashes, cartoon simplification, anime "
+    "style, 2D illustration, flat shading"
+)
+CHARACTER_STYLE_BLOCK = (
+    CHARACTER_STYLE_MARKER + ": " + CHARACTER_STYLE_POSITIVE + "\n\n"
+    "ESTILO NEGATIVO (OBRIGATORIA): " + CHARACTER_STYLE_NEGATIVE + "\n\n"
+)
 
 
 def _enforce_characters(prompt: str, characters: str = DEFAULT_CHARACTERS) -> str:
-    """Garante no prompt a referência aos personagens Frida e Luna criados no Flow."""
+    """Garante no prompt a referencia aos personagens Frida e Luna criados no Flow
+    e injeta o estilo 3D cartoon (positivo/negativo) para nao fugir do visual desejado."""
     out = prompt or ""
-    if not characters or CHARACTER_REF_MARKER in out:
+    if not characters:
         return out
-    return CHARACTER_REF_TEMPLATE.format(names=characters) + out
+    block = ""
+    if CHARACTER_REF_MARKER not in out:
+        block += CHARACTER_REF_TEMPLATE.format(names=characters)
+    if CHARACTER_STYLE_MARKER not in out:
+        block += CHARACTER_STYLE_BLOCK
+    return block + out
 
 VIDEO_REQUEST_PATTERNS = (
     (r"\b(?:crie|criar|gere|gerar|fa[çc]a|fazer|produza|produzir)\s+(?:um|uma)\s+v[íi]deo(?:\s+(?:animado|curto|em movimento))?\b",

@@ -2527,6 +2527,11 @@ capturada da rede (`flow-content.google`) e salva em disco.
 
 **Busca/geracao de audio (`--busca-audio`):** gera um arquivo de narracao via Gemini TTS (Google AI API, SDK `google-genai`, modelo `gemini-2.5-flash-preview-tts`, key `GOOGLE_TTS_API_KEY` em `.env` ou `scripts/config.json`). Usa-se `--prompt` (texto) e `--name` (arquivo). Saida padrao: `<proj>/public/assets/audio/narration/`.
 
+**Estilo 3D cartoon (injeção obrigatória):** todo prompt de imagem com os
+personagens **Frida** e **Luna** recebe o bloco `ESTILO PERSONAGENS (OBRIGATORIA)`
+com o prompt positivo (estilo 3D cartoon Pixar/DreamWorks/Disney) e o negativo
+anti-foto realista / anti-estilo errado.
+
 **Salvamento duplo:** cada imagem gerada é salva em
 `projects/<slug>/assets/images/gemini/scenes/` **e** copiada para
 `C:\videomaker\banco de imagens\`.
