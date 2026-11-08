@@ -2532,6 +2532,11 @@ personagens **Frida** e **Luna** recebe o bloco `ESTILO PERSONAGENS (OBRIGATORIA
 com o prompt positivo (estilo 3D cartoon Pixar/DreamWorks/Disney) e o negativo
 anti-foto realista / anti-estilo errado.
 
+**Personagens e referência:** o bloco de personagens informa os nomes criados no
+Flow (Frida e Luna, com Frida "Bulldogue Ingles" e Luna "dachshund") e o uso do
+`referencia.png` salvo no Flow como referência de cores/estilos para imagens com
+Frida e Luna no contexto. Não anexar o arquivo: é informação no prompt.
+
 **Salvamento duplo:** cada imagem gerada é salva em
 `projects/<slug>/assets/images/gemini/scenes/` **e** copiada para
 `C:\videomaker\banco de imagens\`.

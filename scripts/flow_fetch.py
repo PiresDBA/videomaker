@@ -58,8 +58,13 @@ CHARACTER_REF_TEMPLATE = (
     CHARACTER_REF_MARKER + ": use como base os personagens ja criados neste Google "
     "Flow chamados {names}. Mantenha exatamente a mesma aparencia dos dois "
     "personagens (Frida: buldogue inglesa amarelo-fawn, tranquila; Luna: salsicha "
-    "marrom-chocolate, pelo curto e liso, focinho com pelinhos brancos) em todas "
+    "marrom-chocolate, pelo curto e liso, focinho com peludos brancos) em todas "
     "as imagens. Nao altere raca, cor, tamanho, idade nem tracos dos personagens.\n\n"
+    "Use os personagens criados no Google Flow com os nomes informados: Frida e Luna, "
+    "sendo Frida o Bulldogue Ingles e Luna o dachshund. Use essas identidades como "
+    "fonte de verdade para cores, anatomia e estilo.\n\n"
+    "Ha um arquivo chamado referencia.png salvo no Google Flow (na secao de imagens); "
+    "use-o como referencia de cores/estilos para as imagens que tiverem Frida e Luna no contexto.\n\n"
 )
 CHARACTER_STYLE_MARKER = "ESTILO PERSONAGENS (OBRIGATORIA)"
 CHARACTER_STYLE_POSITIVE = (
