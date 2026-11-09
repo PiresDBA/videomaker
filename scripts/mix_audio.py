@@ -24,6 +24,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from build_composition import INTRO_DUR
+
 HERE = Path(__file__).resolve().parent
 
 
@@ -70,6 +72,8 @@ def main():
         return 2
 
     total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
+    total_mix = INTRO_DUR + total
+    lead_ms = int(round(INTRO_DUR * 1000))
 
     # loop com crossfade ate passar do total
     loop = aud / ("bgm_%s_loop.wav" % provider)
@@ -82,7 +86,7 @@ def main():
              "-show_entries", "format=duration", "-of",
              "default=noprint_wrappers=1:nokey=1", str(bgm_src)],
             capture_output=True, text=True).stdout.strip() or 0)
-        need = int((total / max(dur, 1)) + 2)
+        need = int((total_mix / max(dur, 1)) + 2)
         if need <= n:
             break
         n = need
@@ -91,14 +95,14 @@ def main():
         cmd += ["-i", str(bgm_src)]
 
     if n == 1:
-        chain = "[0:a]atrim=0:%.3f[out]" % total
+        chain = "[0:a]atrim=0:%.3f[out]" % total_mix
     else:
         prev = "0"
         for i in range(1, n):
             lab = "a%d" % i
             chain += "[%s][%d]acrossfade=d=%s:c1=tri:c2=tri[%s];" % (prev, i, xf, lab)
             prev = lab
-        chain += "[%s]atrim=0:%.3f,asetpts=N/SR/TB[out]" % (prev, total)
+        chain += "[%s]atrim=0:%.3f,asetpts=N/SR/TB[out]" % (prev, total_mix)
 
     subprocess.run(cmd + ["-filter_complex", chain, "-map", "[out]",
                           "-c:a", "pcm_s16le", str(loop)], check=True)
@@ -106,17 +110,18 @@ def main():
     out = aud / "final_mix.m4a"
     filt = (
         "[1:a]volume=%.3f,afade=t=in:st=0:d=2.5,afade=t=out:st=%.3f:d=3.7[bgm];"
-        "[bgm][0:a]sidechaincompress=threshold=%s:ratio=%s:attack=%s:release=%s[duck];"
-        "[0:a][duck]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[mix];"
+        "[0:a]adelay=%d:all=1,apad=pad_dur=%.3f,asplit=2[voice][key];"
+        "[bgm][key]sidechaincompress=threshold=%s:ratio=%s:attack=%s:release=%s[duck];"
+        "[voice][duck]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[mix];"
         "[mix]loudnorm=I=%s:TP=%s:LRA=%s[out]"
-        % (gain, total - 3.756,
+        % (gain, total_mix - 3.756, lead_ms, INTRO_DUR,
            music.get("duck_threshold", 0.05), music.get("duck_ratio", 9),
            music.get("duck_attack_ms", 15), music.get("duck_release_ms", 350),
            loud.get("final_i", -14), loud.get("true_peak", -1.5), loud.get("lra", 11))
     )
     subprocess.run([ff, "-y", "-hide_banner", "-loglevel", "error",
                     "-i", str(narration), "-i", str(loop),
-                    "-filter_complex", filt, "-map", "[out]", "-t", "%.3f" % total,
+                    "-filter_complex", filt, "-map", "[out]", "-t", "%.3f" % total_mix,
                     "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
 
     dst = Path(args.hf_dir) if args.hf_dir else proj

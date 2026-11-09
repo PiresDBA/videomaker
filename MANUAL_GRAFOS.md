@@ -2786,13 +2786,19 @@ em todo vídeo normal.
 
 ### Correção
 
-- `scripts/build_composition.py`: o áudio agora começa em `INTRO_DUR` e dura
-  `total - INTRO_DUR - OUTRO_DUR` (o total do timeline). A capa de 4s e o outro
-  de 5s ficam sem áudio; a narração/trilha começa junto com `s_intro`.
-- `scripts/verify_output.py`: a duração esperada agora é
+- `scripts/mix_audio.py`: o mix agora inclui um lead-in de `INTRO_DUR` (4s) de
+  trilha e atrasa a narração em 4s (`adelay`), durando
+  `timeline.total + INTRO_DUR` (196.164s).
+- `scripts/build_composition.py`: o áudio começa em 0 e dura
+  `total - OUTRO_DUR` (196.164s), cobrindo a capa com trilha; o outro de 5s
+  fica sem áudio. A narração continua alinhada com `s_intro`.
+- `scripts/verify_output.py`: a duração esperada do MP4 agora é
   `timeline.total + INTRO_DUR + OUTRO_DUR` (9s). Para o projeto
   `frida-e-luna-astronautas-encontram-um-ca`: timeline 192.164s + 9s =
   201.164s.
+
+A primeira tentativa (áudio começando em `INTRO_DUR`) deixou a capa sem som;
+o lead-in de trilha no `mix_audio.py` resolve isso sem voltar o desalinhamento.
 
 ### Sintoma de workspace stale
 
@@ -2810,6 +2816,7 @@ Se estiver stale, copie os dois arquivos com `Copy-Item -Force` (ou rode
 
 ### Arquivos alterados
 
+- `scripts/mix_audio.py`
 - `scripts/build_composition.py`
 - `scripts/verify_output.py`
 - `MANUAL_GRAFOS.md`

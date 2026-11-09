@@ -330,8 +330,8 @@ def main():
             overlays[sec["id"]] = inject_ids(html, sec["id"])
 
     body, js, total = build(scene_cfg, tl, overlays, title=video_title)
-    audio_start = INTRO_DUR
-    audio_dur = total - INTRO_DUR - OUTRO_DUR
+    audio_start = 0.0
+    audio_dur = total - OUTRO_DUR
 
     html = """<!doctype html>
 <html lang="pt-BR" data-resolution="landscape">
