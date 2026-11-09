@@ -56,9 +56,10 @@ def is_daily_quota(msg):
 
 def synthesize(key, model, voice, text, style=None, timeout=300):
     url = "%s/models/%s:generateContent?key=%s" % (API, model, key)
+    # Nota: o campo "instructions" em speechConfig nao e suportado pelo
+    # modelo gemini-3.8-flash-tts (causa HTTP 400). Mantemos o parametro
+    # style aceito na assinatura para nao quebrar a CLI, mas nao o enviamos.
     speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}
-    if style:
-        speech["instructions"] = style
     body = {"contents": [{"parts": [{"text": text}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
                                  "speechConfig": speech}}
