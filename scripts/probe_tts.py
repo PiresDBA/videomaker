@@ -14,15 +14,15 @@ Uso:
 import argparse
 import base64
 import json
-import os
 import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
 
+from env_keys import load_env_key
+
 HERE = Path(__file__).resolve().parent
 PROJECT = HERE.parent
-ENV_FILE = Path(r"C:\videomaker\.env")
 API = "https://generativelanguage.googleapis.com/v1beta"
 
 TTS_MODELS = [
@@ -40,20 +40,6 @@ VOICES = ["Leda", "Kore", "Despina", "Erinome", "Laomedeia", "Achernar",
 def load_json(p):
     with open(p, encoding="utf-8") as f:
         return json.load(f)
-
-
-def load_env_key(name):
-    if os.environ.get(name):
-        return os.environ[name]
-    if ENV_FILE.exists():
-        for line in ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            k, v = line.split("=", 1)
-            if k.strip() == name:
-                return v.strip().strip('"').strip("'")
-    return None
 
 
 def call(key, model, voice, text, timeout=180):

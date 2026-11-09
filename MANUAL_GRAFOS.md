@@ -130,6 +130,28 @@ Voz neural brasileira local (Edge-TTS, sem API, sem tokens):
 a narração mais ágil e divertida, ideal para comédia. Risadas escritas ("Hahaha!") são
 removidas automaticamente pelo `gen_narration_edge.py` (soam falsas na voz neural).
 
+### 1.7.1. Gemini TTS (voz pela API do Google) e encoding do `.env`
+
+O provider `gemini` usa `gen_narration_gemini_sections.py` (Google AI Studio,
+modelo padrão `gemini-3.8-flash-tts`, vozes `Achernar`/`Leda` alternadas) e lê a
+chave `GOOGLE_TTS_API_KEY` no `.env` da raiz.
+
+- **Bug corrigido (2026-11-09):** o `.env` pode estar em UTF-8 **ou UTF-16** (o
+  PowerShell 5.1 grava UTF-16 com `Out-File`/`Set-Content`). Ler UTF-16 como
+  UTF-8 deixa os nomes das chaves com `\x00` entre os caracteres, a chave nunca
+  é encontrada e o pipeline caía **silenciosamente** para o Edge-TTS. A leitura
+  agora passa por `scripts/env_keys.py` (`load_env_key`), que detecta o BOM.
+  Vale para `gen_narration_gemini_sections.py`, `gen_narration_gemini.py` e
+  `probe_tts.py`.
+- **Tentativas:** 5 por seção no Gemini (`--retries`, `DEFAULT_RETRIES=5`) e 5 no
+  Edge-TTS (fallback).
+- **Fallback preservado:** se o Gemini continuar falhando (429/401/...), o
+  pipeline cai para o Edge-TTS (`config.json -> tts.edge_fallback`) e registra
+  `fallback_from: gemini` no `project.json`. O Gemini grava `*.wav`; o Edge grava
+  `*.mp3`, então não há conflito de arquivos.
+- **Diagnóstico:** `python scripts/probe_tts.py --test` (lista modelos/cota e
+  testa a síntese).
+
 ---
 
 ## 1.8. Música procedural (fallback sem API)
@@ -1820,21 +1842,48 @@ topics.txt → find_duplicate_by_prompt(JSON de entregas) →
 - `scripts/sync_bancos.py` — sincroniza imagens e músicas para os bancos globais.
 - `C:\videomaker\projects-deliveries.json` — histórico de entregas (fonte de verdade).
 
-### 30.2. Duas imagens por cena (mais engajamento)
+### 30.2. Uma imagem por pausa de fala (mais cenas/engajamento)
 
-Toda seção (exceto a capa s0) agora gera **duas imagens**:
-- **Variante A** — cena principal (texto do roteiro).
-- **Variante B** — close-up/reação dos personagens ("Foco nos rostos e nas caretas engraçadas...").
+O roteiro é segmentado nas **pausas naturais** (fim de frase `. ! ? …`,
+reticências `...` e pausas fortes `; : — –`). Cada trecho de fala ("batida")
+gera **uma imagem própria**, cujo prompt descreve exatamente o que é narrado
+naquele momento — em vez da antiga dupla fixa "cena + close-up".
 
-O `scenes.json` grava `images: ["<cena>.jpg", "<cena>_b.jpg"]`, `split: 0.5` e `camera` com
-duas entradas (push-in padrão para a A, movimento lateral para a B). Na composição, a B entra
-com fade (`cam-1`) no ponto do split.
+Regras (config `scene_density`, em `scripts/config.json`):
+- `max_images_per_section` (padrão 4): teto de imagens por seção;
+- `min_words_per_beat` (padrão 7): batidas menores são fundidas no vizinho;
+- `max_words_per_beat` (padrão 16): frases longas são subdivididas nas vírgulas.
 
-> **Atualização 2026-11-08:** a composição aceita **2 a 4 imagens por cena**. Com 2
-> respeita `split`; com 3+ distribui as revelações (`cam-1..cam-N`) uniformemente.
+**Modos pela CLI** (`pipeline.py full|resume`):
+- `--scene-mode beats` (**padrão**): uma imagem por pausa de fala (acima).
+- `--scene-mode two`: comportamento legado — duas imagens fixas por cena
+  (principal + close-up com `split: 0.5`).
+- `--max-images-per-section`, `--min-words-per-beat`, `--max-words-per-beat`
+  sobrescrevem a config (só no modo `beats`). Ex.:
+  `python scripts/pipeline.py full --prompt "..." --scene-mode two`
+  ou `... --max-words-per-beat 12` (gera mais imagens).
+
+A capa (`s0`) continua com uma imagem só. Seção curta que rende uma única
+batida mantém o close-up de reação como 2ª imagem (comportamento antigo).
+
+O `scenes.json` grava, por seção:
+- `images`: lista de arquivos (`<base>_scene.jpg`, `..._scene_b.jpg`, `..._c`, `..._d`);
+- `at`: fração (0..1) em que **cada** imagem entra, calculada pelo peso de fala
+  da batida (palavras + silêncio da pontuação). `at[0] = 0`;
+- `split`: mantido por compatibilidade quando há 2 imagens (= `at[1]`);
+- `beats`: texto de cada trecho e sua fração, para auditoria.
+
+Na composição (`build_composition.py`), a troca de imagem usa `at`: a imagem da
+batida *i* entra (fade ~1s) no instante `start + at[i]*dur`, isto é, no ponto da
+pausa em que aquela fala começa. Sem `at`, cai no comportamento antigo (`split`
+para 2 imagens; distribuição uniforme para 3+).
+
+> **Histórico 2026-11-08:** antes eram 2 imagens fixas por seção
+> (`split: 0.5`). A composição já aceitava 2–4 imagens (`cam-1..cam-N`).
 > Cenas também aceitam `.mp4`. Ver §42.
 
-**Arquivo:** `scripts/generate_scenes_and_prompts.py` — `build_prompt(..., variant="a"|"b")`.
+**Arquivos:** `scripts/generate_scenes_and_prompts.py` (`split_into_beats`,
+`beat_weight`, `beats_to_at`, `build_prompt`) e `scripts/build_composition.py`.
 
 ### 30.3. Capa (intro-capa) com imagem de fundo + sem transição inicial
 
@@ -2678,14 +2727,16 @@ Esse mapeamento curado foi gerado por um script auxiliar temporário
 artefatos: `scenes.json` (imagens/câmera/split) + `image_prompts.json` (prompt +
 `_sources`).
 
-### 42.3. Duas a quatro imagens por cena (revelação `cam-1..cam-N`)
+### 42.3. Duas a várias imagens por cena (revelação `cam-1..cam-N`)
 
 Antes, `build_composition.py` só revelava `.cam-1` (a segunda imagem). As imagens
 `cam-2+` ficavam com `opacity:0` (CSS `.cam-b`) e nunca apareciam. Agora a
 composição revela **cada imagem extra** dentro da cena:
 
-- **2 imagens:** respeita `split` do `scenes.json` (a `cam-1` entra no ponto do split).
-- **3+ imagens:** distribui as revelações uniformemente (`frac = i / n_img`).
+- **`at` presente (§30.2):** cada imagem entra no ponto da pausa de fala
+  (`start + at[i]*dur`); é o modo padrão atual (uma imagem por batida).
+- **Sem `at`, 2 imagens:** respeita `split` do `scenes.json`.
+- **Sem `at`, 3+ imagens:** distribui as revelações uniformemente (`frac = i / n_img`).
 - A revelação de cada imagem continua sendo fade de ~1s (`power1.inOut`), com o
   movimento de câmera próprio de cada `camera`.
 

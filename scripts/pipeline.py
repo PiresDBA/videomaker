@@ -795,11 +795,18 @@ def phase_scenes(args, p: Project):
     Exemplo:
         python scripts/pipeline.py full --prompt "Husky engraçado" --only scenes
     """
-    run([sys.executable, str(SCRIPTS["scenes_from_script"]),
-         "--script", str(p.script),
-         "--scenes-out", str(p.scenes_json),
-         "--prompts-out", str(p.image_prompts)],
-        "FASE scenes: cenas + prompts (local deterministico)")
+    cmd = [sys.executable, str(SCRIPTS["scenes_from_script"]),
+           "--script", str(p.script),
+           "--scenes-out", str(p.scenes_json),
+           "--prompts-out", str(p.image_prompts)]
+    if getattr(args, "scene_mode", None):
+        cmd += ["--scene-mode", args.scene_mode]
+    for opt, val in (("--max-images-per-section", getattr(args, "max_images_per_section", None)),
+                     ("--min-words-per-beat", getattr(args, "min_words_per_beat", None)),
+                     ("--max-words-per-beat", getattr(args, "max_words_per_beat", None))):
+        if val is not None:
+            cmd += [opt, str(val)]
+    run(cmd, "FASE scenes: cenas + prompts (local deterministico)")
     run([sys.executable, str(SCRIPTS["scene_htmls"]),
          "--script", str(p.script),
          "--scenes", str(p.scenes_json),
@@ -2126,6 +2133,23 @@ def main():
             "--sem-banco", action="store_true",
             help="fase imagens IGNORA o banco local e gera todas as imagens novas "
                  "via Google Flow (com fallback Gemini). Ex: --sem-banco")
+        sp.add_argument(
+            "--scene-mode", default="beats", choices=["beats", "two"],
+            help="como dividir as cenas: beats (padrao) = uma imagem por pausa de "
+                 "fala (sincronizada ao timestamp); two = duas imagens fixas por "
+                 "cena (comportamento legado). Ex: --scene-mode two")
+        sp.add_argument(
+            "--max-images-per-section", type=int, default=None,
+            help="modo beats: teto de imagens por secao (padrao: config scene_density). "
+                 "Ex: --max-images-per-section 5")
+        sp.add_argument(
+            "--min-words-per-beat", type=int, default=None,
+            help="modo beats: minimo de palavras por batida (pausa). "
+                 "Ex: --min-words-per-beat 6")
+        sp.add_argument(
+            "--max-words-per-beat", type=int, default=None,
+            help="modo beats: maximo de palavras por batida; menor = mais imagens. "
+                 "Ex: --max-words-per-beat 12")
 
     sub = ap.add_subparsers(dest="cmd", required=True)
 

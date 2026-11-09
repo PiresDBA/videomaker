@@ -29,24 +29,29 @@ from pathlib import Path
 
 from narration_contract import apply_contract, validate_contract
 from gen_narration_edge import limpar_e_preparar_texto, load_json
+from env_keys import load_env_key
 
 HERE = Path(__file__).resolve().parent
-ENV_FILE = Path(r"C:\videomaker\.env")
 API = "https://generativelanguage.googleapis.com/v1beta"
+DEFAULT_RETRIES = 5
+# O free tier do Gemini TTS tem cota DIARIA por modelo (ex: 10 req/dia no
+# gemini-3.8-flash-tts). Um video com 12 secoes estoura essa cota; por isso a
+# geracao alterna para o proximo modelo quando o atual esgota a cota do dia.
+DEFAULT_FALLBACK_MODELS = ["gemini-3.8-flash-lite-tts"]
 
 
-def load_env_key(name):
-    if os.environ.get(name):
-        return os.environ[name]
-    if ENV_FILE.exists():
-        for line in ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#") or "=" not in line:
-                continue
-            k, v = line.split("=", 1)
-            if k.strip() == name:
-                return v.strip().strip('"').strip("'")
-    return None
+def build_model_chain(primary, fallbacks):
+    chain = []
+    for m in [primary] + list(fallbacks or []):
+        if m and m not in chain:
+            chain.append(m)
+    return chain
+
+
+def is_daily_quota(msg):
+    """429 por cota DIARIA (RESOURCE_EXHAUSTED 'per day') nao adianta repetir; troca de modelo."""
+    low = (msg or "").lower()
+    return "per day" in low or "perday" in low or "daily" in low
 
 
 def synthesize(key, model, voice, text, timeout=300):
@@ -83,7 +88,7 @@ def main():
     ap.add_argument("--model", default=None)
     ap.add_argument("--only", default=None, help="ids separados por virgula")
     ap.add_argument("--force", action="store_true", help="regenera mesmo se o wav existe")
-    ap.add_argument("--retries", type=int, default=3)
+    ap.add_argument("--retries", type=int, default=DEFAULT_RETRIES)
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
@@ -98,6 +103,8 @@ def main():
 
     model = args.model or tts.get("model", "gemini-3.8-flash-tts")
     voice = args.voice or tts.get("voice", "Leda")
+    fallbacks = tts.get("model_fallbacks", DEFAULT_FALLBACK_MODELS)
+    chain = build_model_chain(model, fallbacks)
 
     script = load_json(proj / "artifacts" / "script.json")
     script, mudancas = apply_contract(script, theme=script.get("title") or "")
@@ -144,31 +151,53 @@ def main():
             continue
 
         ok = False
-        for attempt in range(args.retries):
-            try:
-                raw, finish = synthesize(key, model, voice, texto)
-                dst.write_bytes(raw)
-                dur = probe_duration(ffprobe, dst)
-                print("%-6s %7.2fs  OK (%s) voz=%s" % (sid, dur, finish, voice))
-                results.append({"id": sid, "path": str(dst), "duration": dur,
-                                "voice": voice, "model": model})
-                ok = True
-                break
-            except urllib.error.HTTPError as e:
-                msg = e.read().decode("utf-8", "ignore")
-                print("%s: HTTP %s %s (tentativa %d/%d)"
-                      % (sid, e.code, msg[:120].replace("\n", " "), attempt + 1, args.retries))
-                if e.code in (400, 401, 403, 404):
+        for mi, mdl in enumerate(chain):
+            has_next = mi < len(chain) - 1
+            for attempt in range(args.retries):
+                try:
+                    raw, finish = synthesize(key, mdl, voice, texto)
+                    dst.write_bytes(raw)
+                    dur = probe_duration(ffprobe, dst)
+                    if dur <= 0.05:
+                        # Alguns modelos (ex: *-preview) devolvem PCM cru, sem
+                        # cabecalho RIFF; gravar como .wav gera duracao 0 e
+                        # quebra a timeline. Descarta e tenta o proximo modelo.
+                        try:
+                            dst.unlink()
+                        except OSError:
+                            pass
+                        print("%s: audio invalido (duracao %.2fs) em %s; tentando proximo"
+                              % (sid, dur, mdl))
+                        break
+                    print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s"
+                          % (sid, dur, finish, voice, mdl))
+                    results.append({"id": sid, "path": str(dst), "duration": dur,
+                                    "voice": voice, "model": mdl})
+                    ok = True
                     break
-                time.sleep(4 * (attempt + 1))
-            except Exception as e:
-                print("%s: erro %s (tentativa %d/%d)"
-                      % (sid, str(e)[:100], attempt + 1, args.retries))
-                time.sleep(4 * (attempt + 1))
+                except urllib.error.HTTPError as e:
+                    msg = e.read().decode("utf-8", "ignore")
+                    print("%s: HTTP %s %s (modelo=%s, tentativa %d/%d)"
+                          % (sid, e.code, msg[:120].replace("\n", " "),
+                             mdl, attempt + 1, args.retries))
+                    if is_daily_quota(msg) and has_next:
+                        print("%s: cota diaria esgotada em %s; trocando de modelo"
+                              % (sid, mdl))
+                        break
+                    if e.code in (400, 401, 403, 404):
+                        break
+                    time.sleep(4 * (attempt + 1))
+                except Exception as e:
+                    print("%s: erro %s (modelo=%s, tentativa %d/%d)"
+                          % (sid, str(e)[:100], mdl, attempt + 1, args.retries))
+                    time.sleep(4 * (attempt + 1))
+            if ok:
+                break
 
         if not ok:
             falhas += 1
-            print("%s: FALHA ao gerar com Gemini TTS" % sid)
+            print("%s: FALHA ao gerar com Gemini TTS (modelos: %s)"
+                  % (sid, ", ".join(chain)))
         time.sleep(1.5)
 
     ordem = [s["id"] for s in script["sections"]]
@@ -177,7 +206,7 @@ def main():
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     total = sum(r["duration"] for r in results)
-    print("TOTAL %.1fs  (voz %s, modelo %s)" % (total, voice, model))
+    print("TOTAL %.1fs  (voz %s, modelos %s)" % (total, voice, ", ".join(chain)))
 
     if falhas:
         print("== Gemini TTS: %d secao(oes) falharam. O pipeline deve usar o fallback Edge-TTS." % falhas)

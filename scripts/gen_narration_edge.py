@@ -102,7 +102,7 @@ def main():
     ap.add_argument("--pitch", default=None, help="ajuste de altura em Hz (ex: +8Hz)")
     ap.add_argument("--style", default=None, help="(ignorado: SSML causa jargao falado)");
     ap.add_argument("--only", default=None, help="ids separados por virgula")
-    ap.add_argument("--retries", type=int, default=4)
+    ap.add_argument("--retries", type=int, default=5)
     ap.add_argument("--workers", type=int, default=4, help="secoes em paralelo")
     args = ap.parse_args()
 

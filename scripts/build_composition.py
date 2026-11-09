@@ -195,6 +195,7 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
         images = cfg.get("images", [])
         cams = cfg.get("camera", [])
         split = cfg.get("split")
+        at = cfg.get("at")
 
         dur_ext = dur + XFADE
         track = "1" if idx % 2 == 0 else "2"
@@ -226,11 +227,14 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
 
         has_video = any(n.lower().endswith(".mp4") for n in images)
         if len(images) > 1 and not has_video:
-            # Revela cada imagem extra (cam-1, cam-2, cam-3...) ao longo da cena.
-            # Com 2 imagens respeita "split"; com 3+ distribui uniformemente.
+            # Revela cada imagem extra (cam-1, cam-2, cam-3...) no ponto da
+            # PAUSA em que a batida de fala correspondente comeca ("at").
+            # Sem "at": 2 imagens usam "split"; 3+ distribui uniformemente.
             n_img = len(images)
             for i in range(1, n_img):
-                if split is not None and n_img == 2:
+                if at is not None and i < len(at):
+                    frac = float(at[i])
+                elif split is not None and n_img == 2:
                     frac = float(split)
                 else:
                     frac = i / float(n_img)
