@@ -2773,6 +2773,49 @@ apagam os arquivos físicos).
 
 ---
 
+## 43. Correção de sincronia do áudio e verificação de duração (2026-11-08)
+
+### Problema
+
+O `build_composition.py` desloca as cenas em `INTRO_DUR` (4s) para a capa, mas
+gravava o `<audio id="mix-audio">` com `data-start="0"`. O `final_mix.m4a`
+(192.164s) começa na cena `s_intro` (0s), então a narração ficava 4s adiantada
+em relação às imagens. O `verify_output.py` também comparava o MP4 com o total
+do `timeline.json`, sem somar a capa (4s) e o outro (5s), acusando `delta` de 9s
+em todo vídeo normal.
+
+### Correção
+
+- `scripts/build_composition.py`: o áudio agora começa em `INTRO_DUR` e dura
+  `total - INTRO_DUR - OUTRO_DUR` (o total do timeline). A capa de 4s e o outro
+  de 5s ficam sem áudio; a narração/trilha começa junto com `s_intro`.
+- `scripts/verify_output.py`: a duração esperada agora é
+  `timeline.total + INTRO_DUR + OUTRO_DUR` (9s). Para o projeto
+  `frida-e-luna-astronautas-encontram-um-ca`: timeline 192.164s + 9s =
+  201.164s.
+
+### Sintoma de workspace stale
+
+Em 2026-11-08 o render gerou um MP4 de 244.268s (composição antiga) mesmo com o
+log dizendo `== composicao linkeda`. Antes de renderizar, confira:
+
+- `hyperframes-workspace/index.html` deve ter o mesmo hash de
+  `projects/<slug>/composition.html`;
+- `hyperframes-workspace/final_mix.m4a` deve ter o mesmo tamanho/hash de
+  `projects/<slug>/assets/audio/final_mix.m4a`;
+- `data-duration` do `index.html` deve ser `timeline + 9s` (ex.: 201.164).
+
+Se estiver stale, copie os dois arquivos com `Copy-Item -Force` (ou rode
+`render.ps1` de novo) e só então rode `npm run render`.
+
+### Arquivos alterados
+
+- `scripts/build_composition.py`
+- `scripts/verify_output.py`
+- `MANUAL_GRAFOS.md`
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 

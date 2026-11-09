@@ -330,6 +330,8 @@ def main():
             overlays[sec["id"]] = inject_ids(html, sec["id"])
 
     body, js, total = build(scene_cfg, tl, overlays, title=video_title)
+    audio_start = INTRO_DUR
+    audio_dur = total - INTRO_DUR - OUTRO_DUR
 
     html = """<!doctype html>
 <html lang="pt-BR" data-resolution="landscape">
@@ -343,7 +345,7 @@ def main():
     <div id="root" data-composition-id="main" data-start="0" data-duration="%.3f"
          data-width="1920" data-height="1080">
 %s
-      <audio id="mix-audio" src="final_mix.m4a" data-start="0" data-duration="%.3f"
+      <audio id="mix-audio" src="final_mix.m4a" data-start="%.3f" data-duration="%.3f"
              data-track-index="2" data-volume="1"></audio>
     </div>
     <script>
@@ -351,7 +353,7 @@ def main():
     </script>
   </body>
 </html>
-""" % (CSS, total, body, total, js)
+""" % (CSS, total, body, audio_start, audio_dur, js)
 
     out = Path(args.out)
     out.write_text(html, encoding="utf-8")

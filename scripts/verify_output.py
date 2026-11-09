@@ -13,6 +13,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from build_composition import INTRO_DUR, OUTRO_DUR
+
 HERE = Path(__file__).resolve().parent
 
 
@@ -56,8 +58,10 @@ def main():
 
     expected = None
     try:
-        expected = float(load_json(proj / "artifacts" / "timeline.json")["total"])
-        print("timeline: %.2f s (delta %.2f s)" % (expected, dur - expected))
+        timeline_total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
+        expected = timeline_total + INTRO_DUR + OUTRO_DUR
+        print("timeline: %.2f s + capa/outro %.1f s = %.2f s (delta %.2f s)"
+              % (timeline_total, INTRO_DUR + OUTRO_DUR, expected, dur - expected))
     except Exception:
         pass
 
