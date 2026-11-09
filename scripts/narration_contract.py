@@ -9,19 +9,17 @@ Aplicado em:
   - pipeline.py (validacao do checkpoint script)
 
 Regra:
-  - A primeira secao (id "s0") SEMPRE comeca com o cumprimento humanizado.
-  - A ultima secao (id "s_outro") SEMPRE e o agradecimento humanizado.
-  - As duas secoes fazem parte do roteiro (e, portanto, das cenas, da
-    narracao, da timeline e do grafo).
+  - A primeira secao (id "s_intro") e o gancho/hook principal do video.
+  - A segunda secao (id "s0") e a saudacao/boas-vindas, que DEVE variar de
+    video para video (nunca ficar robótica/repetitiva).
+  - Uma secao extra (id "s_final") avisa que a historia acabou, logo ANTES do
+    agradecimento final.
+  - A ultima secao (id "s_outro") e o agradecimento/CTA, que tambem deve variar
+    (like, se inscrever, indicar para os amiguinhos).
+  - Todas fazem parte do roteiro (cenas, narracao, timeline e grafo).
 """
 import re
 import unicodedata
-
-INTRO_PREFIX = (
-    "Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! "
-    "Hoje a gente vai falar de "
-)
-INTRO_LABEL = "Apresentação do Canal"
 
 # Nova secao de introducao (hook) que vem ANTES da saudacao
 HOOK_PREFIX = (
@@ -30,12 +28,37 @@ HOOK_PREFIX = (
 HOOK_LABEL = "Introdução do Vídeo"
 HOOK_ID = "s_intro"
 
-OUTRO_TEXT = (
-    "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, "
-    "fique com Deus e até a nossa próxima aventura, tchau tchau!!"
-)
+# Labels fixos (estrutura). O texto vem do Gemini; esses so sao usados como
+# fallback quando o texto esta vazio.
+INTRO_LABEL = "Apresentação do Canal"
 OUTRO_LABEL = "Agradecimento"
+FINAL_LABEL = "O vídeo acabou"
+FINAL_ID = "s_final"
 OUTRO_ID = "s_outro"
+
+# Fallbacks de saudacao variada (usados so se o Gemini nao gerar texto em s0).
+INTRO_FALLBACKS = (
+    "Olá amiguinhos e amiguinhas! Sejam bem-vindos ao nosso canal! Que legal que vocês vieram! Hoje a gente vai falar de {assunto}.",
+    "Oiê, pessoal! Que bom que vocês estão aqui com a gente! Se preparem porque hoje temos uma história bem divertida sobre {assunto}.",
+    "E ai, galera! Sejam bem-vindos ao canal da Frida e da Luna! Hoje vamos contar uma história imperdível sobre {assunto}.",
+    "Olá, lindos e lindas! Que alegria ter vocês aqui! Vem com a gente que hoje a aventura é sobre {assunto}.",
+)
+
+# Fallbacks de aviso de fim (usados so se o Gemini nao gerar s_final).
+FINAL_FALLBACKS = (
+    "É, essa é o fim da nossa história por hoje! Esse foi o final, amiguinhos!",
+    "Chegamos ao final! Essa é a última parte da nossa história, tchau por enquanto!",
+    "E assim termina nossa aventura de hoje! Esse é o final da nossa história!",
+    "Acabou! Essa é a última cena da nossa história, obrigado por assistir até aqui!",
+)
+
+# Fallbacks de agradecimento/CTA variado (usados so se o Gemini nao gerar texto em s_outro).
+OUTRO_FALLBACKS = (
+    "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, fique com Deus e até a nossa próxima aventura, tchau tchau!! Não esqueça de deixar seu like, se inscrever no canal e indicar pra seus amiguinhos!",
+    "Obrigado por assistir! Deixe seu like, se inscreva no canal para não perder nenhuma aventura da Luninha e da Fridoca e indique esse canal para os seus amiguinhos! Beijos e tchau!",
+    "Muito obrigado por assistir! Curta o vídeo, se inscreva no canal e mande esse link para seus amiguinhos também. Até a próxima, tchau tchau!!",
+    "Obrigado por ficar até o final! Deixe o like, se inscreva no canal e compartilhe com seus amiguinhos. Beijo grande e fique com Deus!",
+)
 
 _INTRO_RE = re.compile(r"^\s*ol[áa]\s*amiguinhos\s*e\s*amiguinhas!", re.I)
 _BAD_OPEN_RE = re.compile(
@@ -83,13 +106,23 @@ def clean_theme(theme):
     return t
 
 
+def _pick_fallback(options, key):
+    """Escolhe um fallback de forma determinística a partir da chave (assunto)."""
+    if not options:
+        return ""
+    import hashlib
+    h = int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16)
+    return options[h % len(options)]
+
+
 def build_intro(theme):
-    """Frase de abertura humanizada, preenchida com o assunto do video."""
+    """Saudacao de boas-vindas (s0). Variavel: escolhe um dos fallbacks com
+    base no assunto, mas o ideal e que o Gemini gere um texto unico."""
     t = clean_theme(theme)
     if not t:
         t = "uma aventura nova com a Frida e a Luna"
-    suffix = "" if t.endswith(("?", "!", ".")) else "."
-    return _strip_laugh(INTRO_PREFIX + t + suffix)
+    fallback = _pick_fallback(INTRO_FALLBACKS, t).format(assunto=t)
+    return _strip_laugh(fallback)
 
 
 def build_hook(theme):
@@ -103,6 +136,24 @@ def build_hook(theme):
         t = "uma aventura nova com a Frida e a Luna"
     t = t.rstrip(".!?")
     return "E se " + t + "? Já imaginou como será?"
+
+
+def build_final(theme):
+    """Aviso de fim de historia (s_final). Variavel: fallback baseado no assunto."""
+    t = clean_theme(theme)
+    if not t:
+        t = "uma aventura nova com a Frida e a Luna"
+    fallback = _pick_fallback(FINAL_FALLBACKS, t).format(assunto=t)
+    return _strip_laugh(fallback)
+
+
+def build_outro(theme):
+    """Agradecimento/CTA final (s_outro). Variavel: fallback baseado no assunto."""
+    t = clean_theme(theme)
+    if not t:
+        t = "uma aventura nova com a Frida e a Luna"
+    fallback = _pick_fallback(OUTRO_FALLBACKS, t).format(assunto=t)
+    return _strip_laugh(fallback)
 
 
 def _looks_like_outro(text, label):
@@ -128,8 +179,12 @@ def _set(section, key, value, changes, sid):
 def apply_contract(script, theme=None):
     """Aplica o contrato no dicionario do roteiro (in-place).
 
-    Retorna (script, changes). E idempotente: rodar duas vezes nao duplica
-    secoes nem altera o texto final.
+    Garante a ESTRUTURA (ids, labels e ordem: s_intro -> s0 -> conteudo ->
+    s_final -> s_outro) mas NAO sobescreve textos que o Gemini ja gerou, para
+    que saudacao, aviso de fim e CTA possam variar de video para video.
+    Fallbacks sao usados apenas quando uma secao esta vazia.
+
+    Retorna (script, changes). E idempotente.
     """
     changes = []
     sections = script.get("sections") or []
@@ -139,14 +194,14 @@ def apply_contract(script, theme=None):
     assunto = theme or script.get("title") or script.get("theme") or ""
     hook = build_hook(assunto)
     intro = build_intro(assunto)
+    final_txt = build_final(assunto)
+    outro_txt = build_outro(assunto)
 
     if len(sections) < 2:
         script["sections"] = sections
         return script, ["script com menos de 2 secoes; contrato nao aplicado"]
 
     # ---------- secao de introducao (s_intro) ----------
-    # Idempotente: se ja existe, garante que esta no inicio e mantem o texto
-    # (o Gemini gera um gancho unico por video; so preenche se estiver vazio).
     hook_idx = next((i for i, s in enumerate(sections) if s.get("id") == HOOK_ID), None)
     if hook_idx is None:
         hook_section = {
@@ -172,46 +227,84 @@ def apply_contract(script, theme=None):
         _set(atual, "label", HOOK_LABEL, changes, HOOK_ID)
 
     # ---------- abertura (s0) ----------
-    first = sections[1]  # s_intro esta na posicao 0, s0 na posicao 1
-    used = {s.get("id") for s in sections if s is not first}
-    if first.get("id") != "s0":
-        first["id"] = "s0"
-        changes.append("abertura promovida para s0")
-    used.add("s0")
+    # s0 deve ficar imediatamente depois de s_intro.
+    used = {s.get("id") for s in sections if s.get("id") != "s0"}
+    first = sections[1] if len(sections) > 1 else None
+    if first is None or first.get("id") != "s0":
+        # procura uma secao s0 em qualquer lugar e promove
+        s0_idx = next((i for i, s in enumerate(sections) if s.get("id") == "s0"), None)
+        if s0_idx is not None and s0_idx != 1:
+            sections.insert(1, sections.pop(s0_idx))
+            changes.append("abertura promovida para posicao apos o gancho")
+        elif s0_idx is None:
+            nova = {
+                "id": "s0",
+                "label": INTRO_LABEL,
+                "text": intro,
+                "delivery_cues": {
+                    "pace": "conversational",
+                    "energy": "alegre e acolhedor",
+                    "emphasis_words": [],
+                    "pause_after_seconds": 0.6,
+                },
+            }
+            sections.insert(1, nova)
+            changes.append("secao de abertura criada (s0)")
+    first = sections[1]
     _set(first, "id", "s0", changes, "s0")
     _set(first, "label", INTRO_LABEL, changes, "s0")
-    _set(first, "text", intro, changes, "s0")
+    if not (first.get("text") or "").strip():
+        _set(first, "text", intro, changes, "s0")
+
+    # ---------- aviso de fim (s_final) ----------
+    # Deve ficar entre o ultimo conteudo e o agradecimento.
+    final_idx = next((i for i, s in enumerate(sections) if s.get("id") == FINAL_ID), None)
+    if final_idx is None:
+        # insere antes do s_outro (que esta no final ou sera movido para lá)
+        outro_idx = next((i for i, s in enumerate(sections)
+                          if s.get("id") == OUTRO_ID), len(sections))
+        nova_final = {
+            "id": FINAL_ID,
+            "label": FINAL_LABEL,
+            "text": final_txt,
+            "delivery_cues": {
+                "pace": "measured",
+                "energy": "carinhoso",
+                "emphasis_words": [],
+                "pause_after_seconds": 0.6,
+            },
+        }
+        sections.insert(outro_idx, nova_final)
+        changes.append("secao de aviso de fim criada (s_final)")
+    else:
+        atual = sections[final_idx]
+        _set(atual, "id", FINAL_ID, changes, FINAL_ID)
+        _set(atual, "label", FINAL_LABEL, changes, FINAL_ID)
+        if not (atual.get("text") or "").strip():
+            _set(atual, "text", final_txt, changes, FINAL_ID)
 
     # ---------- encerramento (s_outro) ----------
-    last_idx = len(sections) - 1
+    used_ids = {s.get("id") for s in sections}
     outro_idx = None
     for i, s in enumerate(sections):
-        if i <= 1:  # pula s_intro (0) e s0 (1)
-            continue
         if s.get("id") == OUTRO_ID or _fold(s.get("label", "")).find("agradec") >= 0:
             outro_idx = i
             break
-    if outro_idx is None and _looks_like_outro(sections[last_idx].get("text", ""),
-                                               sections[last_idx].get("label", "")):
-        outro_idx = last_idx
-
-    used_ids = {s.get("id") for s in sections}
     if outro_idx is not None:
         outro = sections.pop(outro_idx)
         used_ids.discard(outro.get("id"))
         new_id = _unique_id(OUTRO_ID, used_ids)
         _set(outro, "id", new_id, changes, "outro")
         _set(outro, "label", OUTRO_LABEL, changes, new_id)
-        _set(outro, "text", OUTRO_TEXT, changes, new_id)
+        if not (outro.get("text") or "").strip():
+            _set(outro, "text", outro_txt, changes, new_id)
         sections.append(outro)
-        if outro_idx != last_idx:
-            changes.append("agradecimento movido para o final")
     else:
         new_id = _unique_id(OUTRO_ID, used_ids)
         outro = {
             "id": new_id,
             "label": OUTRO_LABEL,
-            "text": OUTRO_TEXT,
+            "text": outro_txt,
             "delivery_cues": {
                 "pace": "measured",
                 "energy": "carinhoso",
@@ -251,8 +344,8 @@ def validate_contract(script):
         if s0.get("id") != "s0":
             issues.append("a segunda secao deve ter id 's0'")
         intro_text = s0.get("text", "")
-        if not _INTRO_RE.match(intro_text):
-            issues.append("s0 nao comeca com 'Olá amiguinhos e amiguinhas!'")
+        if not intro_text.strip():
+            issues.append("s0 nao pode ficar vazia (saudacao/boas-vindas)")
         if _BAD_OPEN_RE.match(intro_text):
             issues.append("s0 ainda comeca com cumprimento antigo ('Olá, família!')")
         if "hahaha" in _fold(intro_text):
@@ -263,8 +356,8 @@ def validate_contract(script):
         issues.append("a ultima secao deve ter id '%s'" % OUTRO_ID)
     if _fold(last.get("label", "")) != _fold(OUTRO_LABEL):
         issues.append("a ultima secao deve ter label '%s'" % OUTRO_LABEL)
-    if _fold(last.get("text", "")) != _fold(OUTRO_TEXT):
-        issues.append("o texto do agradecimento nao confere com o contrato")
+    if not last.get("text", "").strip():
+        issues.append("s_outro nao pode ficar vazio (agradecimento/CTA)")
 
     ids = [s.get("id") for s in sections]
     dups = sorted({i for i in ids if ids.count(i) > 1})

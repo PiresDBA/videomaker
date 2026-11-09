@@ -41,7 +41,7 @@ Todos os scripts por fase aceitam `--proj <pasta-do-projeto>`; o render recebe `
 
 ## Regras importantes
 
-- **Contrato de abertura/encerramento** (`narration_contract.py`): a primeira seção (`s0`) sempre começa com "Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de ..." e a última (`s_outro`) é sempre o agradecimento "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, fique com Deus e até a nossa próxima aventura, tchau tchau!!". Aplicado na fase `script` e na `narration`; validado no checkpoint `script`.
+- **Contrato de abertura/encerramento** (`narration_contract.py`): garante a ordem `s_intro` (gancho) → `s0` (saudação variada) → conteúdo → `s_final` (aviso de fim) → `s_outro` (agradecimento/CTA variável). Os textos não são fixos: saudação, aviso de fim e agradecimento variam a cada vídeo para não soar robótico. Aplicado na fase `script` e na `narration`; validado no checkpoint `script`.
 - **`gemini_fetch.py` nunca pede vídeo**: material visual é sempre `--kind image` (imagem estática única). `--kind video` é recusado e todo prompt de imagem recebe o reforço `IMAGE_ONLY_PREFIX` (anti-vídeo).
 - **Narração = texto puro, sem SSML** (SSML é lido em voz alta) e **sem risadas escritas** ("Hahaha!" é removido por `LAUGH_RE` — soa falsa em voz neural).
 - **Invalidação em cascata**: reset na fase X caduca as fases dependentes; `full` re-executa só o necessário.

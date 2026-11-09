@@ -246,16 +246,48 @@ narração".
 
 ---
 
-### 1.10.2. Saudação do canal (s0)
+### 1.10.2. Saudação do canal (s0) — variável a cada vídeo
 
-**Texto atual (padrão):** `"Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal
-ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>."`
+A saudação de boas-vindas (s0, label "Apresentação do Canal") NÃO é mais um texto fixo.
+Ela deve ser variável e divertida, para não soar robótica em vídeos sucessivos. Exemplos
+aceitáveis: "Oiê, pessoal! Que bom que vocês estão aqui!", "E aí, galera! Sejam bem-vindos
+ao canal da Frida e da Luna!", "Olá, lindos e lindas! Que alegria ter vocês aqui!".
+
+O texto é gerado pelo Gemini com base no assunto; se o Gemini não gerar, o contrato aplica
+um dos fallbacks variados (`INTRO_FALLBACKS` em `narration_contract.py`).
 
 **Arquivos alterados:**
 - `scripts/generate_script_from_prompt.py` — template da seção `s0` e regra de abertura.
-- `scripts/narration_contract.py` — constante `INTRO_PREFIX` e regex `_INTRO_RE`.
+- `scripts/narration_contract.py` — `INTRO_FALLBACKS`, `build_intro()`, `apply_contract()`.
 
-Não há vírgula após "Olá", evitando leitura robotizada pelo narrador.
+A s0 não leva risada escrita (`Hahaha!`) e não começa com cumprimentos genéricos proibidos
+("Olá, família!", "Olá, amiguinhos!", etc.).
+
+---
+
+### 1.10.3. Aviso de fim de história (s_final) — novo
+
+Antes do agradecimento final, o roteiro agora inclui uma seção `s_final` (label "O vídeo
+acabado") que avisa à criança que a história chegou ao fim (ex: "E assim termina nossa
+aventura de hoje! Esse é o final da nossa história!"). Isso evita que a narração pare
+abruptamente sem sinalizar o encerramento.
+
+O texto é gerado pelo Gemini; se faltar, o contrato aplica um dos fallbacks
+(`FINAL_FALLBACKS` em `narration_contract.py`).
+
+**Arquivo:** `scripts/narration_contract.py` — `FINAL_FALLBACKS`, `build_final()`,
+`apply_contract()` (insere `s_final` entre o conteúdo e o `s_outro`).
+
+---
+
+### 1.10.4. Agradecimento/CTA final (s_outro) — variável
+
+O agradecimento final (s_outro) também é variável a cada vídeo, incluindo chamada para
+ação: deixe seu like, se inscreva no canal e indique para seus amiguinhos. Se o Gemini não
+gerar, o contrato aplica um dos fallbacks (`OUTRO_FALLBACKS` em `narration_contract.py`).
+
+**Arquivo:** `scripts/narration_contract.py` — `OUTRO_FALLBACKS`, `build_outro()`,
+`apply_contract()`.
 
 ---
 
@@ -310,13 +342,14 @@ A partir desta versão, o roteiro inclui uma **nova seção s_intro** que vem **
 | delivery_cues | pace: brisk, energy: curioso e empolgado |
 
 **Regras do contrato:**
-- A primeira seção é SEMPRE a `s_intro`
-- A segunda seção é SEMPRE a `s0` (saudação "Olá amiguinhos e amiguinhas!")
-- A última seção é SEMPRE a `s_outro` (agradecimento)
+- A primeira seção é SEMPRE a `s_intro` (gancho).
+- A segunda seção é SEMPRE a `s0` (saudação de boas-vindas variável, não robótica).
+- Antes do agradecimento, há a seção `s_final` (aviso de fim da história).
+- A última seção é SEMPRE a `s_outro` (agradecimento + CTA variável).
 
 **Arquivos alterados:**
-- `scripts/generate_script_from_prompt.py` — template SYSTEM atualizado para instruir o Gemini a criar ganchos inteligentes
-- `scripts/narration_contract.py` — função `apply_contract()` agora insere `s_intro` no início das seções; `build_hook()` gera fallback se o Gemini não criar; `validate_contract()` valida a ordem s_intro → s0 → ... → s_outro
+- `scripts/generate_script_from_prompt.py` — template SYSTEM atualizado para instruir o Gemini a criar gancho, saudação variável, aviso de fim e CTA variado.
+- `scripts/narration_contract.py` — `apply_contract()` garante a ordem `s_intro → s0 → conteúdo → s_final → s_outro` sem sobescrever textos que o Gemini já gerou; fallbacks são usados apenas quando uma seção está vazia.
 
 ---
 
@@ -338,7 +371,7 @@ A partir desta versão, o roteiro inclui uma **nova seção s_intro** que vem **
 
 ```mermaid
 flowchart TD
-    P[Prompt do usuário] --> S1[1. script<br/>generate_script_from_prompt.py<br/>print: == FASE script: iniciando<br/>s_intro → s0 → s1... → s_outro]
+    P[Prompt do usuário] --> S1[1. script<br/>generate_script_from_prompt.py<br/>print: == FASE script: iniciando<br/>s_intro → s0 → s1... → s_final → s_outro]
     S1 --> A1[(artifacts/script.json)]
     A1 --> S2[2. scenes<br/>generate_scenes_and_prompts.py<br/>print: == FASE scenes: iniciando]
     S2 --> A2[(scenes.json + image_prompts.json)]
@@ -2122,27 +2155,24 @@ trechos fixos injetados só na narração). A fonte única é
 `scripts/narration_contract.py`, aplicada nas fases `script` e `narration` e
 validada no checkpoint da fase `script`.
 
-**Abertura — primeira seção `s0` (label "Apresentação do Canal"):**
-> "Oi, amiguinho! Tudo bem com você? Que legal te ver por aqui! Hoje a gente vai falar de <assunto do vídeo>."
+**Abertura — segunda seção `s0` (label "Apresentação do Canal"):**
+> Saudação de boas-vindas variável e divertida (ex: "Oiê, pessoal! Que bom que vocês estão aqui!", "E aí, galera! Sejam bem-vindos ao canal da Frida e da Luna!"). Variar a cada vídeo.
+
+**Aviso de fim — seção `s_final` (label "O vídeo acabou"):**
+> Aviso de que a história terminou (ex: "E assim termina nossa aventura de hoje! Esse é o final da nossa história!").
 
 **Encerramento — última seção `s_outro` (label "Agradecimento"):**
-> "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, fique com Deus e até a nossa próxima aventura, tchau tchau!!"
+> Agradecimento + chamado à ação variável (ex: "Deixe seu like, se inscreva no canal e indique para seus amiguinhos!").
 
 Regras do contrato:
 
-- `s0` é sempre a primeira seção; é proibido começar com "Olá, família!" ou
-  outro cumprimento genérico. A `s0` não leva risada escrita (`Hahaha!`).
-- `s_outro` é sempre a última seção e usa o texto exato acima.
-- `apply_contract()` roda em `generate_script_from_prompt.py` (fase `script`) e
-  em `gen_narration_edge.py` (fase `narration`, reparando roteiros antigos);
-  `validate_contract()` é chamada em `pipeline.py` no checkpoint da fase
-  `script`.
-- Como `s0` e `s_outro` estão no `script.json`, elas também geram cenas,
-  imagens, entradas na timeline e no grafo — não existe mais áudio de
-  `intro`/`outro` fora do roteiro (o que antes deixava um trecho sem imagem).
-- O grafo continua `script → scenes → ... → narration → timeline → mix →
-  compose → preprocess → render`; o contrato é validado antes de aceitar o
-  checkpoint `script`.
+- A primeira seção é SEMPRE a `s_intro` (gancho).
+- A segunda seção é SEMPRE a `s0` (saudação variada); é proibido começar com "Olá, família!" ou outro cumprimento genérico. A `s0` não leva risada escrita (`Hahaha!`).
+- Antes do agradecimento há SEMPRE a seção `s_final`.
+- A última seção é SEMPRE a `s_outro` (agradecimento + CTA variado); não usa mais texto fixo exato.
+- `apply_contract()` roda em `generate_script_from_prompt.py` (fase `script`) e em `gen_narration_edge.py` (fase `narration`, reparando roteiros antigos); `validate_contract()` é chamada em `pipeline.py` no checkpoint da fase `script`.
+- Como `s0`, `s_final` e `s_outro` estão no `script.json`, elas também geram cenas, imagens, entradas na timeline e no grafo — não existe mais áudio de `intro`/`outro` fora do roteiro (o que antes deixava um trecho sem imagem).
+- O grafo continua `script → scenes → ... → narration → timeline → mix → compose → preprocess → render`; o contrato é validado antes de aceitar o checkpoint `script`.
 
 ### 34.3. Smoke tests concluídos (2026-11-04)
 

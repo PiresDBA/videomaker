@@ -36,42 +36,41 @@ SYSTEM = (
     '{"title": "Titulo curto e chamativo",\n'
     ' "sections": [\n'
     '  {"id": "s_intro", "label": "Introdução do Vídeo",\n'
-   '   "text": "<gancho de entrada inteligente, criado com base no assunto. Deve despertar curiosidade nos primeiros segundos, fazer uma pergunta intrigante ou criar uma situacao inesperada relacionada ao tema. Exemplo: se o tema for escola de cachorros, algo como: E se um cachorro pudesse ir para a escola? Ja imaginou como seria?. Nao use sempre a mesma frase - crie algo unico para cada topico.>."',
+    '   "text": "<gancho de entrada inteligente, criado com base no assunto. Deve despertar curiosidade nos primeiros segundos, fazer uma pergunta intrigante ou criar uma situacao inesperada relacionada ao tema. Exemplo: se o tema for escola de cachorros, algo como: E se um cachorro pudesse ir para a escola? Ja imaginou como seria?. Nao use sempre a mesma frase - crie algo unico para cada topico.>."',
     '   "delivery_cues": {"pace": "brisk", "energy": "curioso e empolgado",\n'
     '                     "emphasis_words": [], "pause_after_seconds": 0.8}},\n'
     '  {"id": "s0", "label": "Apresentação do Canal",\n'
-    '   "text": "Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>. <uma frase curta e empolgada sobre o que vem por ai>.",\n'
+    '   "text": "<saudacao de boas-vindas VARIAVEL e divertida para criancas, NAO robótica. Exemplo: \"Oiê, pessoal! Que bom que voces estao aqui com a gente! Hoje vamos falar de <assunto>.\" ou \"E ai, galera! Sejam bem-vindos ao canal da Frida e da Luna! Hoje temos uma historia imperdível sobre <assunto>.\". Variar a frase a cada video.>."',
     '   "delivery_cues": {"pace": "conversational", "energy": "alegre e acolhedor",\n'
-    '                     "emphasis_words": ["amiguinho", "hoje"],\n'
-    '                     "pause_after_seconds": 0.6}},\n'
-    '  {"id": "s1", "label": "Gancho", "text": "...",\n'
+    '                     "emphasis_words": [], "pause_after_seconds": 0.6}},\n'
+    '  {"id": "s1", "label": "Gancho da Historia", "text": "...",\n'
     '   "delivery_cues": {"pace": "brisk", "energy": "alegre",\n'
     '                     "emphasis_words": ["..."], "pause_after_seconds": 0.6}},\n'
+    '  {"id": "s_final", "label": "O vídeo acabou",\n'
+    '   "text": "<aviso de que a historia terminou, falando que esse eh o final da nossa historia. Exemplo: \"E assim termina nossa aventura de hoje! Esse eh o final da nossa historia!\".>."',
+    '   "delivery_cues": {"pace": "measured", "energy": "carinhoso",\n'
+    '                     "emphasis_words": [], "pause_after_seconds": 0.6}},\n'
     '  {"id": "s_outro", "label": "Agradecimento",\n'
-    '   "text": "Agradecimento carinhoso ao publico (texto final aplicado pelo contrato do canal).",\n'
+    '   "text": "<agradecimento e chamado a acao VARIAVEL: deixe seu like, se inscreva no canal e indique para seus amiguinhos. Variar a frase a cada video.>."',
     '   "delivery_cues": {"pace": "measured", "energy": "carinhoso",\n'
     '                     "emphasis_words": ["obrigado", "coração", "Deus", "aventura"],\n'
     '                     "pause_after_seconds": 0.8}}\n'
     ' ]}\n\n'
     "Regras obrigatorias de abertura e encerramento (contrato do canal):\n"
     "- A PRIMEIRA secao e SEMPRE a s_intro, label 'Introdução do Vídeo'. Crie um gancho inteligente e unico baseado no assunto do video, despertando curiosidade nos primeiros segundos. Nao use sempre a mesma frase.\n"
-    "- A SEGUNDA secao e SEMPRE a s0, label 'Apresentação do Canal', e o text\n"
-    "  comeca EXATAMENTE assim: \"Olá amiguinhos e amiguinhas! Tudo bem com vocês? Que legal ter vocês aqui com a gente! Hoje a gente vai falar de <assunto>.\"\n"
-    "- E PROIBIDO comecar com \"Olá, família!\", \"Olá, amiguinhos!\" ou qualquer\n"
-    "  outro cumprimento generico. Use o cumprimento humanizado acima.\n"
-    "- A ULTIMA secao e SEMPRE a s_outro, label 'Agradecimento'. Escreva um\n"
-    "  fechamento carinhoso curto; o texto humanizado final e aplicado\n"
-    "  automaticamente pelo contrato do canal (nao precisa copiar palavra por palavra).\n"
-    "- Nao escreva risadas (Hahaha!) na s_intro, s0 nem na s_outro.\n\n"
+    "- A SEGUNDA secao e SEMPRE a s0, label 'Apresentação do Canal'. e uma SAUDACAO DE BOAS-VINDAS VARIAVEL e divertida para criancas (ex: \"Oiê, pessoal!\", \"E ai, galera!\", \"Olá, lindos e lindas!\"). NAO use sempre a mesma frase; evite soar robótica. Nao comeca com cumprimentos genericos proibidos.\n"
+    "- ANTES do agradecimento final, inclua a secao s_final, label 'O vídeo acabou', com um aviso de que a historia terminou (ex: \"E assim termina nossa aventura de hoje! Esse eh o final da nossa historia!\").\n"
+    "- A ULTIMA secao e SEMPRE a s_outro, label 'Agradecimento'. e um agradecimento + chamado a acao VARIAVEL: deixe seu like, se inscreva no canal, indique para seus amiguinhos. NAO use sempre a mesma frase.\n"
+    "- Nao escreva risadas (Hahaha!) na s_intro, s0, s_final nem na s_outro.\n\n"
     "Regras gerais:\n"
     "- **SIGA EXATAMENTE a premissa do TEMA DO USUARIO.** O elemento central pedido\n"
     "  (personagem, animal, objeto ou lugar) DEVE conduzir a historia do inicio ao fim.\n"
     "  E PROIBIDO substituir o tema por outro: se o tema pede 'cachorro astronauta verde',\n"
     "  a historia tem que ser sobre esse cachorro; nao invente osso magico, tesouro,\n"
     "  queijo especial ou outro objeto como foco.\n"
-    "- Gere de 8 a 14 secoes de HISTORIA (s0, s1, s2, ...), MAIS a s_outro final.\n"
+    "- Gere de 8 a 14 secoes de HISTORIA (s1, s2, ...), MAIS a s_final (aviso de fim) e a s_outro (agradecimento) no fim.\n"
     "- **Cada secao de historia deve ter de 55 a 80 palavras** (a s0, de 25 a 45).\n"
-    "- ids: s0, s1, s2, ... para a historia; a ultima secao SEMPRE tem id s_outro.\n"
+    "- ids: s_intro (gancho), s0 (saudacao), s1, s2, ... para a historia, s_final (aviso de fim) e a ultima secao SEMPRE tem id s_outro.\n"
     "- Texto: frases curtas, com pausas (...) e exclamacoes para dar energia.\n"
     "- O text de cada secao e APENAS o que o narrador fala em voz alta. PROIBIDO\n"
     "  incluir ficha de personagens ou descricao fisica no text.\n"
