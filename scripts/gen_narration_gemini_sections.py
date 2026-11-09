@@ -54,12 +54,14 @@ def is_daily_quota(msg):
     return "per day" in low or "perday" in low or "daily" in low
 
 
-def synthesize(key, model, voice, text, timeout=300):
+def synthesize(key, model, voice, text, style=None, timeout=300):
     url = "%s/models/%s:generateContent?key=%s" % (API, model, key)
+    speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}
+    if style:
+        speech["instructions"] = style
     body = {"contents": [{"parts": [{"text": text}]}],
             "generationConfig": {"responseModalities": ["AUDIO"],
-                                 "speechConfig": {"voiceConfig": {
-                                     "prebuiltVoiceConfig": {"voiceName": voice}}}}}
+                                 "speechConfig": speech}}
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"),
                                  headers={"Content-Type": "application/json"})
     data = json.load(urllib.request.urlopen(req, timeout=timeout))
@@ -89,6 +91,8 @@ def main():
     ap.add_argument("--only", default=None, help="ids separados por virgula")
     ap.add_argument("--force", action="store_true", help="regenera mesmo se o wav existe")
     ap.add_argument("--retries", type=int, default=DEFAULT_RETRIES)
+    ap.add_argument("--style", default=None,
+                    help="instrucao de estilo para a voz Gemini (ex: 'divertida e alegre para criancas')")
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
@@ -103,6 +107,7 @@ def main():
 
     model = args.model or tts.get("model", "gemini-3.8-flash-tts")
     voice = args.voice or tts.get("voice", "Leda")
+    style = args.style or tts.get("narration_style", None)
     fallbacks = tts.get("model_fallbacks", DEFAULT_FALLBACK_MODELS)
     chain = build_model_chain(model, fallbacks)
 
@@ -155,7 +160,7 @@ def main():
             has_next = mi < len(chain) - 1
             for attempt in range(args.retries):
                 try:
-                    raw, finish = synthesize(key, mdl, voice, texto)
+                    raw, finish = synthesize(key, mdl, voice, texto, style=style)
                     dst.write_bytes(raw)
                     dur = probe_duration(ffprobe, dst)
                     if dur <= 0.05:

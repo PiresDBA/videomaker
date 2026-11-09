@@ -1117,6 +1117,8 @@ def phase_narration(args, p: Project):
                "--proj", str(p.dir),
                "--voice", voice,
                "--model", model]
+        if getattr(args, "narration_style", None):
+            cmd += ["--style", args.narration_style]
         if getattr(args, "force", False):
             cmd.append("--force")
         try:
@@ -2050,6 +2052,9 @@ def main():
             "--voice", default="pt-BR-ThalitaNeural",
             help="voz da narracao. Edge: pt-BR-ThalitaNeural, pt-BR-FranciscaNeural. "
                  "Gemini: Leda, Achernar, Kore, Zephyr. Ex: --voice Leda")
+        sp.add_argument(
+            "--narration-style", default=None,
+            help="instrucao de estilo para a voz Gemini (ex: 'divertida e alegre, sorrindo, empolgante para criancas')")
         sp.add_argument(
             "--narration-provider", default=None, choices=["edge", "gemini"],
             help="motor da narracao. edge = local sem API (padrao seguro); "
