@@ -50,6 +50,7 @@ O contrato completo, com proibições e checklist de push, está em
 | voz / música / fallback de narração | §1.7, §1.8, §34 |
 | narração duplicada / frase do coração | §46 |
 | consistência de cenário e personagens | §45 |
+| vídeo de passeio com vários lugares reais | §47 |
 | o padrão de descrição do YouTube | §36 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |
@@ -425,6 +426,7 @@ Mudanças do grafo em relação à versão anterior:
 | Fase | Antes | Agora |
 |------|-------|-------|
 | `images` | só Gemini Web | banco local (BM25) primeiro, depois Gemini Web, com quarentena de 4 loops |
+| `scenes` | cenário único (só o título) | cenário único **+ lugar por cena** em vídeo de passeio com vários lugares reais (§47) |
 | `music` | só Gemini Web | banco local (rotação sem repetir) → Gemini Web → procedural local |
 | `narration` | só Edge-TTS | Gemini TTS (Achernar/Leda alternando) com **anti-duplicação** (Whisper + retry + frase a frase) e **frase do coração** (§46) **ou** Edge-TTS, com fallback automático do Gemini para o Edge |
 | `youtube` | não estava no grafo | fase opcional (só com `--publish`), grava a descrição no padrão oficial do canal |
@@ -3131,6 +3133,45 @@ python scripts/pipeline.py resume --slug <slug> --from timeline
 - `scripts/generate_script_from_prompt.py` — regras de não repetição e frase do
   coração no SYSTEM prompt.
 - `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
+## 47. Vídeo de passeio com vários lugares reais (2026-11-10)
+
+Regra geral (§45): o cenário do vídeo é definido **apenas pelo título** e é o
+mesmo do começo ao fim. Isso continua valendo para histórias de ambiente único
+(zoológico, Marte, floresta).
+
+### 47.1. Exceção: passeio com vários lugares
+
+Quando o tema pede um **passeio por vários lugares reais** (bairros, pontos
+turisticos, museus, praças, feiras, parques), o vídeo visita cada lugar pedido,
+**um lugar por seção**, na ordem do pedido. Exemplo real:
+
+`frida-e-luna-passeio-sao-paulo` — Avenida Paulista → Museu do Ipiranga →
+Praça da Sé (catedral) → Feira de Benedito Calixto (Pinheiros) → Parque do
+Ibirapuera (fim do filme).
+
+Nesse caso o prompt **não pode** mandar "mantenha este mesmo ambiente", senão
+todas as imagens saem com o mesmo fundo. A detecção é automática:
+
+- `_eh_passeio(script)` — True se o roteiro cita **2+ lugares** do mapa
+  `LUGARES` ou se o título contém "passeio", "tour" ou "volta pelo";
+- `_lugar_da_cena(texto)` — devolve a descrição canônica do lugar citado no
+  trecho (ordem do mais específico para o mais genérico);
+- `build_prompt(..., lugar=, passeio=)` — com lugar, o prompt ganha
+  `Lugar exato desta cena: ...` + a instrução de gerar o lugar daquela cena e
+  **não** repetir o ambiente anterior; o cenário global é ignorado.
+
+O lugar é detectado **por trecho/batida**, então uma seção que troca de lugar no
+meio da fala já gera a imagem certa para cada batida.
+
+Lugares sem entrada no mapa caem no cenário global do título (comportamento
+antigo). Para novos vídeos de passeio em outras cidades, acrescentar a cidade
+ao mapa `LUGARES` em `scripts/generate_scenes_and_prompts.py`.
+
+O roteirista também foi avisado: `generate_script_from_prompt.py` (SYSTEM) tem a
+excecao única, para ele não colapsar tudo em um único cenário.
 
 ---
 

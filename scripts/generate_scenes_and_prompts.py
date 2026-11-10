@@ -170,6 +170,53 @@ def _extrair_cenario(script):
     return "cenario de desenho animado, ambiente consistente do video"
 
 
+# Lugares reais conhecidos (video de passeio pela cidade): garante que cada
+# imagem mostre o lugar citado no trecho narrado. A ordem importa, do mais
+# especifico para o mais generico.
+LUGARES = {
+    "avenida paulista": "Avenida Paulista, em Sao Paulo, avenida larga e famosa, arranha-ceus, arvores, bancos, calcadas e muito movimento",
+    "paulista": "Avenida Paulista, em Sao Paulo, avenida larga e famosa, arranha-ceus, arvores, bancos, calcadas e muito movimento",
+    "museu do ipiranga": "Museu do Ipiranga (Museu Paulista), predio historico amarelo e imponente com colunas, jardim na frente, em Sao Paulo",
+    "ipiranga": "Museu do Ipiranga (Museu Paulista), predio historico amarelo e imponente com colunas, jardim na frente, em Sao Paulo",
+    "praca da se": "Praca da Se, no centro de Sao Paulo, com a Catedral Metropolitana gotica de pedra e predios historicos ao redor",
+    "catedral": "Catedral Metropolitana de Sao Paulo, na Praca da Se, igreja gotica de pedra com torres e rosacea, no centro da cidade",
+    "benedito calixto": "Feira de Benedito Calixto, em Pinheiros, em Sao Paulo, tendas de feira ao ar livre com artesanato, quadros, plantas e barracas de comida",
+    "pinheiros": "Bairro de Pinheiros, em Sao Paulo, ruas arborizadas com feira de artesanato ao ar livre, tendas coloridas e casaroes antigos",
+    "feira": "feira de rua ao ar livre, tendas coloridas, barracas de artesanato e comida, calcada movimentada",
+    "ibira": "Parque Ibirapuera, em Sao Paulo, lago, gramado amplo, arvores altas, passarela de concreto e obras de arquitetura moderna",
+    "parque": "parque urbano, gramado, arvores, lago e passarelas de desenho animado",
+}
+
+
+def _lugar_da_cena(text):
+    """Detecta o lugar real citado no trecho (video de passeio).
+
+    Retorna a descricao canonica do lugar, ou "" quando o trecho nao cita
+    nenhum lugar conhecido (aí vale o cenario global do titulo)."""
+    t = clean_text(text or "").lower()
+    for chave, desc in LUGARES.items():
+        if chave in t:
+            return desc
+    return ""
+
+
+def _eh_passeio(script):
+    """True quando o video visita varios lugares diferentes.
+
+    Excecao a regra de cenario unico: quando o tema pede varios lugares reais
+    (bairros, museus, pracas, parques), cada cena acontece em um lugar
+    diferente e o prompt NAO pode mandar 'manter o mesmo ambiente'."""
+    lugares = set()
+    for s in script.get("sections", []):
+        lug = _lugar_da_cena(s.get("text", ""))
+        if lug:
+            lugares.add(lug)
+    if len(lugares) >= 2:
+        return True
+    titulo = clean_text(script.get("title", "") or "").lower()
+    return any(p in titulo for p in ("passeio", "tour", "volta pelo", "conhecendo sao paulo"))
+
+
 def _clean_scene_text(text, limit=400):
     """Limpa e trunca o texto da cena de forma segura:
     - remove tags HTML;
@@ -268,7 +315,7 @@ def soften_terms(text):
     return text
 
 
-def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a", cenario=""):
+def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a", cenario="", lugar="", passeio=False):
     """Monta o prompt curto, sem redundancia e sem marcas.
     Cada prompt gera UMA imagem. variant 'a' = cena principal; 'b' = close-up
     / reacao dos personagens (segunda imagem da mesma cena, para engajamento).
@@ -276,7 +323,9 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
     personagens quando a ficha abria o prompt); personagens ficam para depois,
     amarrados a imagem de referencia quando ela existe.
     O cenario (ex: zoologico, Marte) e injetado em TODOS os prompts para
-    garantir continuidade visual de ambiente do começo ao fim do video."""
+    garantir continuidade visual de ambiente do começo ao fim do video.
+    Excecao: video de passeio com varios lugares reais. Aí o `lugar` da cena
+    manda no prompt e o cenario global é ignorado (§47)."""
     if frida_luna:
         scene_text = fix_species(scene_text or "")
     scene = soften_terms(scene_text or "cena ilustrativa da história")
@@ -285,8 +334,16 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
     # A cena descreve a ACAO. Anti-texto vai no bloco final (em PT): baloes
     # com escrita aparecerem mesmo com SAFE_STYLE em ingles no fim do prompt.
     parts = ["CENA (gere exatamente esta cena): %s" % scene]
-    # Contexto de cenário consistente (mesmo ambiente do começo ao fim).
-    if cenario:
+    # Contexto de lugar. Em video de passeio cada cena acontece em um lugar
+    # diferente, entao o lugar manda; fora disso vale o cenario global.
+    if lugar:
+        parts.append("Lugar exato desta cena: %s." % lugar)
+        if passeio:
+            parts.append(
+                "Este video e um passeio pela cidade: gere O LUGAR DESTA CENA "
+                "com fidelidade e NAO repita o ambiente das cenas anteriores."
+            )
+    elif cenario:
         parts.append("Cenario do video (mantenha este mesmo ambiente em todas as imagens): %s." % cenario)
     if frida_luna:
         if has_reference:
@@ -464,6 +521,17 @@ def main():
     title = clean_text(script.get("title", "video explicativo"))
     frida_luna = is_frida_luna_script(script)
     cenario = _extrair_cenario(script)
+    passeio = _eh_passeio(script)
+
+    def _ctx(texto):
+        """Devolve (cenario, lugar) para o prompt deste trecho.
+
+        Trecho com lugar real conhecido: lugar manda e o cenario global sai
+        (video de passeio, §47). Sem lugar: cenario global do titulo."""
+        lug = _lugar_da_cena(texto)
+        if lug:
+            return "", lug
+        return cenario, ""
 
     scenes = {"_help": "Para cada secao: images = arquivos em assets/images/. at = fracao (0..1) em que cada imagem entra (sincronizada as pausas). split = at[1] quando ha 2 imagens. camera = [escala_inicial, escala_final, x_inicial, x_final, y_inicial, y_final] por imagem. beats = trechos de fala de cada imagem."}
     prompts = {}
@@ -494,9 +562,11 @@ def main():
 
         if sid == "s0":
             # Capa: unica imagem de apresentacao
+            c_cen, c_lug = _ctx(text)
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
                                                has_reference=has_ref, variant="a",
-                                               cenario=cenario)
+                                               cenario=c_cen, lugar=c_lug,
+                                               passeio=passeio)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name],
                 "split": None,
@@ -509,12 +579,15 @@ def main():
         if mode == "two":
             # Modo legado: duas imagens fixas por cena (principal + close-up),
             # com a segunda entrando no meio da cena (split 0.5).
+            c_cen, c_lug = _ctx(text)
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
                                                has_reference=has_ref, variant="a",
-                                               cenario=cenario)
+                                               cenario=c_cen, lugar=c_lug,
+                                               passeio=passeio)
             prompts[scene_name + "_b"] = build_prompt(title, text, style, frida_luna,
                                                       has_reference=has_ref, variant="b",
-                                                      cenario=cenario)
+                                                      cenario=c_cen, lugar=c_lug,
+                                                      passeio=passeio)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name, "%s_b.jpg" % scene_name],
                 "split": 0.5,
@@ -542,9 +615,11 @@ def main():
         images, cams = [], []
         for k, beat in enumerate(beats):
             name = scene_name if k == 0 else ("%s_%s" % (scene_name, chr(ord("a") + k)))
+            b_cen, b_lug = _ctx(beat)
             prompts[name] = build_prompt(title, beat, style, frida_luna,
                                          has_reference=has_ref, variant=variants[k],
-                                         cenario=cenario)
+                                         cenario=b_cen, lugar=b_lug,
+                                         passeio=passeio)
             images.append("%s.jpg" % name)
             cams.append(CAMERAS[k % len(CAMERAS)])
         scenes[sid] = {

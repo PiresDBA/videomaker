@@ -120,7 +120,9 @@ ou imagens deve respeitá-la:
   Se o tema for "zoológico", todas as cenas acontecem no zoológico. Se for "Marte",
   todas as cenas acontecem em Marte (ou na nave que vai e volta da Terra). Não mudar
   de cenário aleatoriamente (não colocar grama se o tema é Marte, nem casa se o tema
-  é o zoológico).
+  é o zoológico). **Exceção única:** vídeo de passeio por vários lugares reais —
+  aí cada seção acontece em um lugar diferente, na ordem pedida
+  (`MANUAL_GRAFOS.md` §47).
 - **Personagens consistentes:** Frida (buldogue inglês) e Luna (salsicha/dachshund)
   devem manter a mesma aparência do começo ao fim do vídeo. Nunca mudar a raça, cor
   ou traço dos personagens entre cenas.
