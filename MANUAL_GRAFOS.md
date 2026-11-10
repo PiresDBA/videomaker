@@ -2989,13 +2989,16 @@ Duas alterações foram aplicadas:
 #### 45.1. Contexto de cenário consistente em TODAS as imagens
 
 `scripts/generate_scenes_and_prompts.py` ganhou a função `_extrair_cenario()`,
-que lê o título do roteiro e o texto das primeiras seções (s1, s2) para
-identificar o ambiente (ex: "planeta Marte", "zoológico", "floresta"). Esse
-cenário é injetado em **todos** os prompts de imagem via `build_prompt(...,
-cenario=...)`, obrigando o modelo de imagem a manter o mesmo ambiente do começo
-ao fim do vídeo.
+que lê o **título do roteiro** para identificar o ambiente (ex: "planeta Marte",
+"zoológico", "floresta"). Esse cenário é injetado em **todos** os prompts de
+imagem via `build_prompt(..., cenario=...)`, obrigando o modelo de imagem a
+manter o mesmo ambiente do começo ao fim do vídeo.
 
-Mapeamento de palavras-chave para cenário canônico:
+**O cenário é extraído apenas do título**, nunca das seções de história. Isso
+evita que palavras mencionadas na narrativa (ex: "voou até a lua", "um
+dinossauro verde") sejam interpretadas como o ambiente do vídeo.
+
+Mapeamento de palavras-chave do título para cenário canônico:
 
 | Palavra-chave | Cenário injetado nos prompts |
 |---------------|------------------------------|
@@ -3010,6 +3013,8 @@ Mapeamento de palavras-chave para cenário canônico:
 | `neve` | neve, gelo, montanha nevada, flocos de neve, frio, roupas de inverno |
 | `casa` | casa, sala, quarto, cozinha, móveis, janelas, lar de desenho animado |
 | `escola` | escola, sala de aula, quadro negro, carteiras, professor de desenho animado, livros |
+| `jardim` | jardim, grama, flores, árvores, borboletas, céu azul, ambiente ao ar livre |
+| `quarto` | quarto de criança, cama, brinquedos, prateleiras, janela, lar de desenho animado |
 | `parque` | parque, grama, árvores, bancos, brinquedos de playground, céu azul |
 
 Se nenhuma palavra-chave casar, usa o título como cenário genérico.

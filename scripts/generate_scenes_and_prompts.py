@@ -136,17 +136,14 @@ def sanitize_style(style):
 
 
 def _extrair_cenario(script):
-    """Extrai o contexto de cenário/ambiente do título e das seções.
-    Usa palavras-chave do título e da primeira seção de história para
-    definir o pano de fundo que deve se repetir em TODAS as imagens."""
-    title = (script.get("title", "") or "").lower()
-    texto = title + " "
-    # pega as primeiras 2 secoes de historia (s1, s2) para capturar o ambiente
-    for s in script.get("sections", []):
-        if s.get("id", "").startswith("s1") or s.get("id", "").startswith("s2"):
-            texto += " " + (s.get("text", "") or "").lower()
-    texto = clean_text(texto)
-    # Mapeia palavras-chave para cenário canônico
+    """Extrai o contexto de cenário/ambiente do título do roteiro.
+
+    O cenário é definido APENAS pelo título do vídeo (ex: "Marte", "zoológico").
+    Nunca pelas seções de história, pois essas podem mencionar lugares variados
+    (ex: "voou até a lua") que não são o ambiente do vídeo.
+    """
+    title = clean_text(script.get("title", "") or "").lower()
+    # Mapeia palavras-chave do título para cenário canônico
     mapa = {
         "marte": "planeta Marte, solo vermelho e rochoso, céu rosado, poeira marciana, foguete espacial, trajes de astronauta caninos",
         "espaco": "espaco sideral, nave espacial, estrelas, planeta, luar, astronautas caninos",
@@ -160,9 +157,11 @@ def _extrair_cenario(script):
         "casa": "casa, sala, quarto, cozinha, móveis, janelas, lar de desenho animado",
         "escola": "escola, sala de aula, quadro negro, carteiras, professor de desenho animado, livros",
         "parque": "parque, grama, árvores, bancos, brinquedos de playground, céu azul",
+        "jardim": "jardim, grama, flores, árvores, borboletas, céu azul, ambiente ao ar livre",
+        "quarto": "quarto de criança, cama, brinquedos, prateleiras, janela, lar de desenho animado",
     }
     for chave, desc in mapa.items():
-        if chave in texto:
+        if chave in title:
             return desc
     # fallback: usa o título limpo como cenário generico
     t = re.sub(r"[^a-z0-9\s]", " ", title).strip()
