@@ -48,8 +48,55 @@ def build_model_chain(primary, fallbacks):
     return chain
 
 
+def collect_keys(key_env):
+    """Reunir candidatas de chave de API: GOOGLE_TTS_API_KEY e GOOGLE_TTS_API_KEY_1..N.
+
+    Le do ambiente e do .env (UTF-8 ou UTF-16) via load_env_key. Nao expoe valores no log.
+    """
+    keys = []
+    seen = set()
+
+    def add(key):
+        if not key or key in seen:
+            return
+        seen.add(key)
+        keys.append(key)
+
+    # Chave unica nomeada no config (padrao GOOGLE_TTS_API_KEY)
+    add(os.environ.get(key_env, ""))
+    if load_env_key:
+        try:
+            add(load_env_key(key_env) or "")
+        except Exception:
+            pass
+
+    # Variaveis numeradas para rotacao: _1, _2, _3 ...
+    i = 1
+    while True:
+        val = os.environ.get("%s_%d" % (key_env, i), "")
+        if not val and load_env_key:
+            try:
+                val = load_env_key("%s_%d" % (key_env, i)) or ""
+            except Exception:
+                val = ""
+        if not val:
+            break
+        add(val)
+        i += 1
+
+    # Fallback legado: GOOGLE_API_KEY
+    add(os.environ.get("GOOGLE_API_KEY", ""))
+    if load_env_key:
+        try:
+            add(load_env_key("GOOGLE_API_KEY") or "")
+        except Exception:
+            pass
+
+    return keys
+
+
 def is_daily_quota(msg):
-    """429 por cota DIARIA (RESOURCE_EXHAUSTED 'per day') nao adianta repetir; troca de modelo."""
+    """429 por cota DIARIA (RESOURCE_EXHAUSTED 'per day') nao adianta repetir; troca de chave/modelo."""
     low = (msg or "").lower()
     return "per day" in low or "perday" in low or "daily" in low
 
@@ -102,9 +149,9 @@ def main():
     ffprobe = str(Path(cfg["ffmpeg_dir"]) / "ffprobe.exe")
 
     key_env = tts.get("key_env", "GOOGLE_TTS_API_KEY")
-    key = load_env_key(key_env) or load_env_key("GOOGLE_API_KEY")
-    if not key:
-        raise SystemExit("chave nao encontrada: defina %s no .env" % key_env)
+    keys = collect_keys(key_env)
+    if not keys:
+        raise SystemExit("chave nao encontrada: defina %s (ou %s_1, _2, _3) no .env" % (key_env, key_env))
 
     model = args.model or tts.get("model", "gemini-3.8-flash-tts")
     voice = args.voice or tts.get("voice", "Leda")
@@ -153,57 +200,65 @@ def main():
             dur = probe_duration(ffprobe, dst)
             print("%-6s %7.2fs  (ja existe, voz %s)" % (sid, dur, voice))
             results.append({"id": sid, "path": str(dst), "duration": dur,
-                            "voice": voice, "model": model})
+                            "voice": voice, "model": model, "key": anterior.get(sid, {}).get("key")})
             continue
 
         ok = False
-        for mi, mdl in enumerate(chain):
-            has_next = mi < len(chain) - 1
-            for attempt in range(args.retries):
-                try:
-                    raw, finish = synthesize(key, mdl, voice, texto, style=style)
-                    dst.write_bytes(raw)
-                    dur = probe_duration(ffprobe, dst)
-                    if dur <= 0.05:
-                        # Alguns modelos (ex: *-preview) devolvem PCM cru, sem
-                        # cabecalho RIFF; gravar como .wav gera duracao 0 e
-                        # quebra a timeline. Descarta e tenta o proximo modelo.
-                        try:
-                            dst.unlink()
-                        except OSError:
-                            pass
-                        print("%s: audio invalido (duracao %.2fs) em %s; tentando proximo"
-                              % (sid, dur, mdl))
+        chave_usada = None
+        modelo_usado = None
+        for ki, key in enumerate(keys):
+            for mi, mdl in enumerate(chain):
+                has_next_key = ki < len(keys) - 1
+                has_next_model = mi < len(chain) - 1
+                for attempt in range(args.retries):
+                    try:
+                        raw, finish = synthesize(key, mdl, voice, texto, style=style)
+                        dst.write_bytes(raw)
+                        dur = probe_duration(ffprobe, dst)
+                        if dur <= 0.05:
+                            # Alguns modelos (ex: *-preview) devolvem PCM cru, sem
+                            # cabecalho RIFF; gravar como .wav gera duracao 0 e
+                            # quebra a timeline. Descarta e tenta a proxima chave/modelo.
+                            try:
+                                dst.unlink()
+                            except OSError:
+                                pass
+                            print("%s: audio invalido (duracao %.2fs) em %s com chave %d/%d; tentando proximo"
+                                  % (sid, dur, mdl, ki + 1, len(keys)))
+                            break
+                        print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s chave=%d/%d"
+                              % (sid, dur, finish, voice, mdl, ki + 1, len(keys)))
+                        results.append({"id": sid, "path": str(dst), "duration": dur,
+                                        "voice": voice, "model": mdl, "key": ki + 1})
+                        ok = True
+                        chave_usada = ki + 1
+                        modelo_usado = mdl
                         break
-                    print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s"
-                          % (sid, dur, finish, voice, mdl))
-                    results.append({"id": sid, "path": str(dst), "duration": dur,
-                                    "voice": voice, "model": mdl})
-                    ok = True
+                    except urllib.error.HTTPError as e:
+                        msg = e.read().decode("utf-8", "ignore")
+                        print("%s: HTTP %s %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
+                              % (sid, e.code, msg[:120].replace("\n", " "),
+                                 mdl, ki + 1, len(keys), attempt + 1, args.retries))
+                        if is_daily_quota(msg):
+                            print("%s: cota diaria esgotada na chave %d/%d (%s); tentando proxima chave"
+                                  % (sid, ki + 1, len(keys), mdl))
+                            break  # tenta proxima chave
+                        if e.code in (400, 401, 403, 404):
+                            break  # chave invalida para este modelo; tenta proxima chave
+                        time.sleep(4 * (attempt + 1))
+                    except Exception as e:
+                        print("%s: erro %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
+                              % (sid, str(e)[:100], mdl, ki + 1, len(keys), attempt + 1, args.retries))
+                        time.sleep(4 * (attempt + 1))
+                if ok:
                     break
-                except urllib.error.HTTPError as e:
-                    msg = e.read().decode("utf-8", "ignore")
-                    print("%s: HTTP %s %s (modelo=%s, tentativa %d/%d)"
-                          % (sid, e.code, msg[:120].replace("\n", " "),
-                             mdl, attempt + 1, args.retries))
-                    if is_daily_quota(msg) and has_next:
-                        print("%s: cota diaria esgotada em %s; trocando de modelo"
-                              % (sid, mdl))
-                        break
-                    if e.code in (400, 401, 403, 404):
-                        break
-                    time.sleep(4 * (attempt + 1))
-                except Exception as e:
-                    print("%s: erro %s (modelo=%s, tentativa %d/%d)"
-                          % (sid, str(e)[:100], mdl, attempt + 1, args.retries))
-                    time.sleep(4 * (attempt + 1))
             if ok:
                 break
 
         if not ok:
             falhas += 1
-            print("%s: FALHA ao gerar com Gemini TTS (modelos: %s)"
-                  % (sid, ", ".join(chain)))
+            print("%s: FALHA ao gerar com Gemini TTS (todas as %d chave(s) x modelos %s)"
+                  % (sid, len(keys), ", ".join(chain)))
         time.sleep(1.5)
 
     ordem = [s["id"] for s in script["sections"]]
@@ -212,7 +267,9 @@ def main():
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     total = sum(r["duration"] for r in results)
-    print("TOTAL %.1fs  (voz %s, modelos %s)" % (total, voice, ", ".join(chain)))
+    chaves_usadas = sorted({r.get("key") for r in results if r.get("key")})
+    print("TOTAL %.1fs  (voz %s, modelos %s, chaves %s)"
+          % (total, voice, ", ".join(chain), ", ".join(str(c) for c in chaves_usadas) if chaves_usadas else "nenhuma"))
 
     if falhas:
         print("== Gemini TTS: %d secao(oes) falharam. O pipeline deve usar o fallback Edge-TTS." % falhas)

@@ -2904,6 +2904,62 @@ Se estiver stale, copie os dois arquivos com `Copy-Item -Force` (ou rode
 
 ---
 
+## 44. Rotacao de chaves de API do Gemini TTS na narracao (2026-11-09)
+
+A fase `narration` (`scripts/gen_narration_gemini_sections.py`) agora rotaciona entre
+varias chaves de API do Google antes de cair no fallback Edge-TTS. Antes, so havia
+uma chave unica (`GOOGLE_TTS_API_KEY`); quando ela esgotava a cota diaria (429) ou
+era invalida (401/403), o script partia direto para o proximo modelo e, sem sucesso,
+para o Edge-TTS.
+
+### Como funciona
+
+O script coleta as chaves nesta ordem, sem expor valores no log:
+
+1. `GOOGLE_TTS_API_KEY` (do ambiente ou `.env`, lido via `scripts/env_keys.py`)
+2. `GOOGLE_TTS_API_KEY_1`, `GOOGLE_TTS_API_KEY_2`, `GOOGLE_TTS_API_KEY_3` ...
+   (ambiente ou `.env`, numeradas para rotacao)
+3. `GOOGLE_API_KEY` (fallback legado)
+
+Para cada secao de narracao, o pipeline tenta **todas as chaves x todos os modelos**
+antes de desistir:
+
+- `429` (cota diaria esgotada) → pula para a proxima chave (mesmo modelo)
+- `400/401/403/404` (chave invalida) → pula para a proxima chave
+- outro erro → tenta novamente na mesma chave (até `--retries` vezes)
+- se todas as chaves falharem em um modelo → tenta o proximo modelo
+- se todas falharem em todos os modelos → a secao é marcada como falhada
+
+Ao final, se houver falhas, o script retorna codigo nao-zero e o `pipeline.py`
+aciona o fallback automatico para o Edge-TTS (`config.json -> tts.edge_fallback`),
+registrando `"fallback_from": "gemini"` no `project.json`.
+
+### Exemplo de .env
+
+```
+GOOGLE_TTS_API_KEY=AIzaSy...
+GOOGLE_TTS_API_KEY_1=AIzaSy...
+GOOGLE_TTS_API_KEY_2=AIzaSy...
+GOOGLE_TTS_API_KEY_3=AIzaSy...
+```
+
+### Verificar quais chaves tem cota
+
+```powershell
+python scripts/check_tts_quota.py
+```
+
+Isso testa cada chave e reporta qual ainda tem cota diaria disponivel, sem expor
+os valores no log.
+
+### Arquivos alterados
+
+- `scripts/gen_narration_gemini_sections.py` — funcao `collect_keys()`, loop de
+  sintese rotacionando chaves x modelos, registro da chave usada em cada secao.
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 
