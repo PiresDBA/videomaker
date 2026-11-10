@@ -44,6 +44,7 @@ contrária explícita). Não desfaça.
 | a CLI do pipeline | §37 |
 | a regra de branch/grafo/push | §38 |
 | voz, música e fallback de narração | §1.7, §1.8, §34 |
+| narração duplicada / frase do coração | §46 |
 | consistência de cenário e personagens | §45 |
 | o executor diário | §11 |
 
@@ -131,6 +132,24 @@ Essa regra está documentada em **`MANUAL_GRAFOS.md` §45** e implementada em
 `scripts/generate_scenes_and_prompts.py` (função `_extrair_cenario()` e parâmetro
 `cenario` em `build_prompt()`) e
 `scripts/generate_script_from_prompt.py` (SYSTEM prompt).
+
+Ao trocar de assunto/slug, resetar **`scenes` junto com `images`** para zerar o
+cenário (`image_prompts.json` é gerado na fase `scenes`). A consistência vale
+apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo anterior.
+
+---
+
+## 5.2. Regra de narração (anti-duplicação + encerramento humano)
+
+- A narração **nunca pode sair duplicada**. O gerador Gemini verifica o áudio com
+  `faster-whisper` e regenera, ou sintetiza frase a frase, se detectar repetição
+  (`MANUAL_GRAFOS.md` §46.3).
+- O encerramento (`s_outro`) não pode usar frases não humanas como
+  "no nosso coração" / "acompanhe nosso coração". Quando falar de coração, usar
+  sempre: **"Um grande beijo no seu coração e fique com a gente! Acompanhe nossos
+  próximos vídeos!"** (§46.4).
+- Implementação: `scripts/gen_narration_gemini_sections.py` e
+  `scripts/narration_contract.py` (fonte única da frase).
 
 ---
 

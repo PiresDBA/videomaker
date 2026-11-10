@@ -52,12 +52,20 @@ FINAL_FALLBACKS = (
     "Acabou! Essa é a última cena da nossa história, obrigado por assistir até aqui!",
 )
 
+# Bloco canonico de encerramento. "No nosso coracao" (ex: "acompanhar essa
+# aventura no nosso coracao") nao e uma frase humana; o unico uso aceito de
+# coracao no encerramento e "um grande beijo no seu coracao".
+HEART_BLOCK = (
+    "Um grande beijo no seu coração e fique com a gente! "
+    "Acompanhe nossos próximos vídeos!"
+)
+
 # Fallbacks de agradecimento/CTA variado (usados so se o Gemini nao gerar texto em s_outro).
 OUTRO_FALLBACKS = (
-    "Muito obrigado por assistir nossos vídeos, um beijo grande no seu coração, fique com Deus e até a nossa próxima aventura, tchau tchau!! Não esqueça de deixar seu like, se inscrever no canal e indicar pra seus amiguinhos!",
-    "Obrigado por assistir! Deixe seu like, se inscreva no canal para não perder nenhuma aventura da Luninha e da Fridoca e indique esse canal para os seus amiguinhos! Beijos e tchau!",
-    "Muito obrigado por assistir! Curta o vídeo, se inscreva no canal e mande esse link para seus amiguinhos também. Até a próxima, tchau tchau!!",
-    "Obrigado por ficar até o final! Deixe o like, se inscreva no canal e compartilhe com seus amiguinhos. Beijo grande e fique com Deus!",
+    "Muito obrigado por acompanhar essa linda aventura! Um grande beijo no seu coração e fique com a gente! Acompanhe nossos próximos vídeos! Deixe seu like, se inscreva no canal e indique para seus amiguinhos!",
+    "Obrigado por assistir! Um grande beijo no seu coração e fique com a gente! Acompanhe nossos próximos vídeos! Deixe seu like e se inscreva no canal para não perder nenhuma aventura da Luninha e da Fridóca!",
+    "Muito obrigado por ficar até o final! Um grande beijo no seu coração e fique com a gente! Acompanhe nossos próximos vídeos! Curta o vídeo, se inscreva no canal e mande para seus amiguinhos!",
+    "Obrigado por acompanhar a gente! Um grande beijo no seu coração e fique com a gente! Acompanhe nossos próximos vídeos! Deixe o like, se inscreva no canal e compartilhe com seus amiguinhos!",
 )
 
 _INTRO_RE = re.compile(r"^\s*ol[áa]\s*amiguinhos\s*e\s*amiguinhas!", re.I)
@@ -154,6 +162,67 @@ def build_outro(theme):
         t = "uma aventura nova com a Frida e a Luna"
     fallback = _pick_fallback(OUTRO_FALLBACKS, t).format(assunto=t)
     return _strip_laugh(fallback)
+
+
+_BAD_HEART_RE = (
+    re.compile(r"(?i)\bfique\s+com\s+o\s+nosso\s+cora[çc][ãa]o\b"),
+    re.compile(r"(?i)\b(?:acompanh\w*)\s+(?:o\s+|esse\s+|este\s+)?nosso\s+cora[çc][ãa]o\b"),
+    re.compile(r"(?i)\b(?:no|com\s+o)\s+nosso\s+cora[çc][ãa]o\b"),
+)
+_HEART_ORDER_RE = re.compile(
+    r"(?i)um\s+beijo\s+grande\s+no\s+seu\s+cora[çc][ãa]o"
+)
+
+
+def _heart_order(match):
+    rep = "um grande beijo no seu coração"
+    return rep[:1].upper() + rep[1:] if match.group(0)[:1].isupper() else rep
+
+
+def sanitize_heart_phrase(text):
+    """Corrige o encerramento para soar humano.
+
+    - Remove "no nosso coração" / "fique com o nosso coração" / "acompanhe
+      nosso coração" (frases que ninguém fala).
+    - Normaliza "um beijo grande no seu coração" -> "um grande beijo no seu
+      coração".
+    - Garante o bloco canonico "Um grande beijo no seu coração e fique com a
+      gente! Acompanhe nossos próximos vídeos!".
+    """
+    t = _norm(text)
+    if not t:
+        return t
+    for rx in _BAD_HEART_RE:
+        t = rx.sub(" ", t)
+    t = re.sub(r"(?i)\s+e\s*([.!?,])", r"\1", t)
+    t = re.sub(r"(?i)^\s*e\b\s*", "", t)
+    t = re.sub(r"(?i)\s+([,\.!?;:])", r"\1", t)
+    t = re.sub(r"^[\s,;.!?]+", "", t)
+    t = _norm(t)
+    t = _HEART_ORDER_RE.sub(_heart_order, t)
+
+    chaves = (
+        "um grande beijo no seu coracao",
+        "fique com a gente",
+        "acompanhe nossos proximos videos",
+    )
+    low = _fold(t)
+    if all(k in low for k in chaves):
+        return _norm(t)
+
+    # Remove qualquer frase parcial de coracao para nao duplicar o bloco.
+    frases = re.split(r"(?<=[.!?])\s+", t)
+    frases = [f for f in frases
+              if not ("beijo" in _fold(f) and "coracao" in _fold(f))]
+    t = _norm(" ".join(frases))
+    m = re.match(r"^(.*?[.!?])\s+(.*)$", t, re.S)
+    if m:
+        t = _norm(m.group(1)) + " " + HEART_BLOCK + " " + _norm(m.group(2))
+    elif t:
+        t = _norm(t) + " " + HEART_BLOCK
+    else:
+        t = HEART_BLOCK
+    return _norm(t)
 
 
 def _looks_like_outro(text, label):
@@ -296,15 +365,16 @@ def apply_contract(script, theme=None):
         new_id = _unique_id(OUTRO_ID, used_ids)
         _set(outro, "id", new_id, changes, "outro")
         _set(outro, "label", OUTRO_LABEL, changes, new_id)
-        if not (outro.get("text") or "").strip():
-            _set(outro, "text", outro_txt, changes, new_id)
+        atual_outro = outro.get("text") or ""
+        _set(outro, "text", sanitize_heart_phrase(atual_outro or outro_txt),
+             changes, new_id)
         sections.append(outro)
     else:
         new_id = _unique_id(OUTRO_ID, used_ids)
         outro = {
             "id": new_id,
             "label": OUTRO_LABEL,
-            "text": outro_txt,
+            "text": sanitize_heart_phrase(outro_txt),
             "delivery_cues": {
                 "pace": "measured",
                 "energy": "carinhoso",
@@ -358,6 +428,14 @@ def validate_contract(script):
         issues.append("a ultima secao deve ter label '%s'" % OUTRO_LABEL)
     if not last.get("text", "").strip():
         issues.append("s_outro nao pode ficar vazio (agradecimento/CTA)")
+    outro_low = _fold(last.get("text", ""))
+    if "nosso coracao" in outro_low:
+        issues.append("s_outro usa 'no nosso coração' (frase nao humana); "
+                      "use 'um grande beijo no seu coração e fique com a gente'")
+    if "coracao" in outro_low and \
+            "um grande beijo no seu coracao" not in outro_low:
+        issues.append("s_outro deve usar 'um grande beijo no seu coração' "
+                      "quando falar de coração")
 
     ids = [s.get("id") for s in sections]
     dups = sorted({i for i in ids if ids.count(i) > 1})

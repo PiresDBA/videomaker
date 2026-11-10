@@ -48,6 +48,7 @@ O contrato completo, com proibições e checklist de push, está em
 | resolver um problema | §10 |
 | o executor diário | §11 |
 | voz / música / fallback de narração | §1.7, §1.8, §34 |
+| narração duplicada / frase do coração | §46 |
 | consistência de cenário e personagens | §45 |
 | o padrão de descrição do YouTube | §36 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
@@ -391,7 +392,7 @@ flowchart TD
     S4 --> A4[(assets/images/gemini/scenes/*.jpg)]
     P --> S5[4. music<br/>banco local (rotação LRU) → fetch_music_gemini.py → procedural<br/>print: == FASE music: iniciando]
     S5 --> A5[(assets/audio/gemini/bgm_gemini.wav)]
-    A1 --> S6[5. narration<br/>gen_narration_gemini_sections.py (Gemini TTS)<br/>ou gen_narration_edge.py (Edge-TTS local)<br/>fallback: Gemini → Edge]
+    A1 --> S6[5. narration<br/>gen_narration_gemini_sections.py (Gemini TTS)<br/>anti-duplicação (Whisper + retry) e frase do coração<br/>ou gen_narration_edge.py (Edge-TTS local)<br/>fallback: Gemini → Edge]
     S6 --> A6[(assets/audio/narration/sN.wav ou .mp3<br/>narration_timing.json)]
     A6 --> S7[6. timeline<br/>build_timeline.py]
     S7 --> A7[(narration_full.wav + timeline.json)]
@@ -425,7 +426,7 @@ Mudanças do grafo em relação à versão anterior:
 |------|-------|-------|
 | `images` | só Gemini Web | banco local (BM25) primeiro, depois Gemini Web, com quarentena de 4 loops |
 | `music` | só Gemini Web | banco local (rotação sem repetir) → Gemini Web → procedural local |
-| `narration` | só Edge-TTS | Gemini TTS (Achernar/Leda alternando) **ou** Edge-TTS, com fallback automático do Gemini para o Edge |
+| `narration` | só Edge-TTS | Gemini TTS (Achernar/Leda alternando) com **anti-duplicação** (Whisper + retry + frase a frase) e **frase do coração** (§46) **ou** Edge-TTS, com fallback automático do Gemini para o Edge |
 | `youtube` | não estava no grafo | fase opcional (só com `--publish`), grava a descrição no padrão oficial do canal |
 
 A fase `youtube` fica **fora** da lista `PHASES` de propósito: ela é opcional
@@ -1980,8 +1981,9 @@ Ao concluir, cada projeto grava `projects/<slug>/project-control.json` com:
 
 ```
 prompt → script → scenes → music → images(banco local + 2×/cena, quarentena 4 loops) →
-narration(Gemini TTS ou Edge-TTS, com fallback) → timeline → mix → compose →
-preprocess → render → [youtube (--publish): descrição no padrão do canal]
+narration(Gemini TTS com anti-duplicação + frase do coração, ou Edge-TTS, com fallback) →
+timeline → mix → compose → preprocess → render →
+[youtube (--publish): descrição no padrão do canal]
 ```
 
 Todas as fases gravam checkpoint em `project.json`; a fase `images` pula arquivos `.jpg`
@@ -3026,12 +3028,108 @@ história infantil ensine algo para as crianças. Uma lição/moral deve ficar c
 na última seção de história ou na s_final (ex: "O que aprendemos hoje? Ser gentil
 com os outros é importante.").
 
+#### 45.3. Troca de assunto/slug: resetar a fase `scenes` (não só `images`)
+
+O `artifacts/image_prompts.json` (que carrega o cenário injetado) é gerado na fase
+**scenes**, não na fase **images**. Se você resetar apenas `--phase images`, as
+imagens novas usam os prompts antigos e o vídeo sai com o cenário do vídeo anterior
+(foi o que aconteceu no vídeo de mentiras: s1 dizia "voou até a lua de patinete" e
+o extrator antigo leu a seção como cenário lunar).
+
+Ao trocar de assunto/vídeo, sempre zere `scenes` junto com `images`:
+
+```powershell
+python scripts/pipeline.py reset --slug <slug> --phase scenes,images
+python scripts/pipeline.py resume --slug <slug> --from scenes
+```
+
+A consistência de cenário/personagens vale **apenas dentro do mesmo slug/vídeo**.
+Nunca reaproveite variáveis de cenário de um vídeo já publicado.
+
 ### Arquivos alterados
 
 - `scripts/generate_scenes_and_prompts.py` — funcao `_extrair_cenario()`,
   parametro `cenario` em `build_prompt()`, injetado em todos os prompts.
 - `scripts/generate_script_from_prompt.py` — SYSTEM prompt com regras de
   cenario consistente e licao educativa.
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
+## 46. Narração: anti-duplicação e frase do coração (2026-11-10)
+
+### 46.1. Sintoma
+
+No vídeo "O Nariz Colorido da Luninha" (`frida-e-luna-nao-contar-mentira`) a
+narração de algumas seções saiu duplicada: o `s5` falava o parágrafo inteiro
+duas vezes (31,8 s para um texto de ~17 s) e o `s7` repetia o início ("Magia pura
+aconteceu no mesmo... Magia pura aconteceu no mesmo segundo!").
+
+### 46.2. Causa raiz
+
+Não era concatenação de código. O Gemini TTS (`gemini-3.8-flash-tts`) devolveu
+`finishReason: STOP`, um único candidato e um único `inlineData`, mas o áudio
+continha o texto repetido. É uma instabilidade intermitente do modelo em
+parágrafos longos/exclamativos: ao regerar o mesmo texto, o áudio saiu normal
+(~17 s). O script antes gravava o WAV sem conferir o conteúdo.
+
+### 46.3. Regra aplicada (anti-duplicação)
+
+`scripts/gen_narration_gemini_sections.py` agora, após sintetizar cada seção:
+
+1. transcreve o WAV com `faster-whisper` (`--asr-model`, padrão `small`);
+2. compara a contagem de n-gramas (4 palavras) ouvidos com a do texto do roteiro;
+3. se um trecho aparece mais vezes no áudio do que no texto → fala duplicada;
+4. regenera a seção (até `--retries`), tentando as chaves/modelos seguintes;
+5. se ainda duplicar, sintetiza **frase a frase** e concatena (último recurso).
+
+Flags: `--no-verify` desliga a checagem (mais rápido) e `--asr-model` escolhe o
+modelo do Whisper. A regra vale para toda narração Gemini; o Edge-TTS não sofre
+desse problema.
+
+O cache de narração passou a guardar `text_hash` (MD5 curto) no
+`narration_timing.json`. Assim, se o texto de uma seção mudar (ex.: frase do
+coração), o áudio é regenerado mesmo que a voz seja a mesma. Entradas antigas sem
+hash continuam válidas (compatibilidade).
+
+### 46.4. Frase do coração (encerramento humano)
+
+"Não é humano falar 'acompanhar essa aventura no nosso coração'". O encerramento
+(`s_outro`) agora passa por `sanitize_heart_phrase()` em `narration_contract.py`:
+
+- remove "no nosso coração", "fique com o nosso coração" e "acompanhe nosso coração";
+- normaliza "um beijo grande no seu coração" → "um grande beijo no seu coração";
+- garante o bloco canônico:
+  **"Um grande beijo no seu coração e fique com a gente! Acompanhe nossos próximos vídeos!"**
+
+Fonte única: `narration_contract.py` (aplicado na geração do roteiro e na
+narração). `validate_contract()` acusa se a regra for violada.
+
+### 46.5. Trocar o modelo/voz da narração
+
+- Modelo: `scripts/config.json` → `tts.model` (padrão `gemini-3.8-flash-tts`) ou
+  `--model` no `gen_narration_gemini_sections.py`.
+- Fallback de modelo: `tts.model_fallbacks` (padrão `gemini-3.8-flash-lite-tts`).
+- Voz: `tts.voice` ou `pipeline.py ... --voice Achernar` (voz padrão do canal).
+- Chaves: `GOOGLE_TTS_API_KEY` + `_1.._N` no `.env` (rotação, §44).
+
+### 46.6. Como regenerar só as seções afetadas
+
+```powershell
+python scripts/gen_narration_gemini_sections.py --proj "projects/<slug>" --voice Achernar --only s5,s7,s_outro --force
+python scripts/pipeline.py reset --slug <slug> --phase timeline,mix,compose,preprocess,render
+python scripts/pipeline.py resume --slug <slug> --from timeline
+```
+
+### Arquivos alterados
+
+- `scripts/gen_narration_gemini_sections.py` — `find_duplicated_speech()`,
+  `generate_to_path()`, `synthesize_in_sentences()`, flags `--no-verify` e
+  `--asr-model`.
+- `scripts/narration_contract.py` — `HEART_BLOCK`, `sanitize_heart_phrase()`,
+  fallbacks de `s_outro` e validação.
+- `scripts/generate_script_from_prompt.py` — regras de não repetição e frase do
+  coração no SYSTEM prompt.
 - `MANUAL_GRAFOS.md` — esta seção.
 
 ---

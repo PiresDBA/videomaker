@@ -18,11 +18,16 @@ Uso:
 """
 import argparse
 import base64
+import hashlib
 import json
 import os
+import re
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
+import unicodedata
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -131,6 +136,175 @@ def probe_duration(ffprobe, path):
         return 0.0
 
 
+def _text_hash(text):
+    return hashlib.md5((text or "").encode("utf-8")).hexdigest()[:12]
+
+
+_ASR = None
+
+
+def _norm_word(word):
+    w = unicodedata.normalize("NFKD", (word or "").lower())
+    w = "".join(c for c in w if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]", "", w)
+
+
+def _get_asr(model_name):
+    global _ASR
+    if _ASR is None:
+        from faster_whisper import WhisperModel
+        _ASR = WhisperModel(model_name, device="cpu", compute_type="int8")
+    return _ASR
+
+
+def transcribe_words(path, ffmpeg, model_name):
+    import numpy as np
+    raw = subprocess.run([ffmpeg, "-v", "error", "-i", str(path),
+                          "-f", "f32le", "-ac", "1", "-ar", "16000", "-"],
+                         capture_output=True).stdout
+    audio = np.frombuffer(raw, dtype=np.float32)
+    model = _get_asr(model_name)
+    segs, _ = model.transcribe(audio, language="pt", vad_filter=True,
+                               word_timestamps=True)
+    return [w.word for s in segs for w in (s.words or [])]
+
+
+def find_duplicated_speech(path, expected_text, ffmpeg, model_name, n=4):
+    """Detecta fala repetida no audio que NAO existe no texto do roteiro.
+
+    O Gemini TTS as vezes repete o paragrafo inteiro (ou o comeco de uma frase)
+    no proprio audio. Comparar a contagem de n-gramas ouvidos com a do texto
+    esperado pega esse caso sem marcar repeticoes naturais do roteiro.
+    """
+    try:
+        import numpy  # noqa: F401
+        from faster_whisper import WhisperModel  # noqa: F401
+    except Exception:
+        return []
+    try:
+        heard = transcribe_words(path, ffmpeg, model_name)
+    except Exception as e:
+        print("  [dup-check] indisponivel (%s); seguindo sem verificar" % str(e)[:80])
+        return []
+    exp = [w for w in (_norm_word(x) for x in expected_text.split()) if w]
+    h = [w for w in (_norm_word(x) for x in heard) if w]
+    if not exp or not h:
+        return []
+    from collections import Counter
+    exp_counts = Counter(tuple(exp[i:i + n]) for i in range(max(0, len(exp) - n + 1)))
+    h_counts = Counter(tuple(h[i:i + n]) for i in range(max(0, len(h) - n + 1)))
+    dups = []
+    seen = set()
+    for gram, count in h_counts.items():
+        base = exp_counts.get(gram, 0)
+        if (base >= 1 and count > base) or (base == 0 and count >= 2):
+            chave = " ".join(gram)
+            if chave not in seen:
+                seen.add(chave)
+                dups.append(chave)
+    return dups
+
+
+def generate_to_path(keys, chain, retries, voice, style, texto, dst, ffprobe,
+                     ffmpeg, verify, asr_model, sid="?"):
+    """Sintetiza texto em dst tentando chaves x modelos.
+
+    Se verify, transcreve o WAV e regenera quando detectar fala duplicada.
+    Retorna (ok, modelo_usado, chave_usada).
+    """
+    for ki, key in enumerate(keys):
+        pular_chave = False
+        for mdl in chain:
+            if pular_chave:
+                break
+            for attempt in range(retries):
+                try:
+                    raw, finish = synthesize(key, mdl, voice, texto, style=style)
+                    dst.write_bytes(raw)
+                    dur = probe_duration(ffprobe, dst)
+                    if dur <= 0.05:
+                        # Alguns modelos devolvem PCM cru sem cabecalho RIFF.
+                        try:
+                            dst.unlink()
+                        except OSError:
+                            pass
+                        print("%s: audio invalido (duracao %.2fs) em %s com chave %d/%d; tentando proximo"
+                              % (sid, dur, mdl, ki + 1, len(keys)))
+                        pular_chave = True
+                        break
+                    if verify:
+                        dups = find_duplicated_speech(dst, texto, ffmpeg, asr_model)
+                        if dups:
+                            print("%s: narracao DUPLICADA em %s (chave %d/%d, tentativa %d/%d): "
+                                  "%s; regenerando"
+                                  % (sid, mdl, ki + 1, len(keys), attempt + 1, retries,
+                                     "; ".join(dups[:3])))
+                            time.sleep(1.5)
+                            continue
+                    print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s chave=%d/%d"
+                          % (sid, dur, finish, voice, mdl, ki + 1, len(keys)))
+                    return True, mdl, ki + 1
+                except urllib.error.HTTPError as e:
+                    msg = e.read().decode("utf-8", "ignore")
+                    print("%s: HTTP %s %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
+                          % (sid, e.code, msg[:120].replace("\n", " "),
+                             mdl, ki + 1, len(keys), attempt + 1, retries))
+                    if is_daily_quota(msg):
+                        print("%s: cota diaria esgotada na chave %d/%d (%s); pulando para proxima chave"
+                              % (sid, ki + 1, len(keys), mdl))
+                        pular_chave = True
+                        break
+                    if e.code in (400, 401, 403, 404):
+                        pular_chave = True
+                        break
+                    time.sleep(4 * (attempt + 1))
+                except Exception as e:
+                    print("%s: erro %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
+                          % (sid, str(e)[:100], mdl, ki + 1, len(keys), attempt + 1, retries))
+                    time.sleep(4 * (attempt + 1))
+    return False, None, None
+
+
+def synthesize_in_sentences(keys, chain, retries, voice, style, texto, dst,
+                            ffprobe, ffmpeg, asr_model, sid):
+    """Ultimo recurso: sintetiza frase a frase e concatena.
+
+    Paragrafos longos sao o gatilho mais comum de repeticao do Gemini TTS;
+    separar em frases curtas evita a duplicacao do bloco inteiro.
+    """
+    frases = [p.strip() for p in re.split(r"(?<=[.!?])\s+", texto.strip()) if p.strip()]
+    if len(frases) < 2:
+        return False
+    tmp_dir = Path(tempfile.mkdtemp(prefix="tts_%s_" % sid))
+    try:
+        partes = []
+        for i, frase in enumerate(frases):
+            p = tmp_dir / ("part%02d.wav" % i)
+            ok, _, _ = generate_to_path(keys, chain, retries, voice, style, frase,
+                                        p, ffprobe, ffmpeg, verify=False,
+                                        asr_model=asr_model, sid="%s.%d" % (sid, i + 1))
+            if not ok:
+                return False
+            partes.append(p)
+        listfile = tmp_dir / "concat.txt"
+        listfile.write_text("\n".join("file '%s'" % p.as_posix() for p in partes),
+                            encoding="utf-8")
+        r = subprocess.run([ffmpeg, "-y", "-f", "concat", "-safe", "0",
+                            "-i", str(listfile), "-c", "copy", str(dst)],
+                           capture_output=True, text=True)
+        if r.returncode != 0 or probe_duration(ffprobe, dst) <= 0.05:
+            return False
+        dups = find_duplicated_speech(dst, texto, ffmpeg, asr_model)
+        if dups:
+            print("%s: ainda com duplicacao apos sintese frase a frase: %s"
+                  % (sid, "; ".join(dups[:3])))
+            return False
+        print("%s: narracao gerada frase a frase (sem duplicacao)" % sid)
+        return True
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--proj", default=None, help="diretorio do projeto")
@@ -141,12 +315,17 @@ def main():
     ap.add_argument("--retries", type=int, default=DEFAULT_RETRIES)
     ap.add_argument("--style", default=None,
                     help="instrucao de estilo para a voz Gemini (ex: 'divertida e alegre para criancas')")
+    ap.add_argument("--no-verify", action="store_true",
+                    help="nao verifica/refaz narracao duplicada (mais rapido)")
+    ap.add_argument("--asr-model", default="small",
+                    help="modelo faster-whisper usado na checagem de duplicacao")
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
     tts = cfg.get("tts", {})
     proj = (Path(args.proj) if args.proj else (HERE / cfg.get("project_dir", ".."))).resolve()
     ffprobe = str(Path(cfg["ffmpeg_dir"]) / "ffprobe.exe")
+    ffmpeg = str(Path(cfg["ffmpeg_dir"]) / "ffmpeg.exe")
 
     key_env = tts.get("key_env", "GOOGLE_TTS_API_KEY")
     keys = collect_keys(key_env)
@@ -194,72 +373,40 @@ def main():
 
         dst = out / ("%s.wav" % sid)
         # Reaproveita apenas se o arquivo existir E tiver sido gerado com a
-        # mesma voz. Se a voz mudou, regenera (senao a alternancia nao vale).
-        mesma_voz = anterior.get(sid, {}).get("voice") == voice
-        if dst.exists() and dst.stat().st_size > 1000 and mesma_voz and not args.force:
+        # mesma voz E o mesmo texto. Se a voz/texto mudou, regenera (senao a
+        # cache serviria audio do roteiro antigo).
+        anterior_sid = anterior.get(sid, {})
+        mesma_voz = anterior_sid.get("voice") == voice
+        hash_atual = _text_hash(texto)
+        # Hash ausente = entrada antiga: assume texto igual (compatibilidade).
+        mesmo_texto = anterior_sid.get("text_hash") in (None, hash_atual)
+        if dst.exists() and dst.stat().st_size > 1000 and mesma_voz and mesmo_texto and not args.force:
             dur = probe_duration(ffprobe, dst)
             print("%-6s %7.2fs  (ja existe, voz %s)" % (sid, dur, voice))
             results.append({"id": sid, "path": str(dst), "duration": dur,
-                            "voice": voice, "model": model, "key": anterior.get(sid, {}).get("key")})
+                            "voice": voice, "model": model,
+                            "key": anterior_sid.get("key"), "text_hash": hash_atual})
             continue
 
-        ok = False
-        chave_usada = None
-        modelo_usado = None
-        for ki, key in enumerate(keys):
-            pular_chave = False
-            for mi, mdl in enumerate(chain):
-                if pular_chave:
-                    break
-                for attempt in range(args.retries):
-                    try:
-                        raw, finish = synthesize(key, mdl, voice, texto, style=style)
-                        dst.write_bytes(raw)
-                        dur = probe_duration(ffprobe, dst)
-                        if dur <= 0.05:
-                            # Alguns modelos (ex: *-preview) devolvem PCM cru, sem
-                            # cabecalho RIFF; gravar como .wav gera duracao 0 e
-                            # quebra a timeline. Descarta e tenta a proxima chave/modelo.
-                            try:
-                                dst.unlink()
-                            except OSError:
-                                pass
-                            print("%s: audio invalido (duracao %.2fs) em %s com chave %d/%d; tentando proximo"
-                                  % (sid, dur, mdl, ki + 1, len(keys)))
-                            pular_chave = True
-                            break
-                        print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s chave=%d/%d"
-                              % (sid, dur, finish, voice, mdl, ki + 1, len(keys)))
-                        results.append({"id": sid, "path": str(dst), "duration": dur,
-                                        "voice": voice, "model": mdl, "key": ki + 1})
-                        ok = True
-                        chave_usada = ki + 1
-                        modelo_usado = mdl
-                        break
-                    except urllib.error.HTTPError as e:
-                        msg = e.read().decode("utf-8", "ignore")
-                        print("%s: HTTP %s %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
-                              % (sid, e.code, msg[:120].replace("\n", " "),
-                                 mdl, ki + 1, len(keys), attempt + 1, args.retries))
-                        if is_daily_quota(msg):
-                            print("%s: cota diaria esgotada na chave %d/%d (%s); pulando para proxima chave"
-                                  % (sid, ki + 1, len(keys), mdl))
-                            pular_chave = True
-                            break  # tenta proxima chave
-                        if e.code in (400, 401, 403, 404):
-                            pular_chave = True
-                            break  # chave invalida para este modelo; tenta proxima chave
-                        time.sleep(4 * (attempt + 1))
-                    except Exception as e:
-                        print("%s: erro %s (modelo=%s, chave=%d/%d, tentativa %d/%d)"
-                              % (sid, str(e)[:100], mdl, ki + 1, len(keys), attempt + 1, args.retries))
-                        time.sleep(4 * (attempt + 1))
-                if ok:
-                    break
+        verify = not args.no_verify
+        ok, modelo_usado, chave_usada = generate_to_path(
+            keys, chain, args.retries, voice, style, texto, dst,
+            ffprobe, ffmpeg, verify, args.asr_model, sid=sid)
+        if not ok and verify:
+            print("%s: tentando sintese frase a frase para evitar duplicacao" % sid)
+            ok = synthesize_in_sentences(
+                keys, chain, args.retries, voice, style, texto, dst,
+                ffprobe, ffmpeg, args.asr_model, sid)
             if ok:
-                break
+                modelo_usado = "sentences"
+                chave_usada = None
 
-        if not ok:
+        if ok:
+            dur = probe_duration(ffprobe, dst)
+            results.append({"id": sid, "path": str(dst), "duration": dur,
+                            "voice": voice, "model": modelo_usado,
+                            "key": chave_usada, "text_hash": hash_atual})
+        else:
             falhas += 1
             print("%s: FALHA ao gerar com Gemini TTS (todas as %d chave(s) x modelos %s)"
                   % (sid, len(keys), ", ".join(chain)))
