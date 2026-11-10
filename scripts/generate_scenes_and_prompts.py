@@ -523,6 +523,11 @@ def main():
     cenario = _extrair_cenario(script)
     passeio = _eh_passeio(script)
 
+    # Estado do lugar por secao: em video de passeio, uma batida que nao cita
+    # lugar novo herda o lugar da batida anterior da MESMA secao (evita a
+    # imagem mudar de cenario no meio da fala).
+    estado = {"lugar": ""}
+
     def _ctx(texto):
         """Devolve (cenario, lugar) para o prompt deste trecho.
 
@@ -530,7 +535,10 @@ def main():
         (video de passeio, §47). Sem lugar: cenario global do titulo."""
         lug = _lugar_da_cena(texto)
         if lug:
+            estado["lugar"] = lug
             return "", lug
+        if passeio and estado["lugar"]:
+            return "", estado["lugar"]
         return cenario, ""
 
     scenes = {"_help": "Para cada secao: images = arquivos em assets/images/. at = fracao (0..1) em que cada imagem entra (sincronizada as pausas). split = at[1] quando ha 2 imagens. camera = [escala_inicial, escala_final, x_inicial, x_final, y_inicial, y_final] por imagem. beats = trechos de fala de cada imagem."}
@@ -553,6 +561,7 @@ def main():
 
     for i, s in enumerate(sections):
         sid = s.get("id", "s%d" % i)
+        estado["lugar"] = ""  # cada secao comeca sem lugar herdado
         raw_text = s.get("text", "")
         text = _clean_scene_text(raw_text)
         label = s.get("label", sid)

@@ -3164,7 +3164,10 @@ todas as imagens saem com o mesmo fundo. A detecção é automática:
   **não** repetir o ambiente anterior; o cenário global é ignorado.
 
 O lugar é detectado **por trecho/batida**, então uma seção que troca de lugar no
-meio da fala já gera a imagem certa para cada batida.
+meio da fala já gera a imagem certa para cada batida. Batida sem lugar novo
+**herda o lugar da batida anterior da mesma seção** (estado é zerado a cada
+seção), então a imagem não troca de cenário no meio da fala. O `s_intro`, a `s0`,
+a lição, a `s_final` e a `s_outro` seguem genéricos (cenário do título).
 
 Lugares sem entrada no mapa caem no cenário global do título (comportamento
 antigo). Para novos vídeos de passeio em outras cidades, acrescentar a cidade
