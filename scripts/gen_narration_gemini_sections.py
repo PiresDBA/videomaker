@@ -207,9 +207,10 @@ def main():
         chave_usada = None
         modelo_usado = None
         for ki, key in enumerate(keys):
+            pular_chave = False
             for mi, mdl in enumerate(chain):
-                has_next_key = ki < len(keys) - 1
-                has_next_model = mi < len(chain) - 1
+                if pular_chave:
+                    break
                 for attempt in range(args.retries):
                     try:
                         raw, finish = synthesize(key, mdl, voice, texto, style=style)
@@ -225,6 +226,7 @@ def main():
                                 pass
                             print("%s: audio invalido (duracao %.2fs) em %s com chave %d/%d; tentando proximo"
                                   % (sid, dur, mdl, ki + 1, len(keys)))
+                            pular_chave = True
                             break
                         print("%-6s %7.2fs  OK (%s) voz=%s modelo=%s chave=%d/%d"
                               % (sid, dur, finish, voice, mdl, ki + 1, len(keys)))
@@ -240,10 +242,12 @@ def main():
                               % (sid, e.code, msg[:120].replace("\n", " "),
                                  mdl, ki + 1, len(keys), attempt + 1, args.retries))
                         if is_daily_quota(msg):
-                            print("%s: cota diaria esgotada na chave %d/%d (%s); tentando proxima chave"
+                            print("%s: cota diaria esgotada na chave %d/%d (%s); pulando para proxima chave"
                                   % (sid, ki + 1, len(keys), mdl))
+                            pular_chave = True
                             break  # tenta proxima chave
                         if e.code in (400, 401, 403, 404):
+                            pular_chave = True
                             break  # chave invalida para este modelo; tenta proxima chave
                         time.sleep(4 * (attempt + 1))
                     except Exception as e:
