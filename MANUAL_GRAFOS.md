@@ -48,6 +48,7 @@ O contrato completo, com proibições e checklist de push, está em
 | resolver um problema | §10 |
 | o executor diário | §11 |
 | voz / música / fallback de narração | §1.7, §1.8, §34 |
+| consistência de cenário e personagens | §45 |
 | o padrão de descrição do YouTube | §36 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |

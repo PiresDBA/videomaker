@@ -44,6 +44,7 @@ contrária explícita). Não desfaça.
 | a CLI do pipeline | §37 |
 | a regra de branch/grafo/push | §38 |
 | voz, música e fallback de narração | §1.7, §1.8, §34 |
+| consistência de cenário e personagens | §45 |
 | o executor diário | §11 |
 
 ---
@@ -106,6 +107,30 @@ git diff
 ```
 
 Se `check_manual.py` acusar desync, **corrija o manual antes de dar push**.
+
+---
+
+## 5.1. Regra de consistência de cenário, personagens e lição educativa
+
+Esta é uma regra de produto obrigatória. Toda mudança que afetar a geração de roteiro
+ou imagens deve respeitá-la:
+
+- **Cenário consistente:** todo o vídeo acontece no mesmo ambiente definido pelo tema.
+  Se o tema for "zoológico", todas as cenas acontecem no zoológico. Se for "Marte",
+  todas as cenas acontecem em Marte (ou na nave que vai e volta da Terra). Não mudar
+  de cenário aleatoriamente (não colocar grama se o tema é Marte, nem casa se o tema
+  é o zoológico).
+- **Personagens consistentes:** Frida (buldogue inglês) e Luna (salsicha/dachshund)
+  devem manter a mesma aparência do começo ao fim do vídeo. Nunca mudar a raça, cor
+  ou traço dos personagens entre cenas.
+- **Lição educativa:** toda história infantil deve ensinar algo para as crianças.
+  Uma lição/moral deve ficar clara na última seção de história ou na `s_final`
+  (ex: "O que aprendemos hoje? Ser gentil com os outros é importante.").
+
+Essa regra está documentada em **`MANUAL_GRAFOS.md` §45** e implementada em
+`scripts/generate_scenes_and_prompts.py` (função `_extrair_cenario()` e parâmetro
+`cenario` em `build_prompt()`) e
+`scripts/generate_script_from_prompt.py` (SYSTEM prompt).
 
 ---
 
