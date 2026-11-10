@@ -1968,6 +1968,12 @@ python scripts\pipeline.py full --prompt "<tema>" --slug <slug> \
 - `--yt-kids` → marca como "feito para crianças" (COPPA).
 - Título e descrição devem ser chamativos, absurdos/divertidos, **não agressivos** (público
   infantil). Exemplo de título: "E se os cachorros pudessem falar por um dia? 🐶".
+- **Gotcha:** com todos os checkpoints prontos, `full --publish` imprime
+  `== Nada a fazer: todos os checkpoints estao completos.` e **não publica**.
+  Para publicar um vídeo já renderizado, chame o uploader direto:
+  ```
+  python scripts\youtube_upload.py --video projects\<slug>\output\<slug>.mp4
+  ```
 
 **Arquivos relacionados:** `scripts/youtube_upload.py`, `scripts/youtube_setup.py` (OAuth2),
 `scripts/client_secret.json` (credenciais), `scripts/youtube_token.json` (token de acesso).
