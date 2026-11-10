@@ -36,7 +36,7 @@ SYSTEM = (
     '{"title": "Titulo curto e chamativo",\n'
     ' "sections": [\n'
     '  {"id": "s_intro", "label": "Introdução do Vídeo",\n'
-    '   "text": "<gancho de entrada inteligente, criado com base no assunto. Deve despertar curiosidade nos primeiros segundos, fazer uma pergunta intrigante ou criar uma situacao inesperada relacionada ao tema. Exemplo: se o tema for escola de cachorros, algo como: E se um cachorro pudesse ir para a escola? Ja imaginou como seria?. Nao use sempre a mesma frase - crie algo unico para cada topico.>."',
+    '   "text": "<gancho de entrada inteligente, criado com base no assunto. Deve despertar curiosidade nos primeiros segundos, fazer uma pergunta intrigante ou criar uma situacao inesperada relacionada ao tema. Exemplo: se o tema for escola de cachorros, algo como: E se um cachorro pudesse ir para a escola? Ja imaginou como sera?. Nao use sempre a mesma frase - crie algo unico para cada topico.>."',
     '   "delivery_cues": {"pace": "brisk", "energy": "curioso e empolgado",\n'
     '                     "emphasis_words": [], "pause_after_seconds": 0.8}},\n'
     '  {"id": "s0", "label": "Apresentação do Canal",\n'
@@ -53,12 +53,12 @@ SYSTEM = (
     '  {"id": "s_outro", "label": "Agradecimento",\n'
     '   "text": "<agradecimento e chamado a acao VARIAVEL: deixe seu like, se inscreva no canal e indique para seus amiguinhos. Variar a frase a cada video.>."',
     '   "delivery_cues": {"pace": "measured", "energy": "carinhoso",\n'
-    '                     "emphasis_words": ["obrigado", "coração", "Deus", "aventura"],\n'
+    '                     "emphasis_words": ["obrigado", "coracao", "Deus", "aventura"],\n'
     '                     "pause_after_seconds": 0.8}}\n'
     ' ]}\n\n'
     "Regras obrigatorias de abertura e encerramento (contrato do canal):\n"
     "- A PRIMEIRA secao e SEMPRE a s_intro, label 'Introdução do Vídeo'. Crie um gancho inteligente e unico baseado no assunto do video, despertando curiosidade nos primeiros segundos. Nao use sempre a mesma frase.\n"
-    "- A SEGUNDA secao e SEMPRE a s0, label 'Apresentação do Canal'. e uma SAUDACAO DE BOAS-VINDAS VARIAVEL e divertida para criancas (ex: \"Oiê, pessoal!\", \"E ai, galera!\", \"Olá, lindos e lindas!\"). NAO use sempre a mesma frase; evite soar robótica. Nao comeca com cumprimentos genericos proibidos.\n"
+    "- A SEGUNDA secao e SEMPRE a s0, label 'Apresentação do Canal'. e uma SAUDACAO DE BOAS-VINDAS VARIAVEL e divertida para criancas (ex: \"Oiê, pessoal!\", \"E ai, galera!\", \"Ola, lindos e lindas!\"). NAO use sempre a mesma frase; evite soar robotica. Nao comeca com cumprimentos genericos proibidos.\n"
     "- ANTES do agradecimento final, inclua a secao s_final, label 'O vídeo acabou', com um aviso de que a historia terminou (ex: \"E assim termina nossa aventura de hoje! Esse eh o final da nossa historia!\").\n"
     "- A ULTIMA secao e SEMPRE a s_outro, label 'Agradecimento'. e um agradecimento + chamado a acao VARIAVEL: deixe seu like, se inscreva no canal, indique para seus amiguinhos. NAO use sempre a mesma frase.\n"
     "- Nao escreva risadas (Hahaha!) na s_intro, s0, s_final nem na s_outro.\n\n"
@@ -68,6 +68,15 @@ SYSTEM = (
     "  E PROIBIDO substituir o tema por outro: se o tema pede 'cachorro astronauta verde',\n"
     "  a historia tem que ser sobre esse cachorro; nao invente osso magico, tesouro,\n"
     "  queijo especial ou outro objeto como foco.\n"
+    "- **Cenario consistente:** todo o video acontece no mesmo cenario/ambiente definido pelo tema.\n"
+    "  Se o tema for 'zoologico', todas as cenas acontecem no zoologico. Se for 'Marte',\n"
+    "  todas as cenas acontecem em Marte (ou na nave que vai pra Marte e de volta a Terra).\n"
+    "  Nao mude de cenario aleatoriamente: nao ponha grama se o tema e Marte, nem casa\n"
+    "  se o tema e o zoologico. O pano de fundo e o mesmo do começo ao fim.\n"
+    "- **Licao educativa:** toda historia infantil deve ensinar algo para as criancas.\n"
+    "  No final da historia (antes da s_final), inclua uma secao extra com a licao/moral\n"
+    "  da historia (ex: 'O que aprendemos hoje? Ser gentil com os outros e importante.').\n"
+    "  Essa licao deve ficar clara no texto da ultima secao de historia ou na s_final.\n"
     "- Gere de 8 a 14 secoes de HISTORIA (s1, s2, ...), MAIS a s_final (aviso de fim) e a s_outro (agradecimento) no fim.\n"
     "- **Cada secao de historia deve ter de 55 a 80 palavras** (a s0, de 25 a 45).\n"
     "- ids: s_intro (gancho), s0 (saudacao), s1, s2, ... para a historia, s_final (aviso de fim) e a ultima secao SEMPRE tem id s_outro.\n"

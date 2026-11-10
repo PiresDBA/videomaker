@@ -2960,6 +2960,64 @@ os valores no log.
 
 ---
 
+## 45. Consistência de cenário e personagens nas imagens (2026-11-10)
+
+### Problema
+
+Ao gerar várias imagens para um vídeo, o modelo de imagem perdia o contexto:
+o cenário mudava de cena para cena (ex: zoológico → grama → casa) e os
+personagens (Frida e Luna) não se mantinham consistentes, deixando o vídeo
+visualmente confuso.
+
+### Correção
+
+Duas alterações foram aplicadas:
+
+#### 45.1. Contexto de cenário consistente em TODAS as imagens
+
+`scripts/generate_scenes_and_prompts.py` ganhou a função `_extrair_cenario()`,
+que lê o título do roteiro e o texto das primeiras seções (s1, s2) para
+identificar o ambiente (ex: "planeta Marte", "zoológico", "floresta"). Esse
+cenário é injetado em **todos** os prompts de imagem via `build_prompt(...,
+cenario=...)`, obrigando o modelo de imagem a manter o mesmo ambiente do começo
+ao fim do vídeo.
+
+Mapeamento de palavras-chave para cenário canônico:
+
+| Palavra-chave | Cenário injetado nos prompts |
+|---------------|------------------------------|
+| `marte` | planeta Marte, solo vermelho e rochoso, céu rosado, poeira marciana, foguete espacial, trajes de astronauta caninos |
+| `espaco` | espaço sideral, nave espacial, estrelas, planeta, luar, astronautas caninos |
+| `lua` | superfície lunar, poeira cinzenta, craters, traje espacial, Terra vista do céu |
+| `zoologico` | zoológico, recintos de animais, gaiolas, árvores, caminhos de parque, visitantes de desenho animado |
+| `fazenda` | fazenda, celeiro, pasto, cercas, fazendeiro de desenho animado, animais da fazenda |
+| `cidade` | cidade, ruas, prédios, carros, calçadas, lojas, prédios de desenho animado |
+| `floresta` | floresta, árvores altas, mata, riacho, animais selvagens, natureza |
+| `praia` | praia, areia, mar, ondas, conchas, guarda-sol, sol, verão |
+| `neve` | neve, gelo, montanha nevada, flocos de neve, frio, roupas de inverno |
+| `casa` | casa, sala, quarto, cozinha, móveis, janelas, lar de desenho animado |
+| `escola` | escola, sala de aula, quadro negro, carteiras, professor de desenho animado, livros |
+| `parque` | parque, grama, árvores, bancos, brinquedos de playground, céu azul |
+
+Se nenhuma palavra-chave casar, usa o título como cenário genérico.
+
+#### 45.2. Lição educativa obrigatória
+
+`scripts/generate_script_from_prompt.py` (SYSTEM prompt) agora exige que toda
+história infantil ensine algo para as crianças. Uma lição/moral deve ficar clara
+na última seção de história ou na s_final (ex: "O que aprendemos hoje? Ser gentil
+com os outros é importante.").
+
+### Arquivos alterados
+
+- `scripts/generate_scenes_and_prompts.py` — funcao `_extrair_cenario()`,
+  parametro `cenario` em `build_prompt()`, injetado em todos os prompts.
+- `scripts/generate_script_from_prompt.py` — SYSTEM prompt com regras de
+  cenario consistente e licao educativa.
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
 
 

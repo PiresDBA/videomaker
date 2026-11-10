@@ -135,6 +135,42 @@ def sanitize_style(style):
     return s
 
 
+def _extrair_cenario(script):
+    """Extrai o contexto de cenário/ambiente do título e das seções.
+    Usa palavras-chave do título e da primeira seção de história para
+    definir o pano de fundo que deve se repetir em TODAS as imagens."""
+    title = (script.get("title", "") or "").lower()
+    texto = title + " "
+    # pega as primeiras 2 secoes de historia (s1, s2) para capturar o ambiente
+    for s in script.get("sections", []):
+        if s.get("id", "").startswith("s1") or s.get("id", "").startswith("s2"):
+            texto += " " + (s.get("text", "") or "").lower()
+    texto = clean_text(texto)
+    # Mapeia palavras-chave para cenário canônico
+    mapa = {
+        "marte": "planeta Marte, solo vermelho e rochoso, céu rosado, poeira marciana, foguete espacial, trajes de astronauta caninos",
+        "espaco": "espaco sideral, nave espacial, estrelas, planeta, luar, astronautas caninos",
+        "lua": "superfície lunar, poeira cinzenta, craters, traje espacial, Terra vista do céu",
+        "zoologico": "zoologico, recintos de animais, gaiolas, árvores, caminhos de parque, visitantes de desenho animado",
+        "fazenda": "fazenda, celeiro, pasto, cercas, fazendeiro de desenho animado, animais da fazenda",
+        "cidade": "cidade, ruas, prédios, carros, calçadas, lojas, prédios de desenho animado",
+        "floresta": "floresta, árvores altas, mata, riacho, animais selvagens, natureza",
+        "praia": "praia, areia, mar, ondas, conchas, guarda-sol, sol, verão",
+        "neve": "neve, gelo, montanha nevada, flocos de neve, frio, roupas de inverno",
+        "casa": "casa, sala, quarto, cozinha, móveis, janelas, lar de desenho animado",
+        "escola": "escola, sala de aula, quadro negro, carteiras, professor de desenho animado, livros",
+        "parque": "parque, grama, árvores, bancos, brinquedos de playground, céu azul",
+    }
+    for chave, desc in mapa.items():
+        if chave in texto:
+            return desc
+    # fallback: usa o título limpo como cenário generico
+    t = re.sub(r"[^a-z0-9\s]", " ", title).strip()
+    if t:
+        return "cenario inspirado em: " + t
+    return "cenario de desenho animado, ambiente consistente do video"
+
+
 def _clean_scene_text(text, limit=400):
     """Limpa e trunca o texto da cena de forma segura:
     - remove tags HTML;
@@ -233,13 +269,15 @@ def soften_terms(text):
     return text
 
 
-def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a"):
+def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a", cenario=""):
     """Monta o prompt curto, sem redundancia e sem marcas.
     Cada prompt gera UMA imagem. variant 'a' = cena principal; 'b' = close-up
     / reacao dos personagens (segunda imagem da mesma cena, para engajamento).
     A CENA vem primeiro (o modelo focava só nos
     personagens quando a ficha abria o prompt); personagens ficam para depois,
-    amarrados a imagem de referencia quando ela existe."""
+    amarrados a imagem de referencia quando ela existe.
+    O cenario (ex: zoologico, Marte) e injetado em TODOS os prompts para
+    garantir continuidade visual de ambiente do começo ao fim do video."""
     if frida_luna:
         scene_text = fix_species(scene_text or "")
     scene = soften_terms(scene_text or "cena ilustrativa da história")
@@ -248,6 +286,9 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
     # A cena descreve a ACAO. Anti-texto vai no bloco final (em PT): baloes
     # com escrita aparecerem mesmo com SAFE_STYLE em ingles no fim do prompt.
     parts = ["CENA (gere exatamente esta cena): %s" % scene]
+    # Contexto de cenário consistente (mesmo ambiente do começo ao fim).
+    if cenario:
+        parts.append("Cenario do video (mantenha este mesmo ambiente em todas as imagens): %s." % cenario)
     if frida_luna:
         if has_reference:
             parts.append(REF_CHARS)
@@ -423,6 +464,7 @@ def main():
     style = sanitize_style(style)
     title = clean_text(script.get("title", "video explicativo"))
     frida_luna = is_frida_luna_script(script)
+    cenario = _extrair_cenario(script)
 
     scenes = {"_help": "Para cada secao: images = arquivos em assets/images/. at = fracao (0..1) em que cada imagem entra (sincronizada as pausas). split = at[1] quando ha 2 imagens. camera = [escala_inicial, escala_final, x_inicial, x_final, y_inicial, y_final] por imagem. beats = trechos de fala de cada imagem."}
     prompts = {}
@@ -454,7 +496,8 @@ def main():
         if sid == "s0":
             # Capa: unica imagem de apresentacao
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
-                                               has_reference=has_ref, variant="a")
+                                               has_reference=has_ref, variant="a",
+                                               cenario=cenario)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name],
                 "split": None,
@@ -468,9 +511,11 @@ def main():
             # Modo legado: duas imagens fixas por cena (principal + close-up),
             # com a segunda entrando no meio da cena (split 0.5).
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
-                                               has_reference=has_ref, variant="a")
+                                               has_reference=has_ref, variant="a",
+                                               cenario=cenario)
             prompts[scene_name + "_b"] = build_prompt(title, text, style, frida_luna,
-                                                      has_reference=has_ref, variant="b")
+                                                      has_reference=has_ref, variant="b",
+                                                      cenario=cenario)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name, "%s_b.jpg" % scene_name],
                 "split": 0.5,
@@ -499,7 +544,8 @@ def main():
         for k, beat in enumerate(beats):
             name = scene_name if k == 0 else ("%s_%s" % (scene_name, chr(ord("a") + k)))
             prompts[name] = build_prompt(title, beat, style, frida_luna,
-                                         has_reference=has_ref, variant=variants[k])
+                                         has_reference=has_ref, variant=variants[k],
+                                         cenario=cenario)
             images.append("%s.jpg" % name)
             cams.append(CAMERAS[k % len(CAMERAS)])
         scenes[sid] = {
