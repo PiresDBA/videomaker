@@ -143,8 +143,17 @@ chave `GOOGLE_TTS_API_KEY` no `.env` da raiz.
   agora passa por `scripts/env_keys.py` (`load_env_key`), que detecta o BOM.
   Vale para `gen_narration_gemini_sections.py`, `gen_narration_gemini.py` e
   `probe_tts.py`.
+- **Voz recomendada:** `Achernar` (Gemini TTS) para vídeos engraçados/infantis.
+  Ela soa jovem, sorridente e empolgada. Use `--narration-provider gemini --voice Achernar`.
 - **Tentativas:** 5 por seção no Gemini (`--retries`, `DEFAULT_RETRIES=5`) e 5 no
   Edge-TTS (fallback).
+- **Rotação de chaves de API:** o Gemini TTS rotaciona entre várias chaves antes
+  de cair no fallback Edge-TTS. Colete as chaves no `.env`:
+  `GOOGLE_TTS_API_KEY`, `GOOGLE_TTS_API_KEY_1`, `GOOGLE_TTS_API_KEY_2`, `GOOGLE_TTS_API_KEY_3` ...
+  Para cada seção, o pipeline tenta todas as chaves x todos os modelos antes de
+  desistir. `429` (cota esgotada) e `400/401/403/404` (chave inválida) pulam
+  direto para a próxima chave. Verifique quais chaves têm cota com
+  `python scripts/check_tts_quota.py`.
 - **Fallback preservado:** se o Gemini continuar falhando (429/401/...), o
   pipeline cai para o Edge-TTS (`config.json -> tts.edge_fallback`) e registra
   `fallback_from: gemini` no `project.json`. O Gemini grava `*.wav`; o Edge grava
@@ -2170,6 +2179,9 @@ Regras do contrato:
 - A segunda seção é SEMPRE a `s0` (saudação variada); é proibido começar com "Olá, família!" ou outro cumprimento genérico. A `s0` não leva risada escrita (`Hahaha!`).
 - Antes do agradecimento há SEMPRE a seção `s_final`.
 - A última seção é SEMPRE a `s_outro` (agradecimento + CTA variado); não usa mais texto fixo exato.
+- **Lição educativa obrigatória:** toda história infantil deve ensinar algo para as
+  crianças. Uma lição/moral deve ficar clara na última seção de história ou na
+  `s_final` (ex: "O que aprendemos hoje? Ser gentil com os outros é importante.").
 - `apply_contract()` roda em `generate_script_from_prompt.py` (fase `script`) e em `gen_narration_edge.py` (fase `narration`, reparando roteiros antigos); `validate_contract()` é chamada em `pipeline.py` no checkpoint da fase `script`.
 - Como `s0`, `s_final` e `s_outro` estão no `script.json`, elas também geram cenas, imagens, entradas na timeline e no grafo — não existe mais áudio de `intro`/`outro` fora do roteiro (o que antes deixava um trecho sem imagem).
 - O grafo continua `script → scenes → ... → narration → timeline → mix → compose → preprocess → render`; o contrato é validado antes de aceitar o checkpoint `script`.
