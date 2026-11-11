@@ -3353,6 +3353,7 @@ Após gerar narração e legendas em 3 idiomas (via `backfill_languages.py`),
 o script `scripts/publish_multilang.py` re-renderiza cada projeto em
 inglês e espanhol (vídeos separados, um por idioma) e faz upload de
 todos os 3 para o YouTube com título, descrição e tags no respectivo idioma.
+Também envia as legendas `.srt` para o YouTube via `captions.insert`.
 
 ### 50.1. Como funciona
 
@@ -3364,14 +3365,19 @@ Para cada projeto em `projects/` (ou um `--slug` específico):
 3. **Re-render ES**: `--mix-lang es` → `output/<slug>_es.mp4`
 4. **Upload**: 3 vídeos para o YouTube (PT, EN, ES), cada um com
    título/descrição/tags no idioma correspondente.
+5. **Legendas**: envia cada `.srt` como faixa de legenda no YouTube
+   (`captions.insert`), para o espectador escolher o idioma.
 
-O vídeo PT original (`output/<slug>.mp4`) é mantido como está.
+**O vídeo PT original (`output/<slug>.mp4`) é mantido como está — não é re-renderizado.**
 
 ### 50.2. Comandos
 
 ```powershell
-# Todos os projetos com MP4 final
+# Todos os projetos com MP4 final (pasta projects/ padrão)
 python scripts/publish_multilang.py
+
+# Projetos em HD externo (ex: D:\videomaker\projects)
+python scripts/publish_multilang.py --projects-dir D:/videomaker/projects
 
 # Um projeto específico
 python scripts/publish_multilang.py --slug frida-luna-fazenda
@@ -3384,17 +3390,59 @@ python scripts/publish_multilang.py --dry-run
 
 ```
 projects/<slug>/output/
-├── <slug>.mp4           (PT - original)
+├── <slug>.mp4           (PT - original, mantido)
 ├── <slug>_en.mp4        (Inglês - upload separado)
 ├── <slug>_es.mp4        (Espanhol - upload separado)
 └── <slug>_pt.mp4        (backup do PT durante o processo)
 ```
 
-### 50.4. Requisitos
+### 50.4. Histórico (não processa duas vezes)
+
+O script grava `.publish_history.json` na pasta `scripts/`. Projetos já
+processados são pulados automaticamente. Útil para rodar novamente depois
+sem duplicar trabalho.
+
+### 50.5. Requisitos
 
 - `scripts/client_secret.json` e `scripts/youtube_token.json` (OAuth2 do YouTube)
 - `--made-for-kids` é ativado por padrão (canal infantil)
 - `--privacy public` por padrão
 - Cada idioma usa `defaultLanguage` e `defaultAudioLanguage` correspondentes
+- Título e descrição são traduzidos para cada idioma (título via Gemini Web,
+  descrição via `description_template.py` com blocos em PT/EN/ES)
+
+---
+
+## 51. Envio de legendas para o YouTube (`youtube_captions.py`)
+
+O script `scripts/youtube_captions.py` envia arquivos `.srt` como faixas
+de legenda para um vídeo já publicado no YouTube, usando a API
+`captions.insert`.
+
+### 51.1. Como funciona
+
+1. Autentica via OAuth2 (mesmo `client_secret.json` + `youtube_token.json`).
+2. Lista legendas já existentes no vídeo (evita duplicar).
+3. Envia cada `.srt` com o idioma correto (`pt-BR`, `en-US`, `es-ES`).
+4. Grava os `captionId` retornados em `project-control.json` (bloco `captions`).
+
+### 51.2. Comandos
+
+```powershell
+# Enviar legenda de um idioma para um vídeo já publicado
+python scripts/youtube_captions.py --video-id d8n44roJNu4 --lang en --srt assets/subtitles/en/slug.srt
+
+# Enviar várias legendas de um projeto (auto-descobre video_id e arquivos .srt)
+python scripts/youtube_captions.py --proj projects/<slug> --lang en --lang es
+
+# Apenas verificar o que faria (sem dry-run, usa --dry-run no publish_multilang)
+```
+
+### 51.3. Arquivos alterados
+
+- `projects/<slug>/project-control.json` — bloco `captions` com os `captionId`
+  de cada idioma enviado.
+
+---
 
 
