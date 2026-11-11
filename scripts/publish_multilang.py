@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_PROJECTS_DIR = HERE.parent / "projects"
+DEFAULT_PROJECTS_DIR = Path("E:/videomaker/projects")
 
 BACKFILL = HERE / "backfill_languages.py"
 PIPELINE = HERE / "pipeline.py"
@@ -303,8 +303,9 @@ def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slug", default=None, help="projeto específico")
-    ap.add_argument("--projects-dir", default=None, help="pasta de projetos (padrão: ./projects)")
+    ap.add_argument("--projects-dir", default=None, help="pasta de projetos (padrão: E:/videomaker/projects)")
     ap.add_argument("--dry-run", action="store_true", help="só mostra o que faria")
+    ap.add_argument("--status", action="store_true", help="lista o status de cada projeto (processado ou pendente)")
     ap.add_argument("--client-secret", default=None, help="caminho do client_secret.json")
     ap.add_argument("--token", default=None, help="caminho do youtube_token.json")
     args = ap.parse_args()
@@ -315,17 +316,38 @@ def main():
 
     hist = load_history()
 
+    if args.status:
+        print(f"\nStatus de projetos em {projects_dir}:", flush=True)
+        print(f"{'Projeto':<60} | {'MP4':<6} | {'PT':<4} | {'EN':<4} | {'ES':<4} | {'Historico':<10}", flush=True)
+        print("-" * 100, flush=True)
+        for proj in sorted([d for d in projects_dir.iterdir() if d.is_dir()]):
+            output = proj / "output"
+            mp4_pt = output / f"{proj.name}.mp4"
+            mp4_en = output / f"{proj.name}_en.mp4"
+            mp4_es = output / f"{proj.name}_es.mp4"
+            has_mp4 = "SIM" if mp4_pt.exists() else "NAO"
+            has_pt = "SIM" if mp4_pt.exists() else "NAO"
+            has_en = "SIM" if mp4_en.exists() else "NAO"
+            has_es = "SIM" if mp4_es.exists() else "NAO"
+            done = "SIM" if is_project_done(hist, proj.name) else "NAO"
+            print(f"{proj.name:<60} | {has_mp4:<6} | {has_pt:<4} | {has_en:<4} | {has_es:<4} | {done:<10}", flush=True)
+        return 0
+
     if args.slug:
         return publish_project(args.slug, args.dry_run, projects_dir, client_secret, token, hist)
 
     projetos = sorted([d for d in projects_dir.iterdir() if d.is_dir()])
     total = 0
+    pendentes = 0
     for proj in projetos:
         output = proj / "output"
         if output.exists() and list(output.glob("*.mp4")):
             total += 1
+            if not is_project_done(hist, proj.name):
+                pendentes += 1
 
     print(f"Encontrados {total} projeto(s) com MP4 final em {projects_dir}.", flush=True)
+    print(f"Pendentes de processamento: {pendentes}", flush=True)
     for proj in projetos:
         output = proj / "output"
         if output.exists() and list(output.glob("*.mp4")):
