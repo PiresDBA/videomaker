@@ -379,7 +379,7 @@ A partir desta versão, o roteiro inclui uma **nova seção s_intro** que vem **
 
 ---
 
-## 3. Grafo do pipeline (10 fases + youtube)
+## 3. Grafo do pipeline (11 fases + youtube)
 
 ```mermaid
 flowchart TD
@@ -393,27 +393,29 @@ flowchart TD
     S4 --> A4[(assets/images/gemini/scenes/*.jpg)]
     P --> S5[4. music<br/>banco local (rotação LRU) → fetch_music_gemini.py → procedural<br/>print: == FASE music: iniciando]
     S5 --> A5[(assets/audio/gemini/bgm_gemini.wav)]
-    A1 --> S6[5. narration<br/>gen_narration_gemini_sections.py (Gemini TTS)<br/>anti-duplicação (Whisper + retry) e frase do coração<br/>ou gen_narration_edge.py (Edge-TTS local)<br/>fallback: Gemini → Edge]
-    S6 --> A6[(assets/audio/narration/sN.wav ou .mp3<br/>narration_timing.json)]
-    A6 --> S7[6. timeline<br/>build_timeline.py]
-    S7 --> A7[(narration_full.wav + timeline.json)]
-    A7 --> S8[7. mix<br/>mix_audio.py]
-    A5 --> S8
-    S8 --> A8[(assets/audio/final_mix.m4a)]
-    A3 --> S9[8. compose<br/>build_composition.py]
-    A7 --> S9
-    A2 --> S9
-    S9 --> A9[(composition.html)]
-    A4 --> S10[9. preprocess<br/>preprocess_images.py]
-    S10 --> A10[(hyperframes-workspace/assets/images)]
-    A9 --> S11[10. render<br/>render.ps1 + verify_output.py]
-    A8 --> S11
-    A10 --> S11
-    S11 --> A11[(output/slug.mp4)]
-    A11 -. só com --publish .-> S12[[11. youtube<br/>youtube_upload.py<br/>descrição no padrão do canal<br/>description_template.build_description()]]
-    S12 --> A13[(YouTube: título, descrição, tags, thumbnail)]
+    A1 --> S6[5. narration<br/>gen_narration_edge.py (Edge-TTS local)<br/>multi-idioma: pt, en, es via --languages<br/>assets/audio/narration/<lang>/sN.mp3<br/>narration_timing_<lang>.json]
+    S6 --> A6[(narration_timing_pt/en/es.json)]
+    A6 --> S7[6. subtitles<br/>gen_subtitles.py<br/>assets/subtitles/<lang>/<slug>.srt]
+    S7 --> A7[(assets/subtitles/<lang>/<slug>.srt)]
+    A6 --> S8[7. timeline<br/>build_timeline.py --lang <mix-lang>]
+    S8 --> A8[(narration_full_<lang>.wav + timeline.json)]
+    A8 --> S9[8. mix<br/>mix_audio.py --lang <mix-lang>]
+    A5 --> S9
+    S9 --> A9[(assets/audio/final_mix.m4a)]
+    A3 --> S10[9. compose<br/>build_composition.py]
+    A8 --> S10
+    A2 --> S10
+    S10 --> A10[(composition.html)]
+    A4 --> S11[10. preprocess<br/>preprocess_images.py]
+    S11 --> A11[(hyperframes-workspace/assets/images)]
+    A10 --> S12[11. render<br/>render.ps1 + verify_output.py<br/>--burn-subtitles queima .srt no MP4]
+    A9 --> S12
+    A11 --> S12
+    S12 --> A12[(output/slug.mp4)]
+    A12 -. só com --publish .-> S13[[12. youtube<br/>youtube_upload.py<br/>descrição no padrão do canal<br/>description_template.build_description()]]
+    S13 --> A13[(YouTube: título, descrição, tags, thumbnail)]
 
-    S1 & S2 & S4 & S5 -. stdout ao vivo .-> WS[[WS /api/logs<br/>RunBus → LiveStrip<br/>Criar · Diário · Executivo · Atividade]]
+    S1 & S2 & S4 & S5 & S6 -. stdout ao vivo .-> WS[[WS /api/logs<br/>RunBus → LiveStrip<br/>Criar · Diário · Executivo · Atividade]]
 ```
 
 Cada fase imprime `== FASE <nome>: iniciando` antes de rodar. A fase `images`
@@ -455,6 +457,8 @@ flowchart LR
     images --> preprocess
     music --> mix
     narration --> timeline
+    narration --> subtitles
+    subtitles --> render
     timeline --> mix
     timeline --> compose
     mix --> render
@@ -1989,8 +1993,10 @@ Ao concluir, cada projeto grava `projects/<slug>/project-control.json` com:
 
 ```
 prompt → script → scenes → music → images(banco local + 2×/cena, quarentena 4 loops) →
-narration(Gemini TTS com anti-duplicação + frase do coração, ou Edge-TTS, com fallback) →
-timeline → mix → compose → preprocess → render →
+narration(Edge-TTS multi-idioma pt/en/es via --languages) →
+subtitles(geração de .srt por idioma) →
+timeline(--lang <mix-lang>) → mix(--lang <mix-lang>) → compose → preprocess → render
+[--burn-subtitles queima o .srt do mix-lang no MP4] →
 [youtube (--publish): descrição no padrão do canal]
 ```
 
@@ -3185,5 +3191,210 @@ excecao única, para ele não colapsar tudo em um único cenário.
 ---
 
 Ler este manual antes de cada sessão (é a fonte de verdade do produto).
+
+---
+
+## 48. Narração multi-idioma e legendas (pt / en / es)
+
+A partir desta versão, o pipeline gera narração e legendas em até três idiomas:
+**português (pt), inglês (en) e espanhol (es)**. Cada idioma tem seus próprios
+arquivos de áudio, timing e legenda, mas há **um único vídeo final** (definido
+por `--mix-lang`, padrão `pt`).
+
+### 48.1. Como funciona
+
+1. **Fase `script`**: gera `artifacts/script.json` (português, fonte original).
+2. **Fase `narration`**: para cada idioma em `--languages`:
+   - `pt`: usa `script.json` diretamente.
+   - `en` / `es`: traduz via `scripts/translate_script.py` (Gemini Web, kind=text)
+     para `artifacts/script_<lang>.json` (se ainda não existir).
+   - Gera áudio com Edge-TTS em `assets/audio/narration/<lang>/sN.mp3`
+     e grava `artifacts/narration_timing_<lang>.json`.
+3. **Fase `subtitles`** (nova): gera `assets/subtitles/<lang>/<slug>.srt`
+   a partir do script + timing de cada idioma (`scripts/gen_subtitles.py`).
+4. **Fase `timeline`**: lê `narration_timing_<mix-lang>.json` (padrão `pt`)
+   e grava `timeline.json` + `narration_full_<mix-lang>.wav`.
+5. **Fase `mix`**: mistura `narration_full_<mix-lang>.wav` + trilha em
+   `assets/audio/final_mix.m4a`. Use `--mix-lang en` para o vídeo final em inglês.
+6. **Fase `render`**: gera `output/<slug>.mp4`. Com `--burn-subtitles`, queima
+   a legenda do `<mix-lang>` direto no vídeo (`output/<slug>_<lang>.mp4`).
+
+### 48.2. Novos argumentos da CLI
+
+| Argumento | Padrão | Exemplo |
+|-----------|--------|---------|
+| `--languages` | `pt` | `--languages pt,en,es` |
+| `--subtitle-languages` | (mesmo que --languages) | `--subtitle-languages pt,en` |
+| `--mix-lang` | `pt` | `--mix-lang en` |
+| `--voice-en` | `en-US-AriaNeural` | `--voice-en en-US-GuyNeural` |
+| `--voice-es` | `es-ES-ElviraNeural` | `--voice-es es-ES-AlvaroNeural` |
+| `--rate-en` | `+0%` | `--rate-en +5%` |
+| `--rate-es` | `+0%` | `--rate-es +5%` |
+| `--pitch-en` | `+0Hz` | `--pitch-en +5Hz` |
+| `--pitch-es` | `+0Hz` | `--pitch-es +5Hz` |
+| `--burn-subtitles` | (desligado) | `--burn-subtitles` |
+
+### 48.3. Estrutura de arquivos por idioma
+
+```
+projects/<slug>/
+├── artifacts/
+│   ├── script.json              (pt original)
+│   ├── script_en.json           (traduzido)
+│   ├── script_es.json           (traduzido)
+│   ├── narration_timing.json    (pt)
+│   ├── narration_timing_en.json (en)
+│   ├── narration_timing_es.json (es)
+│   └── timeline.json            (baseado em --mix-lang)
+├── assets/
+│   ├── audio/
+│   │   └── narration/
+│   │       ├── pt/s1.mp3, s2.mp3, ...
+│   │       ├── en/s1.mp3, ...
+│   │       └── es/s1.mp3, ...
+│   ├── audio/narration_full_pt.wav
+│   ├── audio/narration_full_en.wav
+│   ├── audio/narration_full_es.wav
+│   ├── audio/final_mix.m4a      (mix-lang)
+│   └── subtitles/
+│       ├── pt/<slug>.srt
+│       ├── en/<slug>.srt
+│       └── es/<slug>.srt
+└── output/
+    ├── <slug>.mp4               (mix-lang, sem legenda queimada)
+    └── <slug>_en.mp4            (com --burn-subtitles --mix-lang en)
+```
+
+### 48.4. Exemplos de uso
+
+```powershell
+# Vídeo em português com legendas em 3 idiomas (legendas não queimadas)
+python scripts/pipeline.py full --prompt "Frida e Luna na fazenda" `
+  --languages pt,en,es --subtitle-languages pt,en,es
+
+# Vídeo final em inglês, narração em inglês, legenda em inglês queimada
+python scripts/pipeline.py full --prompt "Frida e Luna na fazenda" `
+  --languages pt,en,es --mix-lang en --burn-subtitles
+
+# Somente regenerar legendas em espanhol
+python scripts/pipeline.py resume --slug frida-luna-fazenda --only subtitles `
+  --subtitle-languages es
+```
+
+### 48.5. Regras importantes
+
+- A **tradução** usa o Gemini Web (mesma infraestrutura da fase `script`). Textos
+  de abertura/encerramento (s_intro, s0, s_final, s_outro) têm fallbacks
+  pré-traduzidos em `scripts/translate_script.py` se a tradução falhar.
+- A narração multi-idioma usa **Edge-TTS** (local, sem API, sem limites de cota).
+  O Gemini TTS continua disponível apenas para o português padrão.
+- O `timeline.json` é **único** e baseado no `--mix-lang`. Se mudar o `mix-lang`,
+  reexecutar `timeline`, `mix`, `compose` e `render`.
+- Nunca sobrescrever o vídeo original: use `-Slug` diferente para variantes de idioma.
+
+---
+
+## 49. Backfill de idiomas para projetos já gerados
+
+Às vezes você já tem vários vídeos renderizados em português e quer adicionar
+narração e legendas em inglês e espanhol **sem recriar o vídeo final** (o pt
+continua sendo o idioma padrão do mix e do MP4).
+
+### 49.1. O que o `scripts/backfill_languages.py` faz
+
+Para cada projeto em `projects/` (ou um `--slug` específico):
+
+1. **Traduz** o roteiro para `script_en.json` e `script_es.json` (se ainda não existirem), via `translate_script.py` (Gemini Web).
+2. **Gera narração** Edge-TTS local em `assets/audio/narration/<lang>/sN.mp3` e `artifacts/narration_timing_<lang>.json`.
+3. **Gera legendas** em `assets/subtitles/<lang>/<slug>.srt`.
+
+O português continua sendo o `mix-lang` padrão; o vídeo final `output/<slug>.mp4` **não é refeito**.
+
+### 49.2. Comandos
+
+```powershell
+# Todos os projetos já gerados: adiciona en e es
+python scripts/backfill_languages.py
+
+# Um projeto específico
+python scripts/backfill_languages.py --slug frida-luna-fazenda
+
+# Apenas espanhol, com menos workers
+python scripts/backfill_languages.py --languages es --workers 2
+```
+
+### 49.3. Arquivos adicionados por projeto
+
+```
+projects/<slug>/
+├── artifacts/
+│   ├── script_en.json
+│   ├── script_es.json
+│   ├── narration_timing_en.json
+│   └── narration_timing_es.json
+├── assets/
+│   ├── audio/narration/en/s1.mp3, s2.mp3, ...
+│   ├── audio/narration/es/s1.mp3, s2.mp3, ...
+│   └── subtitles/
+│       ├── en/<slug>.srt
+│       └── es/<slug>.srt
+└── output/
+    └── <slug>.mp4          (inalterado, mix-lang = pt)
+```
+
+> Como não altera o grafo de fases do pipeline principal, não há mudanças no
+> §3, §4 ou §30.7. É um utilitário de backfill autônomo.
+
+---
+
+## 50. Publicação multilíngue (PT / EN / ES) para o YouTube
+
+Após gerar narração e legendas em 3 idiomas (via `backfill_languages.py`),
+o script `scripts/publish_multilang.py` re-renderiza cada projeto em
+inglês e espanhol (vídeos separados, um por idioma) e faz upload de
+todos os 3 para o YouTube com título, descrição e tags no respectivo idioma.
+
+### 50.1. Como funciona
+
+Para cada projeto em `projects/` (ou um `--slug` específico):
+
+1. **Backfill**: traduz o roteiro para EN e ES, gera narração Edge-TTS
+   local e legendas `.srt` em cada idioma.
+2. **Re-render EN**: `--mix-lang en` → `output/<slug>_en.mp4`
+3. **Re-render ES**: `--mix-lang es` → `output/<slug>_es.mp4`
+4. **Upload**: 3 vídeos para o YouTube (PT, EN, ES), cada um com
+   título/descrição/tags no idioma correspondente.
+
+O vídeo PT original (`output/<slug>.mp4`) é mantido como está.
+
+### 50.2. Comandos
+
+```powershell
+# Todos os projetos com MP4 final
+python scripts/publish_multilang.py
+
+# Um projeto específico
+python scripts/publish_multilang.py --slug frida-luna-fazenda
+
+# Só ver o que faria (não executa)
+python scripts/publish_multilang.py --dry-run
+```
+
+### 50.3. Estrutura de saída por projeto
+
+```
+projects/<slug>/output/
+├── <slug>.mp4           (PT - original)
+├── <slug>_en.mp4        (Inglês - upload separado)
+├── <slug>_es.mp4        (Espanhol - upload separado)
+└── <slug>_pt.mp4        (backup do PT durante o processo)
+```
+
+### 50.4. Requisitos
+
+- `scripts/client_secret.json` e `scripts/youtube_token.json` (OAuth2 do YouTube)
+- `--made-for-kids` é ativado por padrão (canal infantil)
+- `--privacy public` por padrão
+- Cada idioma usa `defaultLanguage` e `defaultAudioLanguage` correspondentes
 
 

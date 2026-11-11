@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual Visual — Videomaker (Edição Super-Heróis)</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
+    background: #0f172a;
+    color: #222;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.5;
+  }
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #ffd700;
+    border: 12px solid #1e293b;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 8px #ffd700;
+    position: relative;
+    overflow: hidden;
+  }
+  .page::before {
+    content: "";
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 120px; height: 120px;
+    background: #ef4444;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    z-index: 0;
+  }
+  h1, h2, h3 {
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 0;
+  }
+  h1 {
+    font-size: 56px;
+    color: #1e293b;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 4px 4px 0 #ffd700, 8px 8px 0 #ef4444;
+    border-bottom: 8px double #1e293b;
+    padding-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  h1 .hero-emoji { font-size: 64px; display: block; margin-bottom: -10px; }
+  h2 {
+    font-size: 34px;
+    color: #ef4444;
+    border: 4px solid #1e293b;
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 12px;
+    background: #fff;
+    margin: 30px 0 16px 0;
+    text-shadow: 2px 2px 0 #ffd700;
+  }
+  h3 { font-size: 24px; color: #1e293b; margin: 24px 0 10px 0; text-shadow: 1px 1px 0 #ffd700; }
+  p { font-size: 18px; margin: 10px 0; }
+  .subtitle {
+    text-align: center;
+    font-size: 22px;
+    color: #1e293b;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 0 #ffd700;
+  }
+  /* Cards */
+  .grid { display: grid; gap: 16px; margin: 20px 0; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .card {
+    background: #fff;
+    border: 5px solid #1e293b;
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .card:hover { transform: translateY(-4px) scale(1.02); z-index: 5; box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+  .card h3 { margin-top: 0; font-size: 22px; }
+  .card .badge {
+    position: absolute; top: -10px; right: -10px;
+    background: #ef4444; color: #fff;
+    font-weight: bold; font-size: 14px;
+    padding: 4px 10px; border-radius: 8px;
+    border: 2px solid #ffd700;
+  }
+  .card p { font-size: 15px; margin: 6px 0; }
+  .card strong { color: #ef4444; }
+  /* Hero cards */
+  .hero-card {
+    background: linear-gradient(135deg, #fff 0%, #f1f5f9 100%);
+    border-style: dashed;
+  }
+  .hero-power { color: #15803d; font-weight: bold; }
+  .hero-enemy { color: #dc2626; font-weight: bold; }
+  .hero-file { color: #1e3a8a; font-size: 13px; font-family: monospace; background: #e2e8f0; padding: 4px 8px; border-radius: 6px; display: inline-block; margin-top: 8px; }
+  /* Pipeline flow */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .phase {
+    background: #ef4444;
+    color: #fff;
+    border: 4px solid #1e293b;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: bold;
+    font-size: 16px;
+    min-width: 110px;
+    text-align: center;
+    position: relative;
+  }
+  .phase .num {
+    position: absolute; top: -8px; left: -8px;
+    background: #ffd700; color: #1e293b;
+    font-weight: bold; font-size: 14px;
+    padding: 2px 8px; border-radius: 6px;
+  }
+  .arrow {
+    color: #1e293b; font-weight: bold; font-size: 20px;
+    align-self: center;
+  }
+  .youtube {
+    background: #1e293b; color: #ffd700;
+    border: 4px dashed #ef4444;
+    margin-top: 8px;
+  }
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #fff; border: 5px solid #1e293b; border-radius: 12px; overflow: hidden; }
+  th, td { padding: 12px 16px; border-bottom: 2px solid #e2e8f0; text-align: left; }
+  th { background: #ef4444; color: #fff; font-size: 16px; text-transform: uppercase; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  tr:hover td { background: #fef3c7; }
+  /* Badges */
+  .ok { color: #15803d; font-weight: bold; }
+  .warn { color: #d97706; font-weight: bold; }
+  .err { color: #dc2626; font-weight: bold; }
+  /* Panels */
+  .panel {
+    background: #fff;
+    border: 6px double #1e293b;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 30px 0;
+    position: relative;
+  }
+  .panel::before {
+    content: "🦸";
+    position: absolute; top: -14px; left: 20px;
+    font-size: 36px; background: #ffd700;
+    border-radius: 50%; padding: 4px;
+    border: 4px solid #1e293b;
+  }
+  .command {
+    background: #1e293b; color: #ffd700;
+    padding: 14px 18px; border-radius: 10px;
+    font-family: monospace; font-size: 16px;
+    margin: 10px 0; border: 3px solid #ffd700;
+    display: inline-block;
+  }
+  .checklist {
+    list-style: none; padding-left: 0;
+  }
+  .checklist li {
+    background: #fff; border: 3px solid #1e293b;
+    border-radius: 10px; padding: 10px 16px;
+    margin: 8px 0; display: flex; align-items: center;
+    font-size: 17px;
+  }
+  .checklist li::before {
+    content: "⬜"; font-size: 24px; margin-right: 12px;
+  }
+  .cta {
+    background: linear-gradient(45deg, #ef4444, #f59e0b);
+    color: #fff; text-align: center;
+    font-size: 24px; font-weight: bold;
+    padding: 24px; border-radius: 16px;
+    border: 6px solid #1e293b; margin: 30px 0;
+    text-shadow: 2px 2px 0 #000;
+  }
+  .small { font-size: 14px; color: #475569; }
+  .comic-text {
+    font-size: 20px; font-weight: bold;
+    color: #1e293b; background: #fff;
+    border: 4px solid #1e293b; border-radius: 16px;
+    padding: 16px; margin: 20px 0;
+    box-shadow: 6px 6px 0 #000;
+    display: inline-block;
+    max-width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <h1><span class="hero-emoji">🦸‍♀️🦸‍♂️</span>MANUAL VISUAL<br>VIDEOMAKER<br>EDIÇÃO SUPER-HERÓIS</h1>
+  <p class="subtitle">Feito para quem tem TDH e aprende melhor com cores, blocos curtos e imagens (em texto).<br>Se está aqui, já foi feito. Não refaça. Não desfaça.</p>
+
+  <div class="cta">
+    VOCÊ É O COMANDANTE<br>Seu superpoder é escrever o <strong>prompt</strong> (o tema do vídeo).
+  </div>
+
+  <h2>🛡️ A Liga dos 10 Heróis (Pipeline)</h2>
+  <p>Cada herói tem um poder, uma ordem fixa e uma saída. Eles não pulam a vez.</p>
+
+  <div class="flow">
+    <div class="phase"><span class="num">1</span>script</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">2</span>scenes</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">3</span>music</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">4</span>images</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">5</span>narration</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">6</span>timeline</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">7</span>mix</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">8</span>compose</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">9</span>preprocess</div>
+    <span class="arrow">▶</span>
+    <div class="phase"><span class="num">10</span>render</div>
+    <span class="arrow">▶</span>
+    <div class="phase youtube"><span class="num">11</span>youtube<br><span class="small">só com --publish</span></div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="hero-card hero-card">
+      <span class="badge">1</span>
+      <h3>📝 script</h3>
+      <p class="hero-power">Poder: escreve o roteiro em JSON.</p>
+      <p class="hero-enemy">Inimigo: texto duplicado, frases que não existem.</p>
+      <p>Ordem fixa: <code>s_intro → s0 → s1… → s_final → s_outro</code>.</p>
+      <span class="hero-file">generate_script_from_prompt.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">2</span>
+      <h3>🎬 scenes</h3>
+      <p class="hero-power">Poder: divide o roteiro em cenas e prompts de imagem.</p>
+      <p class="hero-enemy">Inimigo: cenário mudando de cena para cena.</p>
+      <p>Regra: Frida e Luna sempre iguais; mesmo ambiente do começo ao fim.</p>
+      <span class="hero-file">generate_scenes_and_prompts.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">3</span>
+      <h3>🎵 music</h3>
+      <p class="hero-power">Poder: cria a trilha sonora (procedural ou banco local).</p>
+      <p class="hero-enemy">Inimigo: música que já tem narração embutida.</p>
+      <p>Sempre roda <strong>antes</strong> de images.</p>
+      <span class="hero-file">gen_music_procedural.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">4</span>
+      <h3>🖼️ images</h3>
+      <p class="hero-power">Poder: gera ou busca imagens de cada cena.</p>
+      <p class="hero-enemy">Inimigo: imagem que não gera ou fica vazia.</p>
+      <p>Ordem: banco local → Google Flow → Gemini Web (fallback). Quarentena: 4 tentativas.</p>
+      <span class="hero-file">fetch_images.py / flow_fetch.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">5</span>
+      <h3>🗣️ narration</h3>
+      <p class="hero-power">Poder: transforma texto em áudio.</p>
+      <p class="hero-enemy">Inimigo: narração duplicada (mesma frase 2×).</p>
+      <p>Vozes: Gemini TTS (Achernar/Leda) → fallback Edge-TTS (Thalita).</p>
+      <span class="hero-file">gen_narration_gemini_sections.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">6</span>
+      <h3>⏱️ timeline</h3>
+      <p class="hero-power">Poder: grava início e fim de cada seção em timeline.json.</p>
+      <p class="hero-enemy">Inimigo: duração incorreta (áudio e vídeo desencontrados).</p>
+      <p><strong>Regra de ouro:</strong> se mudar narração ou timeline, reexecutar compose.</p>
+      <span class="hero-file">build_timeline.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">7</span>
+      <h3>🔊 mix</h3>
+      <p class="hero-power">Poder: mistura narração + trilha (final_mix.m4a).</p>
+      <p class="hero-enemy">Inimigo: narração 4s adiantada das imagens.</p>
+      <p>Defesa: lead-in de 4s de trilha na capa.</p>
+      <span class="hero-file">mix_audio.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">8</span>
+      <h3>🧩 compose</h3>
+      <p class="hero-power">Poder: monta o composition.html (desenho do vídeo).</p>
+      <p class="hero-enemy">Inimigo: chips de palavras poluindo a tela.</p>
+      <p>Chips desativados por padrão (só com --chips).</p>
+      <span class="hero-file">build_composition.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">9</span>
+      <h3>📦 preprocess</h3>
+      <p class="hero-power">Poder: copia imagens para o workspace do HyperFrames.</p>
+      <p class="hero-enemy">Inimigo: imagem fora do lugar ou sem redimensionar.</p>
+      <p>MP4s vão intactos; JPGs são redimensionados.</p>
+      <span class="hero-file">preprocess_images.py</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">10</span>
+      <h3>🎥 render</h3>
+      <p class="hero-power">Poder: gera o MP4 final.</p>
+      <p class="hero-enemy">Inimigo: sobrescrever o vídeo original.</p>
+      <p>Sempre use <strong>-Slug diferente</strong> para variantes.</p>
+      <span class="hero-file">render.ps1</span>
+    </div>
+    <div class="hero-card hero-card">
+      <span class="badge">11</span>
+      <h3>📺 youtube</h3>
+      <p class="hero-power">Poder: publica no YouTube (título, descrição, tags, kids).</p>
+      <p class="hero-enemy">Inimigo: descrição fraca ou sem padrão do canal.</p>
+      <p>Opcional: só com <code>--publish</code>. Descrição via description_template.py.</p>
+      <span class="hero-file">youtube_upload.py</span>
+    </div>
+  </div>
+
+  <h2>🏰 Quartel General — Projetos e Checkpoints</h2>
+  <p>Cada vídeo fica em sua própria base secreta. Quando um herói termina, grava "feito" no project.json. Se parar, o <code>resume</code> continua de onde parou.</p>
+  <div class="command">
+    projects/&lt;slug&gt;/project.json        ← diário de bordo (checkpoints)<br>
+    projects/&lt;slug&gt;/project-control.json  ← relatório final<br>
+    projects/&lt;slug&gt;/artifacts/script.json  ← roteiro (herói 1)<br>
+    projects/&lt;slug&gt;/artifacts/scenes.json   ← cenas (herói 2)<br>
+    projects/&lt;slug&gt;/artifacts/image_prompts.json ← prompts de imagem<br>
+    projects/&lt;slug&gt;/artifacts/timeline.json ← início/fim de cada seção<br>
+    projects/&lt;slug&gt;/scenes/sN.html          ← overlays de texto<br>
+    projects/&lt;slug&gt;/assets/images/...       ← imagens (herói 4)<br>
+    projects/&lt;slug&gt;/assets/audio/...        ← narração, trilha, mix<br>
+    projects/&lt;slug&gt;/composition.html         ← desenho do vídeo (herói 8)<br>
+    projects/&lt;slug&gt;/output/&lt;slug&gt;.mp4   ← VÍDEO FINAL (herói 10)
+  </div>
+
+  <h2>🖥️ Quartel General Móvel — Pipeline UI (Tkinter)</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>📝 Criar</h3>
+      <p>prompt, duração, voz, geração do vídeo.</p>
+    </div>
+    <div class="card">
+      <h3>📺 Publicar</h3>
+      <p>envio ao YouTube (título, descrição, tags, privacidade).</p>
+    </div>
+    <div class="card">
+      <h3>📅 Diário</h3>
+      <p>executor diário: fila de tópicos, run, dry-run, unpause.</p>
+    </div>
+    <div class="card">
+      <h3>📊 Executivo</h3>
+      <p>KPIs, fases do projeto recente, countdown, parar tudo / parar agente.</p>
+    </div>
+    <div class="card">
+      <h3>⚙️ Ajustes</h3>
+      <p>tema, zoom, atalhos de teclado.</p>
+    </div>
+  </div>
+  <p><strong>Atalhos:</strong> <code>Ctrl + Enter</code> gerar vídeo · <code>Ctrl + + / - / 0</code> zoom · parar usa <code>taskkill /F /T /PID</code> (mata o pipeline e todos os filhos: gemini, ffmpeg).</p>
+
+  <h2>🚀 Nave Espacial — UI Web (React + FastAPI)</h2>
+  <p>Interface moderna no navegador.</p>
+  <div class="command">
+    Navegador (React + Vite, porta 5173)  ⇄  API FastAPI (porta 8765)  ⇄  scripts/pipeline.py
+  </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>📝 Criar</h3>
+      <p>prompt, trilho das 10 fases, seleção de etapas, duração, voz, upload YouTube.</p>
+    </div>
+    <div class="card">
+      <h3>📺 Publicar</h3>
+      <p>lista de projetos + formulário completo do YouTube + file picker de MP4.</p>
+    </div>
+    <div class="card">
+      <h3>📅 Diário</h3>
+      <p>calendário mensal, agendar vídeos, recorrência, tópicos disponíveis.</p>
+    </div>
+    <div class="card">
+      <h3>🧪 Testes</h3>
+      <p>modo teste (todas as etapas rápido) + retomada de qualquer ponto.</p>
+    </div>
+    <div class="card">
+      <h3>📡 Atividade</h3>
+      <p>logs em tempo real via WebSocket (/api/logs).</p>
+    </div>
+    <div class="card">
+      <h3>📊 Executivo</h3>
+      <p>KPIs, gauges por fase, waterfall do run ativo, sparkline de durações.</p>
+    </div>
+    <div class="card">
+      <h3>⚙️ Ajustes</h3>
+      <p>tema claro/escuro/automático, zoom da interface.</p>
+    </div>
+  </div>
+  <p><strong>Launcher:</strong> <code>C:\videomaker\run_ui_premium.bat</code> (duplo-clique) ou <code>.ps1</code>.<br>
+  URLs: <code>http://localhost:5173</code> · <code>http://127.0.0.1:8765</code> · <code>http://127.0.0.1:8765/docs</code></p>
+
+  <h2>⚔️ Inimigos Comuns e Como Derrotar</h2>
+  <table>
+    <tr><th>Sintoma</th><th>Solução (superpoder)</th></tr>
+    <tr><td>Chips voltaram nas cenas</td><td>Rode sem --chips e depois rebuild compose (§7.1 e §7.3).</td></tr>
+    <tr><td>Render sobrescreveu o vídeo original</td><td>Use -Slug diferente.</td></tr>
+    <tr><td>Duração errada / delta != 0</td><td>Mudou narração/timeline? Rode compose antes de render.</td></tr>
+    <tr><td>Gemini TTS sem cota (429)</td><td>Rotação de chaves (GOOGLE_TTS_API_KEY_1…_3) ou fallback Edge-TTS.</td></tr>
+    <tr><td>.env em UTF-16 quebrando chaves</td><td>Leitura via scripts/env_keys.py (detecta BOM).</td></tr>
+    <tr><td>composition.html antigo após editar scenes.json</td><td>reset --phase compose antes de resume --from compose.</td></tr>
+  </table>
+
+  <h2>🔄 Ritmo da Batalha (dependências)</h2>
+  <div class="comic-text">
+    script → scenes → preprocess<br>
+    script → narration → timeline → mix → render<br>
+    scenes → compose<br>
+    music → mix<br>
+    timeline → compose<br>
+    preprocess → render
+  </div>
+  <ul class="checklist">
+    <li>Mexeu no roteiro → reset --phase script → full refaz o resto.</li>
+    <li>Mexeu nos overlays → reset --phase scenes ou compose → full.</li>
+    <li>Trocou a trilha → reset --phase music → full (refaz mix e render).</li>
+    <li>Quer só uma variante → renderize com outro -Slug.</li>
+  </ul>
+
+  <h2>📋 Checklist antes de publicar</h2>
+  <ul class="checklist">
+    <li>scenes/sN.html sem class="chip" (padrão sem chips).</li>
+    <li>composition.html sem class="chips"/class="chip".</li>
+    <li>Texto na esquerda legível, sem cobrir o rosto de Frida ou Luna.</li>
+    <li>verify_output.py retorna STATUS OK.</li>
+    <li>Conferir frame no início, meio e fim do vídeo.</li>
+    <li>python scripts/check_manual.py (manual em dia com o código).</li>
+    <li>python scripts/smoke_test_description.py e check_projects.py.</li>
+  </ul>
+
+  <h2>⚡ Ordem Sagrada (nunca quebre)</h2>
+  <div class="command">
+    branch → código → manual → checks → commit → push
+  </div>
+  <ol class="checklist" style="list-style: decimal inside; font-size: 18px; background: transparent; border: none; padding: 0; margin: 10px 0;">
+    <li style="border:none; background:none; box-shadow:none; padding: 6px 0;">git checkout -b feature/nome-curto</li>
+    <li style="border:none; background:none; box-shadow:none; padding: 6px 0;">faça a mudança</li>
+    <li style="border:none; background:none; box-shadow:none; padding: 6px 0;">atualize o MANUAL_GRAFOS.md (mesmo commit)</li>
+    <li style="border:none; background:none; box-shadow:none; padding: 6px 0;">rode os checks</li>
+    <li style="border:none; background:none; box-shadow:none; padding: 6px 0;">git add -A && git commit -m "tipo: o que mudou" && git push</li>
+  </ol>
+
+  <div class="cta">
+    O MANUAL É A MEMÓRIA DO PRODUTO.<br>SE NÃO ESTÁ NO MANUAL, NÃO EXISTE.
+  </div>
+
+  <div class="small">
+    Criado para TDH — formato visual, blocos curtos, cores vivas.<br>
+    Fonte: MANUAL_GRAFOS.md + CONTRATO.md do Videomaker.<br>
+    Abra este arquivo em qualquer navegador. Pode imprimir como PDF (Ctrl+P → Salvar como PDF).
+  </div>
+</div>
+
+</body>
+</html>

@@ -33,15 +33,17 @@ def probe_duration(ffprobe, path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--proj", default=None, help="diretorio do projeto (senao vem de config.json)")
+    ap.add_argument("--lang", default="pt", help="idioma da narracao para a timeline (pt,en,es). padrao: pt")
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
     proj = (Path(args.proj) if args.proj else (HERE / cfg.get("project_dir", ".."))).resolve()
+    lang = args.lang.lower().strip()
     ff = str(Path(cfg["ffmpeg_dir"]) / "ffmpeg.exe")
     ffprobe = str(Path(cfg["ffmpeg_dir"]) / "ffprobe.exe")
 
     aud = proj / "assets" / "audio"
-    timing = load_json(proj / "artifacts" / "narration_timing.json")
+    timing = load_json(proj / "artifacts" / f"narration_timing_{lang}.json")
     gap = float(cfg.get("gap_seconds", 0.6))
     tempo = float(cfg.get("narration_tempo", 1.0))
     loud = cfg.get("loudness", {})
@@ -80,7 +82,7 @@ def main():
     listfile = aud / "concat_narration.txt"
     listfile.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    nar_full = aud / "narration_full.wav"
+    nar_full = aud / f"narration_full_{lang}.wav"
     subprocess.run([ff, "-y", "-f", "concat", "-safe", "0", "-i", str(listfile),
                     "-ar", "44100", "-ac", "2", str(nar_full)],
                    check=True, capture_output=True)

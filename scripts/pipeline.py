@@ -18,16 +18,18 @@ Diretorio por projeto:
   projects/<slug>/artifacts/script.json           roteiro (IA gratuita via Chrome)
   projects/<slug>/artifacts/scenes.json           cenas (local, deterministico)
   projects/<slug>/artifacts/image_prompts.json    prompts de imagem
-  projects/<slug>/artifacts/narration_timing.json duracoes da narracao
-  projects/<slug>/artifacts/timeline.json         inicio/fim por secao
+  projects/<slug>/artifacts/narration_timing.json   duracoes da narracao (pt)
+  projects/<slug>/artifacts/narration_timing_en.json duracoes da narracao (en)
+  projects/<slug>/artifacts/narration_timing_es.json duracoes da narracao (es)
+  projects/<slug>/artifacts/timeline.json         inicio/fim por secao (mix-lang)
   projects/<slug>/scenes/sN.html                  overlays de texto por cena
   projects/<slug>/assets/images/gemini/scenes/*.jpg
-  projects/<slug>/assets/audio/gemini/bgm_gemini.wav  trilha (IA gratuita)
-  projects/<slug>/assets/audio/narration/*.mp3    narracao Edge-TTS (local)
-  projects/<slug>/assets/audio/narration_full.wav narracao concatenada
-  projects/<slug>/assets/audio/final_mix.m4a      narracao + trilha
+  projects/<slug>/assets/audio/narration/<lang>/*.mp3  narracao Edge-TTS por idioma
+  projects/<slug>/assets/audio/narration_full_<lang>.wav  narracao concatenada por idioma
+  projects/<slug>/assets/audio/final_mix.m4a      narracao + trilha (mix-lang)
+  projects/<slug>/assets/subtitles/<lang>/<slug>.srt  legendas por idioma
   projects/<slug>/composition.html                composicao HyperFrames
-  projects/<slug>/output/<slug>.mp4               VIDEO FINAL
+  projects/<slug>/output/<slug>.mp4               VIDEO FINAL (mix-lang)
 
 
 ===============================================================================
@@ -288,13 +290,19 @@ AS FASES (ordem de execucao)
                Produz assets/audio/gemini/bgm_gemini.wav.
   images       uma imagem por cena: banco local (BM25) primeiro, Gemini Web
                depois, com loop de quarentena de 4 tentativas.
-  narration    narracao por secao (Edge-TTS local ou Gemini TTS), gera
-               assets/audio/narration/*.wav e artifacts/narration_timing.json.
-  timeline     linha do tempo com inicio/fim de cada secao.
-  mix          mix de narracao + trilha -> assets/audio/final_mix.m4a.
+  narration    narracao por secao (Edge-TTS local, multiplos idiomas via
+               --languages). Gera assets/audio/narration/<lang>/*.mp3 e
+               artifacts/narration_timing_<lang>.json (um por idioma).
+  subtitles    legendas .srt por idioma (--subtitle-languages), a partir do
+               script + timing de cada idioma.
+               Produz assets/subtitles/<lang>/<slug>.srt.
+  timeline     linha do tempo com inicio/fim de cada secao (usa narration_timing_<mix-lang>).
+  mix          mix de narracao (<mix-lang>) + trilha -> assets/audio/final_mix.m4a.
+               Use --mix-lang para escolher o idioma da narracao no video final.
   compose      composicao HyperFrames -> composition.html.
   preprocess   copia/prepara as imagens para o HyperFrames.
   render       renderiza o MP4 final -> output/<slug>.mp4.
+               Com --burn-subtitles, queima as legendas do <mix-lang> no video.
   youtube      publica no YouTube (so com --publish). Fora da lista PHASES
                porque e opcional e roda por ultimo.
 
@@ -303,7 +311,8 @@ Grafo de dependencias (DEPS): refazer uma fase caduca as descendentes.
   scenes    -> preprocess, compose
   images    -> preprocess
   music     -> mix
-  narration -> timeline
+  narration -> timeline, subtitles
+  subtitles -> render
   timeline  -> mix, compose
   mix       -> render
   compose   -> render
@@ -322,6 +331,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from narration_contract import validate_contract
+from translate_script import translate_script
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -347,7 +357,7 @@ except Exception:
     _slug = None
 
 PHASES = ["script", "scenes", "music", "images", "narration",
-          "timeline", "mix", "compose", "preprocess", "render"]
+          "subtitles", "timeline", "mix", "compose", "preprocess", "render"]
 
 # Tags padrao do canal (canal "Frida e Luna"). Usadas quando --yt-tags nao e
 # informado. Mesma lista ampliada do youtube_upload.py.
@@ -617,6 +627,7 @@ class Project:
         self.scenes_dir = self.dir / "scenes"
         self.images_src = self.dir / "assets" / "images" / "gemini" / "scenes"
         self.narration_dir = self.dir / "assets" / "audio" / "narration"
+        self.subtitles_dir = self.dir / "assets" / "subtitles"
         self.audio_dir = self.dir / "assets" / "audio"
         self.output_dir = self.dir / "output"
 
@@ -1067,26 +1078,28 @@ def _pick_gemini_voice(cfg):
 
 
 def phase_narration(args, p: Project):
-    """FASE 5/10 - Narracao por secao.
+    """FASE 5/10 - Narracao por secao, com suporte a multiplos idiomas.
 
-    Motor escolhido por --narration-provider (ou config.json -> tts.provider):
-      - "edge":  gen_narration_edge.py, local e sem API (padrao seguro).
-      - "gemini": gen_narration_gemini_sections.py, Google AI Studio
-                  (GOOGLE_TTS_API_KEY). A voz alterna entre
-                  config.json -> tts.gemini_voices (Achernar/Leda) a cada
-                  video, a menos que --voice force uma voz especifica.
-      - Se o Gemini falhar (429/401/...) e config.json -> tts.edge_fallback
-        estiver ligado, cai automaticamente para o Edge-TTS e registra
-        "fallback_from": "gemini" no project.json.
+    Motor: Edge-TTS (local, sem API). Para cada idioma em --languages:
+      - pt: usa artifacts/script.json (padrao)
+      - en/es: traduz via translate_script.py para artifacts/script_<lang>.json
+               (se ainda nao existir) e gera narracao nesse idioma.
+
+    Vozes padrao por idioma (sobrescritas por --voice-en/--voice-es):
+      pt: pt-BR-ThalitaNeural (+6%, +8Hz)
+      en: en-US-AriaNeural   (+0%, +0Hz)
+      es: es-ES-ElviraNeural (+0%, +0Hz)
+
+    Saida: assets/audio/narration/<lang>/sN.mp3
+           artifacts/narration_timing_<lang>.json (um por idioma)
 
     Argumentos usados:
-        --voice / --narration-provider / --rate / --pitch / --style / --workers
-
-    Saida: assets/audio/narration/*.wav + artifacts/narration_timing.json
+        --languages / --voice / --voice-en / --voice-es / --rate / --rate-en /
+        --rate-es / --pitch / --pitch-en / --pitch-es / --workers
 
     Exemplo:
         python scripts/pipeline.py full --prompt "Husky engraçado" --only narration \
-            --narration-provider gemini --voice Leda
+            --languages pt,en,es
     """
     cfg = load_json(HERE / "config.json")
     tts = cfg.get("tts", {})
@@ -1094,55 +1107,133 @@ def phase_narration(args, p: Project):
     if provider not in ("edge", "gemini"):
         provider = "edge"
 
+    languages = [l.strip().lower() for l in (getattr(args, "languages", "pt") or "pt").split(",") if l.strip()]
+    if not languages:
+        languages = ["pt"]
+
     voice_arg = (getattr(args, "voice", "") or "").strip()
     edge_style = (not voice_arg) or voice_arg.lower().startswith("pt-br-") \
         or voice_arg.lower().endswith("neural")
 
-    def _run_edge(voice, rate, pitch, style, workers, label):
-        """Gera a narracao com Edge-TTS (local, sem API) e registra no estado."""
+    def voice_for(lang):
+        if lang == "en" and getattr(args, "voice_en", None):
+            return args.voice_en
+        if lang == "es" and getattr(args, "voice_es", None):
+            return args.voice_es
+        return {"pt": "pt-BR-ThalitaNeural", "en": "en-US-AriaNeural", "es": "es-ES-ElviraNeural"}.get(lang, "pt-BR-ThalitaNeural")
+
+    def rate_for(lang):
+        if lang == "en" and getattr(args, "rate_en", None):
+            return args.rate_en
+        if lang == "es" and getattr(args, "rate_es", None):
+            return args.rate_es
+        return {"pt": "+6%", "en": "+0%", "es": "+0%"}.get(lang, "+0%")
+
+    def pitch_for(lang):
+        if lang == "en" and getattr(args, "pitch_en", None):
+            return args.pitch_en
+        if lang == "es" and getattr(args, "pitch_es", None):
+            return args.pitch_es
+        return {"pt": "+8Hz", "en": "+0Hz", "es": "+0Hz"}.get(lang, "+0Hz")
+
+    workers = int(getattr(args, "workers", 4) or 4)
+
+    def run_edge(lang, voice, rate, pitch, script_path, label):
+        out_lang_dir = p.dir / "assets" / "audio" / "narration" / lang
+        out_lang_dir.mkdir(parents=True, exist_ok=True)
         run([sys.executable, str(SCRIPTS["gen_narration"]),
              "--proj", str(p.dir),
+             "--lang", lang,
+             "--script", str(script_path),
              "--voice", voice,
              "--rate", rate,
              "--pitch", pitch,
-             "--style", style,
              "--workers", str(workers)], label)
-        p.state.setdefault("narration", {}).update({"provider": "edge", "voice": voice})
-        p.save_state()
 
-    if provider == "gemini":
-        voice = _pick_gemini_voice(cfg) if edge_style else voice_arg
-        model = tts.get("model", "gemini-3.8-flash-tts")
-        cmd = [sys.executable, str(HERE / "gen_narration_gemini_sections.py"),
-               "--proj", str(p.dir),
-               "--voice", voice,
-               "--model", model]
-        if getattr(args, "narration_style", None):
-            cmd += ["--style", args.narration_style]
-        if getattr(args, "force", False):
-            cmd.append("--force")
-        try:
-            run(cmd, "FASE narration: Gemini TTS '%s' (Google AI Studio)" % voice)
-            p.state.setdefault("narration", {}).update({"provider": "gemini", "voice": voice})
-            p.save_state()
-        except RuntimeError as e:
-            if not tts.get("edge_fallback", True):
-                raise
-            edge_voice = cfg.get("voice", "pt-BR-ThalitaNeural")
-            print("== FALLBACK: Gemini TTS indisponivel (%s)." % str(e).splitlines()[0][:120])
-            print("== FALLBACK: gerando narracao com Edge-TTS '%s' (local, sem API)." % edge_voice)
-            _run_edge(edge_voice,
-                      cfg.get("voice_rate", "+12%"),
-                      cfg.get("voice_pitch", "+8Hz"),
-                      "excited",
-                      getattr(args, "workers", 4),
-                      "FASE narration: FALLBACK Edge-TTS (local, sem API)")
-            p.state["narration"]["fallback_from"] = "gemini"
-            p.save_state()
-    else:
-        _run_edge(args.voice, args.rate, args.pitch, args.style, args.workers,
-                  "FASE narration: narracao Edge-TTS (local, sem API)")
-    p.mark("narration", detail=str(p.narration_timing))
+    # Para cada idioma: traduz (se necessario) e gera narracao.
+    for lang in languages:
+        lang = lang.lower()
+        if lang == "pt":
+            script_path = p.script
+            # Aplica contrato apenas no PT (lingua original).
+            script = load_json(script_path)
+            script, mudancas = apply_contract(script, theme=script.get("title") or "")
+            if mudancas:
+                print("== CONTRATO narracao (pt): " + "; ".join(mudancas))
+                save_json(script_path, script)
+            problemas = validate_contract(script)
+            if problemas:
+                print("== AVISO contrato de narracao (pt):", "; ".join(problemas))
+        else:
+            script_path = p.artifacts / f"script_{lang}.json"
+            if not script_path.exists():
+                print(f"== Traduzindo roteiro para {lang.upper()}...", flush=True)
+                translate_script(
+                    p.script, lang, p.artifacts,
+                    topic=p.prompt or p.slug,
+                    wait_s=int(getattr(args, "wait", 120) or 120),
+                )
+            if not script_path.exists():
+                raise RuntimeError(f"Nao foi possivel gerar script_{lang}.json")
+
+        voice = voice_for(lang)
+        rate = rate_for(lang)
+        pitch = pitch_for(lang)
+        run_edge(lang, voice, rate, pitch, script_path,
+                 f"FASE narration[{lang}]: Edge-TTS '{voice}' (local, sem API)")
+
+    # Sinaliza conclusao da narracao (pt e demais idiomas).
+    p.state.setdefault("narration", {}).update({
+        "provider": "edge",
+        "languages": languages,
+        "voice": voice_arg or voice_for("pt"),
+    })
+    p.save_state()
+    p.mark("narration", detail=f"idiomas: {','.join(languages)}")
+
+
+def phase_subtitles(args, p: Project):
+    """FASE 6/10 (nova) - Legendas .srt por idioma.
+
+    Gera assets/subtitles/<lang>/<slug>.srt a partir de
+    artifacts/script_<lang>.json + artifacts/narration_timing_<lang>.json.
+
+    Argumentos usados:
+        --subtitle-languages / --languages / --gap
+
+    Exemplo:
+        python scripts/pipeline.py full --prompt "Husky engraçado" --only subtitles \
+            --subtitle-languages pt,en,es
+    """
+    langs_raw = getattr(args, "subtitle_languages", "") or ""
+    subtitle_langs = [l.strip().lower() for l in langs_raw.split(",") if l.strip()]
+    if not subtitle_langs:
+        subtitle_langs = [l.strip().lower() for l in (getattr(args, "languages", "pt") or "pt").split(",") if l.strip()]
+
+    gap = float(getattr(args, "gap_seconds", 0.6) or 0.6)
+
+    for lang in subtitle_langs:
+        lang = lang.lower()
+        script_path = p.artifacts / f"script_{lang}.json" if lang != "pt" else p.script
+        timing_path = p.artifacts / f"narration_timing_{lang}.json"
+        out_path = p.subtitles_dir / lang / f"{p.slug}.srt"
+        if not script_path.exists():
+            print(f"AVISO: sem script para legenda {lang} ({script_path}), pulando.")
+            continue
+        if not timing_path.exists():
+            print(f"AVISO: sem timing para legenda {lang} ({timing_path}), pulando.")
+            continue
+        run([sys.executable, str(HERE / "gen_subtitles.py"),
+             "--script", str(script_path),
+             "--timing", str(timing_path),
+             "--out", str(out_path),
+             "--lang", lang,
+             "--gap", str(gap)],
+            f"FASE subtitles[{lang}]: gerando {out_path.name}")
+
+    p.mark("subtitles", detail=f"idiomas: {','.join(subtitle_langs)}")
+
+
 
 
 def phase_timeline(args, p: Project):
@@ -1157,7 +1248,8 @@ def phase_timeline(args, p: Project):
         python scripts/pipeline.py full --prompt "Husky engraçado" --only timeline
     """
     run([sys.executable, str(SCRIPTS["build_timeline"]),
-         "--proj", str(p.dir)],
+         "--proj", str(p.dir),
+         "--lang", getattr(args, "mix_lang", "pt")],
         "FASE timeline: linha do tempo (local)")
     p.mark("timeline", detail=str(p.timeline_json))
 
@@ -1177,6 +1269,7 @@ def phase_mix(args, p: Project):
     """
     cmd = [sys.executable, str(SCRIPTS["mix_audio"]),
            "--proj", str(p.dir),
+           "--lang", getattr(args, "mix_lang", "pt"),
            "--hf-dir", str(HF_DIR)]
     if args.provider:
         cmd += ["--provider", args.provider]
@@ -1246,6 +1339,23 @@ def phase_render(args, p: Project):
         cmd.append("-SkipCheck")
     run(cmd, "FASE render: renderizando video (HyperFrames)")
     p.mark("render", detail=str(p.video))
+
+    # Queima legendas (mix-lang) no video, se solicitado.
+    if getattr(args, "burn_subtitles", False):
+        cfg_render = load_json(HERE / "config.json")
+        mix_lang = (getattr(args, "mix_lang", "pt") or "pt").lower().strip()
+        srt = p.subtitles_dir / mix_lang / f"{p.slug}.srt"
+        if srt.exists():
+            burned = p.output_dir / f"{p.slug}_{mix_lang}.mp4"
+            print(f"== Queimando legendas {mix_lang}: {srt.name}", flush=True)
+            ff = str(Path(cfg_render["ffmpeg_dir"]) / "ffmpeg.exe")
+            run([ff, "-y", "-i", str(p.video), "-vf",
+                 f"subtitles='{srt}':force_style='FontSize=24,PrimaryColour=&H00FFFF,OutlineColour=&H000000,Outline=2,Shadow=1,MarginV=40'",
+                 "-c:a", "copy", str(burned)], "FASE render: queimando legendas")
+            p.mark("render", detail=f"{p.video} + legendas {mix_lang} -> {burned}")
+        else:
+            print(f"AVISO: --burn-subtitles mas nao encontrou {srt}", flush=True)
+
     try:
         run([sys.executable, str(SCRIPTS["verify_output"]),
              "--proj", str(p.dir),
@@ -1351,6 +1461,7 @@ PHASE_FN = {
     "images": phase_images,
     "music": phase_music,
     "narration": phase_narration,
+    "subtitles": phase_subtitles,
     "timeline": phase_timeline,
     "mix": phase_mix,
     "compose": phase_compose,
@@ -1365,7 +1476,8 @@ DEPS = {
     "scenes": ["preprocess", "compose"],
     "images": ["preprocess"],
     "music": ["mix"],
-    "narration": ["timeline"],
+    "narration": ["timeline", "subtitles"],
+    "subtitles": ["render"],
     "timeline": ["mix", "compose"],
     "mix": ["render"],
     "compose": ["render"],
@@ -1396,15 +1508,17 @@ def _validate_prereq(p: Project, phase, missing_ok=None):
         "scenes": ["script"],
         "images": ["scenes"],
         "narration": ["script"],
+        "subtitles": ["narration"],
         "timeline": ["narration"],
         "mix": ["timeline", "music_src"],
         "compose": ["scenes", "timeline"],
         "preprocess": ["images", "scenes"],
-        "render": ["compose", "mix", "preprocess"],
+        "render": ["compose", "mix", "preprocess", "subtitles"],
     }
     checks = {
         "script": p.script, "scenes": p.scenes_json, "images": None,
         "music_src": None, "narration": p.narration_timing,
+        "subtitles": p.subtitles_dir / "pt" / f"{p.slug}.srt",
         "timeline": p.timeline_json, "mix": p.final_mix,
         "compose": p.composition,
     }
@@ -2155,6 +2269,41 @@ def main():
             "--max-words-per-beat", type=int, default=None,
             help="modo beats: maximo de palavras por batida; menor = mais imagens. "
                  "Ex: --max-words-per-beat 12")
+        sp.add_argument(
+            "--languages", default="pt",
+            help="idiomas da narracao separados por virgula (pt,en,es). "
+                 "Gera narracao e legendas para cada idioma. Padrao: pt. "
+                 "Ex: --languages pt,en,es")
+        sp.add_argument(
+            "--subtitle-languages", default="",
+            help="idiomas para arquivos de legenda .srt. Se vazio, usa --languages. "
+                 "Ex: --subtitle-languages pt,en,es")
+        sp.add_argument(
+            "--mix-lang", default="pt",
+            help="idioma da narracao usada no mix final do video. "
+                 "Padrao: pt. Ex: --mix-lang en")
+        sp.add_argument(
+            "--voice-en", default="en-US-AriaNeural",
+            help="voz Edge-TTS para ingles. Padrao: en-US-AriaNeural. Ex: --voice-en en-US-GuyNeural")
+        sp.add_argument(
+            "--voice-es", default="es-ES-ElviraNeural",
+            help="voz Edge-TTS para espanhol. Padrao: es-ES-ElviraNeural. Ex: --voice-es es-ES-AlvaroNeural")
+        sp.add_argument(
+            "--rate-en", default="+0%",
+            help="velocidade da fala para ingles (Edge-TTS). Padrao: +0%%. Ex: --rate-en +5%%")
+        sp.add_argument(
+            "--rate-es", default="+0%",
+            help="velocidade da fala para espanhol (Edge-TTS). Padrao: +0%%. Ex: --rate-es +5%%")
+        sp.add_argument(
+            "--pitch-en", default="+0Hz",
+            help="tom da fala para ingles (Edge-TTS). Padrao: +0Hz. Ex: --pitch-en +5Hz")
+        sp.add_argument(
+            "--pitch-es", default="+0Hz",
+            help="tom da fala para espanhol (Edge-TTS). Padrao: +0Hz. Ex: --pitch-es +5Hz")
+        sp.add_argument(
+            "--burn-subtitles", action="store_true",
+            help="queima as legendas (mix-lang) dentro do video na fase render. "
+                 "Ex: --burn-subtitles")
 
     sub = ap.add_subparsers(dest="cmd", required=True)
 

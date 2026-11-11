@@ -39,12 +39,14 @@ def main():
     ap.add_argument("--provider", default=None, choices=["gemini", "procedural"])
     ap.add_argument("--gain", type=float, default=None)
     ap.add_argument("--proj", default=None, help="diretorio do projeto (senao vem de config.json)")
+    ap.add_argument("--lang", default="pt", help="idioma da narracao a mixar (pt,en,es). padrao: pt")
     ap.add_argument("--hf-dir", default=None,
                     help="pasta do workspace HyperFrames para copiar o mix (senao: padrao do projeto)")
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
     proj = (Path(args.proj) if args.proj else (HERE / cfg.get("project_dir", ".."))).resolve()
+    lang = args.lang.lower().strip()
     ff = str(Path(cfg["ffmpeg_dir"]) / "ffmpeg.exe")
     music = cfg["music"]
     loud = cfg["loudness"]
@@ -54,7 +56,7 @@ def main():
     xf = float(music.get("loop_crossfade_s", 4))
 
     aud = proj / "assets" / "audio"
-    narration = aud / "narration_full.wav"
+    narration = aud / f"narration_full_{lang}.wav"
     if not narration.exists():
         print("FALTA narration_full.wav - rode scripts/build_timeline.py antes.")
         return 2
