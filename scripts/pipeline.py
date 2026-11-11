@@ -802,18 +802,28 @@ def phase_script(args, p: Project):
     p.mark("script", detail=str(p.script))
 
 
-def phase_scenes(args, p: Project):
+def phase_scenes(args, p: Project, lang="pt"):
     """FASE 2/10 - Cenas e overlays (100% local, deterministico).
 
     1) generate_scenes_and_prompts.py: divide o roteiro em cenas, grava
        artifacts/scenes.json e artifacts/image_prompts.json.
     2) generate_scene_htmls.py: gera os overlays de texto scenes/sN.html.
 
+    Argumentos usados:
+        --lang  idioma do roteiro (pt,en,es) - usa script_<lang>.json para
+                gerar overlays no idioma correto
+
     Exemplo:
         python scripts/pipeline.py full --prompt "Husky engraçado" --only scenes
     """
+    # Escolhe o arquivo de script correto pelo idioma
+    if lang == "pt":
+        script_path = p.script
+    else:
+        script_path = p.artifacts / f"script_{lang}.json"
+
     cmd = [sys.executable, str(SCRIPTS["scenes_from_script"]),
-           "--script", str(p.script),
+           "--script", str(script_path),
            "--scenes-out", str(p.scenes_json),
            "--prompts-out", str(p.image_prompts)]
     if getattr(args, "scene_mode", None):
@@ -823,12 +833,12 @@ def phase_scenes(args, p: Project):
                      ("--max-words-per-beat", getattr(args, "max_words_per_beat", None))):
         if val is not None:
             cmd += [opt, str(val)]
-    run(cmd, "FASE scenes: cenas + prompts (local deterministico)")
+    run(cmd, f"FASE scenes[{lang}]: cenas + prompts (local deterministico)")
     run([sys.executable, str(SCRIPTS["scene_htmls"]),
-         "--script", str(p.script),
+         "--script", str(script_path),
          "--scenes", str(p.scenes_json),
          "--out-dir", str(p.scenes_dir)],
-        "FASE scenes: overlays HTML (local deterministico)")
+        f"FASE scenes[{lang}]: overlays HTML (local deterministico)")
     p.mark("scenes", detail=f"{p.scenes_json}")
 
 
@@ -1572,6 +1582,13 @@ def execute_phases(args, p: Project, phases_to_run, force=False):
     music_thread = None
     ex = ThreadPoolExecutor(max_workers=1) if run_parallel else None
     try:
+        # Determina o idioma para overlays (usa mix-lang ou primeiro de languages)
+        scene_lang = getattr(args, "mix_lang", None) or "pt"
+        if getattr(args, "languages", None):
+            langs = [l.strip().lower() for l in args.languages.split(",") if l.strip()]
+            if langs:
+                scene_lang = langs[0]
+
         # music pode ainda rodar em paralelo com script/scenes (sem images)
         music_first = {"music", "script", "scenes"}
         if run_parallel and only & music_first \
@@ -1587,11 +1604,15 @@ def execute_phases(args, p: Project, phases_to_run, force=False):
                 invalidate_downstream(p, "music")
                 music_thread = None
                 continue
+
             if p.checkpoint(phase, force):
                 continue
             _validate_prereq(p, phase)
             print(f"== FASE {phase}: iniciando", flush=True)
-            PHASE_FN[phase](args, p)
+            if phase == "scenes":
+                PHASE_FN[phase](args, p, lang=scene_lang)
+            else:
+                PHASE_FN[phase](args, p)
             invalidate_downstream(p, phase)
 
         # executa fases extras (ex: youtube) que nao estao em PHASES
