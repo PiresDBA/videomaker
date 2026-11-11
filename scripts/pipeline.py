@@ -335,6 +335,12 @@ from translate_script import translate_script
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
+_PROJECTS_DIR_OVERRIDE = None  # definido via --projects-dir
+
+def get_projects_dir():
+    """Retorna o diretório de projetos, respeitando --projects-dir se definido."""
+    return _PROJECTS_DIR_OVERRIDE if _PROJECTS_DIR_OVERRIDE else ROOT / "projects"
+
 HF_DIR = ROOT / "hyperframes-workspace"
 
 # Bancos locais de mídia (imagens e músicas) para reuso antes de gerar via Gemini
@@ -622,7 +628,7 @@ class Project:
         """
         self.slug = slug
         self.prompt = prompt
-        self.dir = ROOT / "projects" / slug
+        self.dir = get_projects_dir() / slug
         self.artifacts = self.dir / "artifacts"
         self.scenes_dir = self.dir / "scenes"
         self.images_src = self.dir / "assets" / "images" / "gemini" / "scenes"
@@ -2157,6 +2163,9 @@ def main():
             "--slug",
             help="forca o nome da pasta do projeto (sem derivar do prompt). Ex: --slug caes-de-resgate")
         sp.add_argument(
+            "--projects-dir", default=None,
+            help="pasta de projetos (padrao: ./projects). Ex: --projects-dir E:/videomaker/projects")
+        sp.add_argument(
             "--wait", type=int, default=420,
             help="espera maxima (s) por resposta do Gemini Web nas imagens. Padrao: 420. Ex: --wait 600")
         sp.add_argument(
@@ -2370,6 +2379,12 @@ def main():
     c.set_defaults(func=cmd_contract)
 
     args = ap.parse_args()
+    
+    # Aplica --projects-dir se fornecido
+    if getattr(args, "projects_dir", None):
+        global _PROJECTS_DIR_OVERRIDE
+        _PROJECTS_DIR_OVERRIDE = Path(args.projects_dir)
+
     if not getattr(args, "prompt", None) and not getattr(args, "slug", None):
         if args.cmd == "full":
             raise SystemExit("ERRO: --full pede --prompt; para retomar use 'resume --slug ...'")

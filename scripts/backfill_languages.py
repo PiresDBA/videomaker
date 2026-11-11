@@ -21,7 +21,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-PROJECTS_DIR = HERE.parent / "projects"
+HERE = Path(__file__).resolve().parent
+DEFAULT_PROJECTS_DIR = Path("E:/videomaker/projects")
 
 TRANSLATE = HERE / "translate_script.py"
 NARRATION = HERE / "gen_narration_edge.py"
@@ -107,25 +108,29 @@ def backfill_project(proj_dir, languages, wait_s=120, workers=4):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--slug", default=None, help="slug de um projeto específico")
+    ap.add_argument("--projects-dir", default=None, help="pasta de projetos (padrão: E:/videomaker/projects)")
     ap.add_argument("--languages", default="en,es", help="idiomas a gerar (padrao: en,es)")
     ap.add_argument("--wait", type=int, default=120, help="espera por resposta do Gemini Web (s)")
     ap.add_argument("--workers", type=int, default=4, help="workers para narracao")
     args = ap.parse_args()
 
+    projects_dir = Path(args.projects_dir) if args.projects_dir else DEFAULT_PROJECTS_DIR
     languages = [l.strip().lower() for l in args.languages.split(",") if l.strip()]
 
     if args.slug:
-        proj = PROJECTS_DIR / args.slug
+        proj = projects_dir / args.slug
         if not proj.exists():
             print(f"projeto nao encontrado: {proj}", flush=True)
             return 1
         backfill_project(proj, languages, args.wait, args.workers)
     else:
-        if not PROJECTS_DIR.exists():
+        if not projects_dir.exists():
             print("pasta projects/ nao encontrada", flush=True)
             return 1
-        projetos = sorted([d for d in PROJECTS_DIR.iterdir() if d.is_dir()])
-        print(f"encontrados {len(projetos)} projeto(s) em projects/", flush=True)
+        projetos = sorted([d for d in projects_dir.iterdir() if d.is_dir()])
+        print(f"encontrados {len(projetos)} projeto(s) em {projects_dir}", flush=True)
+        for proj in projetos:
+            backfill_project(proj, languages, args.wait, args.workers)
         for proj in projetos:
             backfill_project(proj, languages, args.wait, args.workers)
 

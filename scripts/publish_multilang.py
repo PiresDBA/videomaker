@@ -19,6 +19,7 @@ Uso:
 """
 import argparse
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -107,8 +108,15 @@ def get_storyline(proj_dir, lang):
     if not script_path.exists():
         return ""
     s = load_json(script_path)
-    partes = [sec.get("text", "") for sec in s.get("sections", [])
-              if sec.get("id") not in ("s_intro", "s0", "s_outro")]
+    partes = []
+    for sec in s.get("sections", []):
+        if sec.get("id") in ("s_intro", "s0", "s_outro"):
+            continue
+        text = sec.get("text", "")
+        # Remove quebras de linha e espaços extras (evita letras uma abaixo da outra)
+        text = re.sub(r"\s+", " ", text).strip()
+        if text:
+            partes.append(text)
     return " ".join(partes)[:500]
 
 
@@ -155,6 +163,7 @@ def render_lang(proj_slug, lang, dry_run=False, projects_dir=DEFAULT_PROJECTS_DI
     run([
         sys.executable, str(PIPELINE),
         "resume", "--slug", proj_slug,
+        "--projects-dir", str(projects_dir),
         "--from", "narration",
         "--force",
         "--languages", lang,
@@ -173,22 +182,23 @@ def render_lang(proj_slug, lang, dry_run=False, projects_dir=DEFAULT_PROJECTS_DI
 
 
 def upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run=False,
-                       client_secret=None, token=None):
+                       client_secret=None, token=None, proj_dir=None):
     """Faz upload do vídeo e envia legendas para o YouTube."""
     if not mp4_file.exists():
         print(f"    pulado (arquivo não existe): {mp4_file.name}", flush=True)
-        return
+        return None
 
     if dry_run:
         print(f"    [DRY-RUN] upload {lang}: {mp4_file.name}")
-        return
+        return None
 
     from description_template import build_description as bd
     lang_code = {"pt": "pt-BR", "en": "en-US", "es": "es-ES"}[lang]
     desc = build_description_i18n(title, storyline, lang)
     tags = "cachorro,animacao,infantil,frida,luna,cachorrinho,desenhoanimado,videoengraçado,conteúdocriativo,petspride,familia,criancas"
 
-    run([
+    # Executa upload capturando stdout para extrair video_id
+    cmd = [
         sys.executable, str(UPLOAD),
         "--video", str(mp4_file),
         "--title", title,
@@ -199,22 +209,74 @@ def upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run=Fals
         "--made-for-kids",
         "--default-language", lang_code,
         "--default-audio-language", lang_code,
-    ], f"upload {lang} {mp4_file.name}")
+    ]
+    if client_secret:
+        cmd += ["--client-secret", str(client_secret)]
+    if token:
+        cmd += ["--token", str(token)]
+
+    print(f"    enviando {lang}...", flush=True)
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        print(r.stdout[-2000:] if len(r.stdout) > 2000 else r.stdout)
+        print(r.stderr[-2000:] if len(r.stderr) > 2000 else r.stderr)
+        raise RuntimeError(f"upload {lang} falhou com rc={r.returncode}")
+
+    # Extrai video_id do stdout do youtube_upload.py
+    video_id = None
+    for line in r.stdout.splitlines():
+        if "video_id" in line.lower() or ("youtu.be/" in line):
+            import re
+            m = re.search(r'([0-9A-Za-z_-]{11})', line)
+            if m:
+                video_id = m.group(1)
+                break
+
+    # Grava video_id no project-control.json
+    if video_id and proj_dir:
+        ctrl = proj_dir / "project-control.json"
+        if ctrl.exists():
+            try:
+                c = load_json(ctrl)
+                c.setdefault("publish", {})["video_id"] = video_id
+                c["publish"]["done"] = True
+                save_json(ctrl, c)
+                print(f"    video_id gravado: {video_id}", flush=True)
+            except Exception as e:
+                print(f"    AVISO: não foi possível gravar video_id: {e}", flush=True)
+
+    for line in r.stdout.splitlines():
+        s = line.strip()
+        if s.startswith(("UPLOAD", "VIDEO", "STATUS")):
+            print(f"    {s}", flush=True)
 
     # Envia legendas SRT para o YouTube
-    proj_dir = Path(mp4_file).parent.parent
-    srt = proj_dir / "assets" / "subtitles" / lang / f"{proj_slug}.srt"
-    if srt.exists():
-        run([
-            sys.executable, str(CAPTIONS),
-            "--proj", str(proj_dir),
-            "--lang", lang,
-            "--srt", str(srt),
-            "--client-secret", str(client_secret) if client_secret else str(HERE / "client_secret.json"),
-            "--token", str(token) if token else str(HERE / "youtube_token.json"),
-        ], f"legenda YouTube {lang} {proj_slug}")
-    else:
-        print(f"    AVISO: sem SRT para {lang}: {srt}", flush=True)
+    if proj_dir:
+        srt = proj_dir / "assets" / "subtitles" / lang / f"{proj_slug}.srt"
+        if srt.exists():
+            cap_cmd = [
+                sys.executable, str(CAPTIONS),
+                "--proj", str(proj_dir),
+                "--lang", lang,
+                "--srt", str(srt),
+            ]
+            if client_secret:
+                cap_cmd += ["--client-secret", str(client_secret)]
+            if token:
+                cap_cmd += ["--token", str(token)]
+            cap_r = subprocess.run(cap_cmd, capture_output=True, text=True)
+            if cap_r.returncode != 0:
+                print(cap_r.stdout[-1000:] if len(cap_r.stdout) > 1000 else cap_r.stdout)
+                print(cap_r.stderr[-1000:] if len(cap_r.stderr) > 1000 else cap_r.stderr)
+                print(f"    AVISO: legenda {lang} falhou (vídeo foi uploadado)", flush=True)
+            else:
+                for line in cap_r.stdout.splitlines():
+                    if line.strip():
+                        print(f"    {line.strip()}", flush=True)
+        else:
+            print(f"    AVISO: sem SRT para {lang}: {srt}", flush=True)
+
+    return video_id
 
 
 def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
@@ -256,6 +318,7 @@ def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
         run([
             sys.executable, str(BACKFILL),
             "--slug", proj_slug,
+            "--projects-dir", str(projects_dir),
             "--languages", "en,es",
             "--workers", "4",
         ], f"backfill {proj_slug}", )
@@ -291,7 +354,7 @@ def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
     for lang, mp4_file, title in uploads:
         storyline = get_storyline(proj_dir, lang)
         upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run,
-                           client_secret, token)
+                           client_secret, token, proj_dir)
 
     mark_project_done(hist, proj_slug)
     save_history(hist)

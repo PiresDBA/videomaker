@@ -32,6 +32,16 @@ LANG_NAMES = {
     "es": "espanhol",
 }
 
+# Risadas escritas ("Hahaha!", "ha ha ha", "HAHAH", "rsrsrs", "kkkkk") 
+# sao removidas antes de traduzir para evitar que o Gemini as traduza
+# ou que o Edge-TTS as leia de forma mecanica.
+LAUGH_RE = re.compile(r"(?i)\b(?:ha[\s\-!]*|he[\s\-!]*|hi[\s\-!]*|ho[\s\-!]*|rs[\s\-!]*|kk[\s\-!]*){2,}[!\.,]?\s*")
+
+
+def remover_risadas(text: str) -> str:
+    """Remove risadas escritas do texto para evitar leitura mecanica pelo Edge-TTS."""
+    return LAUGH_RE.sub(" ", text).strip()
+
 # Secoes do contrato que devem soar naturais em cada idioma (nao traduzidas palavra a palavra,
 # mas adaptadas para nao soar robota). Se o Gemini nao retornar traducao boa, usamos esses fallback.
 CONTRACT_FALLBACKS = {
@@ -62,6 +72,8 @@ def save_json(p, d):
 
 def translate_text(text, target_lang, topic, out_dir, name, wait_s=120):
     """Traduz um unico texto via Gemini WEB (kind=text)."""
+    # Remove risadas escritas antes de traduzir (evita leitura mecanica)
+    text = remover_risadas(text)
     prompt = (
         f"Traduza o seguinte texto para o {LANG_NAMES[target_lang]} "
         f"(Brasil/natural, tom infantil e divertido). "

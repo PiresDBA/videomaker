@@ -41,9 +41,9 @@ from narration_contract import apply_contract, validate_contract
 
 HERE = Path(__file__).resolve().parent
 
-# Risadas escritas ("Hahaha!", "ha ha ha", "HAHAH") ficam forçadas na voz:
+# Risadas escritas ("Hahaha!", "ha ha ha", "HAHAH", "rsrsrs", "kkkkk", "he he") ficam forçadas na voz:
 # removidas do texto antes do TTS. A energia vem de rate/pitch + frases.
-LAUGH_RE = re.compile(r"(?i)\b(?:ha[\s\-!]*){2,}[!\.,]?\s*")
+LAUGH_RE = re.compile(r"(?i)\b(?:ha[\s\-!]*|he[\s\-!]*|hi[\s\-!]*|ho[\s\-!]*|rs[\s\-!]*|kk[\s\-!]*){2,}[!\.,]?\s*")
 
 # Substituicoes de palavra para narracao (evitar TTS ler "gatinha" para cadelas).
 PRONUNCIATION_MAP = [
