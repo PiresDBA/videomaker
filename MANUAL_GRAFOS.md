@@ -3517,9 +3517,9 @@ A narração em inglês e espanhol usava o Edge-TTS local (vozes `en-US-AriaNeur
 
 | Idioma | De | Para |
 |--------|-----|------|
-| en | `Luninha` / `luninha` | `little Luna` |
+| en | `Luninha` / `luninha` | `little luna` |
 | en | `gatinha` / `gatinho` | `puppy` |
-| es | `Luninha` / `luninha` | `pequeña Luna` |
+| es | `Luninha` / `luninha` | `lunita` |
 
 Isso garante que "Luninha" seja lida como "little Luna" na versão em inglês.
 

@@ -55,14 +55,14 @@ PRONUNCIATION_MAP = {
         (r"\bgato\b", "cachorro"),
     ],
     "en": [
-        (r"\bLuninha\b", "little Luna"),
-        (r"\bluninha\b", "little Luna"),
+        (r"\bLuninha\b", "little luna"),
+        (r"\bluninha\b", "little luna"),
         (r"\bgatinha\b", "puppy"),
         (r"\bgatinho\b", "puppy"),
     ],
     "es": [
-        (r"\bLuninha\b", "pequeña Luna"),
-        (r"\bluninha\b", "pequeña Luna"),
+        (r"\bLuninha\b", "lunita"),
+        (r"\bluninha\b", "lunita"),
     ],
 }
 
