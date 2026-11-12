@@ -49,3 +49,33 @@ Veja `LISTA_PUBLICACAO.md` (6 vídeos prontos para upload EN/ES).
 
 ## Execução em andamento
 Nenhuma. Loop concluído para os 8 projetos processáveis.
+
+## 2026-11-12 — Correção do idioma dos metadados + 3 canais
+
+### Bug corrigido
+Título e gancho da descrição usavam tradução "na hora" via `gemini_fetch.py`.
+Quando o Gemini falhava, caía no título em PT e subia para o canal EN/ES.
+Agora título/enredo vêm SEMPRE de `artifacts/script_<lang>.json`; se faltar,
+o upload aborta. Os 6 vídeos errados dos canais EN/ES foram apagados e
+reenviados com metadados corretos.
+
+### Canais
+- PT = canal principal (token histórico `youtube_token.json`, fallback)
+- EN = `youtube_token_en.json` (autorizado, YouTube Data API v3 ativa)
+- ES = `youtube_token_es.json` (autorizado)
+
+### Estado (2026-11-12)
+- EN: 5 publicados de 49 prontos
+- ES: 5 publicados de 49 prontos
+- PT: 33 de 46 prontos casados com o canal principal
+
+### Limite real
+Cota da API: ~6 uploads/canal/dia (`videos.insert` = 1600 de 10.000).
+Rodar `python scripts/loop_upload_idiomas.py` 1x por dia até zerar os pendentes.
+
+### Pendências
+- 59 vídeos EN/ES antigos ainda estão no canal principal (PT); decidir se
+  apaga depois de subir a cópia no canal certo.
+- Capa/overframe dos MP4s antigos continua em PT (re-render futuro, §56.6 do manual).
+- dachshund-marrom-luna-tenta-pegar-o-bisc sem trilha (bgm).
+- 3 projetos sem `script.json` (não traduzíveis ainda).

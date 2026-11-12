@@ -202,6 +202,18 @@ apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo ant
   legendas por idioma).
 - Não publicar antes de ter os 3 idiomas (pt + en + es) renderizados.
 
+## 5.7. Metadado do YouTube no idioma do vídeo (regra dura)
+
+- Título, gancho e enredo vêm **sempre** de `artifacts/script_<lang>.json`.
+- **Proibido** traduzir título/descrição "na hora" com `gemini_fetch.py` no
+  momento do upload: quando a tradução falha, o texto em português sobe para o
+  canal estrangeiro. Se falta `script_<lang>.json`, o upload **aborta**.
+- Cada idioma usa o **seu** canal e o **seu** token
+  (`youtube_token_pt.json` / `_en.json` / `_es.json`). Ver manual §56.
+- O upload respeita a cota da API (`~6 uploads/canal/dia`); ele é resumível e
+  retoma no dia seguinte pelo `scripts/.publish_history_idioma.json`.
+- Antes de publicar, conferir com `python scripts/listar_canal.py`.
+
 ---
 
 ## 6. Resumo em 30 segundos

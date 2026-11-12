@@ -68,6 +68,24 @@ def get_title_pt(proj_dir):
     return proj_dir.name
 
 
+def get_title_lang(proj_dir, lang):
+    """Título no idioma, lido do roteiro traduzido (script_<lang>.json).
+
+    Retorna None quando o roteiro traduzido não existe — o chamador deve
+    abortar o upload em vez de publicar o título em português no canal
+    estrangeiro.
+    """
+    if lang == "pt":
+        return get_title_pt(proj_dir)
+    p = proj_dir / "artifacts" / f"script_{lang}.json"
+    if not p.exists():
+        return None
+    try:
+        return (load_json(p).get("title") or "").strip() or None
+    except Exception:
+        return None
+
+
 def translate_title(title, target_lang, proj_dir, wait_s=60):
     """Traduz o título para outro idioma via Gemini Web (kind=text)."""
     if target_lang == "pt":
@@ -380,16 +398,23 @@ def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
     print("  [3/4] Re-render em espanhol...", flush=True)
     render_lang(proj_slug, "es", dry_run, projects_dir)
 
-    # 5) Traduzir títulos
-    title_en = translate_title(title_pt, "en", proj_dir) if not dry_run else title_pt + " (EN)"
-    title_es = translate_title(title_pt, "es", proj_dir) if not dry_run else title_pt + " (ES)"
+    # 5) Títulos POR IDIOMA — vêm do roteiro já traduzido (script_<lang>.json).
+    # NUNCA traduzir "on the fly": se a tradução falha, o título em português
+    # ia para o canal em inglês/espanhol (bug real de produção).
+    title_en = get_title_lang(proj_dir, "en")
+    title_es = get_title_lang(proj_dir, "es")
+    if not dry_run and (not title_en or not title_es):
+        faltando = [l for l, t in (("en", title_en), ("es", title_es)) if not t]
+        print(f"  ABORTADO: sem título localizado para {', '.join(faltando)} "
+              f"(falta artifacts/script_<lang>.json neste projeto)", flush=True)
+        return 1
 
     # 6) Upload de cada vídeo + legendas
     print("  [4/4] Upload para o YouTube...", flush=True)
     uploads = [
         ("pt", mp4_pt, title_pt),
-        ("en", output / f"{proj_slug}_en.mp4", title_en),
-        ("es", output / f"{proj_slug}_es.mp4", title_es),
+        ("en", output / f"{proj_slug}_en.mp4", title_en or title_pt + " (EN)"),
+        ("es", output / f"{proj_slug}_es.mp4", title_es or title_pt + " (ES)"),
     ]
     for lang, mp4_file, title in uploads:
         storyline = get_storyline(proj_dir, lang)

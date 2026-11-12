@@ -256,7 +256,10 @@ def pick_hook(title, index=0, lang="pt"):
     """Escolhe um gancho no idioma especificado."""
     templates = _hook_templates(lang)
     t = (title or "").strip()
-    low = t.lower()
+    # Remove pontuacao final: o titulo entra no meio da frase do gancho,
+    # entao "Dog School!" vira "What if dog school could..." e nao
+    # "What if dog school! could...".
+    low = t.lower().strip(" \u00a1\u00bf!?.,:;")
     return [tpl % low for tpl in templates[index % len(templates):index % len(templates) + 1]][0]
 
 

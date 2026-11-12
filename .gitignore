@@ -84,3 +84,4 @@ hyperframes-workspace/
 # --- Temporário ---
 *.tmp
 scripts/.narration_voice_state.json
+scripts/.publish_history_idioma.json

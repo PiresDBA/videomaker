@@ -52,6 +52,7 @@ O contrato completo, com proibições e checklist de push, está em
 | consistência de cenário e personagens | §45 |
 | vídeo de passeio com vários lugares reais | §47 |
 | o padrão de descrição do YouTube | §36 |
+| os 3 canais (PT/EN/ES) e upload no idioma certo | §56 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |
 | o contrato de trabalho | §39 + `CONTRATO.md` |
@@ -3623,6 +3624,97 @@ trabalho deve lê-lo antes de começar.
 - `scripts/gen_narration_gemini_sections.py` — suporte a `--lang` + fallback
   Edge-TTS.
 - `scripts/build_composition.py` — suporte a `--lang` (título da capa no idioma).
+
+---
+
+## 56. Três canais (PT/EN/ES) e upload no idioma certo (2026-11-12)
+
+### 56.1. Regra de ouro: metadado vem do roteiro traduzido
+
+Título, gancho e enredo do YouTube vêm **sempre** de
+`projects/<slug>/artifacts/script_<lang>.json` (o roteiro já traduzido do
+projeto). **Nunca** de tradução "on the fly" (Gemini Web / `gemini_fetch.py`).
+
+**Bug que isso corrige (produção real):** o upload traduzia o título na hora
+com `gemini_fetch.py`. Quando o Gemini falhava/sem cota, o código caía
+silenciosamente no título em português e subia para o canal em inglês/espanhol
+com título e gancho em PT. Os 6 vídeos publicados assim foram apagados e
+reenviados.
+
+Regra prática: **se não existe `script_<lang>.json`, o upload é abortado**
+com erro claro. Melhor não publicar do que publicar no idioma errado.
+
+### 56.2. Canais e credenciais (um por idioma)
+
+| Idioma | Canal | client_secret | token |
+|--------|-------|---------------|-------|
+| `pt` | canal principal (o de sempre) | `scripts/client_secret_pt.json` | `scripts/youtube_token_pt.json` (fallback: `youtube_token.json`) |
+| `en` | canal inglês | `scripts/client_secret_en.json` | `scripts/youtube_token_en.json` |
+| `es` | canal espanhol | `scripts/client_secret_es.json` | `scripts/youtube_token_es.json` |
+
+Cada `client_secret` é de um **projeto diferente** no Google Cloud, com a
+**YouTube Data API v3 ativada** e o e-mail do dono como **usuário de teste**
+na tela de consentimento. Passo a passo em `CONFIGURACAO_CANAIS_YOUTUBE.md`.
+
+O token precisa do escopo `youtube.force-ssl` (legendas e exclusão de vídeo),
+além de `youtube.upload` — já configurado em `youtube_upload.py` e
+`youtube_captions.py`.
+
+### 56.3. Comandos
+
+```powershell
+# Sobe os vídeos de um idioma no canal daquele idioma (respeita a cota)
+python scripts/upload_por_idioma.py en --limit 5
+python scripts/upload_por_idioma.py es --limit 5
+python scripts/upload_por_idioma.py en --slug <slug> --force   # reenvia um
+
+# Um comando para os dois canais (rode 1x por dia até acabar)
+python scripts/loop_upload_idiomas.py
+python scripts/loop_upload_idiomas.py --langs en,es,pt
+
+# Simular sem subir
+python scripts/upload_por_idioma.py en --dry-run
+
+# Auditoria: o que está publicado em cada canal
+python scripts/listar_canal.py
+python scripts/listar_canal.py --lang en --json auditoria.json
+
+# Apagar vídeo errado de um canal (exige --confirmar)
+python scripts/youtube_metadados.py --lang en --ids ID1,ID2 --apagar --confirmar
+
+# Corrigir título/descrição de um vídeo SEM reenviar o MP4
+python scripts/youtube_metadados.py --lang en --video-id ID \
+    --proj E:\videomaker\projects\<slug> --atualizar
+```
+
+### 56.4. Cota da API (limite real de velocidade)
+
+YouTube Data API: **10.000 unidades/dia por projeto Google**.
+Cada `videos.insert` (upload) custa **~1.600** → **~6 uploads por canal por
+dia**. `videos.update` (corrigir metadado) custa 50 e `captions.insert`, ~50.
+
+Por isso o envio é **resumível**: o progresso fica em
+`scripts/.publish_history_idioma.json` (`done` = vídeos enviados;
+`uso` = unidades gastas hoje por canal). O script para sozinho quando a cota
+estimada acaba e retoma no dia seguinte. Para subir os ~49 projetos em EN e
+ES são necessários vários dias, salvo aumento de cota no Google Cloud.
+
+### 56.5. Legendas
+
+Cada upload já envia `assets/subtitles/<lang>/<slug>.srt` com
+`youtube_captions.py`, usando o **token do canal daquele idioma** e o código
+`pt-BR` / `en-US` / `es-ES`. Se a legenda falhar, o vídeo continua publicado
+e o aviso aparece no log (pode ser reenviado depois com `youtube_captions.py
+--video-id ...`).
+
+### 56.6. Pendência conhecida: capa/overframe do vídeo
+
+O **título desenhado na capa** (overframe de abertura) dos MP4s já
+renderizados continua em português, e a imagem de fundo pode ter texto em PT
+"queimado" (ex.: placa "ESCOLA DOS CACHORROS"). O código já aceita
+`build_composition.py --lang` e o `phase_compose` passa o idioma, então
+re-renderizar gera a capa no idioma; os vídeos antigos **não** foram
+re-renderizados. Fica para a etapa de re-render (§111 do plano do usuário).
 
 ---
 
