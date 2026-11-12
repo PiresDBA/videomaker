@@ -53,6 +53,7 @@ O contrato completo, com proibições e checklist de push, está em
 | vídeo de passeio com vários lugares reais | §47 |
 | o padrão de descrição do YouTube | §36 |
 | os 3 canais (PT/EN/ES) e upload no idioma certo | §56 |
+| guia visual rápido (TDH-friendly) | §57 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |
 | o contrato de trabalho | §39 + `CONTRATO.md` |
@@ -3736,3 +3737,103 @@ re-renderizados. Fica para uma etapa futura de re-render.
 
 ---
 
+## 57. 🎯 Guia rápido: 3 canais do YouTube (PT / EN / ES) — para não se perder
+
+Esta seção é um **resumo visual** de tudo o que fizemos nos canais. Se você tem TDH ou só quer o essencial sem ler páginas inteiras, comece aqui.
+
+### 57.1. O que temos agora (em uma frase)
+
+> Três canais separados no YouTube: um para português, um para inglês, um para espanhol. Cada vídeo sobe no canal do seu idioma, com título e descrição nesse idioma.
+
+### 57.2. Os 3 canais e seus arquivos
+
+| Canal | Para quê | client_secret | token |
+|-------|----------|---------------|-------|
+| 🇧🇷 **PT** | Canal principal (o de sempre) | `scripts/client_secret_pt.json` | `scripts/youtube_token_pt.json` |
+| 🇺🇸 **EN** | Canal inglês | `scripts/client_secret_en.json` | `scripts/youtube_token_en.json` |
+| 🇪🇸 **ES** | Canal espanhol | `scripts/client_secret_es.json` | `scripts/youtube_token_es.json` |
+
+> Cada canal é um **projeto diferente** no Google Cloud. Cada um precisa ser autorizado uma vez (abre o navegador, você faz login e permite).
+
+### 57.3. Regra de ouro: título e descrição vêm do roteiro
+
+**Nunca** traduzimos o título "na hora". O título e a descrição vêm **sempre** de:
+
+```
+projects/<slug>/artifacts/script_<lang>.json
+```
+
+Se esse arquivo não existir para EN ou ES, o upload **não acontece**. Isso evita o bug antigo de subir vídeo em inglês com título em português.
+
+### 57.4. Como subir os vídeos (comando para copiar e colar)
+
+**Inglês (canal EN):**
+```powershell
+python scripts/upload_por_idioma.py en --all
+```
+
+**Espanhol (canal ES):**
+```powershell
+python scripts/upload_por_idioma.py es --all
+```
+
+**Português (canal PT):**
+```powershell
+python scripts/upload_por_idioma.py pt --all
+```
+
+O parâmetro `--all` sobe tudo o que tiver. Se parar por causa da cota da API, é só rodar de novo no dia seguinte — ele continua de onde parou (não sobe duplicado).
+
+### 57.5. Cota da API (o limite chato)
+
+O YouTube permite **~6 uploads por canal por dia**. Quando acaba, o script pára sozinho e avisa:
+
+```
+COTA DA API ESGOTADA. Pare e rode de novo amanhã.
+```
+
+Não é erro do código, é limite do Google. Rode de novo amanhã.
+
+### 57.6. Limpar vídeos duplicados no canal PT
+
+Vídeos antigos em inglês/espanhol que ficaram no canal principal (PT) podem ser apagados se já existem nos canais certos e têm **menos de 100 visualizações**.
+
+**Para ver o que seria apagado (não apaga de verdade):**
+```powershell
+python scripts/limpar_duplicados_pt.py --limiar-views 100 --dry-run
+```
+
+**Para apagar de fato:**
+```powershell
+python scripts/limpar_duplicados_pt.py --limiar-views 100 --apagar
+```
+
+Vídeos com 100 views ou mais **não são apagados** (não se joga audiência fora).
+
+### 57.7. Ver o que está em cada canal
+
+```powershell
+python scripts/listar_canal.py              # os 3 canais
+python scripts/listar_canal.py --lang pt    # só o canal principal
+python scripts/listar_canal.py --lang en    # só o inglês
+python scripts/listar_canal.py --lang es    # só o espanhol
+```
+
+### 57.8. Relatório de status
+
+```powershell
+python scripts/relatorio_youtube.py
+```
+
+Gera `RELATORIO_YOUTUBE_IDIOMAS.md` com o que está publicado e o que ainda falta.
+
+### 57.9. Checklist resumido (coloque na parede)
+
+- [ ] Tenho os 3 `client_secret_*.json` criados no Google Cloud
+- [ ] Tenho os 3 `youtube_token_*.json` gerados (autorizei cada canal uma vez)
+- [ ] Cada projeto tem `script_en.json` e `script_es.json` (ou não sobe em EN/ES)
+- [ ] Rodei `upload_por_idioma.py en --all` e `es --all`
+- [ ] Rodei `limpar_duplicados_pt.py --apagar` para limpar duplicados
+- [ ] Rodei `relatorio_youtube.py` para conferir o que falta
+
+---
