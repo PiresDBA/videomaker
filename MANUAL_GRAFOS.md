@@ -3503,12 +3503,12 @@ A narração em inglês e espanhol usava o Edge-TTS local (vozes `en-US-AriaNeur
 
 ### 53.2. Correção
 
-- Inglês (`en`) e espanhol (`es`) agora geram narração com **Gemini TTS (Google AI Studio)** via `scripts/gen_narration_gemini_sections.py --lang <en|es>`.
-- Português (`pt`) continua com Edge-TTS local (sem API).
+- Todos os idiomas (pt, en, es) geram narração com **Gemini TTS (Google AI Studio)** via `scripts/gen_narration_gemini_sections.py --lang <pt|en|es>`.
 - Vozes por idioma (config.json, seção `tts`):
-  - `pt`: Edge-TTS `pt-BR-ThalitaNeural` (inalterado).
+  - `pt`: Gemini `Achernar` (fala português natural, não robotizada).
   - `en`: Gemini `Achernar` (fala inglês natural).
   - `es`: Gemini `Leda` (fala espanhol natural).
+- Quando o Gemini TTS não tem cota (HTTP 429 em todas as chaves), o pipeline faz **fallback automático para Edge-TTS local** com vozes neurais (`pt-BR-ThalitaNeural`, `en-US-AriaNeural`, `es-ES-ElviraNeural`).
 - Saída por idioma: `assets/audio/narration/<lang>/sN.wav` e `artifacts/narration_timing_<lang>.json`.
 
 ### 53.3. Mapa de pronúncia por idioma
@@ -3521,25 +3521,21 @@ A narração em inglês e espanhol usava o Edge-TTS local (vozes `en-US-AriaNeur
 | en | `gatinha` / `gatinho` | `puppy` |
 | es | `Luninha` / `luninha` | `lunita` |
 
-Isso garante que "Luninha" seja lida como "little Luna" na versão em inglês.
+Isso garante que "Luninha" seja lida como "little luna" na versão em inglês.
 
 ### 53.4. Como gerar narração em um idioma específico
 
 ```powershell
-# Ingles (Gemini TTS)
+# Qualquer idioma (Gemini TTS, com fallback Edge-TTS se a cota esgotar)
+python scripts/gen_narration_gemini_sections.py --proj projects/<slug> --lang pt --voice Achernar --no-verify
 python scripts/gen_narration_gemini_sections.py --proj projects/<slug> --lang en --voice Achernar --no-verify
-
-# Espanhol (Gemini TTS)
 python scripts/gen_narration_gemini_sections.py --proj projects/<slug> --lang es --voice Leda --no-verify
-
-# Portugues (Edge-TTS, inalterado)
-python scripts/gen_narration_edge.py --proj projects/<slug> --lang pt --voice pt-BR-ThalitaNeural
 ```
 
 ### 53.5. Arquivos alterados
 
 - `scripts/gen_narration_gemini_sections.py` — flag `--lang`, leitura de `script_<lang>.json`, saída `narration/<lang>/` + `narration_timing_<lang>.json`, mapa de pronúncia por idioma.
-- `scripts/pipeline.py` — `phase_narration` usa Gemini TTS para en/es, Edge-TTS para pt.
+- `scripts/pipeline.py` — `phase_narration` usa Gemini TTS para pt/en/es, com fallback Edge-TTS.
 - `scripts/config.json` — adicionadas `voice_en` e `voice_es`.
 - `MANUAL_GRAFOS.md` — esta seção.
 

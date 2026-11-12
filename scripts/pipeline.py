@@ -1133,6 +1133,15 @@ def phase_narration(args, p: Project):
         or voice_arg.lower().endswith("neural")
 
     def voice_for(lang):
+        # Voz para o Gemini TTS (pt também usa Achernar para nao soar robotizada).
+        if lang == "en" and getattr(args, "voice_en", None):
+            return args.voice_en
+        if lang == "es" and getattr(args, "voice_es", None):
+            return args.voice_es
+        return {"pt": "Achernar", "en": "Achernar", "es": "Leda"}.get(lang, "Achernar")
+
+    def edge_voice_for(lang):
+        # Voz para o Edge-TTS (fallback local quando o Gemini nao tem cota).
         if lang == "en" and getattr(args, "voice_en", None):
             return args.voice_en
         if lang == "es" and getattr(args, "voice_es", None):
@@ -1144,14 +1153,14 @@ def phase_narration(args, p: Project):
             return args.rate_en
         if lang == "es" and getattr(args, "rate_es", None):
             return args.rate_es
-        return {"pt": "+6%", "en": "+0%", "es": "+0%"}.get(lang, "+0%")
+        return {"pt": "+0%", "en": "+0%", "es": "+0%"}.get(lang, "+0%")
 
     def pitch_for(lang):
         if lang == "en" and getattr(args, "pitch_en", None):
             return args.pitch_en
         if lang == "es" and getattr(args, "pitch_es", None):
             return args.pitch_es
-        return {"pt": "+8Hz", "en": "+0Hz", "es": "+0Hz"}.get(lang, "+0Hz")
+        return {"pt": "+0Hz", "en": "+0Hz", "es": "+0Hz"}.get(lang, "+0Hz")
 
     workers = int(getattr(args, "workers", 4) or 4)
 
@@ -1177,13 +1186,26 @@ def phase_narration(args, p: Project):
              "--script", str(script_path)], label)
 
     # Para cada idioma: traduz (se necessario) e gera narracao.
-    # pt usa Edge-TTS (local). en/es usam Gemini TTS (Google) para nao soar
-    # robotizada, com voz nativa de cada idioma (Achernar em ingles, Leda em
-    # espanhol) e mapa de pronuncia (ex: Luninha -> little Luna em ingles).
+    # Todos os idiomas (pt, en, es) usam Gemini TTS (Google) como motor
+    # principal para nao soar robotizada, com voz nativa de cada idioma
+    # (Achernar em ingles/portugues, Leda em espanhol) e mapa de pronuncia
+    # (ex: Luninha -> little luna em ingles, lunita em espanhol).
+    # Quando o Gemini TTS nao tem cota (HTTP 429 em todas as chaves), o pipeline
+    # faz fallback automatico para Edge-TTS local.
     for lang in languages:
         lang = lang.lower()
-        if lang == "pt":
-            script_path = p.script
+        script_path = p.artifacts / ("script_%s.json" % lang) if lang != "pt" else p.script
+        if lang != "pt":
+            if not script_path.exists():
+                print(f"== Traduzindo roteiro para {lang.upper()}...", flush=True)
+                translate_script(
+                    p.script, lang, p.artifacts,
+                    topic=p.prompt or p.slug,
+                    wait_s=int(getattr(args, "wait", 120) or 120),
+                )
+            if not script_path.exists():
+                raise RuntimeError(f"Nao foi possivel gerar script_{lang}.json")
+        else:
             # Aplica contrato apenas no PT (lingua original).
             script = load_json(script_path)
             script, mudancas = apply_contract(script, theme=script.get("title") or "")
@@ -1194,26 +1216,30 @@ def phase_narration(args, p: Project):
             if problemas:
                 print("== AVISO contrato de narracao (pt):", "; ".join(problemas))
 
-            voice = voice_for(lang)
-            rate = rate_for(lang)
-            pitch = pitch_for(lang)
-            run_edge(lang, voice, rate, pitch, script_path,
-                     f"FASE narration[{lang}]: Edge-TTS '{voice}' (local, sem API)")
-        else:
-            script_path = p.artifacts / f"script_{lang}.json"
-            if not script_path.exists():
-                print(f"== Traduzindo roteiro para {lang.upper()}...", flush=True)
-                translate_script(
-                    p.script, lang, p.artifacts,
-                    topic=p.prompt or p.slug,
-                    wait_s=int(getattr(args, "wait", 120) or 120),
-                )
-            if not script_path.exists():
-                raise RuntimeError(f"Nao foi possivel gerar script_{lang}.json")
+        voice = voice_for(lang)
+        rate = rate_for(lang)
+        pitch = pitch_for(lang)
 
-            voice = voice_for(lang)
-            run_gemini(lang, voice, script_path,
-                       f"FASE narration[{lang}]: Gemini-TTS '{voice}' (Google)")
+        # Tenta Gemini TTS primeiro; se falhar por cota/erro, cai no Edge-TTS.
+        rc, _ = run_gemini(lang, voice, script_path,
+                           f"FASE narration[{lang}]: Gemini-TTS '{voice}' (Google)")
+        if rc != 0:
+            print("  %s: Gemini falhou, tentando Edge-TTS fallback" % lang, flush=True)
+            rc2, _ = run([sys.executable, str(SCRIPTS["gen_narration"]),
+                          "--proj", str(p.dir),
+                          "--lang", lang,
+                          "--script", str(script_path),
+                          "--voice", edge_voice_for(lang),
+                          "--rate", rate,
+                          "--pitch", pitch,
+                          "--workers", str(workers)],
+                         f"FASE narration[{lang}]: Edge-TTS '{edge_voice_for(lang)}' (local, sem API)")
+            if rc2 != 0:
+                print("  %s: falhou narracao (Gemini + Edge)" % lang, flush=True)
+            else:
+                print("  %s: narracao via Edge-TTS OK" % lang, flush=True)
+        else:
+            print("  %s: narracao via Gemini OK" % lang, flush=True)
 
     # Sinaliza conclusao da narracao (pt e demais idiomas).
     p.state.setdefault("narration", {}).update({

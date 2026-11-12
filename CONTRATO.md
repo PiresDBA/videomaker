@@ -157,11 +157,10 @@ apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo ant
 
 ## 5.3. Narração multi-idioma (pt → en/es)
 
-- Inglês (`en`) e espanhol (`es`) geram narração com **Gemini TTS (Google AI Studio)**
-  via `scripts/gen_narration_gemini_sections.py --lang <en|es>`, com vozes nativas
-  (`Achernar` para inglês, `Leda` para espanhol) e mapa de pronúncia
+- Todos os idiomas (pt, en, es) geram narração com **Gemini TTS (Google AI Studio)**
+  via `scripts/gen_narration_gemini_sections.py --lang <pt|en|es>`, com vozes nativas
+  (`Achernar` para português e inglês, `Leda` para espanhol) e mapa de pronúncia
   (`Luninha → little luna` em en, `lunita` em es).
-- Português (`pt`) continua com Edge-TTS local (inalterado).
 - Quando o Gemini TTS não tem cota (HTTP 429 em todas as chaves), o pipeline faz
   **fallback automático para Edge-TTS local** (`gen_narration_edge.py`).
 - Saída por idioma: `assets/audio/narration/<lang>/sN.wav` e
