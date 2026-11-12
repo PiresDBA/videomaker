@@ -54,6 +54,8 @@ O contrato completo, com proibições e checklist de push, está em
 | o padrão de descrição do YouTube | §36 |
 | os 3 canais (PT/EN/ES) e upload no idioma certo | §56 |
 | guia visual rápido (TDH-friendly) | §57 |
+| limpar duplicados PT (< 50 views) | §57.10 |
+| cota da API — o que consome o quê | §57.11 |
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |
 | o contrato de trabalho | §39 + `CONTRATO.md` |
@@ -3827,13 +3829,41 @@ python scripts/relatorio_youtube.py
 
 Gera `RELATORIO_YOUTUBE_IDIOMAS.md` com o que está publicado e o que ainda falta.
 
+### 57.10. Apagar duplicados do PT com menos de 50 views (por idioma das legendas)
+
+Vídeos antigos em inglês/espanhol que ficaram no canal principal (PT) e têm **menos de 50 visualizações** podem ser apagados se já existem nos canais certos.
+
+O script identifica o idioma pelas **legendas** do vídeo (não confia no título, que você pode ter editado):
+
+```powershell
+# Ver o que seria apagado (não apaga de verdade)
+python scripts/pt_menos_50_views_en_es.py --dry-run
+
+# Apagar de fato do canal PT (respeita a cota da API)
+python scripts/pt_menos_50_views_en_es.py --apagar
+```
+
+Se a cota da API esgotar no meio, o script pára e avisa. Rode de novo depois — ele continua de onde parou.
+
+### 57.11. Cota da API — o que consome o quê
+
+| Operação | Custo (unidades/dia) | Limite diário |
+|----------|---------------------|---------------|
+| Upload de vídeo | ~1.600 | 10.000 |
+| Apagar vídeo | ~50 | 10.000 |
+| Enviar legenda | ~50 | 10.000 |
+| Listar canal | algumas dezenas | 10.000 |
+
+Quando acaba, o script pára sozinho. A cota reseta a cada 24 horas.
+
 ### 57.9. Checklist resumido (coloque na parede)
 
 - [ ] Tenho os 3 `client_secret_*.json` criados no Google Cloud
 - [ ] Tenho os 3 `youtube_token_*.json` gerados (autorizei cada canal uma vez)
 - [ ] Cada projeto tem `script_en.json` e `script_es.json` (ou não sobe em EN/ES)
 - [ ] Rodei `upload_por_idioma.py en --all` e `es --all`
-- [ ] Rodei `limpar_duplicados_pt.py --apagar` para limpar duplicados
+- [ ] Rodei `limpar_duplicados_pt.py --apagar` para limpar duplicados por duração
+- [ ] Rodei `pt_menos_50_views_en_es.py --apagar` para limpar PT com < 50 views em EN/ES
 - [ ] Rodei `relatorio_youtube.py` para conferir o que falta
 
 ---
