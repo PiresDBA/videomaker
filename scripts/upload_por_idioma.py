@@ -300,11 +300,6 @@ def main():
             pulados_sem_script.append(slug)
             continue
 
-        # Para antes de estourar a cota
-        if custo + CUSTO_UPLOAD + CUSTO_LEGENDA > COTA_DIARIA:
-            print(f"\nCota diária estimada atingida ({custo}/{COTA_DIARIA}). Pare e rode de novo amanhã.")
-            break
-
         print(f"\n{'='*68}")
         print(f"{slug} [{lang.upper()}]")
         print(f"  título: {titulo}")
