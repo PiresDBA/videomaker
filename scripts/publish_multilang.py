@@ -186,6 +186,38 @@ def render_lang(proj_slug, lang, dry_run=False, projects_dir=DEFAULT_PROJECTS_DI
         print(f"    renomeado para {mp4_lang.name}", flush=True)
 
 
+# Mapeamento de idioma -> arquivos de credenciais do YouTube
+# Cada canal tem seu próprio client_secret e token OAuth2
+LANG_CREDENTIALS = {
+    "pt": {
+        "client_secret": HERE / "client_secret_pt.json",
+        "token": HERE / "youtube_token_pt.json",
+    },
+    "en": {
+        "client_secret": HERE / "client_secret_en.json",
+        "token": HERE / "youtube_token_en.json",
+    },
+    "es": {
+        "client_secret": HERE / "client_secret_es.json",
+        "token": HERE / "youtube_token_es.json",
+    },
+}
+
+
+def get_credentials(lang, client_secret=None, token=None):
+    """Retorna (client_secret, token) para o idioma, usando credenciais
+    específicas do idioma quando existirem, senão cai de volta para as
+    credenciais globais passadas por argumento."""
+    creds = LANG_CREDENTIALS.get(lang, {})
+    cs = creds.get("client_secret")
+    tk = creds.get("token")
+    if cs and cs.exists():
+        client_secret = cs
+    if tk and tk.exists():
+        token = tk
+    return client_secret, token
+
+
 def upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run=False,
                        client_secret=None, token=None, proj_dir=None):
     """Faz upload do vídeo e envia legendas para o YouTube."""
@@ -196,6 +228,9 @@ def upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run=Fals
     if dry_run:
         print(f"    [DRY-RUN] upload {lang}: {mp4_file.name}")
         return None
+
+    # Usa credenciais específicas do idioma quando disponíveis
+    client_secret, token = get_credentials(lang, client_secret, token)
 
     from description_template import build_description as bd
     lang_code = {"pt": "pt-BR", "en": "en-US", "es": "es-ES"}[lang]
