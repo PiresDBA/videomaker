@@ -3549,7 +3549,7 @@ python scripts/gen_narration_edge.py --proj projects/<slug> --lang pt --voice pt
 
 ### 54.1. Objetivo
 
-Percorrer todos os projetos já gerados em português e, para cada um que ainda não tenha áudio/timeline/mix/composição/vídeo em inglês e espanhol, gerar:
+Percorrer todos os projetos ja gerados em portugues (em `E:\videomaker\projects\<slug>\`) e, para cada um que ainda nao tenha áudio/timeline/mix/composicao/video em ingles e espanhol, gerar:
 1. Tradução do roteiro (`script_en.json`, `script_es.json`) — se ainda não existir.
 2. Narração em en/es (Gemini TTS).
 3. Timeline (durações reais por idioma).
@@ -3560,7 +3560,7 @@ Percorrer todos os projetos já gerados em português e, para cada um que ainda 
 
 ### 54.2. Como identificar o que falta
 
-Para cada projeto em `projects/<slug>/`:
+Para cada projeto em `E:\videomaker\projects\<slug>/`:
 - Se `artifacts/script_en.json` (ou `script_es.json`) não existir → precisa traduzir.
 - Se `assets/audio/narration/en/` (ou `es/`) não tiver os WAVs → precisa gerar narração.
 - Se `artifacts/timeline.json` não reflete o idioma → precisa regenerar timeline.
