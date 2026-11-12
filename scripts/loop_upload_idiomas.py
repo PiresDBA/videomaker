@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Sobe os videos de cada idioma para o canal do idioma, respeitando a cota.
+"""Sobe os vídeos de cada idioma para o canal do idioma, repetindo enquanto
+houber envios (respeita a cota diária da YouTube Data API).
 
-Rode UMA VEZ POR DIA. A cota da YouTube Data API e 10.000 unidades por
-projeto Google por dia; cada upload custa ~1.600. Ou seja, ~6 videos por
-canal por dia. O script para sozinho quando a cota acaba e retoma no dia
-seguinte de onde parou (historico em scripts/.publish_history_idioma.json).
+É o "programa que faz loop e sobe tudo". Rode quantas vezes quiser; ele para
+sozinho quando não houver mais nada para publicar nos canais selecionados.
 
 Uso:
-  python scripts/loop_upload_idiomas.py              # EN e ES
-  python scripts/loop_upload_idiomas.py --langs en,es,pt
-  python scripts/loop_upload_idiomas.py --dry-run
+  python scripts/loop_upload_idiomas.py           # EN e ES (até a cota)
+  python scripts/loop_upload_idiomas.py --langs pt,en,es
+  python scripts/loop_upload_idiomas.py --limite 3  # no máximo 3 uploads por canal por ciclo
+
+Cota: ~6 uploads por canal por dia (videos.insert = 1600 de 10.000 unidades).
+Quando a cota acaba, o upload_por_idioma pára sozinho. Rode este script de novo
+amanhã para continuar de onde parou.
 """
 import argparse
 import subprocess
@@ -19,7 +22,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 
 
-def rodar(lang, extra):
+def ciclo(lang, extra):
+    """Roda upload_por_idioma.py --all para um idioma. Retorna 0 se enviou algo,
+    1 se não enviou nada (terminou) ou se houve erro."""
     cmd = [sys.executable, str(HERE / "upload_por_idioma.py"), lang, "--all"] + extra
     print("\n" + "#" * 70)
     print("# CANAL", lang.upper())
@@ -30,25 +35,28 @@ def rodar(lang, extra):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--langs", default="en,es")
-    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--langs", default="en,es",
+                    help="idiomas a subir, separados por vírgula (padrão: en,es)")
+    ap.add_argument("--limite", type=int, default=0,
+                    help="máximo de uploads por ciclo (0 = ignora, sobe tudo até a cota)")
     a = ap.parse_args()
 
     langs = [x.strip() for x in a.langs.split(",") if x.strip()]
-    extra = ["--dry-run"] if a.dry_run else []
+    extra = []
+    if a.limite > 0:
+        extra = ["--limit", str(a.limite)]
 
-    falhas = {}
+    print("Canal(s):", ", ".join(l.upper() for l in langs))
+    print("Cota estimada: ~6 uploads/canal/dia. Se acabar, rode de novo amanhã.\n")
+
     for lang in langs:
-        rc = rodar(lang, extra)
+        rc = ciclo(lang, extra)
         if rc != 0:
-            falhas[lang] = rc
+            print(f"\n{lang.upper()}: parou (rc={rc}). Provavelmente cota esgotada.")
 
     print("\n" + "=" * 70)
-    print("RESUMO FINAL")
-    print("=" * 70)
-    for lang in langs:
-        print(f"  {lang.upper()}: {'ok' if lang not in falhas else 'falhou rc=%s' % falhas[lang]}")
-    print("\nSe a cota acabou, rode este comando de novo amanha.")
+    print("LOOP CONCLUÍDO. Relatórios acima.")
+    print("Se ainda houver pendentes, rode este script de novo (amanhã, se a cota acabou).")
     return 0
 
 

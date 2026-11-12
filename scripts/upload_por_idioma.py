@@ -1,27 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Upload de UM idioma para o canal do YouTube daquele idioma.
+"""
+Sobe TODOS os vídeos de UM idioma para o canal do YouTube daquele idioma.
 
-FONTE DA VERDADE DO TITULO E DA DESCRICAO
------------------------------------------
-Titulo e enredo vem SEMPRE de artifacts/script_<lang>.json (o roteiro ja
-traduzido do projeto). Nunca de traducao "on the fly" (Gemini Web), que
-falhava e caia no titulo em portugues — era esse o bug dos videos em
-ingles/espanhol subirem com titulo e gancho em portugues.
-
-Se o projeto nao tiver script_<lang>.json, o upload e ABORTADO com erro
-claro: melhor nao publicar do que publicar no idioma errado.
+Título e descrição vêm SEMPRE de artifacts/script_<lang>.json (roteiro já
+traduzido). Se esse arquivo não existir, o upload é abortado (não sobe no
+idioma errado).
 
 Uso:
-  python scripts/upload_por_idioma.py en              # sobe ate 5 (cota)
-  python scripts/upload_por_idioma.py es --limit 3
-  python scripts/upload_por_idioma.py en --all        # ignora o limite
+  python scripts/upload_por_idioma.py en          # sobe até 5 (cota diária)
+  python scripts/upload_por_idioma.py en --all    # ignora o limite de 5
+  python scripts/upload_por_idioma.py es --all
   python scripts/upload_por_idioma.py en --slug frida-e-luna-em-marte
   python scripts/upload_por_idioma.py en --dry-run
-  python scripts/upload_por_idioma.py en --force      # reenvia ja publicados
 
-Cota da API: cada upload custa ~1600 unidades de 10.000/dia por projeto
-Google. Ou seja, ~6 uploads por canal por dia. Legendas custam ~50.
-O script para sozinho quando a cota estoura e grava o progresso.
+O progresso fica em scripts/.publish_history_idioma.json (feito + cota
+estimada gasta hoje). Se bater a cota da API (quotaExceeded), o script pára
+e você roda de novo amanhã.
 """
 import argparse
 import json
@@ -68,10 +62,9 @@ UPLOAD = HERE / "youtube_upload.py"
 CAPTIONS = HERE / "youtube_captions.py"
 HIST_FILE = HERE / ".publish_history_idioma.json"
 
-# Custo aproximado de videos.insert na cota diaria (unidades)
-CUSTO_UPLOAD = 1600
-CUSTO_LEGENDA = 50
-COTA_DIARIA = 10000
+CUSTO_UPLOAD = 1600   # unidades da cota YouTube Data API por vídeo
+CUSTO_LEGENDA = 50    # por legenda
+COTA_DIARIA = 10000   # unidades por projeto Google por dia
 
 
 def load_json(p):
@@ -90,18 +83,11 @@ def load_history():
             return load_json(HIST_FILE)
         except Exception:
             pass
-    return {"done": []}
+    return {"done": [], "uso": {}}
 
 
 def save_history(hist):
     save_json(HIST_FILE, hist)
-
-
-def is_done(hist, slug, lang):
-    for e in hist.get("done", []):
-        if e.get("slug") == slug and e.get("lang") == lang and e.get("video_id"):
-            return True
-    return False
 
 
 def hoje():
@@ -109,7 +95,6 @@ def hoje():
 
 
 def uso_hoje(hist, lang):
-    """Unidades de cota ja gastas hoje neste canal (estimativa)."""
     return int(hist.get("uso", {}).get(hoje(), {}).get(lang, 0))
 
 
@@ -119,25 +104,26 @@ def registrar_uso(hist, lang, unidades):
     save_history(hist)
 
 
-def mark_done(hist, slug, lang, video_id, title):
+def is_done(hist, slug, lang):
+    for e in hist.get("done", []):
+        if e.get("slug") == slug and e.get("lang") == lang and e.get("video_id"):
+            return True
+    return False
+
+
+def mark_done(hist, slug, lang, video_id, titulo):
     hist.setdefault("done", []).append({
-        "slug": slug,
-        "lang": lang,
-        "video_id": video_id,
-        "title": title,
+        "slug": slug, "lang": lang, "video_id": video_id,
+        "titulo": titulo,
         "ts": time.strftime("%Y-%m-%d %H:%M:%S"),
     })
     save_history(hist)
 
 
-def script_path(proj_dir, lang):
-    nome = "script.json" if lang == "pt" else f"script_{lang}.json"
-    return proj_dir / "artifacts" / nome
-
-
 def titulo_localizado(proj_dir, lang):
-    """Titulo do roteiro no idioma. None se nao existir (NUNCA cai no PT)."""
-    p = script_path(proj_dir, lang)
+    """Título do roteiro no idioma. Aborta se não existir (não cai no PT)."""
+    nome = "script.json" if lang == "pt" else f"script_{lang}.json"
+    p = proj_dir / "artifacts" / nome
     if not p.is_file():
         return None
     try:
@@ -148,8 +134,9 @@ def titulo_localizado(proj_dir, lang):
 
 
 def enredo_localizado(proj_dir, lang):
-    """Lista de paragrafos do enredo no idioma (sem s0/intro/outro)."""
-    p = script_path(proj_dir, lang)
+    """Lista de parágrafos do enredo no idioma (sem s0/intro/outro)."""
+    nome = "script.json" if lang == "pt" else f"script_{lang}.json"
+    p = proj_dir / "artifacts" / nome
     if not p.is_file():
         return []
     try:
@@ -175,25 +162,20 @@ def descricao_localizada(proj_dir, lang, titulo):
 
 def credenciais(lang):
     c = LANG_CREDS[lang]
-    cs, tk = c["client_secret"], c["token"]
-    # Canal PT: o token historico (youtube_token.json) ja e o canal principal.
-    # Usa ele quando o token _pt ainda nao foi criado, para nao exigir nova
-    # autorizacao do canal que ja funciona.
-    if lang == "pt" and not tk.is_file():
-        tk_hist = HERE / "youtube_token.json"
-        cs_hist = HERE / "client_secret.json"
-        if tk_hist.is_file() and cs_hist.is_file():
-            return cs_hist, tk_hist
-    if not cs.is_file():
-        raise SystemExit(f"ERRO: {cs} nao existe (client_secret do canal {lang.upper()}).")
-    if not tk.is_file():
+    if lang == "pt" and not c["token"].is_file():
+        # canal principal histórico
+        if (HERE / "youtube_token.json").is_file() and (HERE / "client_secret.json").is_file():
+            return HERE / "client_secret.json", HERE / "youtube_token.json"
+    if not c["client_secret"].is_file():
+        raise SystemExit(f"ERRO: {c['client_secret']} não existe.")
+    if not c["token"].is_file():
         raise SystemExit(
-            f"ERRO: {tk} nao existe.\n"
-            f"Rode uma vez para autorizar o canal {lang.upper()}:\n"
-            f"  python scripts/youtube_upload.py --client-secret {cs} "
-            f"--token {tk} --video <algum.mp4>"
+            f"ERRO: {c['token']} não existe.\n"
+            f"Autorize uma vez:\n"
+            f"  python scripts/youtube_upload.py --client-secret {c['client_secret']} "
+            f"--token {c['token']} --video <algum.mp4>"
         )
-    return cs, tk
+    return c["client_secret"], c["token"]
 
 
 def upload(proj_slug, lang, mp4, titulo, desc, proj_dir, cs, tk, dry_run=False):
@@ -213,8 +195,7 @@ def upload(proj_slug, lang, mp4, titulo, desc, proj_dir, cs, tk, dry_run=False):
     ]
     if dry_run:
         print(f"    [DRY-RUN] upload {lang}: {mp4.name}")
-        print(f"    [DRY-RUN] titulo: {titulo}")
-        print(f"    [DRY-RUN] descricao ({len(desc)} chars): {desc[:160]}...")
+        print(f"    [DRY-RUN] título: {titulo}")
         return None
 
     print(f"    enviando {lang}: {mp4.name}", flush=True)
@@ -228,7 +209,7 @@ def upload(proj_slug, lang, mp4, titulo, desc, proj_dir, cs, tk, dry_run=False):
     m = re.search(r"youtu\.be/([0-9A-Za-z_-]{11})", out)
     if m:
         vid = m.group(1)
-    print(f"    video_id: {vid}", flush=True)
+    print(f"    vídeo no YouTube: https://youtu.be/{vid}", flush=True)
     return vid
 
 
@@ -262,20 +243,20 @@ def gravar_no_projeto(proj_dir, lang, vid, titulo):
     except Exception:
         return
     pub = c.setdefault("publish", {})
-    pub.setdefault("videos", {})[lang] = {"video_id": vid, "title": titulo}
+    pub.setdefault("videos", {})[lang] = {"video_id": vid, "titulo": titulo}
     pub["done"] = True
     save_json(ctrl, c)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Sobe os videos de um idioma para o canal daquele idioma")
+    ap = argparse.ArgumentParser(description="Sobe todos os vídeos de um idioma para o canal daquele idioma")
     ap.add_argument("lang", choices=["pt", "en", "es"])
     ap.add_argument("--projects-dir", default=str(BASE_PADRAO))
     ap.add_argument("--slug", default=None)
     ap.add_argument("--limit", type=int, default=5,
-                    help="maximo de uploads nesta execucao (padrao 5, por causa da cota)")
-    ap.add_argument("--all", action="store_true", help="ignora --limit")
-    ap.add_argument("--force", action="store_true", help="reenvia mesmo se ja publicado")
+                    help="máximo de uploads nesta execução (padrão 5; use --all para ignorar)")
+    ap.add_argument("--all", action="store_true", help="ignora --limit (sobe tudo até a cota da API)")
+    ap.add_argument("--force", action="store_true", help="reenvia mesmo se já publicado")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
@@ -283,61 +264,56 @@ def main():
     base = Path(a.projects_dir)
     cs, tk = credenciais(lang)
 
-    limite = 999 if a.all else a.limit
+    limite = 9999 if a.all else a.limit
     hist = load_history()
+    custo = uso_hoje(hist, lang)
+    if custo:
+        print(f"Cota já usada hoje neste canal (estimativa): {custo}/{COTA_DIARIA}")
 
     projetos = sorted([d for d in base.iterdir() if d.is_dir()])
     if a.slug:
         projetos = [p for p in projetos if p.name == a.slug]
 
-    print(f"=== Canal {lang.upper()} | {len(projetos)} projeto(s) | limite {limite} upload(s) ===")
+    print(f"\n=== Canal {lang.upper()} | {len(projetos)} projeto(s) | limite {limite} upload(s) ===")
     print(f"Credenciais: {cs.name} + {tk.name}\n")
 
     enviados, pulados_sem_mp4, pulados_sem_script = [], [], []
     pulados_feitos, erros = [], []
-    custo = uso_hoje(hist, lang)
-    if custo:
-        print(f"Cota ja usada hoje neste canal (estimativa): {custo}/{COTA_DIARIA}\n")
 
     for proj in projetos:
         if len(enviados) >= limite:
-            print(f"\nLimite de {limite} upload(s) atingido nesta execucao.")
+            print(f"\nLimite de {limite} upload(s) nesta execução.")
             break
         slug = proj.name
         mp4 = proj / "output" / f"{slug}_{lang}.mp4"
-        if not mp4.is_file() and lang == "pt":
-            # publish_multilang renomeia o PT original para <slug>_pt.mp4
-            alt = proj / "output" / f"{slug}_pt.mp4"
-            if alt.is_file():
-                mp4 = alt
 
         if not mp4.is_file():
             pulados_sem_mp4.append(slug)
             continue
-        if is_done(hist, slug, lang) and not a.force:
+        if not a.force and is_done(hist, slug, lang):
             pulados_feitos.append(slug)
             continue
 
         titulo = titulo_localizado(proj, lang)
         if not titulo:
-            print(f"  !! {slug}: SEM artifacts/script_{lang}.json — abortado (nao subir no idioma errado)")
+            print(f"  !! {slug}: SEM artifacts/script_{lang}.json — abortado (não sobe no idioma errado)")
             pulados_sem_script.append(slug)
             continue
 
-        # Cota: para antes de estourar
+        # Para antes de estourar a cota
         if custo + CUSTO_UPLOAD + CUSTO_LEGENDA > COTA_DIARIA:
-            print(f"\nCota diaria estimada atingida ({custo}/{COTA_DIARIA}) — pare e continue amanha.")
+            print(f"\nCota diária estimada atingida ({custo}/{COTA_DIARIA}). Pare e rode de novo amanhã.")
             break
 
         print(f"\n{'='*68}")
         print(f"{slug} [{lang.upper()}]")
-        print(f"  titulo: {titulo}")
+        print(f"  título: {titulo}")
         desc = descricao_localizada(proj, lang, titulo)
-        print(f"  descricao: {len(desc)} chars | {len(desc.split())} palavras")
+        print(f"  descrição: {len(desc)} chars | {len(desc.split())} palavras")
 
         vid = upload(slug, lang, mp4, titulo, desc, proj, cs, tk, a.dry_run)
         if vid == "ERRO_QUOTA":
-            print("  COTA DA API ESGOTADA neste projeto Google. Rode de novo amanha.")
+            print("  COTA DA API ESGOTADA. Pare e continue amanhã.")
             erros.append((slug, "quota"))
             break
         if not vid:
@@ -354,12 +330,12 @@ def main():
             registrar_uso(hist, lang, CUSTO_UPLOAD + CUSTO_LEGENDA)
 
     print(f"\n{'='*68}")
-    print(f"RELATORIO — {lang.upper()}")
+    print(f"RELATÓRIO — {lang.upper()}")
     print(f"{'='*68}")
     print(f"enviados agora .......... {len(enviados)}")
     for s in enviados:
         print(f"   OK  {s}")
-    print(f"ja publicados antes ..... {len(pulados_feitos)}")
+    print(f"já publicados antes ..... {len(pulados_feitos)}")
     print(f"sem MP4 _{lang} .......... {len(pulados_sem_mp4)}")
     print(f"sem script_{lang}.json ... {len(pulados_sem_script)}")
     for s in pulados_sem_script:

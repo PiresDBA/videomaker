@@ -3699,23 +3699,40 @@ Por isso o envio é **resumível**: o progresso fica em
 estimada acaba e retoma no dia seguinte. Para subir os ~49 projetos em EN e
 ES são necessários vários dias, salvo aumento de cota no Google Cloud.
 
-### 56.5. Legendas
+### 56.5. Limpeza do canal principal (PT) — faça depois, manualmente
+
+Vídeos EN/ES antigos que ficaram no canal principal (PT) **não são apagados**
+automaticamente pelo script de upload. Após subir todas as cópias em EN e ES,
+faça um batimento e apague do canal PT os que já estão nos canais certos
+(você decide se apaga ou não, conforme as visualizações).
+
+Ferramenta de ajuda para listar o que está em cada canal:
+
+```powershell
+python scripts/listar_canal.py              # lista os 3 canais (com views)
+python scripts/listar_canal.py --lang pt    # só o canal principal
+```
+
+---
+
+### 56.6. Legendas
 
 Cada upload já envia `assets/subtitles/<lang>/<slug>.srt` com
 `youtube_captions.py`, usando o **token do canal daquele idioma** e o código
 `pt-BR` / `en-US` / `es-ES`. Se a legenda falhar, o vídeo continua publicado
-e o aviso aparece no log (pode ser reenviado depois com `youtube_captions.py
---video-id ...`).
+e o aviso aparece no log (pode ser reenviado depois com
+`youtube_captions.py --video-id ...`).
 
-### 56.6. Pendência conhecida: capa/overframe do vídeo
+---
+
+### 56.7. Pendência conhecida: capa/overframe do vídeo
 
 O **título desenhado na capa** (overframe de abertura) dos MP4s já
 renderizados continua em português, e a imagem de fundo pode ter texto em PT
 "queimado" (ex.: placa "ESCOLA DOS CACHORROS"). O código já aceita
 `build_composition.py --lang` e o `phase_compose` passa o idioma, então
 re-renderizar gera a capa no idioma; os vídeos antigos **não** foram
-re-renderizados. Fica para a etapa de re-render (§111 do plano do usuário).
+re-renderizados. Fica para uma etapa futura de re-render.
 
 ---
-
 

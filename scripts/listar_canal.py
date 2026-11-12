@@ -56,10 +56,11 @@ def list_videos(svc):
         token = pl.get("nextPageToken")
         if not token:
             break
-    # detalhes (idioma padrao)
+    # detalhes (idioma padrao, visualizacoes e duracao)
     for i in range(0, len(out), 50):
         ids = [v["video_id"] for v in out[i:i + 50]]
-        d = svc.videos().list(part="snippet,status", id=",".join(ids)).execute()
+        d = svc.videos().list(part="snippet,status,statistics,contentDetails",
+                              id=",".join(ids)).execute()
         by_id = {v["id"]: v for v in d.get("items", [])}
         for v in out[i:i + 50]:
             full = by_id.get(v["video_id"], {})
@@ -67,7 +68,20 @@ def list_videos(svc):
             v["default_language"] = sn.get("defaultLanguage")
             v["default_audio_language"] = sn.get("defaultAudioLanguage")
             v["privacy"] = full.get("status", {}).get("privacyStatus")
+            v["views"] = int(full.get("statistics", {}).get("viewCount", 0) or 0)
+            v["duration_s"] = iso_para_segundos(
+                full.get("contentDetails", {}).get("duration", ""))
     return out
+
+
+def iso_para_segundos(iso):
+    """'PT3M31S' -> 211"""
+    import re
+    m = re.match(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?", iso or "")
+    if not m:
+        return 0
+    d, h, mi, s = m.groups()
+    return int(d or 0) * 86400 + int(h or 0) * 3600 + int(mi or 0) * 60 + int(float(s or 0))
 
 
 def main():
@@ -102,7 +116,8 @@ def main():
         for v in vids:
             desc1 = " ".join(v["description"].split())[:120]
             print(f"- {v['video_id']} | {v['title']}")
-            print(f"    lang={v['default_language']} audio={v['default_audio_language']} {v['privacy']}")
+            print(f"    lang={v['default_language']} audio={v['default_audio_language']} "
+                  f"{v['privacy']} | {v.get('views', 0)} views")
             print(f"    desc: {desc1}")
         print()
 
