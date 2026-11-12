@@ -308,6 +308,7 @@ def main():
     ap.add_argument("--scenes", default=str(HERE / "scenes.json"))
     ap.add_argument("--scenes-dir", default=str(HERE / "scenes"))
     ap.add_argument("--proj", default=None, help="diretorio do projeto (para ler script.json)")
+    ap.add_argument("--lang", default="pt", help="idioma do video (pt,en,es) — usado para ler o titulo traduzido em script_<lang>.json")
     args = ap.parse_args()
 
     cfg = load_json(HERE / "config.json")
@@ -315,16 +316,21 @@ def main():
     scenes_dir = Path(args.scenes_dir)
     tl = load_json(args.timeline)["timeline"]
 
-    # pega o titulo do script.json do projeto (caminho correto)
+    # pega o titulo do script do projeto, no idioma do video (script_<lang>.json
+    # quando existe, cai de volta para script.json). Assim a capa/overlay de
+    # abertura fica escrita na mesma lingua da narracao do video final.
     proj_dir = Path(args.proj).resolve() if args.proj else Path(args.out).resolve().parent.parent
-    script_path = proj_dir / "artifacts" / "script.json"
+    lang = (args.lang or "pt").strip().lower()
+    script_candidates = [proj_dir / "artifacts" / ("script_%s.json" % lang), proj_dir / "artifacts" / "script.json"]
 
     video_title = "Meu Video"
-    try:
-        script = load_json(script_path)
-        video_title = script.get("title", video_title)
-    except Exception:
-        pass
+    for script_path in script_candidates:
+        try:
+            script = load_json(script_path)
+            video_title = script.get("title", video_title)
+            break
+        except Exception:
+            continue
 
     overlays = {}
     for sec in tl:

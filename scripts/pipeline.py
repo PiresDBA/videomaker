@@ -401,6 +401,7 @@ SCRIPTS = {
     "preprocess_images": HERE / "preprocess_images.py",
     "fetch_music": HERE / "fetch_music_gemini.py",
     "gen_narration": HERE / "gen_narration_edge.py",
+    "gen_narration_gemini_sections": HERE / "gen_narration_gemini_sections.py",
     "verify_narration": HERE / "verify_narration.py",
     "build_timeline": HERE / "build_timeline.py",
     "mix_audio": HERE / "mix_audio.py",
@@ -1166,7 +1167,19 @@ def phase_narration(args, p: Project):
              "--pitch", pitch,
              "--workers", str(workers)], label)
 
+    def run_gemini(lang, voice, script_path, label):
+        out_lang_dir = p.dir / "assets" / "audio" / "narration" / lang
+        out_lang_dir.mkdir(parents=True, exist_ok=True)
+        run([sys.executable, str(SCRIPTS["gen_narration_gemini_sections"]),
+             "--proj", str(p.dir),
+             "--lang", lang,
+             "--voice", voice,
+             "--script", str(script_path)], label)
+
     # Para cada idioma: traduz (se necessario) e gera narracao.
+    # pt usa Edge-TTS (local). en/es usam Gemini TTS (Google) para nao soar
+    # robotizada, com voz nativa de cada idioma (Achernar em ingles, Leda em
+    # espanhol) e mapa de pronuncia (ex: Luninha -> little Luna em ingles).
     for lang in languages:
         lang = lang.lower()
         if lang == "pt":
@@ -1180,6 +1193,12 @@ def phase_narration(args, p: Project):
             problemas = validate_contract(script)
             if problemas:
                 print("== AVISO contrato de narracao (pt):", "; ".join(problemas))
+
+            voice = voice_for(lang)
+            rate = rate_for(lang)
+            pitch = pitch_for(lang)
+            run_edge(lang, voice, rate, pitch, script_path,
+                     f"FASE narration[{lang}]: Edge-TTS '{voice}' (local, sem API)")
         else:
             script_path = p.artifacts / f"script_{lang}.json"
             if not script_path.exists():
@@ -1192,15 +1211,13 @@ def phase_narration(args, p: Project):
             if not script_path.exists():
                 raise RuntimeError(f"Nao foi possivel gerar script_{lang}.json")
 
-        voice = voice_for(lang)
-        rate = rate_for(lang)
-        pitch = pitch_for(lang)
-        run_edge(lang, voice, rate, pitch, script_path,
-                 f"FASE narration[{lang}]: Edge-TTS '{voice}' (local, sem API)")
+            voice = voice_for(lang)
+            run_gemini(lang, voice, script_path,
+                       f"FASE narration[{lang}]: Gemini-TTS '{voice}' (Google)")
 
     # Sinaliza conclusao da narracao (pt e demais idiomas).
     p.state.setdefault("narration", {}).update({
-        "provider": "edge",
+        "provider": "gemini-if-en-es",
         "languages": languages,
         "voice": voice_arg or voice_for("pt"),
     })
@@ -1310,7 +1327,8 @@ def phase_compose(args, p: Project):
          "--scenes", str(p.scenes_json),
          "--scenes-dir", str(p.scenes_dir),
          "--proj", str(p.dir),
-         "--out", str(p.composition)],
+         "--out", str(p.composition),
+         "--lang", getattr(args, "mix_lang", "pt")],
         "FASE compose: composicao HyperFrames (local)")
     p.mark("compose", detail=str(p.composition))
 

@@ -3445,4 +3445,140 @@ python scripts/youtube_captions.py --proj projects/<slug> --lang en --lang es
 
 ---
 
+## 52. Título da capa/saudação (s0) na língua do vídeo
+
+### 52.1. Problema
+
+A tela de apresentação inicial (capa/intro) e o overlay da seção `s0` exibiam
+sempre o título em português, lido de `artifacts/script.json`, independente do
+idioma da narração do vídeo final (`--mix-lang`). Assim, um vídeo em inglês ou
+espanhol começava com o título escrito em português (ex: `a escola de cachorros
+o primeiro dia de aula` em vez de `... the first day of class`).
+
+### 52.2. Causa raiz
+
+`scripts/build_composition.py` lia o título exclusivamente de
+`artifacts/script.json` (versão portuguesa) ao montar a `composition.html`, e
+`scripts/pipeline.py` (`phase_compose`) não informava o idioma ao construtor de
+composição. A narração e a timeline já são por idioma (`pt`/`en`/`es`), mas a
+capa não acompanhava.
+
+### 52.3. Correção
+
+- `scripts/build_composition.py`: nova flag `--lang` (padrão `pt`). O título da
+  capa agora é lido de `artifacts/script_<lang>.json` quando existe, com fallback
+  para `artifacts/script.json`. Assim a abertura fica escrita na mesma língua da
+  narração do vídeo final.
+- `scripts/pipeline.py` (`phase_compose`): passa `--lang <mix-lang>` ao
+  `build_composition.py`.
+
+### 52.4. Como verificar
+
+```powershell
+# Regenerar a composição em inglês (mix-lang en) e conferir o <h1 id="intro-title">
+python scripts/build_composition.py `
+  --timeline projects\<slug>\artifacts\timeline.json `
+  --scenes projects\<slug>\artifacts\scenes.json `
+  --scenes-dir projects\<slug>\scenes `
+  --proj projects\<slug> `
+  --out projects\<slug>\composition.html `
+  --lang en
+```
+O `<h1 id="intro-title">` deve conter o título traduzido (ex: `Luninha and the Noisy Thunder`)
+em vez do título português.
+
+### 52.5. Arquivos alterados
+
+- `scripts/build_composition.py` — flag `--lang` + leitura de `script_<lang>.json`.
+- `scripts/pipeline.py` — `phase_compose` passa `--lang <mix-lang>`.
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
+## 53. Narração multi-idioma: Gemini TTS para inglês e espanhol
+
+### 53.1. Problema
+
+A narração em inglês e espanhol usava o Edge-TTS local (vozes `en-US-AriaNeural` e `es-ES-ElviraNeural`), que soava robotizada. Em inglês, o apelido "Luninha" era lido como "lunein rá" (ou algo ininteligível) em vez de "little Luna".
+
+### 53.2. Correção
+
+- Inglês (`en`) e espanhol (`es`) agora geram narração com **Gemini TTS (Google AI Studio)** via `scripts/gen_narration_gemini_sections.py --lang <en|es>`.
+- Português (`pt`) continua com Edge-TTS local (sem API).
+- Vozes por idioma (config.json, seção `tts`):
+  - `pt`: Edge-TTS `pt-BR-ThalitaNeural` (inalterado).
+  - `en`: Gemini `Achernar` (fala inglês natural).
+  - `es`: Gemini `Leda` (fala espanhol natural).
+- Saída por idioma: `assets/audio/narration/<lang>/sN.wav` e `artifacts/narration_timing_<lang>.json`.
+
+### 53.3. Mapa de pronúncia por idioma
+
+`scripts/gen_narration_gemini_sections.py` aplica substituições de pronúncia antes do TTS:
+
+| Idioma | De | Para |
+|--------|-----|------|
+| en | `Luninha` / `luninha` | `little Luna` |
+| en | `gatinha` / `gatinho` | `puppy` |
+| es | `Luninha` / `luninha` | `pequeña Luna` |
+
+Isso garante que "Luninha" seja lida como "little Luna" na versão em inglês.
+
+### 53.4. Como gerar narração em um idioma específico
+
+```powershell
+# Ingles (Gemini TTS)
+python scripts/gen_narration_gemini_sections.py --proj projects/<slug> --lang en --voice Achernar --no-verify
+
+# Espanhol (Gemini TTS)
+python scripts/gen_narration_gemini_sections.py --proj projects/<slug> --lang es --voice Leda --no-verify
+
+# Portugues (Edge-TTS, inalterado)
+python scripts/gen_narration_edge.py --proj projects/<slug> --lang pt --voice pt-BR-ThalitaNeural
+```
+
+### 53.5. Arquivos alterados
+
+- `scripts/gen_narration_gemini_sections.py` — flag `--lang`, leitura de `script_<lang>.json`, saída `narration/<lang>/` + `narration_timing_<lang>.json`, mapa de pronúncia por idioma.
+- `scripts/pipeline.py` — `phase_narration` usa Gemini TTS para en/es, Edge-TTS para pt.
+- `scripts/config.json` — adicionadas `voice_en` e `voice_es`.
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
+## 54. Loop de reprocessamento do histórico (pt -> en/es)
+
+### 54.1. Objetivo
+
+Percorrer todos os projetos já gerados em português e, para cada um que ainda não tenha áudio/timeline/mix/composição/vídeo em inglês e espanhol, gerar:
+1. Tradução do roteiro (`script_en.json`, `script_es.json`) — se ainda não existir.
+2. Narração em en/es (Gemini TTS).
+3. Timeline (durações reais por idioma).
+4. Mix (narração + trilha) por idioma.
+5. Composição (título da capa no idioma correto).
+6. Render do MP4 por idioma.
+7. Upload ao YouTube (metadados no idioma correto).
+
+### 54.2. Como identificar o que falta
+
+Para cada projeto em `projects/<slug>/`:
+- Se `artifacts/script_en.json` (ou `script_es.json`) não existir → precisa traduzir.
+- Se `assets/audio/narration/en/` (ou `es/`) não tiver os WAVs → precisa gerar narração.
+- Se `artifacts/timeline.json` não reflete o idioma → precisa regenerar timeline.
+- Se `output/<slug>_en.mp4` (ou `_es.mp4`) não existir → precisa renderizar.
+- Se não há upload no YouTube com título em en/es → precisa publicar.
+
+### 54.3. Execução
+
+O loop processa um projeto de cada vez, idioma por idioma:
+1. en: traduzir → narração(en) → timeline(en) → mix(en) → compose(en) → render(en) → upload(en)
+2. es: traduzir → narração(es) → timeline(es) → mix(es) → compose(es) → render(es) → upload(es)
+
+Não reprocessar projetos que já tenham todos os artefatos de um idioma (evita duplicar trabalho e cota da API).
+
+### 54.4. Arquivos alterados
+
+- `MANUAL_GRAFOS.md` — esta seção.
+
+---
+
 

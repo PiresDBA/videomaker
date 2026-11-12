@@ -44,6 +44,28 @@ DEFAULT_RETRIES = 5
 # geracao alterna para o proximo modelo quando o atual esgota a cota do dia.
 DEFAULT_FALLBACK_MODELS = ["gemini-3.8-flash-lite-tts"]
 
+# Substituicoes de pronunciacao por idioma (evitar TTS ler nomes de forma errada).
+# Em ingles, "Luninha" (apelido da Luna) deve soar como "little Luna".
+PRONUNCIATION_MAP = {
+    "pt": [
+        (r"\bgatinha\b", "cachorrinha"),
+        (r"\bgatinho\b", "cachorro"),
+        (r"\bgatos\b", "cachorros"),
+        (r"\bgata\b", "cadela"),
+        (r"\bgato\b", "cachorro"),
+    ],
+    "en": [
+        (r"\bLuninha\b", "little Luna"),
+        (r"\bluninha\b", "little Luna"),
+        (r"\bgatinha\b", "puppy"),
+        (r"\bgatinho\b", "puppy"),
+    ],
+    "es": [
+        (r"\bLuninha\b", "pequeña Luna"),
+        (r"\bluninha\b", "pequeña Luna"),
+    ],
+}
+
 
 def build_model_chain(primary, fallbacks):
     chain = []
@@ -308,6 +330,7 @@ def synthesize_in_sentences(keys, chain, retries, voice, style, texto, dst,
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--proj", default=None, help="diretorio do projeto")
+    ap.add_argument("--lang", default="pt", help="idioma da narracao (pt, en, es). padrao: pt")
     ap.add_argument("--voice", default=None, help="voz Gemini (ex: Leda, Achernar)")
     ap.add_argument("--model", default=None)
     ap.add_argument("--only", default=None, help="ids separados por virgula")
@@ -324,6 +347,7 @@ def main():
     cfg = load_json(HERE / "config.json")
     tts = cfg.get("tts", {})
     proj = (Path(args.proj) if args.proj else (HERE / cfg.get("project_dir", ".."))).resolve()
+    artifacts = proj / "artifacts"
     ffprobe = str(Path(cfg["ffmpeg_dir"]) / "ffprobe.exe")
     ffmpeg = str(Path(cfg["ffmpeg_dir"]) / "ffmpeg.exe")
 
@@ -333,26 +357,49 @@ def main():
         raise SystemExit("chave nao encontrada: defina %s (ou %s_1, _2, _3) no .env" % (key_env, key_env))
 
     model = args.model or tts.get("model", "gemini-3.8-flash-tts")
-    voice = args.voice or tts.get("voice", "Leda")
+    lang = (args.lang or "pt").lower().strip()
+
+    # Voz por idioma (sobrescrita por --voice se informada).
+    if args.voice:
+        voice = args.voice
+    elif lang == "en":
+        voice = tts.get("voice_en", "Achernar")
+    elif lang == "es":
+        voice = tts.get("voice_es", "Leda")
+    else:
+        voice = tts.get("voice", "Leda")
     style = args.style or tts.get("narration_style", None)
     fallbacks = tts.get("model_fallbacks", DEFAULT_FALLBACK_MODELS)
     chain = build_model_chain(model, fallbacks)
 
-    script = load_json(proj / "artifacts" / "script.json")
+    # Escolhe o arquivo de script pelo idioma (script_<lang>.json, cai para script.json).
+    script_path = artifacts / ("script_%s.json" % lang) if lang != "pt" else artifacts / "script.json"
+    if not script_path.exists():
+        script_path = artifacts / "script.json"
+    script = load_json(script_path)
     script, mudancas = apply_contract(script, theme=script.get("title") or "")
     if mudancas:
         print("== CONTRATO narracao: " + "; ".join(mudancas))
-        with open(proj / "artifacts" / "script.json", "w", encoding="utf-8") as f:
+        with open(script_path, "w", encoding="utf-8") as f:
             json.dump(script, f, ensure_ascii=False, indent=2)
     problemas = validate_contract(script)
     if problemas:
         print("== AVISO contrato de narracao:", "; ".join(problemas))
 
-    out = proj / "assets" / "audio" / "narration"
+    # Substituicoes de pronunciacao por idioma (ex: Luninha -> little Luna em ingles).
+    texto_map = PRONUNCIATION_MAP.get(lang, [])
+
+    def limpar_com_pronuncia(text: str) -> str:
+        t = limpar_e_preparar_texto(text)
+        for pat, repl in texto_map:
+            t = re.sub(pat, repl, t, flags=re.I)
+        return " ".join(t.split())
+
+    out = proj / "assets" / "audio" / "narration" / lang
     out.mkdir(parents=True, exist_ok=True)
     only = {x.strip() for x in args.only.split(",")} if args.only else None
 
-    timing_path = proj / "artifacts" / "narration_timing.json"
+    timing_path = artifacts / ("narration_timing_%s.json" % lang) if lang != "pt" else artifacts / "narration_timing.json"
     anterior = {}
     if timing_path.exists():
         for item in load_json(timing_path):
@@ -367,18 +414,14 @@ def main():
                 results.append(anterior[sid])
             continue
 
-        texto = limpar_e_preparar_texto(s.get("text", "").strip())
+        texto = limpar_com_pronuncia(s.get("text", "").strip())
         if not texto:
             continue
 
         dst = out / ("%s.wav" % sid)
-        # Reaproveita apenas se o arquivo existir E tiver sido gerado com a
-        # mesma voz E o mesmo texto. Se a voz/texto mudou, regenera (senao a
-        # cache serviria audio do roteiro antigo).
         anterior_sid = anterior.get(sid, {})
         mesma_voz = anterior_sid.get("voice") == voice
         hash_atual = _text_hash(texto)
-        # Hash ausente = entrada antiga: assume texto igual (compatibilidade).
         mesmo_texto = anterior_sid.get("text_hash") in (None, hash_atual)
         if dst.exists() and dst.stat().st_size > 1000 and mesma_voz and mesmo_texto and not args.force:
             dur = probe_duration(ffprobe, dst)
