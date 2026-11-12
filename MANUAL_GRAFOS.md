@@ -3581,4 +3581,53 @@ Não reprocessar projetos que já tenham todos os artefatos de um idioma (evita 
 
 ---
 
+## 55. Estratégia de trabalho: disco rápido (C:) + histórico lento (E:)
+
+### 55.1. Problema
+
+O disco `E:\videomaker\projects` (histórico) é muito lento. Renderizar um vídeo
+direto nele leva 3-4 minutos por projeto, inviabilizando o loop de
+reprocessamento multilíngue de muitos projetos.
+
+### 55.2. Solução
+
+- **Disco de trabalho (rápido):** `C:\videomaker\projects` (SSD).
+- **Disco histórico (lento):** `E:\videomaker\projects` (arquivo de verdade).
+- **Fluxo por projeto:**
+  1. Copiar o projeto de `E:` para `C:\videomaker\projects\`.
+  2. Processar en/es em `C:` (tradução local, narração com fallback Edge-TTS,
+     timeline, mix, composição, render).
+  3. Quando en/es estiverem completos (MP4s gerados), copiar de volta para
+     `E:\videomaker\projects\`, sobrescrevendo o histórico.
+  4. Atualizar `LOG_PROGRESSO_MULTILANG.md` com o que foi feito.
+
+### 55.3. Como copiar um projeto
+
+```powershell
+# Copiar de E: para C:
+Copy-Item -Recurse -Force "E:\videomaker\projects\<slug>" "C:\videomaker\projects\"
+
+# ... processar em C: ...
+
+# Copiar de volta para E: (só quando en/es completos)
+Copy-Item -Recurse -Force "C:\videomaker\projects\<slug>" "E:\videomaker\projects\"
+```
+
+### 55.4. Log de progresso
+
+O arquivo `LOG_PROGRESSO_MULTILANG.md` (raiz do Videomaker) é a fonte de
+verdade do que já foi feito e do que falta. Qualquer agente que pegar o
+trabalho deve lê-lo antes de começar.
+
+### 55.5. Scripts de suporte
+
+- `scripts/translate_local.py` — tradução local pt→en/es (sem Gemini Web).
+- `scripts/loop_final.py` — loop narração → timeline → mix → composição → render
+  com fallback Edge-TTS quando o Gemini TTS não tem cota.
+- `scripts/gen_narration_gemini_sections.py` — suporte a `--lang` + fallback
+  Edge-TTS.
+- `scripts/build_composition.py` — suporte a `--lang` (título da capa no idioma).
+
+---
+
 

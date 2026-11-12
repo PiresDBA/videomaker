@@ -103,10 +103,15 @@ def translate_title(title, target_lang, proj_dir, wait_s=60):
 
 
 def get_storyline(proj_dir, lang):
-    """Extrai o enredo (seções de conteúdo) do script para a descrição."""
+    """Extrai o enredo (seções de conteúdo) do script para a descrição.
+
+    Retorna uma LISTA de strings (uma por seção de conteúdo), para que
+    build_description/_fit_storyline itere sobre parágrafos e não caractere
+    por caractere.
+    """
     script_path = proj_dir / "artifacts" / f"script_{lang}.json" if lang != "pt" else proj_dir / "artifacts" / "script.json"
     if not script_path.exists():
-        return ""
+        return []
     s = load_json(script_path)
     partes = []
     for sec in s.get("sections", []):
@@ -117,7 +122,7 @@ def get_storyline(proj_dir, lang):
         text = re.sub(r"\s+", " ", text).strip()
         if text:
             partes.append(text)
-    return " ".join(partes)[:500]
+    return partes[:8]  # limita a 8 secoes para nao estourar o limite de 5000 chars
 
 
 def build_description_i18n(title, storyline, lang):

@@ -155,6 +155,56 @@ apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo ant
 
 ---
 
+## 5.3. Narração multi-idioma (pt → en/es)
+
+- Inglês (`en`) e espanhol (`es`) geram narração com **Gemini TTS (Google AI Studio)**
+  via `scripts/gen_narration_gemini_sections.py --lang <en|es>`, com vozes nativas
+  (`Achernar` para inglês, `Leda` para espanhol) e mapa de pronúncia
+  (`Luninha → little luna` em en, `lunita` em es).
+- Português (`pt`) continua com Edge-TTS local (inalterado).
+- Quando o Gemini TTS não tem cota (HTTP 429 em todas as chaves), o pipeline faz
+  **fallback automático para Edge-TTS local** (`gen_narration_edge.py`).
+- Saída por idioma: `assets/audio/narration/<lang>/sN.wav` e
+  `artifacts/narration_timing_<lang>.json`.
+
+---
+
+## 5.4. Título da capa no idioma do vídeo
+
+- `scripts/build_composition.py` aceita flag `--lang` e lê o título de
+  `artifacts/script_<lang>.json` (fallback `script.json`) para o `<h1 id="intro-title">`
+  da capa/saudação `s0`. Assim a abertura fica escrita na mesma língua da narração.
+- `scripts/pipeline.py` (`phase_compose`) passa `--lang <mix-lang>` ao construtor.
+
+---
+
+## 5.5. Estratégia de trabalho: disco rápido (C:) + histórico lento (E:)
+
+- **Disco de trabalho (rápido):** `C:\videomaker\projects` (SSD).
+- **Disco histórico (lento):** `E:\videomaker\projects` (arquivo de verdade).
+- **Fluxo por projeto (loop pt → en/es):**
+  1. Copiar o projeto de `E:` para `C:\videomaker\projects\`.
+  2. Processar en/es em `C:` (tradução local via `translate_local.py`,
+     narração com fallback Edge-TTS, timeline, mix, composição, render via
+     `loop_publicacao.py`).
+  3. Quando en/es estiverem completos (MP4s gerados), copiar de volta para
+     `E:\videomaker\projects\`, sobrescrevendo o histórico.
+  4. Registrar na `LISTA_PUBLICACAO.md` os projetos com en/es completos.
+  5. Atualizar `LOG_PROGRESSO_MULTILANG.md` com o que foi feito.
+- Nunca trabalhar diretamente no `E:` (disco lento inviabiliza o loop de render).
+
+---
+
+## 5.6. Lista de publicação
+
+- Todo projeto que ficar com en/es completos (MP4s gerados) deve ser registrado
+  em `LISTA_PUBLICACAO.md` (raiz do Videomaker), pronto para upload ao YouTube
+  com metadados no idioma correto (título, descrição, tags, idioma do áudio e
+  legendas por idioma).
+- Não publicar antes de ter os 3 idiomas (pt + en + es) renderizados.
+
+---
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.

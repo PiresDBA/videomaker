@@ -230,6 +230,12 @@ def build_description(title, storyline=None, hook_index=0, max_chars=MAX_CHARS, 
     title = (title or "").strip() or "Aventura da Frida e da Luna"
     storyline = storyline or []
 
+    # Defensiva: se vier string em vez de lista, converte para lista de um
+    # elemento. Se passar string crua, _fit_storyline iteraria caractere por
+    # caractere (bug de "uma letra em cada coluna").
+    if isinstance(storyline, str):
+        storyline = [storyline] if storyline.strip() else []
+
     head = [title, pick_hook(title, hook_index, lang)]
     tail = [
         blocks["ia"],
