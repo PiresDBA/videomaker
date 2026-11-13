@@ -33,6 +33,10 @@ perguntas **antes** de escrever código:
 6. **Estou desligando/contornando uma trava?** (apagar chamada `trava()`, rodar
    `git commit --no-verify`, usar `--skip-check`) → **NÃO**. Se a trava falhou,
    o problema é o prompt/imagem.
+7. **Estou gerando imagem para outro idioma?** → **NÃO**. As imagens são
+   geradas **uma vez** (em PT) e PT/EN/ES usam os mesmos arquivos. Por idioma
+   mudam só tradução, overlays, narração, legendas, mixagem e render
+   (`CONTRATO.md` §5.9).
 
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.
@@ -62,6 +66,7 @@ python scripts/check_projects.py            # descrições dos projetos no padr�
 python scripts/check_prompt_repeticao.py    # prompt manda copiar a referência?
 python scripts/check_prompt_repeticao.py --strict   # + estrutura nova (CENA + anti-repetição)
 python scripts/check_imagens_repetidas.py   # duas cenas são a mesma figura?
+python scripts/check_imagens_compartilhadas.py --slug <slug>   # PT/EN/ES usam as mesmas imagens?
 python scripts/install_hooks.py             # instala .githooks (uma vez por clone)
 ```
 

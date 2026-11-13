@@ -3920,6 +3920,27 @@ Se parar no meio, é só rodar de novo — ele retoma exatamente de onde parou.
 - Se o Flow falhar (4 loops de quarentena): o script **para e avisa** —
   abra o Flow no Chrome e rode de novo. Não gera no Gemini.
 
+### 58.2.1. Imagens compartilhadas entre PT/EN/ES (regra dura)
+
+As imagens são geradas **uma única vez**, em português, e os três idiomas usam
+**exatamente os mesmos arquivos** (`assets/images/gemini/scenes`). Por idioma
+mudam **só**: tradução (`script_<lang>.json`), overlays/capa/encerramento
+(`scenes/<lang>/`), narração, legendas, mixagem, composição e render.
+
+- **Nunca** gerar imagem "para o EN/ES". Não existe imagem por idioma.
+- **Nunca** rodar a fase de imagens de novo só porque está renderizando outro
+  idioma (o `fase_images` já imprime "PT/EN/ES usam ESTAS mesmas imagens").
+- Imagem errada: corrija **uma vez**, regenere só ela e re-renderize os três.
+- **Trava**: `scripts/check_imagens_compartilhadas.py` grava
+  `artifacts/images_manifest.json` (sha1 de cada imagem) depois da fase de
+  imagens (`--update`) e confere **antes de cada render**. Mudou a pasta entre
+  idiomas → o capítulo aborta. Ver `CONTRATO.md` §5.9.
+
+```powershell
+python scripts/check_imagens_compartilhadas.py --slug <slug>          # confere
+python scripts/check_imagens_compartilhadas.py --slug <slug> --update # apos gerar
+```
+
 ### 58.6. Imagem repetida / vídeo com a mesma figura (BUG CORRIGIDO 2026-11-13)
 
 **Sintoma:** o vídeo inteiro (ou a partir de um ponto) mostra a **mesma

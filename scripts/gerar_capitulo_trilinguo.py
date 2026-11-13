@@ -149,7 +149,8 @@ def fase_images(args, p_dir):
 
     if not faltando:
         print(f"== FASE images: todas as {len(ordem)} imagens ja existem, "
-              f"reaproveitando (nada sera gerado de novo)", flush=True)
+              f"reaproveitando (PT/EN/ES usam ESTAS mesmas imagens; "
+              f"nada sera gerado de novo)", flush=True)
         return
 
     print(f"== FASE images: {len(faltando)} imagem(ns) faltando "
@@ -346,6 +347,16 @@ def fase_para_idioma(args, p_dir, lang):
     garantir_narracao(args, p_dir, lang, script_lang)
     garantir_legendas(args, p_dir, lang, script_lang)
 
+    # Antes de montar/renderizar: as imagens tem que ser exatamente as mesmas
+    # dos outros idiomas (nada de gerar imagem nova por idioma - 5.9).
+    trava("check_imagens_compartilhadas.py", "--slug", p_dir.name,
+          label=f"imagens compartilhadas antes do render {lang}")
+    imgs = len([f for f in (p_dir / "assets" / "images" / "gemini" / "scenes").iterdir()
+                if f.suffix.lower() in (".jpg", ".jpeg", ".png")
+                and not f.name.startswith("_")])
+    print(f"== IMAGENS[{lang}]: reaproveitando as {imgs} imagens de PT "
+          f"(nenhuma imagem nova e gerada por idioma)", flush=True)
+
     run([sys.executable, str(SCRIPTS["build_timeline"]),
          "--proj", str(p_dir), "--lang", lang],
         f"FASE timeline[{lang}]")
@@ -452,6 +463,9 @@ def main():
     # Trava 2: nenhuma imagem pode ser a mesma figura de outra cena.
     trava("check_imagens_repetidas.py", "--slug", slug,
           label="imagens diferentes entre si")
+    # Trava 3: manifesto das imagens - PT/EN/ES usam exatamente estas (5.9).
+    trava("check_imagens_compartilhadas.py", "--slug", slug, "--update",
+          label="imagens compartilhadas entre idiomas (manifesto)")
     fase_music(args, p_dir, prompt)
 
     # Por idioma (traducao/overlays/narracao/legendas/montagem/render)

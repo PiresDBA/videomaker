@@ -99,11 +99,17 @@ que já estava certo.
    mesmo ambiente". A referência é só design das personagens/estilo; a cena vem
    da narração (§5.8). Foi assim que o Chihuahua e o Restaurante saíram com a
    mesma figura repetida.
+7. **Não gerar imagem por idioma.** As imagens são geradas **uma vez** (em PT)
+   e PT/EN/ES usam os **mesmos arquivos**; por idioma mudam só tradução,
+   overlays, narração, legendas, mixagem e render (§5.9). A trava
+   `check_imagens_compartilhadas.py` aborta o capítulo se a pasta de cenas
+   mudar entre idiomas.
 8. **Não renderizar nem publicar vídeo com imagem repetida.** Se duas pausas
    mostram a mesma figura, o vídeo está errado: corrija as imagens antes.
-9. **Não desligar/contornar as travas** `check_prompt_repeticao.py` e
-   `check_imagens_repetidas.py` (nem remover a chamada `trava()` do
-   `gerar_capitulo_trilinguo.py`). Se a trava incomodou, o problema é o prompt.
+9. **Não desligar/contornar as travas** `check_prompt_repeticao.py`,
+   `check_imagens_repetidas.py` e `check_imagens_compartilhadas.py` (nem
+   remover as chamadas `trava()` do `gerar_capitulo_trilinguo.py`). Se a trava
+   incomodou, o problema é o prompt/imagem.
 10. **Não trocar `scene_mode` de `two` para `beats`** sem antes provar (com as
     imagens na mão) que não há repetição (§5.8).
 11. **Não usar o Gemini para gerar imagem.** Imagem é só Google Flow; se o Flow
@@ -297,6 +303,47 @@ Apague as duplicadas, regenere. Se o vídeo já subiu assim, **apague no YouTube
 com o token do canal dono** e reenvie.
 
 Documentação completa (causa, mecanismo e revisão): `MANUAL_GRAFOS.md` §58.6.
+
+---
+
+## 5.9. Imagens compartilhadas entre PT/EN/ES (regra dura)
+
+As imagens de cena são geradas **uma única vez**, em português, pelo Google
+Flow, e os **três idiomas usam exatamente os mesmos arquivos**
+(`assets/images/gemini/scenes/*.jpg`, byte a byte).
+
+Por idioma muda **apenas**:
+
+| Muda por idioma | Não muda |
+|---|---|
+| tradução do roteiro (`script_<lang>.json`) | imagens de cena |
+| overlays/capa/encerramento (`scenes/<lang>/`) | `scenes.json` / `image_prompts.json` |
+| narração (`assets/audio/narration/<lang>/`) | montagem de cenas |
+| legendas (`assets/subtitles/<lang>/`) | — |
+| mixagem, composição, render | — |
+
+**Proibido:**
+
+1. Gerar imagem nova "para o EN/ES". Não existe imagem por idioma.
+2. Rodar a fase de imagens de novo depois que o vídeo já tem imagens só
+   porque está renderizando outro idioma.
+3. Apagar/regravar a pasta de cenas entre idiomas.
+4. Usar Gemini para imagem (imagem é só Flow — §58.2 do manual).
+
+**Trava automática:** `scripts/check_imagens_compartilhadas.py`.
+Depois da fase de imagens o `gerar_capitulo_trilinguo.py` grava
+`artifacts/images_manifest.json` (nome + sha1 de cada imagem) com `--update`;
+**antes de cada render**, confere o manifesto. Se alguma imagem aparecer,
+sumir ou mudar entre idiomas, o capítulo **aborta** — porque as 3 versões têm
+que sair da mesma pasta.
+
+```powershell
+python scripts/check_imagens_compartilhadas.py --slug <slug>          # confere
+python scripts/check_imagens_compartilhadas.py --slug <slug> --update # apos gerar
+```
+
+Se uma imagem estiver errada: corrija **uma vez**, regenere **só ela** e
+re-renderize os três idiomas (não gere por idioma).
 
 ---
 
