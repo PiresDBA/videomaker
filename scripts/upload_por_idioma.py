@@ -312,6 +312,11 @@ def main():
             erros.append((slug, "quota"))
             break
         if not vid:
+            if a.dry_run:
+                # dry-run: upload() sempre devolve None (nao envia de verdade).
+                # Nao e falha - e so simulacao.
+                enviados.append(slug)
+                continue
             erros.append((slug, "falha no upload"))
             continue
 
