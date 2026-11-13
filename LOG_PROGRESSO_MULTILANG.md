@@ -128,3 +128,30 @@ Correcao (manual §58.6):
 
 Acao: 27 imagens regeradas por capitulo e 3 renders por capitulo. Videos
 antigos (Chihuahua PT/EN, Restaurante PT/EN) devem ser apagados e reenviados.
+
+## 2026-11-13 - Travas contra imagem repetida, imagem por idioma e MP4 velho
+
+Fecha o ciclo do bug da figura repetida (Chihuahua ~1:22, Restaurante do inicio
+ao fim). Alem da correcao de prompt/download, o erro agora e bloqueado antes de
+acontecer:
+
+- check_prompt_repeticao.py: frase proibida em prompt (copiar a referencia),
+  --strict exige CENA prioridade + REGRA ANTI-REPETICAO + scene_mode=two, e
+  testa build_prompt com cena longa (o corte de MAX_PROMPT_CHARS estava comendo
+  a regra nas variantes _b).
+- check_imagens_repetidas.py: duas imagens de cena iguais = falha.
+- check_imagens_compartilhadas.py: manifesto sha1; PT/EN/ES tem que usar as
+  MESMAS imagens; confere antes de cada render.
+- gerar_capitulo_trilinguo.py: trava() antes das imagens e antes de cada
+  render; MP4 so e reaproveitado se for mais novo que imagens/roteiro/overlays/
+  narracao (antes reaproveitou video velho depois de regerar as imagens).
+- .githooks/pre-commit e pre-push + scripts/install_hooks.py.
+- Docs: CONTRATO 4.7-4.11, 5.8, 5.9, 5.10; MANUAL 58.2.1, 58.6.1, 58.6.2;
+  AGENTS com bloco de parada obrigatoria.
+
+Estado das imagens (mesma pasta para os 3 idiomas):
+- Chihuahua: 27 imagens novas conferidas (Frida buldogue, Luna salsicha,
+  chihuahua de pelo curto), 3 renders em andamento.
+- Restaurante: 9/27 imagens novas; retomar da 10a e renderizar.
+- Videos errados ainda no ar: Chihuahua PT/EN e Restaurante PT/EN - apagar com
+  o token do canal dono assim que os renders novos existirem.
