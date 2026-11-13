@@ -3942,6 +3942,27 @@ também). Se um vídeo já subiu com texto PT na tela, apagar e reenviar.
 para os 3 idiomas. Assinatura: `translate_script(script, [lista_de_idiomas],
 out_dir, topic=...)` — **passar lista**, ex. `["en"]` (não string solta).
 
+### 58.4.1. Personagem novo (regra de consistência — VALE PARA TODOS)
+
+Qualquer personagem novo que aparecer em cena **ou que for o tema do
+episódio** (chihuahua, esquilo, gato, tartaruga, coelho, etc.):
+
+- É **um personagem fixo**: mesma raça, cor, tamanho e traços em todas
+  as cenas em que aparecer — nunca muda de design entre imagens.
+- **Nunca se mistura com Frida e Luna**: Luna é salsicha marrom de
+  corpo alongado (tipo salsicha/hot dog) e pernas curtas — **nunca** pode
+  ser desenhada como chihuahua nem como outra raça; Frida é sempre a
+  buldogue inglesa grande.
+- **Escala correta**: personagem pequeno (chihuahua) < Luna < Frida.
+- Essas regras ficam no bloco "REFERENCIA DE PERSONAGENS" e
+  "ESTILO PERSONAGENS" injetado pelo `flow_fetch.py` em **todo** prompt
+  (`_enforce_characters`), incluindo o negativo ("Luna drawn as a
+  chihuahua", "third character changing design between scenes",
+  "insect features", "wrong size relationship").
+- Se ainda assim uma imagem sair inconsistente (Luna errada, personagem
+  novo diferente entre cenas), **apagar a .jpg do projeto e rodar de
+  novo** — o script regera só a que falta, com `--ref-image` da anterior.
+
 ### 58.5. Música (compartilhada)
 
 Ordem oficial: **banco local** (`listar_musicas_banco`/`escolher_musica_banco`,

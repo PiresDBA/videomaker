@@ -65,6 +65,17 @@ CHARACTER_REF_TEMPLATE = (
     "fonte de verdade para cores, anatomia e estilo.\n\n"
     "Ha um arquivo chamado referencia.png salvo no Google Flow (na secao de imagens); "
     "use-o como referencia de cores/estilos para as imagens que tiverem Frida e Luna no contexto.\n\n"
+    "REGRA DE PERSONAGEM NOVO (OBRIGATORIA): qualquer personagem novo que aparecer "
+    "em cena ou que for o tema do episodio (ex.: chihuahua, esquilo, gato, "
+    "tartaruga, coelho...) e UM personagem fixo da historia: MESMA raca, MESMA "
+    "cor, MESMO tamanho e MESMOS tracos em todas as cenas em que aparecer, "
+    "seguindo sempre a descricao do prompt. O personagem novo NUNCA se mistura "
+    "com Frida e Luna. "
+    "LUNA E SALSICHA: corpo alongado tipo salsicha (hot dog), pernas curtas, pelo marrom "
+    "chocolate - NUNCA desenhe Luna como chihuahua nem como outra raca, e nao mude "
+    "o corpo ou a cor dela. "
+    "FRIDA E SEMPRE A BULDOGUE INGLESA grande e compacta. "
+    "Escala correta: personagem pequeno (ex.: chihuahua) menor que Luna; Luna menor que Frida.\n\n"
 )
 CHARACTER_STYLE_MARKER = "ESTILO PERSONAGENS (OBRIGATORIA)"
 CHARACTER_STYLE_POSITIVE = (
@@ -85,7 +96,15 @@ CHARACTER_STYLE_POSITIVE = (
     "Requirements: Maintain exact proportions, facial features, coat colors, "
     "necklaces, eye shape, eyelashes and body structure in every image. Keep "
     "character identity unchanged. Consistent character design across all poses, "
-    "expressions and scenes."
+    "expressions and scenes.\n\n"
+    "New character rule: ANY new character that appears in a scene or is the "
+    "episode's subject (for example a chihuahua, squirrel, cat, turtle, rabbit) "
+    "is a FIXED recurring character - identical breed, coat color, size and "
+    "traits in every scene it appears, never blending with Luna or Frida. "
+    "Luna stays a dachshund: elongated sausage-like body, very short legs, dark "
+    "chocolate coat - she is NEVER drawn as a chihuahua or any other breed. "
+    "Size order: third small character (e.g. chihuahua) smaller than Luna; "
+    "Luna smaller than Frida."
 )
 CHARACTER_STYLE_NEGATIVE = (
     "different breed, realistic dog, photorealistic, different coat color, different "
@@ -93,7 +112,10 @@ CHARACTER_STYLE_NEGATIVE = (
     "legs, short body, different muzzle, different ears, male dog, aggressive "
     "appearance, low quality, deformed face, different character design, character "
     "redesign, different eye color, missing eyelashes, cartoon simplification, anime "
-    "style, 2D illustration, flat shading"
+    "style, 2D illustration, flat shading, Luna drawn as a chihuahua, Luna with "
+    "apple-shaped head, Luna with normal-length body, Frida drawn as another breed, "
+    "third character changing design between scenes, insect features, ant-like body, "
+    "wrong size relationship between characters"
 )
 CHARACTER_STYLE_BLOCK = (
     CHARACTER_STYLE_MARKER + ": " + CHARACTER_STYLE_POSITIVE + "\n\n"
