@@ -151,8 +151,28 @@ XFADE = 0.9  # crossfade entre cenas (ajustavel)
 INTRO_DUR = 4.0   # duracao da tela inicial (capa)
 OUTRO_DUR = 5.0   # duracao da tela final (agradecimento)
 
+# Textos da capa e do encerramento, no idioma do video (regra: nenhum texto
+# na tela pode ficar em PT nos videos EN/ES). Padrao pt = comportamento antigo.
+INTRO_TEXTS = {
+    "pt": "Uma nova aventura com a Frida e a Luna!",
+    "en": "A brand-new adventure with Frida and Luna!",
+    "es": "Una nueva aventura con Frida y Luna!",
+}
+OUTRO_TEXTS = {
+    "pt": ["Obrigado por assistir!", "Gostou? Deixe seu like!",
+           "Se inscreva no canal", "Novo video toda semana"],
+    "en": ["Thanks for watching!", "Liked it? Leave a like!",
+           "Subscribe to the channel", "New video every week"],
+    "es": ["Gracias por ver!", "Te gusto? Deja tu like!",
+           "Suscribete al canal", "Nuevo video cada semana"],
+}
 
-def build(scene_cfg, timeline, overlays, title="Meu Video"):
+
+def _txt(d, lang):
+    return d.get((lang or "pt").lower(), d["pt"])
+
+
+def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     scenes = []
     js = []
     js.append("const tl = gsap.timeline({ paused: true });")
@@ -169,9 +189,9 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
         '<div class="eyebrow">FRIDA E LUNA</div>'
         '<h1 class="h-xl serif" data-anim="zoom" data-delay="0.3" id="intro-title">%s</h1>'
         '<div class="divider" style="margin:24px auto;"></div>'
-        '<div class="body" data-anim="rise" data-delay="0.8">Uma nova aventura com a Frida e a Luna!</div>'
+        '<div class="body" data-anim="rise" data-delay="0.8">%s</div>'
         '</div>'
-        '</div>' % (intro_id, intro_start, INTRO_DUR, title)
+        '</div>' % (intro_id, intro_start, INTRO_DUR, title, _txt(INTRO_TEXTS, lang))
     )
     js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:1.2,ease:"back.out(2.4)"},0.3);')
     js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
@@ -276,18 +296,20 @@ def build(scene_cfg, timeline, overlays, title="Meu Video"):
     # ========== TELA FINAL (OUTRO) ==========
     outro_id = "outro-final"
     outro_start = cursor
+    outro_txts = _txt(OUTRO_TEXTS, lang)
     scenes.append(
-        '<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="1">'
+        '<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="%s">'
         '<div class="ov grain"></div>'
         '<div class="ov" style="background:radial-gradient(circle at 50%% 50%%,rgba(240,178,74,.18) 0%%,rgba(8,5,3,.95) 100%%)"></div>'
         '<div class="block tc" style="top:38%%;">'
-        '<div class="h-lg serif" data-anim="pop" data-delay="0.2">Obrigado por assistir!</div>'
+        '<div class="h-lg serif" data-anim="pop" data-delay="0.2">%s</div>'
         '<div class="divider" style="margin:24px auto;"></div>'
-        '<div class="body" data-anim="rise" data-delay="0.6">Gostou? Deixe seu like!</div>'
-        '<div class="body" data-anim="rise" data-delay="1.1">Se inscreva no canal</div>'
-        '<div class="body" data-anim="rise" data-delay="1.6">Novo video toda semana</div>'
+        '<div class="body" data-anim="rise" data-delay="0.6">%s</div>'
+        '<div class="body" data-anim="rise" data-delay="1.1">%s</div>'
+        '<div class="body" data-anim="rise" data-delay="1.6">%s</div>'
         '</div>'
-        '</div>' % (outro_id, outro_start, OUTRO_DUR)
+        '</div>' % (outro_id, outro_start, OUTRO_DUR, "1",
+                    outro_txts[0], outro_txts[1], outro_txts[2], outro_txts[3])
     )
     js.append('tl.set("#%s",{opacity:0},0);' % outro_id)
     js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:1.0,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
@@ -339,7 +361,7 @@ def main():
             html = p.read_text(encoding="utf-8")
             overlays[sec["id"]] = inject_ids(html, sec["id"])
 
-    body, js, total = build(scene_cfg, tl, overlays, title=video_title)
+    body, js, total = build(scene_cfg, tl, overlays, title=video_title, lang=lang)
     audio_start = 0.0
     audio_dur = total - OUTRO_DUR
 

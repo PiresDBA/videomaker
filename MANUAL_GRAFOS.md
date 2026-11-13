@@ -3926,6 +3926,15 @@ aventura...") fica no idioma do vídeo. Os overlays ficam em
 `scenes/<lang>/` e o compose recebe `--scenes-dir scenes/<lang>`.
 O padrão `pt` preserva o comportamento antigo.
 
+**Capa e encerramento também são por idioma** (2026-11-13): o
+`build_composition.py` montava a capa ("Uma nova aventura com a Frida e a
+Luna!") e o encerramento ("Obrigado por assistir!", "Se inscreva no canal",
+etc.) com texto fixo em PT — apareciam em PT nos vídeos EN/ES. Agora esses
+textos vêm de `INTRO_TEXTS`/`OUTRO_TEXTS` no próprio `build_composition.py`
+e seguem o `--lang` do vídeo. Regra: **nenhum texto na tela pode ficar em
+PT nos vídeos EN/ES** (CONTRATO.md §5.7 vale para o que aparece na tela
+também). Se um vídeo já subiu com texto PT na tela, apagar e reenviar.
+
 ### 58.4. Tradução (`script_<lang>.json`) — só o texto
 
 `translate_script.py` traduz **apenas** `title` e `text` das seções
