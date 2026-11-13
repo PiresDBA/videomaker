@@ -79,3 +79,26 @@ Rodar `python scripts/loop_upload_idiomas.py` 1x por dia até zerar os pendentes
 - Capa/overframe dos MP4s antigos continua em PT (re-render futuro, §56.6 do manual).
 - dachshund-marrom-luna-tenta-pegar-o-bisc sem trilha (bgm).
 - 3 projetos sem `script.json` (não traduzíveis ainda).
+
+## 2026-11-13 - Novo capitulo trilingue: "O Parque dos Pets"
+
+Primeiro capitulo gerado pelo novo fluxo (gerar_capitulo_trilinguo.py, sec. 58
+do manual): imagens SO pelo Google Flow (referencia Frida + Luna + --ref-image
+da ultima imagem gerada para continuidade de cenario), roteiro/cenas/imagens/
+musica gerados uma vez e reaproveitados pelos 3 idiomas.
+
+### Videos
+- PT: luna-e-frida-conhecem-um-parque-de-diver_pt.mp4 (3m16s) -> publicado
+  https://youtu.be/1kxFAThSKas (legenda OK)
+- EN: ..._en.mp4 (3m28s) -> publicado https://youtu.be/1wuBS1M7mCk (legenda OK)
+- ES: ..._es.mp4 (3m35s) -> PENDENTE: YouTube recusou com uploadLimitExceeded
+  (limite diario de uploads do CANAL, nao da API). Reenviar quando resetar (~24h):
+
+  python scripts/upload_por_idioma.py es --projects-dir C:\videomaker\projects --slug luna-e-frida-conhecem-um-parque-de-diver
+
+### Pendencias (continuam)
+- ES deste capitulo (comando acima).
+- PT: limpar duplicados <50 views por idioma de legenda
+  (pt_menos_50_views_en_es.py --apagar, 40 pendentes da cota de ontem).
+- EN/ES antigos: continuar upload_por_idioma.py en|es --all (ou
+  loop_upload_idiomas.py) ate zerar.
