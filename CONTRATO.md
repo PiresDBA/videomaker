@@ -347,6 +347,31 @@ re-renderize os três idiomas (não gere por idioma).
 
 ---
 
+## 5.10. MP4 só vale se for mais novo que as imagens (regra dura)
+
+O `gerar_capitulo_trilinguo.py` **não reaproveita** um `.mp4` só porque o
+arquivo existe. Ele compara a data do vídeo com a data das dependências
+daquele idioma:
+
+- todas as imagens de `assets/images/gemini/scenes/`
+- `artifacts/scenes.json`, `artifacts/image_prompts.json`
+- `artifacts/script_<lang>.json`, `artifacts/narration_timing_<lang>.json`
+- `assets/audio/narration/<lang>/`, `scenes/<lang>/`, `assets/subtitles/<lang>/`
+
+Se qualquer dependência for mais nova, o vídeo é considerado **desatualizado**
+e é **re-renderizado** (com o log `existe mas esta DESATUALIZADO ...`).
+
+Isso já causou problema real: as 27 imagens do Chihuahua foram refeitas, mas os
+MP4 antigos (com a figura repetida) foram reaproveitados e teriam sido
+publicados de novo. **Nunca** "consertar" isso apagando a checagem: se o vídeo
+re-renderizou sem necessidade, o certo é investigar por que a dependência ficou
+mais nova.
+
+Regra prática: mudou imagem, roteiro, overlay, narração ou legenda → os três
+MP4 daquele projeto precisam ser refeitos antes de publicar.
+
+---
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.

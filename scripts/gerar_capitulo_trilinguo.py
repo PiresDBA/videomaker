@@ -330,17 +330,56 @@ def garantir_legendas(args, p_dir, lang, script_lang):
     return out_srt
 
 
+def _mtime(p: Path) -> float:
+    try:
+        return p.stat().st_mtime
+    except OSError:
+        return 0.0
+
+
+def _deps_do_idioma(p_dir: Path, lang: str):
+    """Arquivos que, se mudarem, obrigam a re-renderizar aquele idioma."""
+    deps = [p_dir / "artifacts" / "scenes.json",
+            p_dir / "artifacts" / "image_prompts.json",
+            p_dir / "artifacts" / f"script_{lang}.json",
+            p_dir / "artifacts" / f"narration_timing_{lang}.json"]
+    for pasta in (p_dir / "assets" / "images" / "gemini" / "scenes",
+                  p_dir / "assets" / "audio" / "narration" / lang,
+                  p_dir / "scenes" / lang,
+                  p_dir / "assets" / "subtitles" / lang):
+        if pasta.is_dir():
+            deps.extend(f for f in pasta.rglob("*") if f.is_file())
+    return deps
+
+
+def _video_atualizado(p_dir: Path, video: Path, lang: str) -> bool:
+    """O MP4 so vale se for mais novo que imagens/roteiro/overlays/narração.
+
+    Bug real: as 27 imagens foram regeradas, mas o MP4 antigo (com a figura
+    repetida) foi reaproveitado porque o arquivo existia. Video velho com
+    imagem nova = video errado publicado de novo (CONTRATO.md 5.10).
+    """
+    if not video.exists() or video.stat().st_size <= 0:
+        return False
+    mais_novo = max([_mtime(d) for d in _deps_do_idioma(p_dir, lang)] or [0.0])
+    return video.stat().st_mtime + 1.0 >= mais_novo
+
+
 def fase_para_idioma(args, p_dir, lang):
     """Tradução -> overlays -> narração -> legendas -> timeline -> mix ->
     compose -> preprocess -> render (reaproveita tudo que já existe)."""
     print(f"\n{'='*60}\nIDIOMA {lang.upper()}\n{'='*60}", flush=True)
 
-    # Video final deste idioma ja existe: reaproveita (nao re-renderiza).
+    # Video final deste idioma ja existe E esta atualizado: reaproveita.
     video_pronto = p_dir / "output" / f"{p_dir.name}_{lang}.mp4"
-    if video_pronto.exists() and video_pronto.stat().st_size > 0:
-        print(f"== VIDEO[{lang}]: ja existe ({video_pronto.name}), "
+    if _video_atualizado(p_dir, video_pronto, lang):
+        print(f"== VIDEO[{lang}]: ja existe e esta atualizado ({video_pronto.name}), "
               f"reaproveitando (nada sera re-renderizado)", flush=True)
         return
+    if video_pronto.exists() and video_pronto.stat().st_size > 0:
+        print(f"== VIDEO[{lang}]: existe mas esta DESATUALIZADO "
+              f"(imagem/roteiro/overlay/narracao mais novos) - re-renderizando",
+              flush=True)
 
     script_lang = garantir_script_lang(p_dir, lang, args)
     scenes_dir_lang = garantir_overlays(p_dir, lang, script_lang)

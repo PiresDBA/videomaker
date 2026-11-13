@@ -37,6 +37,9 @@ perguntas **antes** de escrever código:
    geradas **uma vez** (em PT) e PT/EN/ES usam os mesmos arquivos. Por idioma
    mudam só tradução, overlays, narração, legendas, mixagem e render
    (`CONTRATO.md` §5.9).
+8. **Estou reaproveitando um MP4 antigo?** → só se ele for **mais novo** que
+   as imagens/roteiro/overlays/narração. Imagem nova + MP4 velho = vídeo
+   errado publicado (§5.10).
 
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.

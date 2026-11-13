@@ -3941,6 +3941,11 @@ python scripts/check_imagens_compartilhadas.py --slug <slug>          # confere
 python scripts/check_imagens_compartilhadas.py --slug <slug> --update # apos gerar
 ```
 
+**O MP4 também é conferido**: `gerar_capitulo_trilinguo.py` só reaproveita
+`output/<slug>_<lang>.mp4` se ele for **mais novo** que as imagens, o roteiro,
+os overlays, a narração e as legendas. Se qualquer um mudou, o vídeo é
+re-renderizado (log `existe mas esta DESATUALIZADO`). Ver `CONTRATO.md` §5.10.
+
 ### 58.6. Imagem repetida / vídeo com a mesma figura (BUG CORRIGIDO 2026-11-13)
 
 **Sintoma:** o vídeo inteiro (ou a partir de um ponto) mostra a **mesma
