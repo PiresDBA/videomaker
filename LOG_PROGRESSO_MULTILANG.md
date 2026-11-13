@@ -102,3 +102,29 @@ musica gerados uma vez e reaproveitados pelos 3 idiomas.
   (pt_menos_50_views_en_es.py --apagar, 40 pendentes da cota de ontem).
 - EN/ES antigos: continuar upload_por_idioma.py en|es --all (ou
   loop_upload_idiomas.py) ate zerar.
+
+## 2026-11-13 - BUG: imagem repetida em Chihuahua e Restaurante (RESOLVIDO)
+
+Sintoma: Chihuahua repetia a mesma foto a partir de ~1:22; Restaurante repetia
+a mesma figura do inicio ao fim.
+
+Causa (2 camadas):
+1. Os prompts mandavam copiar a referencia: "siga a imagem de referencia
+   anexada para TUDO", "mantenha exatamente a mesma aparencia ... em todas as
+   imagens" e "mantenha este mesmo ambiente em todas as imagens".
+2. O flow_fetch salvava a miniatura da propria imagem de referencia (primeira
+   resposta de imagem da pagina) em vez da imagem gerada - comprovado: arquivo
+   salvo era pixel a pixel igual a referencia.
+
+Correcao (manual §58.6):
+- Referencia = design das personagens/estilo; a CENA manda em tudo.
+- Bloco "REGRA ANTI-REPETICAO" em todo prompt; cenario = mesmo tipo de lugar
+  com enquadramento/angulo/fundo diferentes.
+- Bloco anti-texto movido para logo apos a CENA (nao e mais cortado por
+  MAX_PROMPT_CHARS).
+- flow_fetch: ignora respostas identicas a referencia e URLs ja presentes na
+  tela; _imagem_repetida descarta e reenvia imagem igual a referencia ou a
+  qualquer imagem existente na pasta.
+
+Acao: 27 imagens regeradas por capitulo e 3 renders por capitulo. Videos
+antigos (Chihuahua PT/EN, Restaurante PT/EN) devem ser apagados e reenviados.

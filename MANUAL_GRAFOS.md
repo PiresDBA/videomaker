@@ -3915,8 +3915,54 @@ Se parar no meio, é só rodar de novo — ele retoma exatamente de onde parou.
   personagens criados no Flow** (bloco "REFERENCIA DE PERSONAGENS").
 - **Continuidade**: ao gerar uma imagem nova, a última imagem gerada do
   projeto é colada como `--ref-image` (base visual para a próxima).
+  A referência serve **só para o design das personagens** — nunca para a cena
+  (ver §58.6).
 - Se o Flow falhar (4 loops de quarentena): o script **para e avisa** —
   abra o Flow no Chrome e rode de novo. Não gera no Gemini.
+
+### 58.6. Imagem repetida / vídeo com a mesma figura (BUG CORRIGIDO 2026-11-13)
+
+**Sintoma:** o vídeo inteiro (ou a partir de um ponto) mostra a **mesma
+imagem** em todas as pausas. Aconteceu no Chihuahua (a partir de ~1:22) e no
+Restaurante (a mesma figura do começo ao fim).
+
+**Causa raiz:** o prompt pedia para **copiar a referência**. Três textos
+somavam nessa direção:
+
+1. `REF_CHARS` em `generate_scenes_and_prompts.py`:
+   "siga a imagem de referência anexada **para TUDO** — aparência, cores e
+   traço ... e o estilo visual geral".
+2. `CHARACTER_REF_TEMPLATE` em `flow_fetch.py`: "Mantenha exatamente a mesma
+   aparência dos dois personagens **em todas as imagens**" + "use
+   `referencia.png` como referência de cores/estilos".
+3. `Cenario do video (mantenha este mesmo ambiente em todas as imagens)`.
+
+Com a imagem anterior anexada (`--ref-image`) e o pedido de "manter tudo
+igual", o Flow devolvia **a própria referência** em vez de desenhar a cena
+nova. Como a cadeia usa a imagem anterior como referência da próxima, o vídeo
+travava numa figura só.
+
+**Correção (regra permanente):**
+
+- Referência = **design das personagens e estilo do traço**. A cena vem da
+  narração e manda em tudo.
+- Todo prompt leva agora um bloco **"REGRA ANTI-REPETICAO"**: cena nova, novo
+  enquadramento, novo ângulo, novas poses, novos objetos.
+- O cenário é "o mesmo **tipo** de lugar, com enquadramento/ângulo/fundo
+  diferentes em cada imagem".
+- O bloco anti-texto ("não escreva nada na imagem") subiu para logo depois da
+  CENA, porque o corte de `MAX_PROMPT_CHARS` estava comendo essa regra.
+- **Guarda técnica no `flow_fetch`** (`_imagem_repetida`): a imagem baixada é
+  comparada (Pillow, 48x48) com a referência e com **todas** as imagens já
+  existentes na pasta de cenas; se for praticamente igual (média < 2), é
+  descartada e o prompt é reenviado. Também ignora respostas de rede de URLs
+  que já estavam na tela antes do envio (galeria antiga do Flow).
+- `scene_mode` fica em **`two`** (`config.json`): o modo `beats` gerava 3–4
+  prompts quase idênticos por seção e multiplicava a repetição.
+
+**Ao revisar imagens novas:** abra 3–4 `.jpg` da pasta e confirme que são
+cenas diferentes entre si. Imagem repetida = não renderizar; corrigir e gerar
+de novo.
 
 ### 58.3. Overlays por idioma (`scenes/<lang>/`)
 

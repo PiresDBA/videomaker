@@ -280,12 +280,18 @@ def fix_species(text):
 
 
 REF_CHARS = (
-    "PERSONAGENS E ESTILO: siga a imagem de referência anexada para TUDO — "
-    "aparência, cores e traço das personagens (Luna: dachshund marrom pequena; "
-    "Frida: buldogue fawn grande) e o estilo visual geral. "
-    "Desenho animado original e lúdico, estilo visual próprio "
-    "(não copie outros desenhos, filmes ou marcas existentes), "
-    "visto do ponto de vista dos cães, sem humanos."
+    "PERSONAGENS (identidade fixa): Luna e a dachshund salsicha marrom-chocolate "
+    "(corpo alongado, pernas muito curtas, orelhas longas) e Frida e a buldogue "
+    "inglesa fawn, grande e compacta (rugas suaves, colar de perolas). "
+    "A imagem de referencia serve SOMENTE para o design das personagens "
+    "(raca, cor, tamanho, tracos) e para o estilo do traco.\n"
+    "REGRA ANTI-REPETICAO (OBRIGATORIA): esta e uma CENA NOVA. NAO reproduza a "
+    "imagem de referencia nem a imagem anterior: mude a composicao, o "
+    "enquadramento, o angulo, as poses e os objetos de cena. A acao descrita "
+    "acima manda em tudo; a referencia nunca define a cena.\n"
+    "Desenho animado original e ludico, estilo visual proprio "
+    "(nao copie outros desenhos, filmes ou marcas existentes), "
+    "visto do ponto de vista dos caes, sem humanos."
 )
 
 
@@ -333,7 +339,15 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
         scene = (scene + " Foco nos rostos e nas caretas engraçadas dos personagens.").strip()
     # A cena descreve a ACAO. Anti-texto vai no bloco final (em PT): baloes
     # com escrita aparecerem mesmo com SAFE_STYLE em ingles no fim do prompt.
-    parts = ["CENA (gere exatamente esta cena): %s" % scene]
+    parts = ["CENA (prioridade maxima - desenhe exatamente esta acao, diferente da imagem de referencia): %s" % scene]
+    # Anti-texto logo depois da CENA: e a regra que o modelo mais desrespeita e
+    # nao pode ser cortada pelo limite de caracteres do prompt.
+    parts.append(
+        "Uma única imagem estática (NÃO gere vídeo, NÃO gere áudio). "
+        "NÃO escreva NADA na imagem: sem palavras, letras, números, legendas, "
+        "onomatopeias, balões de fala ou balões de pensamento. "
+        "Sem logotipos ou marcas visíveis."
+    )
     # Contexto de lugar. Em video de passeio cada cena acontece em um lugar
     # diferente, entao o lugar manda; fora disso vale o cenario global.
     if lugar:
@@ -344,18 +358,15 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
                 "com fidelidade e NAO repita o ambiente das cenas anteriores."
             )
     elif cenario:
-        parts.append("Cenario do video (mantenha este mesmo ambiente em todas as imagens): %s." % cenario)
+        parts.append(
+            "Cenario de base do video (o MESMO tipo de lugar, porem com "
+            "enquadramento, angulo e fundo diferentes em cada imagem): %s." % cenario
+        )
     if frida_luna:
         if has_reference:
             parts.append(REF_CHARS)
         else:
             parts.append(FRIDA_LUNA_DESC.strip())
-    parts.append(
-        "Uma única imagem estática (NÃO gere vídeo, NÃO gere áudio). "
-        "NÃO escreva NADA na imagem: sem palavras, letras, números, legendas, "
-        "onomatopeias, balões de fala ou balões de pensamento. "
-        "Sem logotipos ou marcas visíveis."
-    )
     prompt = "\n".join(parts)
     if len(prompt) > MAX_PROMPT_CHARS:
         prompt = prompt[:MAX_PROMPT_CHARS]

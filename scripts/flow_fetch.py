@@ -55,16 +55,15 @@ IMAGE_ONLY_PREFIX = (
 DEFAULT_CHARACTERS = "Frida e Luna"
 CHARACTER_REF_MARKER = "REFERENCIA DE PERSONAGENS (OBRIGATORIA)"
 CHARACTER_REF_TEMPLATE = (
-    CHARACTER_REF_MARKER + ": use como base os personagens ja criados neste Google "
-    "Flow chamados {names}. Mantenha exatamente a mesma aparencia dos dois "
-    "personagens (Frida: buldogue inglesa amarelo-fawn, tranquila; Luna: salsicha "
-    "marrom-chocolate, pelo curto e liso, focinho com peludos brancos) em todas "
-    "as imagens. Nao altere raca, cor, tamanho, idade nem tracos dos personagens.\n\n"
-    "Use os personagens criados no Google Flow com os nomes informados: Frida e Luna, "
-    "sendo Frida o Bulldogue Ingles e Luna o dachshund. Use essas identidades como "
-    "fonte de verdade para cores, anatomia e estilo.\n\n"
-    "Ha um arquivo chamado referencia.png salvo no Google Flow (na secao de imagens); "
-    "use-o como referencia de cores/estilos para as imagens que tiverem Frida e Luna no contexto.\n\n"
+    CHARACTER_REF_MARKER + ": os personagens {names} ja existem neste Google Flow "
+    "(Frida: buldogue inglesa fawn, grande e compacta; Luna: salsicha dachshund "
+    "marrom-chocolate, corpo alongado, pernas curtas). Use essas identidades SOMENTE "
+    "para o design dos personagens (raca, cor, tamanho, tracos, acessorios) e para o "
+    "estilo do traco. Nao altere raca, cor, tamanho, idade nem tracos dos personagens.\n\n"
+    "REGRA ANTI-REPETICAO (OBRIGATORIA): cada imagem e uma CENA NOVA. NUNCA reproduza "
+    "a imagem de referencia nem a imagem gerada anteriormente: mude a composicao, o "
+    "enquadramento, o angulo, as poses, a acao e os objetos de cena. A descricao da "
+    "CENA manda em tudo; a referencia serve so para o design das personagens.\n\n"
     "REGRA DE PERSONAGEM NOVO (OBRIGATORIA): qualquer personagem novo que aparecer "
     "em cena ou que for o tema do episodio (ex.: chihuahua, esquilo, gato, "
     "tartaruga, coelho...) e UM personagem fixo da historia: MESMA raca, MESMA "
@@ -638,6 +637,63 @@ def save_bytes(out_dir: Path, name: str, ext: str, data: bytes) -> Path:
     return p
 
 
+def _bytes_igual_ref(data: bytes, ref_path) -> bool:
+    """Compara um corpo de imagem baixado com a imagem de referencia (48x48)."""
+    try:
+        import io
+        from PIL import Image, ImageChops, ImageStat
+        ref = Path(ref_path)
+        if not ref.exists():
+            return False
+        a = Image.open(io.BytesIO(data)).convert("L").resize((48, 48))
+        b = Image.open(ref).convert("L").resize((48, 48))
+        diff = ImageChops.difference(a, b)
+        media = sum(ImageStat.Stat(diff).mean) / len(ImageStat.Stat(diff).mean)
+        return media < 2.0
+    except Exception:
+        return False
+
+
+def _imagem_repetida(path: Path, ref_path, out_dir=None) -> bool:
+    """True quando a imagem baixada e praticamente igual a referencia anexada ou
+    a qualquer imagem ja existente na pasta de cenas.
+
+    Sintoma classico: o Flow devolve a propria imagem de referencia (ou uma
+    imagem antiga da galeria) em vez de desenhar a cena pedida. Nesses casos a
+    imagem NAO deve ser aceita - senao o video inteiro repete a mesma figura
+    (ver MANUAL_GRAFOS.md §58.6)."""
+    try:
+        from PIL import Image, ImageChops, ImageStat
+        alvo = Path(path)
+        if not alvo.exists():
+            return False
+        candidatos = []
+        if ref_path:
+            r = Path(ref_path)
+            if r.exists():
+                candidatos.append(r)
+        if out_dir:
+            for ext in ("*.jpg", "*.jpeg", "*.png"):
+                for f in Path(out_dir).glob(ext):
+                    if f.resolve() != alvo.resolve():
+                        candidatos.append(f)
+        if not candidatos:
+            return False
+        a = Image.open(alvo).convert("L").resize((48, 48))
+        for cand in candidatos:
+            try:
+                b = Image.open(cand).convert("L").resize((48, 48))
+                diff = ImageChops.difference(a, b)
+                media = sum(ImageStat.Stat(diff).mean) / len(ImageStat.Stat(diff).mean)
+                if media < 2.0:
+                    return True
+            except Exception:
+                continue
+        return False
+    except Exception:
+        return False
+
+
 def _read_env_value(name: str) -> str:
     env_path = Path(__file__).resolve().parent.parent / ".env"
     raw = b""
@@ -956,11 +1012,16 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
     await open_fresh(page, "image")
     before = await count_dl(page)
     captured = {"body": None, "ct": ""}
+    # URLs de imagem ja visiveis na tela (galeria do Flow). Respostas dessas URLs
+    # sao imagens antigas/repetidas e NAO podem ser confundidas com a nova imagem.
+    estado = {"srcs": set(), "arm": False}
 
     async def on_resp(resp):
         if captured["body"]:
             return
         url = resp.url or ""
+        if estado["arm"] and url in estado["srcs"]:
+            return
         if not ("flow-content.google" in url or "googleusercontent.com" in url
                 or "gstatic.com" in url and "flow" in url):
             return
@@ -971,17 +1032,24 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
             if ct.startswith("image/") and resp.status == 200:
                 body = await resp.body()
                 if body and len(body) > 20000:
+                    # A miniatura da REFERENCIA anexada tambem carrega por essa
+                    # URL: ela nunca e a imagem nova, entao e ignorada.
+                    if ref_image and _bytes_igual_ref(body, ref_image):
+                        return
                     captured.update(body=body, ct=ct)
         except Exception:
             pass
 
     page.on("response", on_resp)
     try:
-        strategies = [_enforce_image_only(_enforce_characters(sp, characters))
-                      for sp in _strategy_prompts(prompt)]
+        base = [_enforce_image_only(_enforce_characters(sp, characters))
+                for sp in _strategy_prompts(prompt)]
+        # Duas passadas: se a imagem vier repetida (igual a referencia), tenta de
+        # novo antes de desistir (ver §58.6 do MANUAL_GRAFOS.md).
+        strategies = base + base
         attempt_log = []
         for attempt, sp in enumerate(strategies):
-            strategy = STRATEGY_NAMES[min(attempt, len(STRATEGY_NAMES) - 1)]
+            strategy = STRATEGY_NAMES[attempt % len(STRATEGY_NAMES)]
             if attempt:
                 print(f"  nova estratégia ({strategy})...", flush=True)
                 await open_fresh(page, "image")
@@ -993,6 +1061,15 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                 ok_ref = await attach_reference(page, ref_image)
                 if not ok_ref:
                     ref_image = None
+            # Snapshot das imagens ja na tela (galeria do Flow) ANTES de enviar o
+            # prompt: o download nunca deve capturar uma delas como imagem nova.
+            try:
+                estado["srcs"] = set(await page.evaluate(
+                    "() => Array.from(document.querySelectorAll('img'))"
+                    ".map(i => i.src).filter(s => s && s.startsWith('http'))"))
+            except Exception:
+                estado["srcs"] = set()
+            estado["arm"] = True
             try:
                 submit_result = await submit_flow_prompt(page, sp, clear=bool(ref_image),
                                                          aspect=aspect)
@@ -1011,7 +1088,7 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
             # espera adaptativa
             waited = 0
             state = "working"
-            while waited < wait_s and await count_dl(page) <= before:
+            while waited < wait_s and await count_dl(page) <= before and not captured["body"]:
                 await page.wait_for_timeout(4000)
                 waited += 4
                 state = _classify_screen(await _last_screen_text(page))
@@ -1051,6 +1128,14 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                     out_dir.mkdir(parents=True, exist_ok=True)
                     p = out_dir / f"{name}{ext}"
                     await d.save_as(str(p))
+                    if _imagem_repetida(p, ref_image, out_dir):
+                        print("  ⚠ imagem repetida (igual a referencia); descartando", flush=True)
+                        try:
+                            p.unlink()
+                        except Exception:
+                            pass
+                        attempt_log.append(f"{strategy}:imagem_repetida")
+                        continue
                     # --- CÓPIA PARA O BANCO DE IMAGENS ---
                     _copiar_para_banco(p)
                     return {"ok": True, "path": str(p), "bytes": p.stat().st_size, "method": "download_button", "strategy": strategy, "retried": attempt > 0}
@@ -1058,6 +1143,16 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                     print(f"  botão falhou ({e}); tentando captura de rede", flush=True)
             if captured["body"]:
                 p = save_bytes(out_dir, name, MIME_EXT.get(captured["ct"], ".jpg"), captured["body"])
+                if _imagem_repetida(p, ref_image, out_dir):
+                    print("  ⚠ imagem repetida (igual a referencia); descartando", flush=True)
+                    try:
+                        p.unlink()
+                    except Exception:
+                        pass
+                    captured["body"] = None
+                    captured["ct"] = ""
+                    attempt_log.append(f"{strategy}:imagem_repetida")
+                    continue
                 _copiar_para_banco(p)
                 return {"ok": True, "path": str(p), "bytes": p.stat().st_size, "method": "network_fallback", "strategy": strategy, "retried": attempt > 0}
             # ESTRATÉGIA FINAL: tentar baixar qualquer elemento <img> visível na tela
@@ -1081,6 +1176,14 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                         elif ct and "webp" in ct.lower():
                             ext = ".webp"
                         p = save_bytes(out_dir, name, ext, data)
+                        if _imagem_repetida(p, ref_image, out_dir):
+                            print("  ⚠ imagem repetida (igual a referencia); descartando", flush=True)
+                            try:
+                                p.unlink()
+                            except Exception:
+                                pass
+                            attempt_log.append(f"{strategy}:imagem_repetida")
+                            continue
                         _copiar_para_banco(p)
                         return {"ok": True, "path": str(p), "bytes": len(data), "method": "screen_img", "strategy": strategy, "retried": attempt > 0}
             except Exception as e:
