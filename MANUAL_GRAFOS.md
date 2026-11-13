@@ -3945,7 +3945,9 @@ travava numa figura só.
 **Correção (regra permanente):**
 
 - Referência = **design das personagens e estilo do traço**. A cena vem da
-  narração e manda em tudo.
+  narração e manda em tudo. O prompt tem uma linha **"ESTILO IGUAL A
+  REFERENCIA"** (mesmo traço, textura, paleta, luz e nível de detalhe) para o
+  vídeo não misturar 3D com 2D — mas **nunca** a mesma cena/enquadramento/fundo.
 - Todo prompt leva agora um bloco **"REGRA ANTI-REPETICAO"**: cena nova, novo
   enquadramento, novo ângulo, novas poses, novos objetos.
 - O cenário é "o mesmo **tipo** de lugar, com enquadramento/ângulo/fundo

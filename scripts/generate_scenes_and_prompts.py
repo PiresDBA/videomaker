@@ -284,16 +284,15 @@ def fix_species(text):
 
 
 REF_CHARS = (
-    "PERSONAGENS (identidade fixa): Luna e a dachshund salsicha marrom-chocolate "
-    "(corpo alongado, pernas muito curtas, orelhas longas) e Frida e a buldogue "
-    "inglesa fawn, grande e compacta (rugas suaves, colar de perolas). "
-    "A imagem de referencia serve SOMENTE para o design das personagens "
-    "(raca, cor, tamanho, tracos) e para o estilo do traco.\n"
-    "REGRA ANTI-REPETICAO (OBRIGATORIA): esta e uma CENA NOVA. NAO reproduza a "
-    "imagem de referencia nem a imagem anterior: mude a composicao, o "
-    "enquadramento, o angulo, as poses e os objetos de cena. A acao descrita "
-    "acima manda em tudo; a referencia nunca define a cena.\n"
-    "Desenho animado original e ludico, estilo visual proprio "
+    "PERSONAGENS (identidade fixa): Luna = dachshund salsicha marrom-chocolate "
+    "(corpo alongado, pernas curtas, orelhas longas); Frida = buldogue inglesa "
+    "fawn, grande e compacta (rugas suaves, colar de perolas). "
+    "ESTILO IGUAL A REFERENCIA (obrigatorio): mesmo traco, textura, paleta de "
+    "cores, iluminacao e nivel de detalhe da imagem de referencia. "
+    "REGRA ANTI-REPETICAO (OBRIGATORIA): esta e uma CENA NOVA. A CENA manda em "
+    "tudo e a referencia nunca define a cena: mude a composicao, o enquadramento, "
+    "o angulo, as poses, os objetos e o fundo. "
+    "Desenho animado original e ludico "
     "(nao copie outros desenhos, filmes ou marcas existentes), "
     "visto do ponto de vista dos caes, sem humanos."
 )
