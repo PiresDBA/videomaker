@@ -155,3 +155,22 @@ Estado das imagens (mesma pasta para os 3 idiomas):
 - Restaurante: 9/27 imagens novas; retomar da 10a e renderizar.
 - Videos errados ainda no ar: Chihuahua PT/EN e Restaurante PT/EN - apagar com
   o token do canal dono assim que os renders novos existirem.
+
+## 2026-11-13 - Publicacao Chihuahua (apos remocao dos videos errados)
+
+Videos errados apagados (antes de republicar):
+- Chihuahua PT: Rpu0kECUvtA
+- Chihuahua EN: sO6oQ3CvhRU
+- Restaurante PT: kdopBwWCVT0
+- Restaurante EN: kpqb0dDd-y4
+
+Chihuahua republicado (figuras corretas, 3 idiomas, imagens compartilhadas PT/EN/ES):
+- PT: https://youtu.be/jvi-hxayVVI
+- EN: https://youtu.be/0GlS-s0r2D8
+- ES: https://youtu.be/yp1z5Qi5mL0
+
+Restaurante (bulldogue-ingles-frida-e-dachshund-marro):
+- Ainda gerando em background (retomando da 10a imagem; 9/27 ja feitas).
+- Nao tem versao EN nem ES ainda - so sao renderizadas apos concluir as 27 imagens.
+- Publicar PT/EN/ES assim que o render terminar; ES depende da cota diaria do canal.
+
