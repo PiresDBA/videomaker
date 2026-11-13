@@ -3959,10 +3959,49 @@ travava numa figura só.
   que já estavam na tela antes do envio (galeria antiga do Flow).
 - `scene_mode` fica em **`two`** (`config.json`): o modo `beats` gerava 3–4
   prompts quase idênticos por seção e multiplicava a repetição.
+- O corte de `MAX_PROMPT_CHARS` agora reduz a **CENA**, nunca os blocos fixos.
+  Antes ele cortava justamente a "REGRA ANTI-REPETICAO" nas cenas longas (as
+  variantes `_b` saíam sem a regra). A trava testa `build_prompt` com uma cena
+  longa e falha se o bloco sumir.
 
 **Ao revisar imagens novas:** abra 3–4 `.jpg` da pasta e confirme que são
 cenas diferentes entre si. Imagem repetida = não renderizar; corrigir e gerar
 de novo.
+
+#### 58.6.1. O que NUNCA fazer (a repetição volta se isso voltar)
+
+| Nunca | Motivo |
+|---|---|
+| "siga a imagem de referência anexada **para TUDO**" | o modelo copia a cena inteira |
+| "mantenha exatamente a mesma aparência … **em todas as imagens**" | congela a figura numa pose |
+| "mantenha este **mesmo ambiente** em todas as imagens" | repete cenário e enquadramento |
+| "use `referencia.png` como referência de cores/estilos" | ancora no arquivo errado |
+| usar `--ref-image` como base **da cena** (e não do design) | a cadeia trava na 1ª figura |
+| aceitar imagem baixada sem comparar com a referência/pasta | é assim que o vídeo repete |
+| `scene_mode: beats` sem prova visual | 3–4 prompts quase idênticos por seção |
+| renderizar/publicar sem abrir 3–4 `.jpg` | o erro só aparece no vídeo pronto |
+| desligar as travas, `--no-verify`, apagar `trava()` | o erro volta a passar |
+| gerar imagem no Gemini | Gemini não tem Frida/Luna; sai cachorro aleatório |
+
+#### 58.6.2. Travas automáticas (criadas por causa deste bug)
+
+| Trava | O que faz |
+|---|---|
+| `scripts/check_prompt_repeticao.py` | falha se o construtor de prompt ou um `image_prompts.json` tiver as frases proibidas; `--strict` exige CENA prioridade + REGRA ANTI-REPETICAO; também exige `scene_mode=two` |
+| `scripts/check_imagens_repetidas.py` | compara as imagens de cena duas a duas (Pillow 48x48, distância média < 2.0) e falha se forem a mesma figura |
+| `trava()` em `gerar_capitulo_trilinguo.py` | roda as duas antes de gerar imagens e antes de renderizar; falhou → o capítulo **aborta** |
+| `.githooks/pre-commit` e `pre-push` | rodam as travas + `check_manual.py` + sintaxe Python; instalados por `scripts/install_hooks.py` |
+| `_imagem_repetida` / `_bytes_igual_ref` no `flow_fetch` | descarta e reenvia imagem igual à referência ou a qualquer imagem da pasta; ignora a miniatura da referência que carrega pela rede |
+
+Comando rápido antes de renderizar/publicar:
+
+```powershell
+python scripts/check_prompt_repeticao.py --strict
+python scripts/check_imagens_repetidas.py
+```
+
+Se o vídeo já foi publicado assim: apagar no YouTube **com o token do canal
+dono** e reenviar depois de regerar. Ver `CONTRATO.md` §5.8.
 
 ### 58.3. Overlays por idioma (`scenes/<lang>/`)
 

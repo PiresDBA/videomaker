@@ -94,6 +94,20 @@ que já estava certo.
 4. **Não dar `push --force`** em branch já publicada.
 5. **Não mexer no `main` direto.** Toda mudança passa por branch própria.
 6. **Não usar `git commit --amend`** em commit já publicado.
+7. **Não pedir para o gerador de imagem copiar a referência.** Nada de "siga a
+   referência para tudo", "mesma aparência em todas as imagens", "mantenha este
+   mesmo ambiente". A referência é só design das personagens/estilo; a cena vem
+   da narração (§5.8). Foi assim que o Chihuahua e o Restaurante saíram com a
+   mesma figura repetida.
+8. **Não renderizar nem publicar vídeo com imagem repetida.** Se duas pausas
+   mostram a mesma figura, o vídeo está errado: corrija as imagens antes.
+9. **Não desligar/contornar as travas** `check_prompt_repeticao.py` e
+   `check_imagens_repetidas.py` (nem remover a chamada `trava()` do
+   `gerar_capitulo_trilinguo.py`). Se a trava incomodou, o problema é o prompt.
+10. **Não trocar `scene_mode` de `two` para `beats`** sem antes provar (com as
+    imagens na mão) que não há repetição (§5.8).
+11. **Não usar o Gemini para gerar imagem.** Imagem é só Google Flow; se o Flow
+    falhar, pare e avise.
 
 ---
 
@@ -101,6 +115,8 @@ que já estava certo.
 
 ```powershell
 python scripts/check_manual.py     # o manual está em dia com o código?
+python scripts/check_prompt_repeticao.py   # prompt não manda copiar a referência?
+python scripts/check_imagens_repetidas.py  # duas cenas não são a mesma figura?
 python scripts/smoke_test_description.py
 python scripts/check_projects.py
 git status
@@ -108,6 +124,8 @@ git diff
 ```
 
 Se `check_manual.py` acusar desync, **corrija o manual antes de dar push**.
+As duas travas de repetição também rodam nos hooks de `git` (`.githooks/`);
+se elas falharem, **não** use `--no-verify`: conserte o prompt/imagens (§5.8).
 
 ---
 
@@ -216,12 +234,83 @@ apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo ant
 
 ---
 
+## 5.8. Imagem única por pausa (regra dura — NÃO repetir a referência)
+
+Esta seção existe porque o erro já aconteceu duas vezes (Chihuahua a partir de
+~1:22 e Restaurante do início ao fim mostravam sempre a mesma figura). Leia
+antes de mexer em **qualquer** texto que gere prompt de imagem.
+
+### O que a referência pode e o que NÃO pode
+
+A imagem passada em `--ref-image` (a cena anterior, ou o `referencia.png` do
+banco) serve **só** para:
+
+- o **design das personagens** (Frida = buldogue inglesa; Luna = salsicha);
+- o **estilo do traço/iluminação** da série.
+
+Ela **nunca** define a cena. Quem manda na cena é a **narração da pausa**.
+
+**NUNCA escrever em prompt (nem em código que monta prompt):**
+
+| Proibido | Por quê |
+|---|---|
+| "siga a imagem de referência anexada **para TUDO**" | o modelo copia a cena inteira |
+| "mantenha exatamente a mesma aparência … **em todas as imagens**" | congela a figura |
+| "mantenha este **mesmo ambiente** em todas as imagens" | repete cenário e enquadramento |
+| "use `referencia.png` como referência de cores/estilos" | volta a ancorar no arquivo errado |
+| "mesma cena", "mesmo ângulo", "igual à imagem anterior" | repetição direta |
+
+**SEMPRE** que montar prompt:
+
+1. A **CENA** (o que a narração diz naquela pausa) é a prioridade máxima.
+2. Todo prompt leva o bloco **"REGRA ANTI-REPETICAO"**: cena nova, novo
+   enquadramento, novo ângulo, novas poses, novos objetos.
+3. O cenário é "o mesmo **tipo** de lugar, com enquadramento/ângulo/fundo
+   diferentes em cada imagem" — nunca "o mesmo ambiente".
+4. Cada pausa de narração tem **uma imagem própria e diferente**. Sem exceção.
+
+### Travas automáticas (não desligar)
+
+- `scripts/check_prompt_repeticao.py` — falha se um construtor de prompt ou um
+  `image_prompts.json` tiver as frases proibidas. `--strict` exige também a
+  estrutura nova (CENA prioridade + REGRA ANTI-REPETICAO).
+- `scripts/check_imagens_repetidas.py` — compara as imagens de cena duas a duas
+  (Pillow 48x48) e falha se duas forem a mesma figura.
+- `scripts/gerar_capitulo_trilinguo.py` chama as duas (`trava()`) **antes** de
+  gerar imagens e **antes** de renderizar: se falhar, o capítulo aborta.
+- `flow_fetch.py` descarta e reenvia imagem praticamente igual à referência ou a
+  qualquer imagem já existente na pasta, e ignora a miniatura da referência que
+  carrega pela rede (era ela que era salva no lugar da imagem gerada).
+- `scene_density.scene_mode` fica em **`two`**. O modo `beats` gera 3–4 prompts
+  quase idênticos por seção e multiplica a repetição.
+
+### Antes de renderizar e antes de publicar
+
+```powershell
+python scripts/check_prompt_repeticao.py --strict
+python scripts/check_imagens_repetidas.py
+```
+
+Abra **3–4 `.jpg`** da pasta `assets/images/gemini/scenes/` e confirme que são
+cenas diferentes entre si. Se houver repetição: **não renderize, não publique**.
+Apague as duplicadas, regenere. Se o vídeo já subiu assim, **apague no YouTube
+com o token do canal dono** e reenvie.
+
+Documentação completa (causa, mecanismo e revisão): `MANUAL_GRAFOS.md` §58.6.
+
+---
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.
 2. Criar branch com nome curto e óbvio.
 3. Fazer a mudança **e** atualizar o `MANUAL_GRAFOS.md` no mesmo commit.
-4. Rodar os checks.
+4. Rodar os checks (`check_manual`, `check_prompt_repeticao`,
+   `check_imagens_repetidas`).
 5. Commit + push da branch.
 
 **O manual é a memória do produto. Se não está no manual, não existe.**
+
+**Imagem: uma cena diferente por pausa.** A referência é só o design das
+personagens — nunca a cena (§5.8). Vídeo com a mesma figura repetida não se
+renderiza nem se publica.

@@ -63,6 +63,21 @@ def run(cmd, label):
     return r
 
 
+def trava(script: str, *extra, label: str = ""):
+    """Roda uma trava (check_*.py). Se falhar, ABORTA o capitulo antes de gastar
+    tempo/dinheiro gerando ou renderizando video errado (CONTRATO.md 5.8)."""
+    cmd = [sys.executable, str(HERE / script), *[str(x) for x in extra]]
+    print(f"== TRAVA: {label or script}", flush=True)
+    r = subprocess.run(cmd)
+    if r.returncode != 0:
+        print("\n" + "!" * 70)
+        print(f"ABORTADO pela trava: {label or script}")
+        print("Corrija o problema acima antes de continuar. Nao renderize e nao")
+        print("publique video com imagem repetida (CONTRATO.md 5.8).")
+        print("!" * 70, flush=True)
+        raise RuntimeError(f"trava falhou: {script}")
+
+
 def jpg_ok(path: Path) -> bool:
     return path.exists() and path.stat().st_size > 0
 
@@ -430,7 +445,13 @@ def main():
     # Compartilhado (gerado uma vez; pula o que ja existe)
     fase_script(args, p_dir, prompt)
     fase_scenes(args, p_dir)
+    # Trava 1: prompt nao pode mandar copiar a referencia (bug §58.6).
+    trava("check_prompt_repeticao.py", "--slug", slug, "--strict",
+          label="prompt anti-repeticao")
     fase_images(args, p_dir)
+    # Trava 2: nenhuma imagem pode ser a mesma figura de outra cena.
+    trava("check_imagens_repetidas.py", "--slug", slug,
+          label="imagens diferentes entre si")
     fase_music(args, p_dir, prompt)
 
     # Por idioma (traducao/overlays/narracao/legendas/montagem/render)

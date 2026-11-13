@@ -1,0 +1,48 @@
+#!/bin/sh
+# Hook pre-commit do Videomaker (trava antes do erro entrar no repo).
+# Instale uma vez com: python scripts/install_hooks.py
+#
+# Regras travadas aqui (CONTRATO.md 5.8 / MANUAL_GRAFOS.md 58.6):
+#   1. prompt nao pode mandar copiar a imagem de referencia;
+#   2. duas imagens de cena nao podem ser a mesma figura;
+#   3. MANUAL_GRAFOS.md tem que estar em dia com o codigo;
+#   4. nenhum .py commitado com erro de sintaxe.
+
+set -e
+
+PY="C:/OpenMontage/.venv/Scripts/python.exe"
+if [ ! -x "$PY" ]; then
+  PY="python"
+fi
+
+echo "[pre-commit] sintaxe python..."
+STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$' || true)
+if [ -n "$STAGED_PY" ]; then
+  echo "$STAGED_PY" | while IFS= read -r f; do
+    [ -f "$f" ] || continue
+    "$PY" -c "import ast,sys; ast.parse(open(sys.argv[1],encoding='utf-8').read())" "$f" \
+      || { echo "[pre-commit] ERRO de sintaxe em $f"; exit 1; }
+  done
+fi
+
+echo "[pre-commit] trava anti-repeticao de prompt..."
+"$PY" scripts/check_prompt_repeticao.py || {
+  echo "[pre-commit] BLOQUEADO: prompt mandando repetir a referencia."
+  echo "              Veja CONTRATO.md 5.8 e MANUAL_GRAFOS.md 58.6."
+  exit 1
+}
+
+echo "[pre-commit] trava de imagem repetida..."
+"$PY" scripts/check_imagens_repetidas.py || {
+  echo "[pre-commit] BLOQUEADO: existe imagem repetida em algum projeto."
+  echo "              Regenere as imagens antes de commitar."
+  exit 1
+}
+
+echo "[pre-commit] manual em dia com o codigo..."
+"$PY" scripts/check_manual.py || {
+  echo "[pre-commit] BLOQUEADO: MANUAL_GRAFOS.md fora de sincronia."
+  exit 1
+}
+
+echo "[pre-commit] ok"

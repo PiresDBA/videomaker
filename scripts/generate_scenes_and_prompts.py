@@ -25,6 +25,7 @@ Uso:
 import argparse
 import json
 import re
+import unicodedata
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -163,8 +164,11 @@ def _extrair_cenario(script):
     for chave, desc in mapa.items():
         if chave in title:
             return desc
-    # fallback: usa o título limpo como cenário generico
-    t = re.sub(r"[^a-z0-9\s]", " ", title).strip()
+    # fallback: usa o titulo limpo como cenario generico
+    t = unicodedata.normalize("NFKD", title)
+    t = "".join(c for c in t if not unicodedata.combining(c))
+    t = re.sub(r"[^a-z0-9\s]", " ", t)
+    t = re.sub(r"\s{2,}", " ", t).strip()
     if t:
         return "cenario inspirado em: " + t
     return "cenario de desenho animado, ambiente consistente do video"
@@ -369,11 +373,23 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
             parts.append(FRIDA_LUNA_DESC.strip())
     prompt = "\n".join(parts)
     if len(prompt) > MAX_PROMPT_CHARS:
-        prompt = prompt[:MAX_PROMPT_CHARS]
-        # corta em fim de linha
-        if "\n" in prompt:
-            prompt = prompt[: prompt.rfind("\n")]
-        prompt = prompt.rstrip(" ,;.")
+        # Corta a CENA (nunca as regras obrigatorias). Antes o corte comia
+        # justamente a REGRA ANTI-REPETICAO nos prompts mais longos, e a
+        # imagem saia repetindo a referencia (bug §58.6 / CONTRATO §5.8).
+        palavras = scene.split()
+        cabecalho = ("CENA (prioridade maxima - desenhe exatamente esta acao, "
+                     "diferente da imagem de referencia): %s.")
+        while len(prompt) > MAX_PROMPT_CHARS and len(palavras) > 6:
+            palavras.pop()
+            partes = list(parts)
+            partes[0] = cabecalho % " ".join(palavras)
+            prompt = "\n".join(partes)
+        if len(prompt) > MAX_PROMPT_CHARS:
+            # Ultimo recurso (as regras fixas sozinhas ja passaram do limite).
+            prompt = prompt[:MAX_PROMPT_CHARS]
+            if "\n" in prompt:
+                prompt = prompt[: prompt.rfind("\n")]
+            prompt = prompt.rstrip(" ,;.")
     return prompt
 
 

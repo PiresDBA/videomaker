@@ -1,0 +1,24 @@
+#!/bin/sh
+# Hook pre-push do Videomaker: ultima barreira antes de publicar.
+# Instale uma vez com: python scripts/install_hooks.py
+
+set -e
+
+PY="C:/OpenMontage/.venv/Scripts/python.exe"
+if [ ! -x "$PY" ]; then
+  PY="python"
+fi
+
+echo "[pre-push] prompt anti-repeticao..."
+"$PY" scripts/check_prompt_repeticao.py || {
+  echo "[pre-push] BLOQUEADO: prompt mandando repetir a referencia (CONTRATO.md 5.8)."
+  exit 1
+}
+
+echo "[pre-push] manual em dia com o codigo..."
+"$PY" scripts/check_manual.py || {
+  echo "[pre-push] BLOQUEADO: MANUAL_GRAFOS.md fora de sincronia."
+  exit 1
+}
+
+echo "[pre-push] ok"
