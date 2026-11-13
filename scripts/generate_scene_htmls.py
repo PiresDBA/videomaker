@@ -62,7 +62,16 @@ def is_intro_section(s):
     return sid == "s0"
 
 
-def render_intro_overlay(s, story_title=""):
+# Linha de abertura do overlay s0, no idioma do video (regra: os textos de
+# tela seguem o idioma do video; o padrao pt preserva o comportamento antigo).
+INTRO_BODY = {
+    "pt": "Uma aventura nova com a Frida e a Luna!",
+    "en": "A brand-new adventure with Frida and Luna!",
+    "es": "Una nueva aventura con Frida y Luna!",
+}
+
+
+def render_intro_overlay(s, story_title="", lang="pt"):
     """Abertura infantil: badge do canal + titulo da historia animado.
     O texto do overlay NAO e narracao — e apenas o titulo curto na tela
     enquanto o narrador cumprimenta a audiencia."""
@@ -74,16 +83,18 @@ def render_intro_overlay(s, story_title=""):
         '<h2 class="h-xl" data-anim="bounce" data-delay="0.8" style="margin-top:18px">'
         + t
         + "</h2>"
-        '<div class="body" data-anim="pop" data-delay="1.6" style="margin-top:16px">Uma aventura nova com a Frida e a Luna!</div>'
+        '<div class="body" data-anim="pop" data-delay="1.6" style="margin-top:16px">'
+        + INTRO_BODY.get((lang or "pt").lower(), INTRO_BODY["pt"])
+        + "</div>"
         "</div>"
     )
 
 
-def render_section(s, with_chips=False, story_title=""):
+def render_section(s, with_chips=False, story_title="", lang="pt"):
     """Retorna HTML vazio (nenhum texto na tela), EXCETO a secao de
     apresentacao (s0), que ganha o titulo da historia animado."""
     if is_intro_section(s):
-        return render_intro_overlay(s, story_title)
+        return render_intro_overlay(s, story_title, lang)
     return ""
 
 
@@ -92,6 +103,8 @@ def main():
     ap.add_argument("--script", default=str(PROJECT / "artifacts" / "script.json"))
     ap.add_argument("--scenes", default=str(HERE / "scenes.json"))
     ap.add_argument("--out-dir", default=str(HERE / "scenes"))
+    ap.add_argument("--lang", default="pt",
+                    help="idioma dos textos de tela (pt,en,es); padrao pt")
     ap.add_argument("--chips", action="store_true",
                     help="inclui os 4 chips de palavras-chave no canto direito (desativado por padrao)")
     args = ap.parse_args()
@@ -103,7 +116,8 @@ def main():
 
     for i, s in enumerate(sections):
         sid = s.get("id", "s%d" % i)
-        html = render_section(s, with_chips=args.chips, story_title=script.get("title", ""))
+        html = render_section(s, with_chips=args.chips, story_title=script.get("title", ""),
+                              lang=getattr(args, "lang", "pt"))
         (out / ("%s.html" % sid)).write_text(html, encoding="utf-8")
         print("wrote", out / ("%s.html" % sid))
 

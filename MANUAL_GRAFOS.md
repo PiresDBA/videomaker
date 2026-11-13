@@ -3867,3 +3867,77 @@ Quando acaba, o script pára sozinho. A cota reseta a cada 24 horas.
 - [ ] Rodei `relatorio_youtube.py` para conferir o que falta
 
 ---
+
+## 58. Capítulo trilíngue novo (PT + EN + ES) — `gerar_capitulo_trilinguo.py`
+
+Todo assunto novo **sempre** gera 3 vídeos (um por idioma), com **consistência
+de cenário**: se a história começa num parque, termina num parque — o cenário
+não muda no meio. As 34+ imagens são geradas **uma vez** e reaproveitadas pelos
+3 idiomas; por idioma muda apenas narração, overlays, legendas, mix e render.
+
+```powershell
+# Capítulo completo (3 idiomas) a partir do assunto
+python scripts/gerar_capitulo_trilinguo.py --prompt "Luna e Frida conhecem um parque de diversões feito só para animais"
+
+# Retomar/refazer só um idioma (pula tudo que já está pronto)
+python scripts/gerar_capitulo_trilinguo.py --prompt "..." --only-lang es
+
+# Queimar as legendas no MP4 final (opcional)
+python scripts/gerar_capitulo_trilinguo.py --prompt "..." --burn-subtitles
+```
+
+Saída: `output/<slug>_pt.mp4`, `output/<slug>_en.mp4`, `output/<slug>_es.mp4`.
+
+### 58.1. Regras de reaproveitamento (nada é gerado duas vezes)
+
+O script **checa cada artefato antes de gerar** e pula o que já existe:
+
+| Artefato | Pula se... |
+|----------|-----------|
+| `artifacts/script.json` | arquivo existe |
+| `artifacts/scenes.json` + `image_prompts.json` | arquivos existem |
+| imagens `assets/images/gemini/scenes/*.jpg` | todas existem |
+| trilha (`bgm_gemini.wav` / `bgm_procedural.wav`) | existe |
+| `artifacts/script_<lang>.json` (tradução) | arquivo existe |
+| overlays `scenes/<lang>/*.html` | `s0.html` existe |
+| narração `assets/audio/narration/<lang>/sN.mp3` | timing + mp3 existem |
+| legendas `assets/subtitles/<lang>/<slug>.srt` | arquivo existe |
+| vídeo `output/<slug>_<lang>.mp4` | **nunca re-renderiza** |
+
+Se parar no meio, é só rodar de novo — ele retoma exatamente de onde parou.
+
+### 58.2. Imagem: SÓ o Google Flow (Gemini nunca gera imagem)
+
+- **Gerador oficial de imagem: Google Flow** (`flow_fetch.py`). O Gemini é
+  fallback — mas **nunca para imagem**: o Gemini não tem os modelos de
+  Frida (buldogue inglesa) e Luna (salsicha) e gerava cachorros aleatórios.
+- O `flow_fetch` injeta automaticamente no prompt a **referência dos
+  personagens criados no Flow** (bloco "REFERENCIA DE PERSONAGENS").
+- **Continuidade**: ao gerar uma imagem nova, a última imagem gerada do
+  projeto é colada como `--ref-image` (base visual para a próxima).
+- Se o Flow falhar (4 loops de quarentena): o script **para e avisa** —
+  abra o Flow no Chrome e rode de novo. Não gera no Gemini.
+
+### 58.3. Overlays por idioma (`scenes/<lang>/`)
+
+`generate_scene_htmls.py` agora aceita `--lang` (pt/en/es): o texto de
+abertura ("Uma aventura nova..." / "A brand-new adventure..." / "Una nueva
+aventura...") fica no idioma do vídeo. Os overlays ficam em
+`scenes/<lang>/` e o compose recebe `--scenes-dir scenes/<lang>`.
+O padrão `pt` preserva o comportamento antigo.
+
+### 58.4. Tradução (`script_<lang>.json`) — só o texto
+
+`translate_script.py` traduz **apenas** `title` e `text` das seções
+(Gemini WEB). IDs, imagens e cenas não mudam — por isso as imagens servem
+para os 3 idiomas. Assinatura: `translate_script(script, [lista_de_idiomas],
+out_dir, topic=...)` — **passar lista**, ex. `["en"]` (não string solta).
+
+### 58.5. Música (compartilhada)
+
+Ordem oficial: **banco local** (`listar_musicas_banco`/`escolher_musica_banco`,
+rotação sem repetir) → **Gemini Web** → **procedural local**. Pula se
+`bgm_gemini.wav` ou `bgm_procedural.wav` já existem.
+
+---
+
