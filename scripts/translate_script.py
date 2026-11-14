@@ -61,6 +61,30 @@ def parece_recusa(texto: str) -> bool:
     baixo = (texto or "").lower()
     return any(m in baixo for m in REFUSAL_MARKERS)
 
+
+# Apelidos carinhosos que NAO podem ir crus para o idioma de destino.
+# Regra do dono do canal (2026-11-14): em ESPANHOL "Luninha" e "Lunita" e
+# "Fridoca" e "Frida" (nunca manter o diminutivo em portugues). Em INGLES os
+# apelidos continuam como no roteiro PT (Fridoca/Luninha).
+APELIDOS_POR_IDIOMA = {
+    "es": {
+        "Luninha": "Lunita",
+        "luninha": "Lunita",
+        "Fridoca": "Frida",
+        "fridoca": "Frida",
+    },
+}
+
+
+def normalizar_apelidos(texto: str, lang: str) -> str:
+    """Troca apelidos PT pelos equivalentes no idioma (ex.: Luninha->Lunita)."""
+    mapa = APELIDOS_POR_IDIOMA.get(lang or "", {})
+    if not mapa or not texto:
+        return texto
+    for de, para in mapa.items():
+        texto = texto.replace(de, para)
+    return texto
+
 # Secoes do contrato que devem soar naturais em cada idioma (nao traduzidas palavra a palavra,
 # mas adaptadas para nao soar robota). Se o Gemini nao retornar traducao boa, usamos esses fallback.
 CONTRACT_FALLBACKS = {
@@ -95,9 +119,14 @@ def translate_text(text, target_lang, topic, out_dir, name, wait_s=120):
     text = remover_risadas(text)
     prompt = (
         f"Traduza o seguinte texto para o {LANG_NAMES[target_lang]} "
-        f"(Brasil/natural, tom infantil e divertido). "
+        f"como se fosse FALADO por uma pessoa nativa do idioma, no estilo infantil e divertido. "
+        f"NAO traduza palavra por palavra. Adapte o texto ao que um falante nativo do idioma "
+        f"diria de verdade: troque expressoes PT por equivalentes naturais "
+        f"do idioma, ajuste ordem e ritmo das frases, mantenha o sentido e o humor. "
+        f"Se alguma palavra/expressao nao tiver traducao direta, ADAPTE com uma frase "
+        f"natural equivalente — NAO deixe o termo em portugues. "
         f"Contexto: video infantil sobre '{topic}' com os cachorros Frida e Luna. "
-        f"Mantenha nomes proprios (Frida, Luna, Luninha, Fridoca) e apelidos inalterados. "
+        f"Mantenha os nomes proprios (Frida, Luna, Luninha, Fridoca) inalterados. "
         f"Nao adicione explicacoes, nao coloque aspas, nao diga 'aqui esta a traducao'. "
         f"Responda apenas com o texto traduzido, nada mais.\n\n"
         f"TEXTO: {text}"
@@ -124,7 +153,7 @@ def translate_text(text, target_lang, topic, out_dir, name, wait_s=120):
         trad = trad.strip().strip('"').strip("'").strip()
         if not trad or parece_recusa(trad):
             return None
-        return trad
+        return normalizar_apelidos(trad, target_lang)
 
 
 def translate_script(script_path, languages, out_dir, topic, wait_s=120):

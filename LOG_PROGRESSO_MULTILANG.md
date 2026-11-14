@@ -202,8 +202,11 @@ Estado real:
   apagada; o PT correto e jvi-hxayVVI.
 - o-co-de-frias PT: xCucNQcKFCc (09:39:50) — publicado.
 - o-co-de-frias EN: chuPVCBuK3Q (10:02:11) — publicado.
-- o-co-de-frias ES: render em andamento (56% concluída), publicar após finalização.
-- Restaurante ES: aS0hSOX4U1Y (19:48:26) — publicado com PT badge "Frida e Luna"
-  (PT) no overlay; re-render e re-publicar planejado para limpar PT/ES.
+- o-co-de-frias ES: kYTITxLXwtk (10:07 render, publicado após) — publicado
+  com badge "Frida y Luna" e título "El Perro de Vacaciones".
+- Restaurante ES: aS0hSOX4U1Y (13/11) publicado com PT badge "Frida e Luna"
+  no overlay; re-render ES iniciado 14/11 10:10 para corrigir badge/eyebrow.
+- Pendente geral: re-render EN/ES antigos (Chihuahua, Parque) que ainda sobem
+  com badge/eyebrow PT na tela; depois apagar e reenviar.
 
 
