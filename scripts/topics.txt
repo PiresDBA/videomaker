@@ -344,6 +344,8 @@ Bulldogue Inglês Frida e Dachshund marrom Luna e o relógio da hora do jantar
 # Formato: tema | slug | data (linhas desta secao nao entram no sorteio)
 O cão de férias | o-co-de-frias | 2026-11-14
 
+Aluna e Frida vão ao Pet Shop cortar as unhas e tomar banho | aluna-e-frida-vao-au-pet-shop-cortar-as-unhas-e-tomar-banho | 2026-11-14
+
 # ----- datas especiais -----
 @01-01 Ano Novo: as resoluções da Bulldogue Inglês Frida e da Dachshund marrom Luna
 @01-06 Dia de Reis: Bulldogue Inglês Frida e Dachshund marrom Luna seguem a estrela
