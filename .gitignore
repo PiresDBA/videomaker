@@ -85,3 +85,4 @@ hyperframes-workspace/
 *.tmp
 scripts/.narration_voice_state.json
 scripts/.publish_history_idioma.json
+scripts/.publish_history.json

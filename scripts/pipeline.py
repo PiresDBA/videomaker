@@ -330,7 +330,7 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from narration_contract import validate_contract
+from narration_contract import apply_contract, validate_contract
 from translate_script import translate_script
 
 HERE = Path(__file__).resolve().parent

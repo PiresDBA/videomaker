@@ -8,6 +8,7 @@ quê. Não refaça e não desfaça o que já está resolvido.
 |---------|-----------|
 | `CONTRATO.md` | sempre, primeiro (regras de trabalho) — ver §5.8 antes de mexer em imagem |
 | `MANUAL_GRAFOS.md` | sempre (estado do produto, grafo, decisões) — ver §58.6 |
+| `scripts/topics.txt` | ao criar vídeo novo (tema obrigatório, §5.11) |
 | `scripts/pipeline.py` (topo) | antes de mexer no pipeline (comandos e argumentos) |
 | `AGENTS.md` (este) | para o resumo de 30 segundos |
 
@@ -54,10 +55,14 @@ Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.
 4. **Nunca commitar segredos** (`.env`, `client_secret*.json`, `youtube_token.json`,
    `scripts/config.json` já ignorados).
 5. **Rodar antes do push**: `python scripts/check_manual.py`,
-   `python scripts/check_prompt_repeticao.py`, `python scripts/check_imagens_repetidas.py`
+   `python scripts/check_prompt_repeticao.py`, `python scripts/check_imagens_repetidas.py`,
+   `python scripts/check_texto_idioma.py`, `python scripts/check_topico_novo.py`
    e os smoke tests.
 6. **Não usar `git commit/push --no-verify`** para furar os hooks. Se o hook
    barrou, conserte o motivo (é para isso que ele existe).
+7. **Vídeo novo sai da fila `scripts/topics.txt`**: leia a lista, sorteie com
+   `python scripts/select_topic.py`, confira duplicidade e registre o tema
+   usado. Nunca reformate nem apague a lista (`CONTRATO.md` §5.11).
 
 ## Comandos úteis
 
@@ -70,6 +75,9 @@ python scripts/check_prompt_repeticao.py    # prompt manda copiar a referência?
 python scripts/check_prompt_repeticao.py --strict   # + estrutura nova (CENA + anti-repetição)
 python scripts/check_imagens_repetidas.py   # duas cenas são a mesma figura?
 python scripts/check_imagens_compartilhadas.py --slug <slug>   # PT/EN/ES usam as mesmas imagens?
+python scripts/check_texto_idioma.py        # PT/recusa do Gemini em script EN/ES?
+python scripts/select_topic.py              # sorteia tema novo de scripts/topics.txt
+python scripts/check_topico_novo.py --tema "..."   # tema repetido? (fila)
 python scripts/install_hooks.py             # instala .githooks (uma vez por clone)
 ```
 

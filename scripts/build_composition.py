@@ -158,6 +158,12 @@ INTRO_TEXTS = {
     "en": "A brand-new adventure with Frida and Luna!",
     "es": "Una nueva aventura con Frida y Luna!",
 }
+# Nome do canal na capa. Em EN/ES nao pode sair "FRIDA E LUNA" (PT).
+CHANNEL_EYEBROW = {
+    "pt": "FRIDA E LUNA",
+    "en": "FRIDA AND LUNA",
+    "es": "FRIDA Y LUNA",
+}
 OUTRO_TEXTS = {
     "pt": ["Obrigado por assistir!", "Gostou? Deixe seu like!",
            "Se inscreva no canal", "Novo video toda semana"],
@@ -186,12 +192,14 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         '<img class="cam cam-0" src="assets/images/apresenta_o_do_canal_scene.jpg" alt="">'
         '<div class="ov" style="background:radial-gradient(circle at 50%% 50%%,rgba(240,178,74,.18) 0%%,rgba(8,5,3,.95) 100%%)"></div>'
         '<div class="block tc" style="top:42%%;">'
-        '<div class="eyebrow">FRIDA E LUNA</div>'
+        '<div class="eyebrow">%s</div>'
         '<h1 class="h-xl serif" data-anim="zoom" data-delay="0.3" id="intro-title">%s</h1>'
         '<div class="divider" style="margin:24px auto;"></div>'
         '<div class="body" data-anim="rise" data-delay="0.8">%s</div>'
         '</div>'
-        '</div>' % (intro_id, intro_start, INTRO_DUR, title, _txt(INTRO_TEXTS, lang))
+        '</div>' % (intro_id, intro_start, INTRO_DUR,
+                     _txt(CHANNEL_EYEBROW, lang), title,
+                     _txt(INTRO_TEXTS, lang))
     )
     js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:1.2,ease:"back.out(2.4)"},0.3);')
     js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))

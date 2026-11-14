@@ -70,6 +70,14 @@ INTRO_BODY = {
     "es": "Una nueva aventura con Frida y Luna!",
 }
 
+# Badge do canal no idioma do video. "Frida e Luna" e PT: em EN/ES precisa
+# virar "Frida and Luna"/"Frida y Luna" (regra: nenhum texto PT no video).
+CHANNEL_BADGE = {
+    "pt": "Frida e Luna",
+    "en": "Frida and Luna",
+    "es": "Frida y Luna",
+}
+
 
 def render_intro_overlay(s, story_title="", lang="pt"):
     """Abertura infantil: badge do canal + titulo da historia animado.
@@ -79,7 +87,9 @@ def render_intro_overlay(s, story_title="", lang="pt"):
     t = esc(title)
     return (
         '<div class="block tc" style="top:30%;max-width:1400px">'
-        '<div class="badge" data-anim="pop" data-delay="0.2">Frida e Luna</div>'
+        '<div class="badge" data-anim="pop" data-delay="0.2">'
+        + CHANNEL_BADGE.get((lang or "pt").lower(), CHANNEL_BADGE["pt"])
+        + "</div>"
         '<h2 class="h-xl" data-anim="bounce" data-delay="0.8" style="margin-top:18px">'
         + t
         + "</h2>"

@@ -6,7 +6,8 @@
 #   1. prompt nao pode mandar copiar a imagem de referencia;
 #   2. duas imagens de cena nao podem ser a mesma figura;
 #   3. MANUAL_GRAFOS.md tem que estar em dia com o codigo;
-#   4. nenhum .py commitado com erro de sintaxe.
+#   4. nenhum .py commitado com erro de sintaxe;
+#   5. a fila de temas (scripts/topics.txt) tem que existir e ter tema livre.
 
 set -e
 
@@ -36,6 +37,20 @@ echo "[pre-commit] trava de imagem repetida..."
 "$PY" scripts/check_imagens_repetidas.py || {
   echo "[pre-commit] BLOQUEADO: existe imagem repetida em algum projeto."
   echo "              Regenere as imagens antes de commitar."
+  exit 1
+}
+
+echo "[pre-commit] fila de temas de video novo (scripts/topics.txt)..."
+"$PY" scripts/check_topico_novo.py || {
+  echo "[pre-commit] BLOQUEADO: fila de temas ausente/vazia ou toda usada."
+  echo "              Veja CONTRATO.md 5.11 e MANUAL_GRAFOS.md 58.7."
+  exit 1
+}
+
+echo "[pre-commit] texto PT/recusa em EN/ES..."
+"$PY" scripts/check_texto_idioma.py || {
+  echo "[pre-commit] BLOQUEADO: script EN/ES com texto PT ou recusa do Gemini."
+  echo "              Corrija antes de renderizar/publicar (CONTRATO.md 5.9)."
   exit 1
 }
 

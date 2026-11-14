@@ -85,6 +85,13 @@ def iso_para_segundos(iso):
 
 
 def main():
+    # Console do Windows (cp1252) quebra ao imprimir titulos com acento e o
+    # JSON do PT acabava nao sendo salvo. Nunca deixar a listagem morrer por
+    # causa de acento (auditoria de canal precisa do arquivo completo).
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
     ap = argparse.ArgumentParser()
     ap.add_argument("--lang", default="", help="pt, en ou es (padrao: todos com token)")
     ap.add_argument("--json", default="", help="salva o resultado completo nesse arquivo")

@@ -174,3 +174,36 @@ Restaurante (bulldogue-ingles-frida-e-dachshund-marro):
 - Nao tem versao EN nem ES ainda - so sao renderizadas apos concluir as 27 imagens.
 - Publicar PT/EN/ES assim que o render terminar; ES depende da cota diaria do canal.
 
+
+## 2026-11-14 - o-co-de-frias: imagens e PT prontos; EN/ES em geracao
+
+O aviso anterior de "travado na fase images" estava desatualizado: as imagens
+terminaram as 23:14 de 13/11 e o pipeline seguiu sozinho.
+
+Estado real:
+- Imagens: 28/28 geradas pelo Google Flow, travas de prompt/imagem OK
+  (nenhuma figura repetida; manifesto PT/EN/ES gravado).
+- PT: narracao + legendas 08:51, timeline 08:52, mix/compose/preprocess
+  08:52, render 08:59 (`output/o-co-de-frias_pt.mp4`, 178,7 s, 176 MB).
+- Quadros conferidos em 0:12, 1:20 e 2:40: cenas diferentes, Frida (buldogue)
+  e Luna (salsicha) com o design correto.
+- EN/ES: gerando com as MESMAS 28 imagens (nada de imagem nova por idioma).
+- Fila de temas: `scripts/topics.txt` documentada em CONTRATO 5.11,
+  MANUAL 58.7 e AGENTS; o tema "O cao de ferias" foi registrado em USADOS.
+- Restaurante republicado com as imagens novas: PT https://youtu.be/LlxLDkWWViU,
+  ES ja estava no ar: aS0hSOX4U1Y.
+- Restaurante EN: o primeiro envio (Xy1Ha07ot-Y) narrava uma RECUSA do Gemini
+  ("Nao posso te ajudar... sou apenas um modelo de linguagem") nos blocos s6 e
+  s_final. O video foi apagado do canal e republicado depois do re-render com o
+  script_en corrigido: https://youtu.be/kh00OU09Tks (14/11, 3m59).
+  Causa tratada em `translate_script.py` (recusa descartada) e no check novo
+  `check_texto_idioma.py`.
+- Chihuahua PT: a duplicata antiga GCg3M6z3CC0 (render velho, 10:43) foi
+  apagada; o PT correto e jvi-hxayVVI.
+- o-co-de-frias PT: xCucNQcKFCc (09:39:50) — publicado.
+- o-co-de-frias EN: chuPVCBuK3Q (10:02:11) — publicado.
+- o-co-de-frias ES: render em andamento (56% concluída), publicar após finalização.
+- Restaurante ES: aS0hSOX4U1Y (19:48:26) — publicado com PT badge "Frida e Luna"
+  (PT) no overlay; re-render e re-publicar planejado para limpar PT/ES.
+
+

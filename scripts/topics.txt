@@ -3,7 +3,13 @@
 #   fantasia, histórias reais, raças, convivência e sagas em partes) para o canal não ficar repetitivo.
 # - Linhas com "@MM-DD" são datas especiais: saem exatamente naquele dia (ex.: @12-25 = Natal).
 #   Se o dia passar sem rodar, elas voltam na fila quando acabarem as linhas comuns.
-# - Para acrescentar mais assuntos, cole novas linhas no FINAL. Linhas com # e linhas vazias são ignoradas.
+# - Para acrescentar mais assuntos, cole novas linhas no FINAL (antes de "# USADOS").
+#   Linhas com # e linhas vazias são ignoradas.
+# - ESTE ARQUIVO É A FILA OFICIAL DE TEMAS DE VÍDEO NOVO.
+#   Antes de criar um vídeo: leia a lista, rode `python scripts/select_topic.py`
+#   (sorteia um tema ainda não usado) e confira duplicidade com
+#   `python scripts/check_topico_novo.py --tema "tema escolhido"`.
+#   Nunca repita tema já publicado; registre o usado em "# ----- USADOS -----".
 
 Por que o cachorro gira antes de deitar?
 E se os cachorros pudessem falar por um dia?
@@ -333,6 +339,10 @@ Saga do Castelo da Rainha das Almofadas (4/4): a coroa de pelúcia
 Cachorros entendem quando a gente está triste?
 Whippet: o velocista de sofá
 Bulldogue Inglês Frida e Dachshund marrom Luna e o relógio da hora do jantar
+
+# ----- USADOS (nao sortear de novo) -----
+# Formato: tema | slug | data (linhas desta secao nao entram no sorteio)
+O cão de férias | o-co-de-frias | 2026-11-14
 
 # ----- datas especiais -----
 @01-01 Ano Novo: as resoluções da Bulldogue Inglês Frida e da Dachshund marrom Luna

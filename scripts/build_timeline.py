@@ -43,7 +43,10 @@ def main():
     ffprobe = str(Path(cfg["ffmpeg_dir"]) / "ffprobe.exe")
 
     aud = proj / "assets" / "audio"
-    timing = load_json(proj / "artifacts" / f"narration_timing_{lang}.json")
+    timing_path = proj / "artifacts" / f"narration_timing_{lang}.json"
+    if not timing_path.exists() and lang == "pt":
+        timing_path = proj / "artifacts" / "narration_timing.json"
+    timing = load_json(timing_path)
     gap = float(cfg.get("gap_seconds", 0.6))
     tempo = float(cfg.get("narration_tempo", 1.0))
     loud = cfg.get("loudness", {})

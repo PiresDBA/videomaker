@@ -5,6 +5,8 @@ Instala os hooks do Videomaker (`.githooks/`) no clone atual.
 Os hooks travam os erros que ja aconteceram de verdade:
   * prompt mandando copiar a imagem de referencia (CONTRATO.md 5.8);
   * video com a mesma figura repetida em varias pausas (MANUAL_GRAFOS.md 58.6);
+  * PT/recusa do Gemini em narracao EN/ES (CONTRATO.md 5.9);
+  * fila de temas ausente/vazia em scripts/topics.txt (CONTRATO.md 5.11);
   * MANUAL_GRAFOS.md fora de sincronia com o codigo;
   * .py commitado com erro de sintaxe.
 

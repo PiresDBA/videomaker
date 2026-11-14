@@ -342,6 +342,13 @@ python scripts/check_imagens_compartilhadas.py --slug <slug>          # confere
 python scripts/check_imagens_compartilhadas.py --slug <slug> --update # apos gerar
 ```
 
+**Trava de idioma:** `scripts/check_texto_idioma.py` falha se
+`script_en.json`/`script_es.json` tiver o título em PT dentro da narração ou
+uma recusa do Gemini ("sou apenas um modelo de linguagem"). O s0 é montado
+do título traduzido (não passa pelo Gemini) justamente para não vazar PT.
+Antes de publicar, rodar também com `--strict` (badge "Frida e Luna" no
+overlay EN/ES bloqueia).
+
 Se uma imagem estiver errada: corrija **uma vez**, regenere **só ela** e
 re-renderize os três idiomas (não gere por idioma).
 
@@ -372,13 +379,40 @@ MP4 daquele projeto precisam ser refeitos antes de publicar.
 
 ---
 
+## 5.11. Tema de vídeo novo: a fila `scripts/topics.txt` (regra dura)
+
+Todo vídeo novo (inclusive os de tópico randomizado) sai da fila oficial
+`scripts/topics.txt`. O arquivo tem três partes:
+
+- fila comum: uma linha por tema, na ordem;
+- `# ----- USADOS -----`: tema | slug | data dos vídeos já feitos (não sorteia);
+- `# ----- datas especiais -----`: `@MM-DD`, só saem na data.
+
+Fluxo obrigatório antes de gerar um vídeo:
+
+1. **Ler** `scripts/topics.txt` (a lista é a memória dos temas do canal).
+2. **Sortear** um tema ainda não usado: `python scripts/select_topic.py`.
+3. **Conferir duplicidade**:
+   `python scripts/check_topico_novo.py --tema "tema escolhido"`.
+   Se parecer com qualquer linha (inclusive usados), escolha outro.
+4. Ao terminar o vídeo, **registrar o usado** no próprio arquivo, em
+   `# ----- USADOS -----`, no formato `tema | slug | AAAA-MM-DD`.
+
+Nunca: apagar a fila, reformatar a lista inteira para `- tema`, repetir tema
+já publicado, ou usar tema que não está na lista sem acrescentá-lo antes.
+
+O hook `.githooks/pre-commit` roda `scripts/check_topico_novo.py` e bloqueia
+commit com fila ausente/vazia ou sem nenhum tema livre.
+
+---
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.
 2. Criar branch com nome curto e óbvio.
 3. Fazer a mudança **e** atualizar o `MANUAL_GRAFOS.md` no mesmo commit.
 4. Rodar os checks (`check_manual`, `check_prompt_repeticao`,
-   `check_imagens_repetidas`).
+   `check_imagens_repetidas`, `check_texto_idioma`, `check_topico_novo`).
 5. Commit + push da branch.
 
 **O manual é a memória do produto. Se não está no manual, não existe.**

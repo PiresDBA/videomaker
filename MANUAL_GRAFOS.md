@@ -3821,6 +3821,9 @@ python scripts/listar_canal.py --lang en    # só o inglês
 python scripts/listar_canal.py --lang es    # só o espanhol
 ```
 
+O script força UTF-8 na saída; sem isso, títulos com acento quebravam a
+listagem no console do Windows e o `--json` do canal PT nem era gravado.
+
 ### 57.8. Relatório de status
 
 ```powershell
@@ -4044,9 +4047,12 @@ O padrão `pt` preserva o comportamento antigo.
 Luna!") e o encerramento ("Obrigado por assistir!", "Se inscreva no canal",
 etc.) com texto fixo em PT — apareciam em PT nos vídeos EN/ES. Agora esses
 textos vêm de `INTRO_TEXTS`/`OUTRO_TEXTS` no próprio `build_composition.py`
-e seguem o `--lang` do vídeo. Regra: **nenhum texto na tela pode ficar em
-PT nos vídeos EN/ES** (CONTRATO.md §5.7 vale para o que aparece na tela
-também). Se um vídeo já subiu com texto PT na tela, apagar e reenviar.
+e seguem o `--lang` do vídeo. O nome do canal na capa usa
+`CHANNEL_EYEBROW` (`FRIDA E LUNA` / `FRIDA AND LUNA` / `FRIDA Y LUNA`) e o
+badge do overlay usa `CHANNEL_BADGE` (`Frida e Luna` / `Frida and Luna` /
+`Frida y Luna`) em `generate_scene_htmls.py`. Regra: **nenhum texto na tela
+pode ficar em PT nos vídeos EN/ES** (CONTRATO.md §5.7 vale para o que aparece
+na tela também). Se um vídeo já subiu com texto PT na tela, apagar e reenviar.
 
 ### 58.4. Tradução (`script_<lang>.json`) — só o texto
 
@@ -4054,6 +4060,21 @@ também). Se um vídeo já subiu com texto PT na tela, apagar e reenviar.
 (Gemini WEB). IDs, imagens e cenas não mudam — por isso as imagens servem
 para os 3 idiomas. Assinatura: `translate_script(script, [lista_de_idiomas],
 out_dir, topic=...)` — **passar lista**, ex. `["en"]` (não string solta).
+
+Regras duras contra texto PT/recusa (BUG 2026-11-14):
+
+- **s0 nunca é traduzida pelo Gemini**: é montada de
+  `CONTRACT_FALLBACKS[lang]["s0"]` usando o **título já traduzido**. Motivo
+  real: o s0 do EN saiu com "O cão de férias" no meio da frase.
+- Texto que contenha "modelo de linguagem"/"language model" é **recusa do
+  Gemini** e é descartado (`parece_recusa`); tenta de novo e, se falhar,
+  usa o fallback. Motivo real: o EN do Restaurante narrou "Não posso te
+  ajudar... sou apenas um modelo de linguagem" no s6 e no s_final.
+- Se uma seção sem fallback não traduzir, o script **aborta** em vez de
+  gravar PT no lugar.
+- Antes de renderizar/publicar, rodar
+  `python scripts/check_texto_idioma.py` (o hook roda sem `--strict`).
+  Com `--strict`, overlay com badge "Frida e Luna" (PT) também bloqueia.
 
 ### 58.4.1. Personagem novo (regra de consistência — VALE PARA TODOS)
 
@@ -4081,6 +4102,34 @@ episódio** (chihuahua, esquilo, gato, tartaruga, coelho, etc.):
 Ordem oficial: **banco local** (`listar_musicas_banco`/`escolher_musica_banco`,
 rotação sem repetir) → **Gemini Web** → **procedural local**. Pula se
 `bgm_gemini.wav` ou `bgm_procedural.wav` já existem.
+
+---
+
+## 58.7. Fila de temas de vídeo novo (`scripts/topics.txt`)
+
+O canal não inventa tema solto: todo vídeo novo (inclusive os de tópico
+randomizado) sai de `scripts/topics.txt`. O arquivo tem:
+
+| Parte | Conteúdo | Entra no sorteio? |
+|-------|----------|-------------------|
+| fila comum | uma linha por tema, na ordem | sim |
+| `# ----- USADOS -----` | `tema \| slug \| AAAA-MM-DD` | não |
+| `# ----- datas especiais -----` | `@MM-DD tema` | não (só na data) |
+
+Fluxo (regra dura, `CONTRATO.md` §5.11):
+
+```powershell
+python scripts/select_topic.py                    # sorteia tema livre + slug
+python scripts/check_topico_novo.py --tema "..."  # barra tema repetido
+```
+
+Depois do vídeo pronto, registrar no próprio arquivo em `# ----- USADOS -----`
+(`tema | slug | data`). Fila vazia ou toda usada = pare e acrescente temas;
+não reformate a lista inteira nem apague linhas. O hook de pre-commit roda
+`check_topico_novo.py` e bloqueia commit com a fila ausente/vazia.
+
+Exemplo real: o vídeo "O cão de férias" (`o-co-de-frias`, 2026-11-14) foi
+gerado a partir dessa fila e está registrado em USADOS.
 
 ---
 
