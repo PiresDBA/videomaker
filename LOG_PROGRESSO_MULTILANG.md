@@ -206,6 +206,7 @@ Estado real:
   com badge "Frida y Luna" e título "El Perro de Vacaciones".
 - Restaurante ES: aS0hSOX4U1Y (13/11) publicado com PT badge "Frida e Luna"
   no overlay; re-render ES iniciado 14/11 10:10 para corrigir badge/eyebrow.
+- Aluna e Frida vão ao Pet Shop cortar as unhas e tomar banho | aluna-e-frida-vao-au-pet-shop-cortar-as-unhas-e-tomar-banho | 2026-11-14 — publicado (vai ser renderizado).
 - Pendente geral: re-render EN/ES antigos (Chihuahua, Parque) que ainda sobem
   com badge/eyebrow PT na tela; depois apagar e reenviar.
 
