@@ -47,6 +47,12 @@ perguntas **antes** de escrever código:
    mudou (toggle de modo Imagem sumiu), rode `python scripts/flow_fetch.py
    --setup` para reaprender e salvar o estado em `.flow_learned_state.json`.
    O Flow gera imagem por padrão — não precisa selecionar "Modo Imagem".
+10. **Vídeo NÃO é conteúdo para crianças.** Todo vídeo publicado nos 3 canais
+    (PT/EN/ES) deve ser marcado como `selfDeclaredMadeForKids=false`. O upload
+    padrão já usa `--nao-kids`; se precisar corrigir vídeos antigos, rodar
+    `python scripts/atualizar_kids.py <pt|en|es>` para marcar todos de uma vez
+    ou `python scripts/youtube_metadados.py --lang <lang> --video-id <ID>
+    --proj <caminho> --atualizar --nao-kids` para um vídeo individual.
 
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.

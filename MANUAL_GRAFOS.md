@@ -323,7 +323,7 @@ python scripts/youtube_upload.py --video projects/<slug>/output/<slug>.mp4
 | Categoria | 24 (Entretenimento) | `--category "..."` |
 | Idioma padrão | `pt-BR` | `--default-language "..."` |
 | Idioma do áudio | `pt-BR` | `--default-audio-language "..."` |
-| Feito para crianças | Sim (ativado por padrão) | `--nao-kids` para desativar |
+| Feito para crianças | **Não (desativado por padrão)** | `--nao-kids` já é o comportamento padrão; usar `--made-for-kids` apenas se quiser ativar explicitamente |
 | Privacidade | `public` | `--privacy private\|unlisted` |
 | Thumbnail | Procura `thumb.jpg` / `thumbnail.jpg` / `thumb.png` / `thumbnail.png` na pasta do projeto; senão a primeira imagem da cena em `assets/images/gemini/scenes/` | `--thumbnail "caminho/para/imagem.jpg"` |
 
@@ -336,7 +336,7 @@ python scripts/youtube_upload.py --video projects/<slug>/output/<slug>.mp4
 Vídeo gerado por inteligência artificial (IA).
 Não contém promoção paga.
 Idioma da narração e das legendas: Português do Brasil.
-Conteúdo infantil (feito para crianças).
+Conteúdo NÃO é feito para crianças (selfDeclaredMadeForKids=false).
 
 #cachorro #animacao #infantil #frida #luna #desenhoanimado
 ```
@@ -3689,10 +3689,39 @@ python scripts/youtube_metadados.py --lang en --ids ID1,ID2 --apagar --confirmar
 
 # Corrigir título/descrição de um vídeo SEM reenviar o MP4
 python scripts/youtube_metadados.py --lang en --video-id ID \
-    --proj E:\videomaker\projects\<slug> --atualizar
+    --proj E:\videomaker\projects\<slug> --atualizar --nao-kids
+
+# Marcar um vídeo já publicado como NÃO feito para crianças
+python scripts/youtube_metadados.py --lang pt --video-id ikW_rnp_9TY \
+    --proj E:\videomaker\projects\<slug> --atualizar --nao-kids
+
+# Marcar TODOS os vídeos de um canal como NÃO feitos para crianças
+python scripts/atualizar_kids.py pt    # ou en, es
 ```
 
-### 56.4. Cota da API (limite real de velocidade)
+### 56.4. Marcar vídeos como NÃO feitos para crianças (bulk)
+
+O script `scripts/atualizar_kids.py <lang>` percorre **todos** os vídeos publicados
+de um canal e define `selfDeclaredMadeForKids=false` em cada um. Útil para
+corrigir vídeos antigos que foram enviados com o padrão antigo (kids=true).
+
+Uso:
+
+```powershell
+python scripts/atualizar_kids.py pt   # marca todos os vídeos do canal PT
+python scripts/atualizar_kids.py en   # marca todos os vídeos do canal EN
+python scripts/atualizar_kids.py es   # marca todos os vídeos do canal ES
+```
+
+O script usa a API `search().list(forMine=True)` para listar todos os vídeos
+do canal autenticado e chama `videos().update(part="status", ...)` para cada um.
+
+Regra aplicada a todos os 149 vídeos publicados até 2026-11-15
+(PT=84, EN=54, ES=11).
+
+---
+
+### 56.5. Cota da API (limite real de velocidade)
 
 YouTube Data API: **10.000 unidades/dia por projeto Google**.
 Cada `videos.insert` (upload) custa **~1.600** → **~6 uploads por canal por

@@ -240,6 +240,25 @@ apenas dentro do mesmo vídeo/projeto; nunca reaproveitar cenário de vídeo ant
 
 ---
 
+## 5.7.1. Vídeo NÃO é conteúdo para crianças (regra dura — selfDeclaredMadeForKids=false)
+
+Todo vídeo publicado nos 3 canais (PT/EN/ES) deve ser marcado como **não feito
+para crianças** (`selfDeclaredMadeForKids = false`) no status do YouTube.
+
+- Nunca publicar com `made_for_kids=true` ou `selfDeclaredMadeForKids=true`.
+- O upload padrão (`scripts/upload_por_idioma.py`) já usa `--made-for-kids`
+  como default `True`; para desativar, usar `--nao-kids` ou chamar
+  `scripts/atualizar_kids.py <lang>` após o upload.
+- Se o vídeo já foi publicado com kids=true, rodar:
+  `python scripts/youtube_metadados.py --lang <pt|en|es> --video-id <ID> --proj <caminho_projeto> --atualizar --nao-kids`
+  ou, para todos os vídeos do canal de uma vez:
+  `python scripts/atualizar_kids.py <pt|en|es>`
+- Verificar com `python scripts/listar_canal.py --lang <lang>` que nenhum
+  vídeo está marcado como kids.
+
+Regra aplicada a todos os 149 vídeos publicados até 2026-11-15
+(PT=84, EN=54, ES=11) via `scripts/atualizar_kids.py`.
+
 ## 5.8. Imagem única por pausa (regra dura — NÃO repetir a referência)
 
 Esta seção existe porque o erro já aconteceu duas vezes (Chihuahua a partir de
