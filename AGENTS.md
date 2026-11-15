@@ -57,10 +57,34 @@ perguntas **antes** de escrever código:
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.
 
-## Regras mínimas
+**REGRA OBRIGATÓRIA — LEIA O MANUAL GRAFOS.md:**
+Antes de tocar em qualquer coisa (código, prompt, imagem, cena, `scene_mode`, render,
+narração, trilha, upload), leia **`MANUAL_GRAFOS.md`** inteiro ou pelo menos a seção
+relevante. Ele é a memória do produto: contém o que já foi feito, como está e por quê.
+Se algo está documentado no manual, **já foi feito** — não refaça. Se está documentado,
+**não está quebrado** — não desfaça.
+Detalhes: `MANUAL_GRAFOS.md` §0 e §38.
+
+## Ambiente (hardcoded, não adivinhe)
+
+- Python: `C:\OpenMontage\.venv\Scripts\python.exe` (sempre use este caminho)
+- Chrome: `C:\Program Files\Google\Chrome\Application\chrome.exe`
+- ffmpeg: `C:\videomaker\ffmpeg\bin\ffmpeg.exe`
+- Só um render por vez (ffmpeg não é thread-safe aqui)
+
+## PowerShell (gotchas do Windows)
+
+- `&&` **não funciona** no PowerShell. Use `;` ou quebre em linhas separadas.
+- `tail` **não existe**. Use `Get-Content <arquivo> -Tail N` ou `Select-Object -Last N`.
+- `grep` **não existe**. Use `Select-String -Pattern "<texto>"`.
+- `head` **não existe**. Use `Select-Object -First N`.
+- Para rodar em background: `Start-Process -FilePath "<exe>" -ArgumentList @("<arg1>", "<arg2>") -Wait`
+- Para matar processos Python travados: `Get-Process | Where-Object Name -like 'python*' | Stop-Process -Force`
+
+## Fluxo de trabalho (obrigatório)
 
 1. **Branch antes de mexer**: `git checkout -b feature/nome-curto`.
-2. **O `MANUAL_GRAFOS.md` vai no mesmo commit da mudança**. Se mudou fluxo,
+2. **O `MANUAL_GRAFOS.md` vai no mesmo commit da mudança.** Se mudou fluxo,
    fase, dependência, CLI ou regra → atualize §3, §4, §30.7, §36, §37 ou crie
    uma seção nova.
 3. **Push só depois do manual**: branch → código → manual → checks → commit → push.
@@ -79,18 +103,41 @@ Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.
 ## Comandos úteis
 
 ```powershell
-python scripts/pipeline.py --help          # comandos e argumentos
-python scripts/pipeline.py status --slug <slug>   # estado de um projeto
-python scripts/check_manual.py              # manual em dia com o código?
-python scripts/check_projects.py            # descrições dos projetos no padrão
-python scripts/check_prompt_repeticao.py    # prompt manda copiar a referência?
-python scripts/check_prompt_repeticao.py --strict   # + estrutura nova (CENA + anti-repetição)
-python scripts/check_imagens_repetidas.py   # duas cenas são a mesma figura?
-python scripts/check_imagens_compartilhadas.py --slug <slug>   # PT/EN/ES usam as mesmas imagens?
-python scripts/check_texto_idioma.py        # PT/recusa do Gemini em script EN/ES?
-python scripts/select_topic.py              # sorteia tema novo de scripts/topics.txt
-python scripts/check_topico_novo.py --tema "..."   # tema repetido? (fila)
-python scripts/install_hooks.py             # instala .githooks (uma vez por clone)
+# Python sempre com caminho absoluto
+$py = "C:\OpenMontage\.venv\Scripts\python.exe"
+
+# Pipeline completo (3 idiomas)
+& $py scripts\gerar_capitulo_trilinguo.py --prompt "<tema>" --slug <slug>
+
+# Só um idioma
+& $py scripts\gerar_capitulo_trilinguo.py --prompt "<tema>" --slug <slug> --only-lang es
+
+# Upload por idioma
+& $py scripts\upload_por_idioma.py pt --projects-dir "C:\videomaker\projects" --slug <slug> --force
+
+# Corrigir madeForKids (todos os vídeos do canal)
+& $py scripts\atualizar_kids.py pt   # ou en, es
+
+# Listar canal
+& $py scripts\listar_canal.py --lang pt
+
+# Checks
+& $py scripts\check_manual.py
+& $py scripts\check_prompt_repeticao.py
+& $py scripts\check_imagens_repetidas.py
+& $py scripts\check_texto_idioma.py --strict
+& $py scripts\check_topico_novo.py --tema "..."
+
+# Tópico novo
+& $py scripts\select_topic.py
+& $py scripts\check_topico_novo.py --tema "<tema escolhido>"
+
+# Flow (Google Flow para imagens)
+& $py scripts\flow_fetch.py --setup   # interativo: configurar no navegador, depois Enter
+& $py scripts\flow_fetch.py --check   # ver se Chrome/Flow estão respondendo
+
+# End screen (tela final) — NÃO existe na API do YouTube v3 (descontinuado).
+# Fazer manualmente no YouTube Studio: Conteúdo → Vídeo → Editor de vídeo → Tela final
 ```
 
 ## Hooks (instalar uma vez por clone)
@@ -103,3 +150,14 @@ Ativa `.githooks/pre-commit` e `.githooks/pre-push`: sintaxe Python, trava de
 prompt, trava de imagem repetida e `check_manual.py`. Não desative.
 
 Detalhes: `CONTRATO.md`.
+
+## Estado que NÃO sobe para o git (ignorado)
+
+- `projects/` (vídeos, áudios, imagens geradas)
+- `scripts/.publish_history_idioma.json` (controle de uploads)
+- `scripts/.publish_history.json`
+- `.flow_learned_state.json` (estado do setup do Flow)
+- `.chrome-gemini-profile/` (sessão do Chrome)
+- `*.log`, `*.mp4`, `*.jpg`, `*.png`, `*.wav`, `*.m4a`
+- `ffmpeg/`, `hyperframes-workspace/`, `banco de imagens/`, `banco de músicas/`
+- `scripts/client_secret*.json`, `scripts/*token*.json`, `scripts/config.json`
