@@ -73,7 +73,7 @@ def apagar(lang, ids):
     return 0
 
 
-def atualizar(lang, vid, proj):
+def atualizar(lang, vid, proj, nao_kids=False):
     svc = get_service(lang)
     titulo, desc = carregar_metadados(proj, lang)
     code = CREDS[lang][2]
@@ -87,10 +87,16 @@ def atualizar(lang, vid, proj):
             "defaultAudioLanguage": code,
         },
     }
-    r = svc.videos().update(part="snippet", body=body).execute()
+    parts = ["snippet"]
+    if nao_kids:
+        body["status"] = {"selfDeclaredMadeForKids": False}
+        parts.append("status")
+    r = svc.videos().update(part=",".join(parts), body=body).execute()
     print(f"  atualizado: {vid}")
     print(f"    titulo: {r['snippet']['title']}")
     print(f"    lang: {r['snippet'].get('defaultLanguage')}")
+    if nao_kids:
+        print(f"    madeForKids: NAO (selfDeclaredMadeForKids=false)")
     return 0
 
 
@@ -102,6 +108,8 @@ def main():
     ap.add_argument("--proj", default="", help="pasta do projeto (para --atualizar)")
     ap.add_argument("--apagar", action="store_true")
     ap.add_argument("--atualizar", action="store_true")
+    ap.add_argument("--nao-kids", action="store_true",
+                    help="marca o video como NAO feito para criancas (selfDeclaredMadeForKids=false)")
     ap.add_argument("--confirmar", action="store_true", help="obrigatorio para apagar")
     a = ap.parse_args()
 
@@ -119,7 +127,7 @@ def main():
         if not (a.video_id and a.proj):
             print("ERRO: --atualizar exige --video-id e --proj")
             return 1
-        return atualizar(a.lang, a.video_id, a.proj)
+        return atualizar(a.lang, a.video_id, a.proj, nao_kids=a.nao_kids)
 
     print("Nada a fazer: use --apagar ou --atualizar")
     return 1
