@@ -215,4 +215,15 @@ Estado real:
 - Pendente geral: re-render EN/ES antigos (Chihuahua, Parque) que ainda sobem
   com badge/eyebrow PT na tela; depois apagar e reenviar.
 
+## Publicação 2026-11-15 — O campeonato de cães mais maluco do mundo
+- slug: o-campeonato-de-caes-mais-maluco-do-mundo
+- Tema sorteado de scripts/topics.txt e registrado em "# ----- USADOS -----"
+- PT: https://youtu.be/XqA_Z_I2lZU (166.7 MB)
+- EN: https://youtu.be/4pVgomlPvfw (177.8 MB)
+- ES: https://youtu.be/vPDLGKncOAc (180.3 MB)
+- 21 imagens geradas via Google Flow (Frida e Luna injetadas via prompt),
+  compartilhadas por PT/EN/ES (manifesto images_manifest.json)
+- 3 idiomas com madeForKids=false confirmado via youtube_metadados.py --atualizar --nao-kids
+- Legenda queimada NÃO usada; legenda separada OK nos 3 idiomas
+
 
