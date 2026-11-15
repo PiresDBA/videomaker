@@ -41,6 +41,12 @@ perguntas **antes** de escrever código:
 8. **Estou reaproveitando um MP4 antigo?** → só se ele for **mais novo** que
    as imagens/roteiro/overlays/narração. Imagem nova + MP4 velho = vídeo
    errado publicado (§5.10).
+9. **Google Flow via `flow_fetch.py`:** nunca usar `--ref-image` (file chooser
+   do Chrome trava no modo CDP/headless). O `flow_fetch` já injeta os
+   personagens Frida e Luna via prompt (`_enforce_characters`). Se a UI do Flow
+   mudou (toggle de modo Imagem sumiu), rode `python scripts/flow_fetch.py
+   --setup` para reaprender e salvar o estado em `.flow_learned_state.json`.
+   O Flow gera imagem por padrão — não precisa selecionar "Modo Imagem".
 
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.

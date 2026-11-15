@@ -2646,20 +2646,22 @@ imagem somente quando o usuário quiser forçar a referência. O padrão (sem
 customizar/desativar os nomes, use `--characters "Nome1 e Nome2"` (vazio
 desativa).
 
-**Seleção de modo Imagem (obrigatória):** antes de enviar qualquer prompt, o
-`flow_fetch.py` abre o painel pelo `Gatilho de configurações` (ícone ao lado de
-"Nano Banana ... x1" na barra de prompt), seleciona o toggle **Imagem** (nunca
-**Vídeo**), define **16:9** (`--aspect`) e **x1**. Se não conseguir confirmar o
-modo Imagem, o envio é abortado. O prompt é preenchido com `fill()` no
-`ProseMirror` (digitação por teclado não funcionava) e a imagem gerada é
-capturada da rede (`flow-content.google`) e salva em disco.
+**Seleção de modo Imagem:** o Google Flow gera imagem estática por padrão — não
+há mais toggle de "Modo Imagem" na interface atual. O `flow_fetch.py` tenta
+selecionar o toggle (compatibilidade com versões anteriores), mas se não
+encontrar, segue em frente sem abortar (o Flow já gera imagem por padrão).
+**Nunca usar `--ref-image`** (file chooser do Chrome trava no modo CDP/headless).
+O `flow_fetch` injeta automaticamente os personagens Frida e Luna via prompt
+(`_enforce_characters` com `CHARACTER_REF_TEMPLATE` e `CHARACTER_STYLE_BLOCK`),
+garantindo consistência visual sem precisar anexar imagem de referência.
+O prompt é preenchido com `fill()` no ProseMirror e a imagem gerada é capturada
+da rede (`flow-content.google`) e salva em disco.
 
 **Download confiável:** antes de interagir com o editor (enviar prompt) e antes
 de clicar no botão de download, o `flow_fetch.py` fecha overlays/modais
-remanescentes via `_dismiss_overlays` (`Escape` + backdrop), evitando que overlay
-do Material intercepte cliques e impeça o download da imagem gerada. O seletor
-do modo Imagem e do gatilho de configurações tenta vários labels/seletores
-conhecidos, evitando abortos quando o painel não traz o toggle esperado.
+remanescentes via `_dismiss_overlays` (`Escape` + backdrop). O seletor do modo
+Imagem e do gatilho de configurações tenta vários labels/seletores conhecidos;
+se não encontrar, avisa e segue (o Flow já gera imagem por padrão, sem x1).
 
 **Busca/geracao de audio (`--busca-audio`):** gera um arquivo de narracao via Gemini TTS (Google AI API, SDK `google-genai`, modelo `gemini-2.5-flash-preview-tts`, key `GOOGLE_TTS_API_KEY` em `.env` ou `scripts/config.json`). Usa-se `--prompt` (texto) e `--name` (arquivo). Saida padrao: `<proj>/public/assets/audio/narration/`.
 

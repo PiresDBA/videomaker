@@ -206,7 +206,12 @@ Estado real:
   com badge "Frida y Luna" e título "El Perro de Vacaciones".
 - Restaurante ES: aS0hSOX4U1Y (13/11) publicado com PT badge "Frida e Luna"
   no overlay; re-render ES iniciado 14/11 10:10 para corrigir badge/eyebrow.
-- Aluna e Frida vão ao Pet Shop cortar as unhas e tomar banho | aluna-e-frida-vao-au-pet-shop-cortar-as-unhas-e-tomar-banho | 2026-11-14 — publicado (vai ser renderizado).
+- Aluna e Frida vão ao Pet Shop cortar as unhas e tomar banho | aluna-e-frida-vao-au-pet-shop-cortar-as-unhas-e-tomar-banho | 2026-11-14
+  - PT: https://youtu.be/ikW_rnp_9TY (197.7 MB)
+  - EN: https://youtu.be/8tbTaHQZD9Y (210.3 MB)
+  - ES: https://youtu.be/zzpU_zHny6g (210.7 MB)
+  - 25 imagens geradas via Google Flow (padrão Pixar/Disney), personagens Frida e Luna injetadas via prompt
+  - Corrigido flow_fetch.py: sem --ref-image (file chooser trava no CDP), sem toggle de modo Imagem, sem x1
 - Pendente geral: re-render EN/ES antigos (Chihuahua, Parque) que ainda sobem
   com badge/eyebrow PT na tela; depois apagar e reenviar.
 

@@ -463,8 +463,8 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
             except Exception:
                 continue
         if toggle is None:
-            print("  AVISO: opcao 'Imagem' nao apareceu no painel; abortando para nao gerar video", flush=True)
-            return False
+            print("  AVISO: opcao 'Imagem' nao apareceu no painel; o Flow ja gera imagem por padrão, seguindo.", flush=True)
+            return True
 
         if not await _toggle_checked(toggle):
             btn = toggle.locator("button").first
@@ -478,8 +478,8 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
             await page.wait_for_timeout(700)
 
         if not await _toggle_checked(toggle):
-            print("  AVISO: nao foi possivel confirmar o modo Imagem; abortando para nao gerar video", flush=True)
-            return False
+            print("  AVISO: nao foi possivel confirmar o modo Imagem; seguindo de qualquer forma.", flush=True)
+            return True
 
         if aspect:
             asp = page.locator(f'mat-button-toggle:has-text("{aspect}")').first
@@ -538,14 +538,16 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True,
         result["error"] = "campo de prompt vazio após digitação"
         print(f"  ⚠ {result['error']}", flush=True)
         return result
-    # Garantir modo Imagem (NUNCA vídeo) antes de selecionar quantidade
+    # Garantir modo Imagem (NUNCA vídeo) antes de selecionar quantidade.
+    # O Google Flow mudou e gera imagem por padrão: se não encontrar o toggle
+    # de modo Imagem, apenas avisa e segue (não aborta).
     image_ok = await select_image_mode(page, aspect)
     if not image_ok:
-        result["error"] = "não foi possível selecionar modo Imagem - abortando para evitar gerar vídeo"
-        print(f"  ⚠ {result['error']}", flush=True)
-        return result
-    # Selecionar x1 (gerar apenas 1 imagem) antes de enviar
-    await select_x1(page)
+        print("  AVISO: toggle de modo Imagem não encontrado no painel; o Flow já gera imagem por padrão, seguindo sem selecionar modo.", flush=True)
+    # Selecionar x1 (gerar apenas 1 imagem) antes de enviar.
+    x1_ok = await select_x1(page)
+    if not x1_ok:
+        print("  AVISO: toggle x1 não encontrado; seguindo com a quantidade padrão do Flow.", flush=True)
     # Clicar no botão "Iniciar geração" (arrow_forward)
     for attempt in range(3):
         await page.wait_for_timeout(1500)
@@ -587,7 +589,8 @@ async def select_x1(page) -> bool:
         pass
     try:
         if not await trig.count():
-            return False
+            print("  AVISO: gatilho de configuracoes não encontrado; seguindo com quantidade padrão do Flow.", flush=True)
+            return True
         try:
             await trig.click(timeout=5000)
         except Exception:
@@ -596,7 +599,8 @@ async def select_x1(page) -> bool:
         toggle = page.locator('mat-button-toggle:has-text("x1")').first
         if await toggle.count() == 0:
             await page.keyboard.press("Escape")
-            return False
+            print("  AVISO: opcao x1 não encontrada; seguindo com quantidade padrão do Flow.", flush=True)
+            return True
         if not await _toggle_checked(toggle):
             try:
                 await toggle.locator("button").first.click(timeout=4000)

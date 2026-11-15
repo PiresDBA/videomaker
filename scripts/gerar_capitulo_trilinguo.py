@@ -159,11 +159,13 @@ def fase_images(args, p_dir):
         jpg = out_dir / (nome + ".jpg")
         if jpg_ok(jpg):
             continue
-        ref = _ref_image_para(out_dir, ordem, j)
-        ref_txt = Path(ref).name if ref else "personagens do Flow"
-        print(f"== IMAGEM: {nome} (referencia: {ref_txt})", flush=True)
+        # Nao passa referencia de arquivo (ref-image) porque o file chooser do
+        # Chrome trava no modo headless/CDP. O flow_fetch ja injeta os
+        # personagens Frida e Luna via prompt (_enforce_characters), garantindo
+        # a consistencia visual sem precisar anexar imagem de referencia.
+        print(f"== IMAGEM: {nome} (referencia: personagens do Flow)", flush=True)
         rc, name, size = _gerar_via_flow(nome, prompts.get(nome, ""), out_dir,
-                                         args, p_dir, ref)
+                                         args, p_dir, None)
         if rc != 0 or size == 0:
             print(f"  [{name}] FALHA no Flow (rc={rc} bytes={size})", flush=True)
 
@@ -175,9 +177,10 @@ def fase_images(args, p_dir):
               flush=True)
         ainda_falham = []
         for nome in quarantine:
-            ref = _ref_image_para(out_dir, ordem, ordem.index(nome))
+            # Nao passa referencia de arquivo (ref-image) porque o file chooser
+            # do Chrome trava no modo headless/CDP.
             rc, name, size = _gerar_via_flow(nome, prompts.get(nome, ""), out_dir,
-                                             args, p_dir, ref)
+                                             args, p_dir, None)
             if not (rc == 0 and jpg_ok(out_dir / (nome + ".jpg"))):
                 ainda_falham.append(nome)
         quarantine = ainda_falham
