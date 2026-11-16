@@ -15,6 +15,13 @@ echo "[pre-push] prompt anti-repeticao..."
   exit 1
 }
 
+echo "[pre-push] idioma dos videos renderizados..."
+"$PY" scripts/check_video_idioma.py --all || {
+  echo "[pre-push] BLOQUEADO: video renderizado no idioma errado (ou duplicado)."
+  echo "              Refaca o render pelo fluxo por idioma."
+  exit 1
+}
+
 echo "[pre-push] manual em dia com o codigo..."
 "$PY" scripts/check_manual.py || {
   echo "[pre-push] BLOQUEADO: MANUAL_GRAFOS.md fora de sincronia."

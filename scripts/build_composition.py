@@ -115,10 +115,24 @@ EASE = {
     "drop":   '"back.out(1.7)"',
     "swing":  '"back.out(2.0)"',
     "tilt":   '"back.out(2.2)"',
-    "zoom":   '"power3.out"',
-    "line":   '"power3.out"',
+    "zoom":   '"back.out(1.5)"',
+    "line":   '"power4.out"',
     "soft":   '"power1.out"',
 }
+# Duracoes das animacoes de texto (skills: stagger 100-200ms, hold curto,
+# movimento com energia). 2026-11-16: encurtado de 0.8-0.9s para 0.45-0.6s
+# porque o usuario achou as animacoes lentas.
+DUR_ANIM = {
+    "pop": 0.45,
+    "line": 0.50,
+    "bounce": 0.60,
+    "zoom": 0.55,
+    "swing": 0.55,
+    "tilt": 0.55,
+    "drop": 0.55,
+    "soft": 0.60,
+}
+DUR_ANIM_PADRAO = 0.55
 
 
 def inject_ids(html, sid):
@@ -149,16 +163,20 @@ def collect_anims(html, sid):
 # Transicoes entre imagens/beats (regra cinematica: crossfade 0.5-1.0s;
 # ver skills/creative/cinematic.md e skills/creative/animation-pipeline.md).
 # Tipos suportados: crossfade (default), fade, zoom, slide, hard.
-XFADE = 0.9  # crossfade entre cenas (ajustavel)
+# 2026-11-16: duracoes encurtadas (0.9 -> 0.6s) e easing mais seco, porque o
+# usuario achou as animacoes "muito devagar" (skills: TRANSITION 0.5-1.0s).
+XFADE = 0.6  # crossfade entre cenas (ajustavel)
 TRANSICOES = {
-    "crossfade": 0.9,
-    "fade": 0.6,
-    "zoom": 1.0,
-    "slide": 0.8,
+    "crossfade": 1.0,
+    "fade": 0.7,
+    "zoom": 0.75,
+    "slide": 0.6,
     "hard": 0.0,
 }
-EASE_IMAGEM = '"power1.inOut"'   # crossfade suave (ease in/out)
-EASE_SAIDA = '"power2.inOut"'    # saida de cena
+EASE_IMAGEM = '"power1.inOut"'   # crossfade mais suave e claro
+EASE_SAIDA = '"power1.inOut"'    # saida de cena mais suave
+EASE_CAMERA = '"power1.inOut"'  # camera com movimento continuo, sem overshoot final
+CAM_VIBRANCI = 2.4   # amplia o deslocamento de camera (motion mais vivo)
 
 INTRO_DUR = 4.0   # duracao da tela inicial (capa)
 OUTRO_DUR = 5.0   # duracao da tela final (agradecimento)
@@ -213,7 +231,7 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                      _txt(CHANNEL_EYEBROW, lang), title,
                      _txt(INTRO_TEXTS, lang))
     )
-    js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:1.2,ease:"back.out(2.4)"},0.3);')
+    js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:0.9,ease:"back.out(2.4)"},0.3);')
     js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
     js.append('tl.fromTo("#intro-capa .cam-0",{scale:1},{scale:1.12,duration:4,ease:"none"},0);')
     cursor = INTRO_DUR
@@ -279,11 +297,50 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 continue
             cam = cams[i] if i < len(cams) else [1.02, 1.10, 0, 14, 0, -8]
             s0, s1, x0, x1, y0, y1 = cam
-            js.append(
-                'tl.fromTo("#%s .cam-%d",{scale:%s,x:%s,y:%s},'
-                '{scale:%s,x:%s,y:%s,duration:%.3f,ease:"none"},%.3f);'
-                % (sid, i, s0, x0, y0, s1, x1, y1, dur_ext + 0.4, _reveal_time(i))
-            )
+            # Variação de zoom por beat para evitar repetição: algumas cenas começam
+            # com zoom máximo e diminuem, outras começam mínimo e aumentam.
+            scale_pairs = [(1.50,1.05),(1.05,1.50),(1.38,1.10),(1.10,1.45)]
+            idx = 0
+            # usa seed da cena + indice para variação determinística
+            try:
+                idx = (abs(hash(sid)) + i) % len(scale_pairs)
+                s0_raw, s1_raw = scale_pairs[idx]
+                # só substitui se o camera original for o padrão
+                if abs(float(s0)-1.02) < 0.01 and abs(float(s1)-1.10) < 0.01:
+                    s0, s1 = s0_raw, s1_raw
+            except Exception:
+                pass
+            # Vibrancia: amplia o movimento (scale + deslocamento) para o
+            # movimento nao parecer lento.
+            s0f = 1.0 + (float(s0) - 1.0) * CAM_VIBRANCI
+            s1f = 1.0 + (float(s1) - 1.0) * CAM_VIBRANCI
+            x0f = float(x0) * CAM_VIBRANCI
+            x1f = float(x1) * CAM_VIBRANCI
+            y0f = float(y0) * CAM_VIBRANCI
+            y1f = float(y1) * CAM_VIBRANCI
+            # Camera por BEAT: cada imagem se move durante o seu proprio
+            # segmento (ate a proxima imagem), com ease in/out + overshoot.
+            # Antes era um movimento unico linear de 10-16 s (parecia lento).
+            t_i = _reveal_time(i)
+            t_next = (_reveal_time(i + 1) if i + 1 < n_img
+                      else (start + dur))
+            seg = max(0.8, t_next - t_i)
+            # Variação de animação: alguns beats crescem só, outros fazem yoyo
+            if idx % 3 == 0:
+                # crescendo contínuo até o fim do beat (zoom vai ficando grandão)
+                js.append(
+                    'tl.fromTo("#%s .cam-%d",{scale:%s,x:%s,y:%s},'
+                    '{scale:%s,x:%s,y:%s,duration:%.3f,ease:%s},%.3f);'
+                    % (sid, i, s0f, x0f, y0f,
+                       s1f, x1f, y1f, seg, EASE_CAMERA, t_i)
+                )
+            else:
+                js.append(
+                    'tl.fromTo("#%s .cam-%d",{scale:%s,x:%s,y:%s},'
+                    '{scale:%s,x:%s,y:%s,duration:%.3f,ease:%s,repeat:1,yoyo:true},%.3f);'
+                    % (sid, i, s0f, x0f, y0f,
+                       s1f, x1f, y1f, seg/2, EASE_CAMERA, t_i)
+                )
 
         if n_img <= 1 or has_video:
             # Cena com imagem unica (ou so video): fade de entrada/saida pela
@@ -319,7 +376,7 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 t = start + float(a.get("data-delay", 0))
             props = ANIM.get(kind, ANIM["rise"])
             pd = ", ".join("%s:%s" % (k, json.dumps(v)) for k, v in props.items())
-            d = 0.55 if kind == "pop" else (0.7 if kind == "line" else (0.9 if kind == "bounce" else 0.8))
+            d = DUR_ANIM.get(kind, DUR_ANIM_PADRAO)
             ease = EASE.get(kind, '"power3.out"')
             js.append('tl.from("#%s",{%s,duration:%s,ease:%s},%.3f);' % (aid, pd, d, ease, t))
             if "data-float" in a:
@@ -355,9 +412,9 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                     outro_txts[0], outro_txts[1], outro_txts[2], outro_txts[3])
     )
     js.append('tl.set("#%s",{opacity:0},0);' % outro_id)
-    js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:1.0,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
+    js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:0.8,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
     for delay, sel in [(0.6, ".body:nth-of-type(1)"), (1.1, ".body:nth-of-type(2)"), (1.6, ".body:nth-of-type(3)")]:
-        js.append('tl.from("#%s %s",{opacity:0,y:30,duration:0.8,ease:"power3.out"},%.3f);' % (outro_id, sel, outro_start + delay))
+        js.append('tl.from("#%s %s",{opacity:0,y:30,duration:0.55,ease:"power3.out"},%.3f);' % (outro_id, sel, outro_start + delay))
     js.append('tl.to("#%s",{opacity:0,duration:0.8,ease:"power2.in"},%.3f);' % (outro_id, outro_start + OUTRO_DUR - 0.9))
 
     total = outro_start + OUTRO_DUR
@@ -409,7 +466,7 @@ def main():
     audio_dur = total - OUTRO_DUR
 
     html = """<!doctype html>
-<html lang="pt-BR" data-resolution="landscape">
+<html lang="pt-BR" data-lang="%s" data-resolution="landscape">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
@@ -428,11 +485,16 @@ def main():
     </script>
   </body>
 </html>
-""" % (CSS, total, body, audio_start, audio_dur, js)
+""" % (lang, CSS, total, body, audio_start, audio_dur, js)
 
     out = Path(args.out)
     out.write_text(html, encoding="utf-8")
-    print("wrote", out, len(html), "bytes; total", total, "s")
+    # Carimbo do idioma desta composicao. O render.ps1 valida contra o slug
+    # (video _es precisa de composicao es) e ABORTA se nao bater - foi assim
+    # que o video PT acabou renderizado com a composicao/mix de outro idioma
+    # (bug 2026-11-16).
+    out.with_suffix(out.suffix + ".lang").write_text(lang + "\n", encoding="utf-8")
+    print("wrote", out, len(html), "bytes; total", total, "s; idioma", lang)
 
 
 if __name__ == "__main__":

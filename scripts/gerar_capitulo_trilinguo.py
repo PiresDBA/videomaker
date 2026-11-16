@@ -440,10 +440,17 @@ def fase_para_idioma(args, p_dir, lang):
     # output/<slug>.mp4 -> output/<slug>_<lang>.mp4
     video_gen = p_dir / "output" / f"{p_dir.name}.mp4"
     video_lang = p_dir / "output" / f"{p_dir.name}_{lang}.mp4"
+    meta_gen = Path(str(video_gen) + ".meta.json")
+    meta_lang = Path(str(video_lang) + ".meta.json")
     if video_gen.exists():
         if video_lang.exists():
             video_lang.unlink()
         shutil.move(str(video_gen), str(video_lang))
+        # a ficha de idioma (gravada pelo render.ps1) vai junto do video
+        if meta_gen.exists():
+            if meta_lang.exists():
+                meta_lang.unlink()
+            shutil.move(str(meta_gen), str(meta_lang))
         print(f"== Video {lang.upper()}: {video_lang.name}", flush=True)
     else:
         print(f"== AVISO: video final nao encontrado em {video_gen}", flush=True)

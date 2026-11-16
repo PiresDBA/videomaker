@@ -54,6 +54,11 @@ def main():
     provider = args.provider or music.get("provider", "gemini")
     gain = args.gain if args.gain is not None else music.get("gain", 0.42)
     xf = float(music.get("loop_crossfade_s", 4))
+    # A musica tem que COMECAR junto com o video (bug 2026-11-16): o fade-in
+    # antigo de 2,5 s fazia o video comecar "sem som" e a trilha entrar depois.
+    # Configuravel em config.json -> music.fade_in_s (0.5 s = entra junto).
+    fade_in = float(music.get("fade_in_s", 0.5))
+    fade_out = float(music.get("fade_out_s", 3.7))
 
     aud = proj / "assets" / "audio"
     narration = aud / f"narration_full_{lang}.wav"
@@ -111,12 +116,12 @@ def main():
 
     out = aud / "final_mix.m4a"
     filt = (
-        "[1:a]volume=%.3f,afade=t=in:st=0:d=2.5,afade=t=out:st=%.3f:d=3.7[bgm];"
+        "[1:a]volume=%.3f,afade=t=in:st=0:d=%.3f,afade=t=out:st=%.3f:d=%.3f[bgm];"
         "[0:a]adelay=%d:all=1,apad=pad_dur=%.3f,asplit=2[voice][key];"
         "[bgm][key]sidechaincompress=threshold=%s:ratio=%s:attack=%s:release=%s[duck];"
         "[voice][duck]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[mix];"
         "[mix]loudnorm=I=%s:TP=%s:LRA=%s[out]"
-        % (gain, total_mix - 3.756, lead_ms, INTRO_DUR,
+        % (gain, fade_in, total_mix - fade_out, fade_out, lead_ms, INTRO_DUR,
            music.get("duck_threshold", 0.05), music.get("duck_ratio", 9),
            music.get("duck_attack_ms", 15), music.get("duck_release_ms", 350),
            loud.get("final_i", -14), loud.get("true_peak", -1.5), loud.get("lra", 11))
@@ -126,11 +131,19 @@ def main():
                     "-filter_complex", filt, "-map", "[out]", "-t", "%.3f" % total_mix,
                     "-c:a", "aac", "-b:a", "192k", str(out)], check=True)
 
+    # Carimbo do idioma deste mix. O render.ps1 le este arquivo para ABORTAR
+    # se a composicao/mix nao for do idioma pedido (bug 2026-11-16: video PT
+    # renderizado com o mix ES -> "o video fala espanhol").
+    out.with_suffix(out.suffix + ".lang").write_text(lang + "\n", encoding="utf-8")
+
     dst = Path(args.hf_dir) if args.hf_dir else proj
     dst.mkdir(parents=True, exist_ok=True)
     dst = dst / "final_mix.m4a"
     shutil.copyfile(out, dst)
-    print("mix:", out, "->", dst)
+    # ...e o carimbo de idioma junto (o render.ps1 usa para validar).
+    shutil.copyfile(out.with_suffix(out.suffix + ".lang"),
+                    dst.with_suffix(dst.suffix + ".lang"))
+    print("mix:", out, "->", dst, "(idioma:", lang + ")")
 
     r = subprocess.run([ff, "-hide_banner", "-i", str(out), "-af",
                         "loudnorm=I=%s:TP=%s:print_format=summary" % (loud.get("final_i", -14), loud.get("true_peak", -1.5)),
