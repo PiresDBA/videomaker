@@ -146,7 +146,19 @@ def collect_anims(html, sid):
     return out
 
 
+# Transicoes entre imagens/beats (regra cinematica: crossfade 0.5-1.0s;
+# ver skills/creative/cinematic.md e skills/creative/animation-pipeline.md).
+# Tipos suportados: crossfade (default), fade, zoom, slide, hard.
 XFADE = 0.9  # crossfade entre cenas (ajustavel)
+TRANSICOES = {
+    "crossfade": 0.9,
+    "fade": 0.6,
+    "zoom": 1.0,
+    "slide": 0.8,
+    "hard": 0.0,
+}
+EASE_IMAGEM = '"power1.inOut"'   # crossfade suave (ease in/out)
+EASE_SAIDA = '"power2.inOut"'    # saida de cena
 
 INTRO_DUR = 4.0   # duracao da tela inicial (capa)
 OUTRO_DUR = 5.0   # duracao da tela final (agradecimento)
@@ -225,7 +237,9 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         split = cfg.get("split")
         at = cfg.get("at")
 
-        dur_ext = dur + XFADE
+        trans = str(cfg.get("transicao") or "crossfade").lower()
+        T = float(TRANSICOES.get(trans, XFADE)) if trans in TRANSICOES else XFADE
+        dur_ext = dur + T
         track = "1" if idx % 2 == 0 else "2"
         parts = ['<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="%s">'
                  % (sid, start, dur_ext, track)]
@@ -242,6 +256,24 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         parts.append("</div>")
         scenes.append("".join(parts))
 
+        n_img = len(images)
+        has_video = any(n.lower().endswith(".mp4") for n in images)
+
+        def _reveal_time(i):
+            # Tempo (absoluto no timeline) em que a imagem i deve estar
+            # visivel. Beat de fala = inicio da pausa correspondente; imagem 0
+            # sempre comeca no inicio da secao. Sem "at": 2 imagens usam "split";
+            # 3+ distribui uniformemente.
+            if has_video or i == 0:
+                return start
+            if at is not None and i < len(at):
+                return start + float(at[i]) * dur
+            if split is not None and n_img == 2:
+                return start + float(split) * dur
+            if n_img > 1:
+                return start + (i / float(n_img)) * dur
+            return start
+
         for i, name in enumerate(images):
             if name.lower().endswith(".mp4"):
                 continue
@@ -250,30 +282,33 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             js.append(
                 'tl.fromTo("#%s .cam-%d",{scale:%s,x:%s,y:%s},'
                 '{scale:%s,x:%s,y:%s,duration:%.3f,ease:"none"},%.3f);'
-                % (sid, i, s0, x0, y0, s1, x1, y1, dur_ext + 0.4, start)
+                % (sid, i, s0, x0, y0, s1, x1, y1, dur_ext + 0.4, _reveal_time(i))
             )
 
-        has_video = any(n.lower().endswith(".mp4") for n in images)
-        if len(images) > 1 and not has_video:
-            # Revela cada imagem extra (cam-1, cam-2, cam-3...) no ponto da
-            # PAUSA em que a batida de fala correspondente comeca ("at").
-            # Sem "at": 2 imagens usam "split"; 3+ distribui uniformemente.
-            n_img = len(images)
+        if n_img <= 1 or has_video:
+            # Cena com imagem unica (ou so video): fade de entrada/saida pela
+            # duracao da transicao escolhida.
+            js.append('tl.set("#%s",{opacity:0},0);' % sid)
+            if T > 0:
+                js.append('tl.to("#%s",{opacity:1,duration:%.2f,ease:"power1.out"},%.3f);'
+                          % (sid, T, start))
+                js.append('tl.to("#%s",{opacity:0,duration:%.2f,ease:%s},%.3f);'
+                          % (sid, T, EASE_SAIDA, start + dur - 0.05))
+        else:
+            # Multi-imagem: crossfade no tempo da pausa (beat) da narracao.
+            # Cada imagem entra no beat correspondente e a anterior sai por
+            # cima do crossfade (sem dead frame: fade-out e fade-in se sobrepoem).
+            js.append('tl.set("#%s .cam-0",{opacity:0},0);' % sid)
+            js.append('tl.to("#%s .cam-0",{opacity:1,duration:%.2f,ease:%s},%.3f);'
+                      % (sid, T, EASE_IMAGEM, start))
             for i in range(1, n_img):
-                if at is not None and i < len(at):
-                    frac = float(at[i])
-                elif split is not None and n_img == 2:
-                    frac = float(split)
-                else:
-                    frac = i / float(n_img)
-                js.append('tl.to("#%s .cam-%d",{opacity:1,duration:1.0,ease:"power1.inOut"},%.3f);'
-                          % (sid, i, start + frac * dur - 0.5))
-
-        js.append('tl.set("#%s",{opacity:0},0);' % sid)
-        js.append('tl.from("#%s",{opacity:0,duration:0.8,ease:"power1.out"},%.3f);'
-                  % (sid, start))
-        js.append('tl.to("#%s",{opacity:0,duration:%.2f,ease:"power1.in"},%.3f);'
-                  % (sid, XFADE, start + dur - 0.05))
+                t_i = _reveal_time(i)
+                js.append('tl.to("#%s .cam-%d",{opacity:1,duration:%.2f,ease:%s},%.3f);'
+                          % (sid, i, T, EASE_IMAGEM, t_i))
+                js.append('tl.to("#%s .cam-%d",{opacity:0,duration:%.2f,ease:%s},%.3f);'
+                          % (sid, i - 1, T, EASE_SAIDA, t_i))
+            js.append('tl.to("#%s .cam-%d",{opacity:0,duration:%.2f,ease:%s},%.3f);'
+                      % (sid, n_img - 1, T, EASE_SAIDA, start + dur - 0.05))
 
         for a in collect_anims(overlay, sid):
             aid = a["id"]

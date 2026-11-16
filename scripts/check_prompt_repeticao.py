@@ -109,12 +109,17 @@ def _checar_scene_mode(erros: list):
     except Exception:
         return
     modo = ((dados or {}).get("scene_density") or {}).get("scene_mode")
-    if modo and str(modo).lower() != "two":
+    if modo and str(modo).lower() not in ("two", "beats"):
         erros.append(
             f"scripts/config.json: scene_density.scene_mode = '{modo}'. "
-            "O modo 'beats' gera varios prompts quase identicos por secao e "
-            "multiplica imagem repetida. Use 'two' (CONTRATO.md 5.8)."
+            "Modo desconhecido; use 'two' ou 'beats' (CONTRATO.md 5.8)."
         )
+    elif str(modo or "two").lower() == "beats":
+        # Desde 2026-11-15 o modo 'beats' e' o default e gera UMA imagem por
+        # beat de narracao (CENA prioridade maxima + REGRA ANTI-REPETICAO por
+        # beat). A trava de frases proibidas continua valendo; o flag
+        # 'scene_mode=two' continua disponivel para cenas de ritmo unico.
+        pass
 
 
 def _checar_build_prompt(erros: list):

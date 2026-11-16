@@ -27,8 +27,10 @@ perguntas **antes** de escrever código:
    pausas mostram a mesma figura, o vídeo está errado.
 3. **O prompt tem o bloco "REGRA ANTI-REPETICAO"** (cena nova, novo
    enquadramento, novo ângulo, novas poses)?
-4. **`scene_density.scene_mode` continua `two`?** `beats` gera 3–4 prompts quase
-   idênticos por seção e multiplica a repetição. Não trocar sem prova.
+4. **`scene_density.scene_mode` continua `two`?** (Antes de 2026-11-15: sim, era
+   `two`. Desde **2026-11-15** o default virou **`beats`** — 1 imagem nova por beat
+   de narração, prompts por beat com CENA + REGRA ANTI-REPETIÇÃO. Não trocar sem
+   prova. A trava `check_prompt_repeticao.py` aceita `two` **ou** `beats`.)
 5. **Imagem é só Google Flow.** Gemini **nunca** gera imagem. Se o Flow falhar,
    pare e avise o usuário.
 6. **Estou desligando/contornando uma trava?** (apagar chamada `trava()`, rodar
@@ -157,6 +159,8 @@ $py = "C:\OpenMontage\.venv\Scripts\python.exe"
 - **Chrome CDP deve estar ativo**: `Start-Process chrome.exe --remote-debugging-port=18800 --user-data-dir=C:\videomaker\.chrome-gemini-profile`. Confirmar com `python flow_fetch.py --check`.
 - **Render em background**: usar `.ps1` com `Start-Process powershell -File run_x.ps1` ou `cmd /c run_x.bat` para evitar timeout do shell wrapper.
 - **Tema usado**: sempre registrar em `scripts/topics.txt` na seção `# ----- USADOS -----` no formato `tema | slug | YYYY-MM-DD` e remover da lista livre.
+- **`scene_mode = "beats"` (default desde 2026-11-15)**: gera **1 imagem por beat** de narração (mín. 7 / máx. 16 palavras por beat); beats > 2 usam sufixo `_scene_c`, `_scene_d`... no nome. `two` continua por flag. Travas de prompt/imagem passam a aceitar `beats` (com prompts por beat regenerados e validados).
+- **Local de gravação do Flow**: `flow_fetch.py` grava imagens em `<proj>/public/assets/images`; o canônico da pipeline (checks, preprocess, build) é `<proj>/assets/images/gemini/scenes` — copiar o que foi gerado para lá antes de renderizar.
 
 ## Hooks (instalar uma vez por clone)
 

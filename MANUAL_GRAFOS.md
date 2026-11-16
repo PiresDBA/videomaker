@@ -59,6 +59,7 @@ O contrato completo, com proibições e checklist de push, está em
 | a CLI do pipeline (comandos e argumentos) | §37 |
 | a regra branch → grafo → push | §38 |
 | o contrato de trabalho | §39 + `CONTRATO.md` |
+| animações e transições por beat | §59 |
 
 ---
 
@@ -4019,8 +4020,11 @@ travava numa figura só.
   existentes na pasta de cenas; se for praticamente igual (média < 2), é
   descartada e o prompt é reenviado. Também ignora respostas de rede de URLs
   que já estavam na tela antes do envio (galeria antiga do Flow).
-- `scene_mode` fica em **`two`** (`config.json`): o modo `beats` gerava 3–4
-  prompts quase idênticos por seção e multiplicava a repetição.
+- `scene_mode` ficou em **`two`** na época do bug (2026-11-13). Desde
+  **2026-11-15** o default virou **`beats`** (`scripts/config.json` →
+  `scene_density.scene_mode = "beats"`): uma imagem nova por beat de narração,
+  com prompts por beat validados (CENA prioridade máxima + REGRA
+  ANTI-REPETIÇÃO). O modo `two` continua disponível por flag.
 - O corte de `MAX_PROMPT_CHARS` agora reduz a **CENA**, nunca os blocos fixos.
   Antes ele cortava justamente a "REGRA ANTI-REPETICAO" nas cenas longas (as
   variantes `_b` saíam sem a regra). A trava testa `build_prompt` com uma cena
@@ -4040,7 +4044,7 @@ de novo.
 | "use `referencia.png` como referência de cores/estilos" | ancora no arquivo errado |
 | usar `--ref-image` como base **da cena** (e não do design) | a cadeia trava na 1ª figura |
 | aceitar imagem baixada sem comparar com a referência/pasta | é assim que o vídeo repete |
-| `scene_mode: beats` sem prova visual | 3–4 prompts quase idênticos por seção |
+| `scene_mode: beats` com prompts gerados sem prova visual | 3–4 prompts quase idênticos por seção |
 | renderizar/publicar sem abrir 3–4 `.jpg` | o erro só aparece no vídeo pronto |
 | desligar as travas, `--no-verify`, apagar `trava()` | o erro volta a passar |
 | gerar imagem no Gemini | Gemini não tem Frida/Luna; sai cachorro aleatório |
@@ -4049,7 +4053,7 @@ de novo.
 
 | Trava | O que faz |
 |---|---|
-| `scripts/check_prompt_repeticao.py` | falha se o construtor de prompt ou um `image_prompts.json` tiver as frases proibidas; `--strict` exige CENA prioridade + REGRA ANTI-REPETICAO; também exige `scene_mode=two` |
+| `scripts/check_prompt_repeticao.py` | falha se o construtor de prompt ou um `image_prompts.json` tiver as frases proibidas; `--strict` exige CENA prioridade + REGRA ANTI-REPETICAO; exige `scene_mode=two` ou `beats` (com prompts por beat regenerados e validados) |
 | `scripts/check_imagens_repetidas.py` | compara as imagens de cena duas a duas (Pillow 48x48, distância média < 2.0) e falha se forem a mesma figura |
 | `trava()` em `gerar_capitulo_trilinguo.py` | roda as duas antes de gerar imagens e antes de renderizar; falhou → o capítulo **aborta** |
 | `.githooks/pre-commit` e `pre-push` | rodam as travas + `check_manual.py` + sintaxe Python; instalados por `scripts/install_hooks.py` |
@@ -4161,6 +4165,76 @@ não reformate a lista inteira nem apague linhas. O hook de pre-commit roda
 
 Exemplo real: o vídeo "O cão de férias" (`o-co-de-frias`, 2026-11-14) foi
 gerado a partir dessa fila e está registrado em USADOS.
+
+---
+
+## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)
+
+### 59.1. Objetivo
+
+A partir de 2026-11-15, vídeos longos (10+ min, como os campeonatos de cães) usam:
+
+1. **Imagem por beat de narração** — cada pausa da fala ganha uma imagem nova,
+   sincronizada no tempo da narração (`scene_mode = "beats"`).
+2. **Transição cinematográfica** — crossfade configurável por cena no compose
+   (HyperFrames + GSAP).
+
+### 59.2. Transições configuráveis
+
+`scripts/build_composition.py` lê o campo `transicao` de cada cena em
+`artifacts/scenes.json` e aplica a duração da transição escolhida:
+
+| `transicao` | Duração | Quando usar |
+|---|---|---|
+| `crossfade` (padrão) | 0,9 s | mudança de beat / mudança de ação |
+| `fade` | 0,6 s | fade simples |
+| `zoom` | 1,0 s | mergulho no detalhe |
+| `slide` | 0,8 s | progresso sequencial |
+| `hard` | 0,0 s | corte seco |
+
+Regra cinematográfica (ver `skills/creative/cinematic.md` e
+`skills/creative/animation-pipeline.md`): crossfade de 0,5–1,0 s para mudanças
+de beat; "hard cut" é o mais invisível quando a ação não pede harmonia.
+
+### 59.3. Revelação sincronizada aos beats
+
+`build_composition.py` ganhou a função `_reveal_time(i)`: tempo em que a imagem
+`i` ficaria visível.
+
+- Beat de fala = início da pausa (`at[i] * dur`).
+- Sem `at`: 2 imagens usam `split`; 3+ distribuem uniformemente.
+- Cena com `>1` imagem: crossfade beat-a-beat (fade-out da anterior + fade-in da
+  nova sobrepostas na mesma marcação, sem dead frame).
+- Câmera (`tl.fromTo`) recalculada no tempo de revelação.
+- Eases: entrada `power1.inOut`, saída `power2.inOut` (suaves, sem linear).
+
+### 59.4. `scene_mode = "beats"`
+
+- Default: `scripts/config.json` → `scene_density.scene_mode = "beats"`.
+- `--scene-mode beats|two` em `generate_scenes_and_prompts.py`. Com `beats`,
+  gera **1 imagem por beat** (mín. 7 / máx. 16 palavras por beat) — cada pausa da
+  narração vira cena nova.
+- Beats com índice > 2 recebem sufixo `_scene_c`, `_scene_d`... no nome do arquivo.
+- `two` continua disponível por flag (opção não removida).
+
+### 59.5. Como validar antes de renderar
+
+```powershell
+python scripts/build_composition.py --timeline projects\<slug>\artifacts\timeline.json `
+  --scenes projects\<slug>\artifacts\scenes.json `
+  --scenes-dir projects\<slug>\scenes `
+  --proj projects\<slug> --lang pt --out hyperframes-workspace\index.html
+```
+
+Depois, conferir no JS do HTML gerado que os tweens de imagem usam os tempos de
+beat corretos (ex.: fade-in do segundo beat = beat anterior + duração da cena).
+
+### 59.6. Arquivos alterados nesta correção
+
+- `scripts/build_composition.py` — `TRANSICOES`, `_reveal_time`, fades por beat.
+- `scripts/generate_scenes_and_prompts.py` — modo `beats` como default.
+- `scripts/config.json` — `scene_density.scene_mode = "beats"`.
+- `MANUAL_GRAFOS.md` — esta seção.
 
 ---
 
