@@ -70,7 +70,9 @@ Detalhes: `MANUAL_GRAFOS.md` §0 e §38.
 - Python: `C:\OpenMontage\.venv\Scripts\python.exe` (sempre use este caminho)
 - Chrome: `C:\Program Files\Google\Chrome\Application\chrome.exe`
 - ffmpeg: `C:\videomaker\ffmpeg\bin\ffmpeg.exe`
+- Chrome CDP: porta `18800` (perfil `C:\videomaker\.chrome-gemini-profile\`)
 - Só um render por vez (ffmpeg não é thread-safe aqui)
+- Um render completo leva **6–10 minutos** por idioma. Rodar em background (`Start-Process` ou `.ps1` script) ou com timeout alto.
 
 ## PowerShell (gotchas do Windows)
 
@@ -78,6 +80,13 @@ Detalhes: `MANUAL_GRAFOS.md` §0 e §38.
 - `tail` **não existe**. Use `Get-Content <arquivo> -Tail N` ou `Select-Object -Last N`.
 - `grep` **não existe**. Use `Select-String -Pattern "<texto>"`.
 - `head` **não existe**. Use `Select-Object -First N`.
+- **`Start-Process -ArgumentList` divide strings com espaços** em múltiplos argumentos.
+  Prompts com espaços ou acentos quebram. Usar `.ps1` ou `.bat` com `chcp 65001` e
+  `PYTHONIOENCODING=utf-8`:
+  ```powershell
+  # NÃO: Start-Process python -ArgumentList "scripts/foo.py", "--prompt", "O campeonato de cães..."
+  # SIM: criar run_x.ps1 com o comando e Start-Process powershell -ArgumentList "-File", "run_x.ps1"
+  ```
 - Para rodar em background: `Start-Process -FilePath "<exe>" -ArgumentList @("<arg1>", "<arg2>") -Wait`
 - Para matar processos Python travados: `Get-Process | Where-Object Name -like 'python*' | Stop-Process -Force`
 
@@ -139,6 +148,15 @@ $py = "C:\OpenMontage\.venv\Scripts\python.exe"
 # End screen (tela final) — NÃO existe na API do YouTube v3 (descontinuado).
 # Fazer manualmente no YouTube Studio: Conteúdo → Vídeo → Editor de vídeo → Tela final
 ```
+
+## Lições operacionais desta sessão (2026-11-15)
+
+- **Arquivo `.bat` com acentos**: gravar como **UTF-8 com BOM** ou usar `\u00e3` escapado no Python e gravar em binário (`wb`). O PowerShell corrompe acentos ao fazer `Out-File` / `Set-Content`.
+- **Flow trava em imagem específica**: se `desenvolvimento_5_scene` (ou qualquer prompt) travar no loop do `flow_fetch`, gerar a imagem isolada via `flow_fetch.py --only <nome> --wait 180` costuma resolver. Copiar o resultado para `assets/images/gemini/scenes/` desbloqueia o pipeline.
+- **Pipeline pula arquivos existentes**: `gerar_capitulo_trilinguo.py` reutiliza script, cenas, imagens, narração se já existirem. Para re-gerar, apagar o artefato alvo.
+- **Chrome CDP deve estar ativo**: `Start-Process chrome.exe --remote-debugging-port=18800 --user-data-dir=C:\videomaker\.chrome-gemini-profile`. Confirmar com `python flow_fetch.py --check`.
+- **Render em background**: usar `.ps1` com `Start-Process powershell -File run_x.ps1` ou `cmd /c run_x.bat` para evitar timeout do shell wrapper.
+- **Tema usado**: sempre registrar em `scripts/topics.txt` na seção `# ----- USADOS -----` no formato `tema | slug | YYYY-MM-DD` e remover da lista livre.
 
 ## Hooks (instalar uma vez por clone)
 
