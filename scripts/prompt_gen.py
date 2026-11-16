@@ -28,7 +28,7 @@ COST_MODES = ["Economia Máxima", "Balanceado", "Qualidade Máxima"]
 PRESETS = ["Nenhum", "Frida e Luna"]
 
 DEFAULT_PARAMS = {
-    "title": "", "theme": "", "goal": "Educar", "content_type": "Documentário", "duration": "10 minutos",
+    "title": "", "theme": "", "goal": "Educar", "content_type": "Documentário", "duration": "15 minutos",
     "audience": "Geral / Adulto", "visual_style": "Netflix Documentary", "voice": "Automática",
     "cost_mode": "Economia Máxima", "reference": "", "preset": "Nenhum",
 }
@@ -281,7 +281,7 @@ ESTRUTURA EM 3 ATOS:
     return out.strip()
 
 
-def episode_params(topic, duration_s=590, overrides=None):
+def episode_params(topic, duration_s=900, overrides=None):
     """Parametros padrao dos episodios do canal Frida e Luna (usado pelo executor diario)."""
     p = dict(DEFAULT_PARAMS, title=topic, theme=topic, goal="Entreter", content_type="Pets",
              duration=seconds_to_duration(duration_s), audience="Família (crianças e adultos)",

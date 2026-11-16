@@ -732,7 +732,7 @@ TÍTULO: A Frida e a Luna descobrem que o aspirador de pó é um monstro
 TEMA: A Frida e a Luna descobrem que o aspirador de pó é um monstro
 OBJETIVO: Entreter
 PÚBLICO-ALVO: Família (crianças e adultos)
-DURAÇÃO: cerca de 10 minutos
+DURAÇÃO: cerca de 15 minutos
 TIPO DE CONTEÚDO: Pets
 ESTILO VISUAL: Pixar
 NARRAÇÃO: Feminina
