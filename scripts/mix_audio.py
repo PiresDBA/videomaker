@@ -81,9 +81,15 @@ def main():
     total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
     # A narração cobre o video INTEIRO: começa no segundo 0 (junto com o clipe
     # de abertura) e termina no ultimo frame (durante o clipe do SUBSCRIBE).
-    # Antes: lead=INTRO_DUR (atrasava 8s) e total_mix=INTRO+total (cortava 8s
-    # antes do fim). Agora: lead=0 e inclui OUTRO_DUR.
-    total_mix = INTRO_DUR + total + OUTRO_DUR
+    # Inclui tambem o clipe pre-final (pata com confete), se houver.
+    clips_cfg = proj / "artifacts" / "video_clips.json"
+    pre_dur = 0.0
+    if clips_cfg.exists():
+        vc = load_json(clips_cfg)
+        pre = vc.get("pre_final", {})
+        if isinstance(pre, dict) and pre.get("file"):
+            pre_dur = float(pre.get("dur", 8.0))
+    total_mix = INTRO_DUR + total + pre_dur + OUTRO_DUR
     lead_ms = 0
 
     # loop com crossfade ate passar do total

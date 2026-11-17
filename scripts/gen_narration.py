@@ -96,6 +96,12 @@ async def main():
         if only and sid not in only:
             continue
         text = s.get("delivery_cues", {}).get("provider_text") or s["text"]
+        # Edge-TTS (local, sem emocao) nao sustenta o "Oiê" enfatico: a
+        # narradora se perde e soa estranho. "Oiê" so fica bom com as vozes
+        # do Google (com emocao). Como este gerador e Edge-TTS, normaliza.
+        # (quando houver gerador de voz do Google, manter "Oiê" la)
+        if "Oi\u00ea" in text:
+            text = text.replace("Oi\u00ea", "Oi")
         pace = s.get("delivery_cues", {}).get("pace", "conversational")
         rate = args.rate or overrides.get(sid) or rate_by_pace.get(pace, cfg["voice_rate"])
         out = out_dir / ("%s.mp3" % sid)

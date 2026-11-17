@@ -59,9 +59,16 @@ def main():
     expected = None
     try:
         timeline_total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
-        expected = timeline_total + INTRO_DUR + OUTRO_DUR
-        print("timeline: %.2f s + capa/outro %.1f s = %.2f s (delta %.2f s)"
-              % (timeline_total, INTRO_DUR + OUTRO_DUR, expected, dur - expected))
+        pre_dur = 0.0
+        clips_cfg = proj / "artifacts" / "video_clips.json"
+        if clips_cfg.exists():
+            vc = load_json(clips_cfg)
+            pre = vc.get("pre_final", {})
+            if isinstance(pre, dict) and pre.get("file"):
+                pre_dur = float(pre.get("dur", 8.0))
+        expected = timeline_total + INTRO_DUR + pre_dur + OUTRO_DUR
+        print("timeline: %.2f s + capa/pre/outro %.1f s = %.2f s (delta %.2f s)"
+              % (timeline_total, INTRO_DUR + pre_dur + OUTRO_DUR, expected, dur - expected))
     except Exception:
         pass
 

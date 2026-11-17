@@ -476,6 +476,21 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 js.append('tl.to("#%s",{opacity:0,y:-22,duration:0.55,ease:"power2.in"},%.3f);'
                           % (aid, to))
 
+    # ========== CLIPE PRE-FINAL (pata com confete) ==========
+    # Video extra logo antes da despedida, para aproveitar os 4 clipes gerados.
+    pre_final = _CLIPS.get("pre_final", {})
+    pre_file = pre_final.get("file", "") if isinstance(pre_final, dict) else ""
+    pre_dur = float(pre_final.get("dur", 8.0)) if isinstance(pre_final, dict) else 8.0
+    if pre_file:
+        pre_start = cursor
+        scenes.append(
+            '<video class="cam clip-video" id="pre-final-video" '
+            'src="assets/images/%s" muted playsinline '
+            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
+            % (pre_file, pre_start, pre_dur)
+        )
+        cursor += pre_dur
+
     # ========== TELA FINAL (OUTRO) ==========
     outro_id = "outro-final"
     outro_start = cursor

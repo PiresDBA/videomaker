@@ -62,6 +62,10 @@ def main():
         n = meio.get("file", "") if isinstance(meio, dict) else ""
         if n and n not in names:
             names.append(n)
+        pre = vc.get("pre_final", {})
+        n = pre.get("file", "") if isinstance(pre, dict) else ""
+        if n and n not in names:
+            names.append(n)
 
     only = {x.strip() for x in args.only.split(",") if x.strip()}
     if only:

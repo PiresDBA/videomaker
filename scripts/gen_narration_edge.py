@@ -108,6 +108,11 @@ def limpar_e_preparar_texto(text: str) -> str:
     text = limpar_texto_para_tts(text)
     text = aplicar_substituicoes_pronunciacao(text)
     text = remover_espaco_antes_pontuacao(text)
+    # Edge-TTS (local, sem emoção) não sustenta o "Oiê" enfático: a narradora
+    # se perde e soa estranho. "Oiê" só fica bom com vozes do Google (com
+    # emoção). Aqui é Edge-TTS, então normalizamos para "Oi".
+    if "Oi\u00ea" in text:
+        text = text.replace("Oi\u00ea", "Oi")
     text = " ".join(text.split())
     return text
 
