@@ -134,10 +134,10 @@
     "ast_empty": true
   },
   "run_caminha_agent.ps1": {
-    "mtime": 1794924050.5661986,
-    "seen": 1794924162.4130483,
-    "ast_hash": "d4feb4dd4b39f201cf30e3f822b8931d",
-    "semantic_hash": "d4feb4dd4b39f201cf30e3f822b8931d"
+    "mtime": 1794928305.203569,
+    "seen": 1794928959.7696412,
+    "ast_hash": "e31c18293c74c56bcd5e8710378ab7a8",
+    "semantic_hash": ""
   },
   "run_caminha_pt.ps1": {
     "mtime": 1794914139.97063,
@@ -1413,9 +1413,9 @@
     "semantic_hash": ""
   },
   "log_caminha_final.txt": {
-    "mtime": 1794924349.7262168,
-    "seen": 1794925065.2061548,
-    "ast_hash": "56837a2a4548297b353cfefceaa91ec2",
+    "mtime": 1794928327.285164,
+    "seen": 1794928959.7702043,
+    "ast_hash": "66097233e9e727dfcca0d0bd739da8d5",
     "semantic_hash": ""
   },
   "log_en_utf8.txt": {
@@ -1434,6 +1434,18 @@
     "mtime": 1794260891.0851686,
     "seen": 1794925065.2062123,
     "ast_hash": "7e5276140ed7b1666aae198ab854aa7a",
+    "semantic_hash": ""
+  },
+  "scripts/encurtar_prompts.py": {
+    "mtime": 1794928265.6873488,
+    "seen": 1794928959.769766,
+    "ast_hash": "f8f728319ee87d09a163a789955ff8b7",
+    "semantic_hash": ""
+  },
+  "test_prompt_curto.py": {
+    "mtime": 1794928150.7213676,
+    "seen": 1794928959.7700653,
+    "ast_hash": "79de1ff94f7dc6d0a2076f7dd3253ad5",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {
