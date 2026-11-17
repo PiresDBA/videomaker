@@ -155,19 +155,30 @@ def fase_images(args, p_dir):
 
     print(f"== FASE images: {len(faltando)} imagem(ns) faltando "
           f"de {len(ordem)} (Google Flow; sem fallback Gemini)", flush=True)
-    for j, nome in enumerate(ordem):
-        jpg = out_dir / (nome + ".jpg")
-        if jpg_ok(jpg):
-            continue
-        # Nao passa referencia de arquivo (ref-image) porque o file chooser do
-        # Chrome trava no modo headless/CDP. O flow_fetch ja injeta os
-        # personagens Frida e Luna via prompt (_enforce_characters), garantindo
-        # a consistencia visual sem precisar anexar imagem de referencia.
-        print(f"== IMAGEM: {nome} (referencia: personagens do Flow)", flush=True)
-        rc, name, size = _gerar_via_flow(nome, prompts.get(nome, ""), out_dir,
-                                         args, p_dir, None)
-        if rc != 0 or size == 0:
-            print(f"  [{name}] FALHA no Flow (rc={rc} bytes={size})", flush=True)
+
+    # Modo Agente: um unico prompt gera varias imagens numeradas de uma vez.
+    if getattr(args, "flow_agent", False):
+        cmd = [sys.executable, str(SCRIPTS["flow_agent_batch"]),
+               "--prompts-file", str(prompts_json),
+               "--out-dir", str(out_dir),
+               "--batch-size", str(args.batch_size),
+               "--wait", str(args.wait),
+               "--pause", str(args.pause)]
+        run(cmd, "FASE images: lotes via modo Agente do Flow")
+    else:
+        for j, nome in enumerate(ordem):
+            jpg = out_dir / (nome + ".jpg")
+            if jpg_ok(jpg):
+                continue
+            # Nao passa referencia de arquivo (ref-image) porque o file chooser do
+            # Chrome trava no modo headless/CDP. O flow_fetch ja injeta os
+            # personagens Frida e Luna via prompt (_enforce_characters), garantindo
+            # a consistencia visual sem precisar anexar imagem de referencia.
+            print(f"== IMAGEM: {nome} (referencia: personagens do Flow)", flush=True)
+            rc, name, size = _gerar_via_flow(nome, prompts.get(nome, ""), out_dir,
+                                             args, p_dir, None)
+            if rc != 0 or size == 0:
+                print(f"  [{name}] FALHA no Flow (rc={rc} bytes={size})", flush=True)
 
     # quarentena: ate 4 loops, sempre pelo Flow
     quarantine = [n for n in ordem if not jpg_ok(out_dir / (n + ".jpg"))]
@@ -490,6 +501,11 @@ def main():
                     help="Queima legendas no video final")
     ap.add_argument("--only-lang", default="",
                     help="So gerar esse idioma (pt,en ou es)")
+    ap.add_argument("--flow-agent", action="store_true",
+                    help="Gera imagens em lote com o modo Agente do Google Flow "
+                         "(um prompt para varias imagens numeradas)")
+    ap.add_argument("--batch-size", type=int, default=10,
+                    help="Quantidade de imagens por lote no modo --flow-agent")
     args = ap.parse_args()
 
     prompt = args.prompt

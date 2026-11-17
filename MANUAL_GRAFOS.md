@@ -4245,6 +4245,44 @@ Para vídeos novos, basta preencher `continuity_notes` no `script.json` antes da
 fase `scenes`. Se o roteiro não tiver esse campo, o comportamento antigo
 continua (sem Bíblia).
 
+### 58.9.2. Modo Agente do Flow — geração em lote (2026-11-17, experimental)
+
+O Google Flow tem um botão **Agente** (`button.agent-mode-chip`,
+`aria-pressed`) que permite gerar **várias imagens com um único prompt**.
+Isso foi testado e confirmado nesta sessão:
+
+- um prompt com `IMAGEM 1: ...`, `IMAGEM 2: ...`, `IMAGEM 3: ...` gerou
+  exatamente 3 imagens, na ordem;
+- as imagens chegam como respostas HTTP em `flow.google.com/asb/...` com
+  `content-type: image/webp`, e podem ser baixadas com
+  `page.request.get(url)` e convertidas para JPEG;
+- a Bíblia de Continuidade aplicada ao prompt do lote manteve a caminha
+  vermelha com corações dourados em todas as imagens do teste.
+
+Implementação (branch `experiment/flow-agent-batch`):
+
+- `scripts/flow_agent_batch.py` — novo script, **não altera** `flow_fetch.py`:
+  lê `image_prompts.json`, extrai só a CENA de cada prompt, monta um prompt de
+  lote com cenas numeradas + Bíblia, ativa o modo Agente, envia uma vez e
+  captura/baixa as imagens na ordem, salvando com os nomes corretos.
+- `MAX_PROMPT_CHARS = 2600` e regras extras no prompt do lote: metáforas
+  ("espaçonave", "nuvem", "trono") **não** transformam o objeto central;
+  não adicionar personagens novos não pedidos.
+- `pipeline.py` registrou `flow_agent_batch` em `SCRIPTS`.
+- `gerar_capitulo_trilinguo.py` ganhou `--flow-agent` e `--batch-size`
+  (padrão 10). Quando a flag está ativa, `fase_images` usa o script de lote.
+
+Uso:
+
+```powershell
+python scripts/gerar_capitulo_trilinguo.py --prompt "..." --slug <slug> `
+  --only-lang pt --flow-agent --batch-size 10
+```
+
+O modo padrão (sem `--flow-agent`) continua gerando uma imagem por chamada,
+exatamente como antes. Rollback seguro: commit `630ee46` na branch
+`feature/novo-video-caminha`.
+
 ---
 
 ## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)

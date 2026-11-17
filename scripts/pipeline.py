@@ -398,6 +398,7 @@ SCRIPTS = {
     "scene_htmls": HERE / "generate_scene_htmls.py",
     "fetch_images": HERE / "fetch_images.py",
     "flow_fetch": HERE / "flow_fetch.py",
+    "flow_agent_batch": HERE / "flow_agent_batch.py",
     "preprocess_images": HERE / "preprocess_images.py",
     "fetch_music": HERE / "fetch_music_gemini.py",
     "gen_narration": HERE / "gen_narration_edge.py",
