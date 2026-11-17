@@ -163,7 +163,8 @@ def fase_images(args, p_dir):
                "--out-dir", str(out_dir),
                "--batch-size", str(args.batch_size),
                "--wait", str(args.wait),
-               "--pause", str(args.pause)]
+               "--pause", str(args.pause),
+               "--max-attempts", str(args.max_attempts)]
         run(cmd, "FASE images: lotes via modo Agente do Flow")
     else:
         for j, nome in enumerate(ordem):
@@ -314,18 +315,23 @@ def garantir_narracao(args, p_dir, lang, script_lang):
               f"reaproveitando", flush=True)
         return
 
-    print(f"== NARRACAO[{lang}]: gerando narração (Edge-TTS local)", flush=True)
+    print(f"== NARRACAO[{lang}]: gerando narração (Edge-TTS local, maxima emoção)", flush=True)
     voice = {"pt": "pt-BR-ThalitaNeural", "en": "en-US-AriaNeural",
              "es": "es-ES-ElviraNeural"}[lang]
+    # REGRA: narração infantil com maxima emoção. Pitch mais alto da voz jovem
+    # e sorriso; rate levemente acelerado dá energia sem encurtar abaixo de 10 min.
+    # (CONTRATO.md §5.14 — a voz tem que ter emoção.)
+    rate = {"pt": "+6%", "en": "+4%", "es": "+4%"}[lang]
+    pitch = {"pt": "+12Hz", "en": "+8Hz", "es": "+8Hz"}[lang]
     run([sys.executable, str(SCRIPTS["gen_narration"]),
          "--proj", str(p_dir),
          "--lang", lang,
          "--script", str(script_lang),
          "--voice", voice,
-         "--rate", "+0%",
-         "--pitch", "+0Hz",
+         "--rate", rate,
+         "--pitch", pitch,
          "--workers", str(args.workers)],
-        f"FASE narration[{lang}]: Edge-TTS local")
+        f"FASE narration[{lang}]: Edge-TTS local (emoção máxima)")
 
 
 def garantir_legendas(args, p_dir, lang, script_lang):
@@ -506,6 +512,8 @@ def main():
                          "(um prompt para varias imagens numeradas)")
     ap.add_argument("--batch-size", type=int, default=10,
                     help="Quantidade de imagens por lote no modo --flow-agent")
+    ap.add_argument("--max-attempts", type=int, default=4,
+                    help="Tentativas para recuperar imagens faltantes de um lote")
     args = ap.parse_args()
 
     prompt = args.prompt

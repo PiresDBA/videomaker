@@ -432,6 +432,62 @@ commit com fila ausente/vazia ou sem nenhum tema livre.
 - Essa regra vale para PT/EN/ES; a geração de imagens é única, mas a duração do áudio narrado é verificada por idioma.
 - O pipeline deve validar duração após `final_mix` e abortar publicação caso a regra seja violada.
 
+## 5.15. Variedade visual: colagens (triptico/dupla) e imagens individuais
+
+Para o visual não ficar "chapado", o gerador de imagens alterna aleatoriamente
+entre:
+
+- **colagem de 3 cenas** (triptico, 3 paineis lado a lado),
+- **colagem de 2 cenas** (dupla),
+- **imagem individual** (uma cena por arquivo).
+
+Regras:
+
+- A colagem é pedida no prompt e depois **fatiada** pelo script
+  (`flow_agent_batch.py`, `dividir_colagem`) em um `.jpg` por cena, mantendo a
+  ordem (painel 1 = cena 1, painel 2 = cena 2...).
+- Mesmo quando se pede "imagens separadas", o Flow pode entregar uma colagem;
+  o divisor detecta pela proporção e fatia da mesma forma.
+- Todo painel precisa manter **os mesmos personagens nomeados** (Frida, Luna,
+  Pipoca, Penélope) e a Bíblia de Continuidade (§5.13).
+- O triptico foi validado visualmente e agrada o canal — usar com frequência.
+
+## 5.14. Narração com emoção (regra dura)
+
+A voz do canal precisa soar **alegre, empolgada e carinhosa**, nunca robótica:
+
+- PT: `pt-BR-ThalitaNeural`, `rate +6%`, `pitch +12Hz`.
+- EN: `en-US-AriaNeural`, `rate +4%`, `pitch +8Hz`.
+- ES: `es-ES-ElviraNeural`, `rate +4%`, `pitch +8Hz`.
+- O `gerar_capitulo_trilinguo.py` (`garantir_narracao`) deve passar esses valores;
+  **nunca** `--rate +0% / --pitch +0Hz`.
+- A emoção também vem do texto: frases curtas, "..." e "Hahaha!" escritos no
+  roteiro (o narrador lê em voz alta). SSML/style é evitado porque o Edge-TTS
+  lê as tags como jargão falado.
+- Ajustar precisa manter a REGRA DE OURO: áudio final entre 10 e 15 min.
+
+## 5.13. Auditoria de personagens nas imagens (regra dura)
+
+Depois de **toda** geração de imagens (individual ou em lote/Agente), é obrigatório
+auditar as imagens antes de renderizar:
+
+- Todo cachorro em cena precisa ser um personagem **nomeado e fixo**:
+  - **Frida** = buldogue inglesa fawn, grande, compacta, com colar de pérolas.
+  - **Luna** = dachshund/salsicha marrom-chocolate, corpo comprido, pernas curtas, coleira dourada.
+  - Qualquer personagem novo (Pipoca = chihuahua amarelinho, Penélope = poodle branca, etc.)
+    deve ser **criado no Google Flow** com nome e características fixas e citado pelo nome no prompt.
+- O Flow **não mantém personagens sozinho**, mesmo com "IDENTIDADE FIXA" no prompt:
+  ele troca a raça (Frida vira pug/poodle, Luna vira labrador) quando o prompt é longo
+  ou o lote é grande. A auditoria visual detecta isso.
+- Imagem com cachorro que não é um personagem nomeado, sem humano (o canal não tem
+  humanos em cena), ou com personagem trocado → **vai para loop de re-geração**.
+- Regras de prompt para imagem (tanto individual quanto lote):
+  1. usar os personagens **salvos no Flow pelo nome** (Frida, Luna, Pipoca...);
+  2. se o personagem não existir, criar no Flow primeiro com nome + raça + cor + tamanho;
+  3. repetir a identidade no prompt mesmo assim;
+  4. lotes pequenos (≤4 imagens) para reduzir a troca de personagem;
+  5. auditoria visual obrigatória após gerar.
+
 ---
 
 ## 6. Resumo em 30 segundos

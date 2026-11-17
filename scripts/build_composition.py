@@ -12,6 +12,7 @@ Uso:
 """
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -261,7 +262,28 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         track = "1" if idx % 2 == 0 else "2"
         parts = ['<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="%s">'
                  % (sid, start, dur_ext, track)]
-        for i, name in enumerate(images):
+        # REGRA: nunca deixar buraco no video. Se uma imagem faltou na geracao,
+        # reaproveita a ultima imagem valida (desta secao ou da secao anterior).
+        # A pasta de imagens e resolvida de IMAGES_DIR (definida pelo chamador) ou
+        # do projeto atual via variavel de ambiente VIDEOMAKER_PROJ.
+        _proj = os.environ.get("VIDEOMAKER_PROJ")
+        dir_images = (Path(_proj) / "assets" / "images") if _proj else None
+        ultima_valida = None
+        images_resolvidas = []
+        for name in images:
+            if name.lower().endswith(".mp4"):
+                images_resolvidas.append(name)
+                continue
+            caminho = (dir_images / name) if dir_images else None
+            if caminho is not None and not caminho.exists():
+                if ultima_valida is not None:
+                    print("  AVISO: imagem faltando '%s' -> reaproveitando '%s'" % (name, ultima_valida), flush=True)
+                    images_resolvidas.append(ultima_valida)
+                    continue
+            images_resolvidas.append(name)
+            ultima_valida = name
+
+        for i, name in enumerate(images_resolvidas):
             cls = "cam cam-%d%s" % (i, " cam-b" if i > 0 else "")
             if name.lower().endswith(".mp4"):
                 parts.append('<video class="%s" src="assets/images/%s" muted playsinline></video>' % (cls, name))

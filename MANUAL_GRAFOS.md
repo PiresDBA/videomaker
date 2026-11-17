@@ -4283,6 +4283,77 @@ O modo padrão (sem `--flow-agent`) continua gerando uma imagem por chamada,
 exatamente como antes. Rollback seguro: commit `630ee46` na branch
 `feature/novo-video-caminha`.
 
+### 58.9.3. Auditoria visual obrigatória de personagens (2026-11-17)
+
+O modo Agente com lote grande **perde a identidade dos personagens**: na auditoria
+visual do projeto `a-caminha-nova-que-ninguem-quer-usar`, 51 de 95 imagens foram
+reprovadas (Frida aparecia como pug/poodle, Luna como labrador/beagle, além de
+humanos e gatos nas cenas). Isso é inaceitável (CONTRATO §5.13).
+
+Procedimento obrigatório após gerar imagens:
+
+1. **Contato visual:** `python make_contact_sheet.py` gera grids de 20 imagens
+   (`auditoria/contato_N.jpg`) com o nome de cada arquivo em cima.
+2. **Batimento de personagem:** conferir cada imagem:
+   - Frida = buldogue inglesa fawn, grande, colar de perolas;
+   - Luna = salsicha marrom-chocolate, comprida, coleira dourada;
+   - personagens novos (Pipoca = chihuahua amarelinho, Penelope = poodle branca)
+     precisam existir como personagens salvos no Flow e ser citados pelo nome;
+   - reprovar humano, gato ou qualquer outra raca.
+3. **Loop:** apagar as reprovadas da pasta de cenas e regerar com `--batch-size 2`
+   (lotes menores reduz muito a troca de personagem).
+4. Só rodar a trava `check_imagens_repetidas.py` e o render depois da auditoria.
+
+O Gemini WEB não consegue classificar as imagens automaticamente via CDP (o file
+chooser trava), então a auditoria é visual pelo contato. O script
+`scripts/check_personagens_imagens.py` reserva o lugar para uma futura integração
+com API de visão.
+
+### 58.9.4. Narração com emoção (2026-11-17)
+
+O `gerar_capitulo_trilinguo.py` passava `--rate +0% --pitch +0Hz` na narração, o
+que deixava a voz robótica (CONTRATO §5.14). Agora `garantir_narracao` usa:
+
+| Idioma | Voz | Rate | Pitch |
+|---|---|---|---|
+| pt | pt-BR-ThalitaNeural | +6% | +12Hz |
+| en | en-US-AriaNeural | +4% | +8Hz |
+| es | es-ES-ElviraNeural | +4% | +8Hz |
+
+Pitch mais alto dá o tom jovem/sorriso; rate levemente maior dá energia sem
+derrubar a duração abaixo de 10 min. A emoção também vem do texto (frases curtas,
+"..." e "Hahaha!" lidos em voz alta).
+
+### 58.9.6. Variedade visual: colagens triptico/dupla (2026-11-17)
+
+O Flow, ao receber um prompt com varias cenas numeradas, as vezes devolve **uma
+unica imagem com 3 cenas lado a lado (triptico)** em vez de 3 arquivos. OUsuario
+gostou do efeito e decidiu adotá-lo como variacao visual (CONTRATO §5.15).
+
+Implementado em `flow_agent_batch.py`:
+
+- `montar_prompt_lote(..., colagem=True)` pede explicitamente UMA imagem dividida
+  em N paineis verticais, na ordem das cenas;
+- `dividir_colagem(body, n)` detecta a colagem pela proporção (largura/altura >
+  1.9), remove as linhas divisoriais e salva um `.jpg` por painel;
+- `processar_lote` escolhe aleatoriamente colagem (50% para lotes de 3+, 35%
+  para lotes de 2) na primeira tentativa; nas tentativas de recuperação usa
+  imagens separadas;
+- o `_enforce_image_only` do `flow_fetch` **nao** é usado no lote (ele injetava
+  "gere SOMENTE UMA IMAGEM" e causava o triptico indesejado; agora o triptico é
+  controlado e desejado).
+
+Validado: triptico com Frida (buldogue fawn + perolas) e Luna (salsicha marrom +
+coleira dourada) corretos em todos os paineis, mesma caminha vermelha.
+
+### 58.9.5. Fallback de imagem faltando no compose (2026-11-17)
+
+Se, mesmo após o loop de re-geração, alguma imagem faltar, o vídeo **não pode
+ficar com buraco**. `build_composition.py` agora resolve cada imagem antes de
+montar o HTML: se o arquivo não existe em `assets/images/`, reaproveita a última
+imagem válida da sequência. O caminho do projeto é lido da variável de ambiente
+`VIDEOMAKER_PROJ` (quando definida). Isso garante que todo beat tenha imagem.
+
 ---
 
 ## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)
