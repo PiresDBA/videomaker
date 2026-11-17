@@ -1,0 +1,1076 @@
+== ASSUNTO/TEMA: None
+
+== Projeto: C:\videomaker\projects\a-frida-espirrinho-luninha-cuida
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\artifacts\script.json
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\artifacts\scenes.json
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\artifacts\image_prompts.json
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\artifacts\narration_timing.json
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\artifacts\timeline.json
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\assets\audio\gemini\bgm_gemini.wav
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\assets\audio\narration_full.wav
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\assets\audio\final_mix.m4a
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\composition.html
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\output
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\output\a-frida-espirrinho-luninha-cuida.mp4
+    C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\project.json
+
+== Planejado: ['render']
+== Planejado (com youtube): ['render', 'youtube']
+== FASE render: iniciando
+== FASE render: renderizando video (HyperFrames)
+== FFmpeg no PATH: C:\videomaker\ffmpeg\bin
+== composicao linkeda: C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\composition.html -> C:\videomaker\hyperframes-workspace\index.html
+== mix linkado: C:\videomaker\projects\a-frida-espirrinho-luninha-cuida\assets\audio\final_mix.m4a -> C:\videomaker\hyperframes-workspace\final_mix.m4a
+== HyperFrames: C:\videomaker\hyperframes-workspace
+== npm run check
+npm notice run check
+npm notice run npx --yes hyperframes@0.8.225 check
+npm notice run npx
+npm notice run hyperframes check
+◆  Checking hyperframes-workspace
+[INFO] [Compiler] Fetched 11 font face(s) for "Roboto" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\roboto)
+[INFO] [Compiler] Fetched 11 font face(s) for "Inter" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\inter)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Injected deterministic @font-face rules for 4 requested font families
+[hyperframes] check: samples 1/9
+[hyperframes] check: samples 2/9
+[hyperframes] check: samples 3/9
+[hyperframes] check: samples 4/9
+[hyperframes] check: samples 5/9
+[hyperframes] check: samples 6/9
+[hyperframes] check: samples 7/9
+[hyperframes] check: samples 8/9
+[hyperframes] check: samples 9/9
+[hyperframes] check: craft 1/599
+[hyperframes] check: craft 2/599
+[hyperframes] check: craft 3/599
+[hyperframes] check: craft 4/599
+[hyperframes] check: craft 5/599
+[hyperframes] check: craft 6/599
+[hyperframes] check: craft 7/599
+[hyperframes] check: craft 8/599
+[hyperframes] check: craft 9/599
+[hyperframes] check: craft 10/599
+[hyperframes] check: craft 11/599
+[hyperframes] check: craft 12/599
+[hyperframes] check: craft 13/599
+[hyperframes] check: craft 14/599
+[hyperframes] check: craft 15/599
+[hyperframes] check: craft 16/599
+[hyperframes] check: craft 17/599
+[hyperframes] check: craft 18/599
+[hyperframes] check: craft 19/599
+[hyperframes] check: craft 20/599
+[hyperframes] check: craft 21/599
+[hyperframes] check: craft 22/599
+[hyperframes] check: craft 23/599
+[hyperframes] check: craft 24/599
+[hyperframes] check: craft 25/599
+[hyperframes] check: craft 26/599
+[hyperframes] check: craft 27/599
+[hyperframes] check: craft 28/599
+[hyperframes] check: craft 29/599
+[hyperframes] check: craft 30/599
+[hyperframes] check: craft 31/599
+[hyperframes] check: craft 32/599
+[hyperframes] check: craft 33/599
+[hyperframes] check: craft 34/599
+[hyperframes] check: craft 35/599
+[hyperframes] check: craft 36/599
+[hyperframes] check: craft 37/599
+[hyperframes] check: craft 38/599
+[hyperframes] check: craft 39/599
+[hyperframes] check: craft 40/599
+[hyperframes] check: craft 41/599
+[hyperframes] check: craft 42/599
+[hyperframes] check: craft 43/599
+[hyperframes] check: craft 44/599
+[hyperframes] check: craft 45/599
+[hyperframes] check: craft 46/599
+[hyperframes] check: craft 47/599
+[hyperframes] check: craft 48/599
+[hyperframes] check: craft 49/599
+[hyperframes] check: craft 50/599
+[hyperframes] check: craft 51/599
+[hyperframes] check: craft 52/599
+[hyperframes] check: craft 53/599
+[hyperframes] check: craft 54/599
+[hyperframes] check: craft 55/599
+[hyperframes] check: craft 56/599
+[hyperframes] check: craft 57/599
+[hyperframes] check: craft 58/599
+[hyperframes] check: craft 59/599
+[hyperframes] check: craft 60/599
+[hyperframes] check: craft 61/599
+[hyperframes] check: craft 62/599
+[hyperframes] check: craft 63/599
+[hyperframes] check: craft 64/599
+[hyperframes] check: craft 65/599
+[hyperframes] check: craft 66/599
+[hyperframes] check: craft 67/599
+[hyperframes] check: craft 68/599
+[hyperframes] check: craft 69/599
+[hyperframes] check: craft 70/599
+[hyperframes] check: craft 71/599
+[hyperframes] check: craft 72/599
+[hyperframes] check: craft 73/599
+[hyperframes] check: craft 74/599
+[hyperframes] check: craft 75/599
+[hyperframes] check: craft 76/599
+[hyperframes] check: craft 77/599
+[hyperframes] check: craft 78/599
+[hyperframes] check: craft 79/599
+[hyperframes] check: craft 80/599
+[hyperframes] check: craft 81/599
+[hyperframes] check: craft 82/599
+[hyperframes] check: craft 83/599
+[hyperframes] check: craft 84/599
+[hyperframes] check: craft 85/599
+[hyperframes] check: craft 86/599
+[hyperframes] check: craft 87/599
+[hyperframes] check: craft 88/599
+[hyperframes] check: craft 89/599
+[hyperframes] check: craft 90/599
+[hyperframes] check: craft 91/599
+[hyperframes] check: craft 92/599
+[hyperframes] check: craft 93/599
+[hyperframes] check: craft 94/599
+[hyperframes] check: craft 95/599
+[hyperframes] check: craft 96/599
+[hyperframes] check: craft 97/599
+[hyperframes] check: craft 98/599
+[hyperframes] check: craft 99/599
+[hyperframes] check: craft 100/599
+[hyperframes] check: craft 101/599
+[hyperframes] check: craft 102/599
+[hyperframes] check: craft 103/599
+[hyperframes] check: craft 104/599
+[hyperframes] check: craft 105/599
+[hyperframes] check: craft 106/599
+[hyperframes] check: craft 107/599
+[hyperframes] check: craft 108/599
+[hyperframes] check: craft 109/599
+[hyperframes] check: craft 110/599
+[hyperframes] check: craft 111/599
+[hyperframes] check: craft 112/599
+[hyperframes] check: craft 113/599
+[hyperframes] check: craft 114/599
+[hyperframes] check: craft 115/599
+[hyperframes] check: craft 116/599
+[hyperframes] check: craft 117/599
+[hyperframes] check: craft 118/599
+[hyperframes] check: craft 119/599
+[hyperframes] check: craft 120/599
+[hyperframes] check: craft 121/599
+[hyperframes] check: craft 122/599
+[hyperframes] check: craft 123/599
+[hyperframes] check: craft 124/599
+[hyperframes] check: craft 125/599
+[hyperframes] check: craft 126/599
+[hyperframes] check: craft 127/599
+[hyperframes] check: craft 128/599
+[hyperframes] check: craft 129/599
+[hyperframes] check: craft 130/599
+[hyperframes] check: craft 131/599
+[hyperframes] check: craft 132/599
+[hyperframes] check: craft 133/599
+[hyperframes] check: craft 134/599
+[hyperframes] check: craft 135/599
+[hyperframes] check: craft 136/599
+[hyperframes] check: craft 137/599
+[hyperframes] check: craft 138/599
+[hyperframes] check: craft 139/599
+[hyperframes] check: craft 140/599
+[hyperframes] check: craft 141/599
+[hyperframes] check: craft 142/599
+[hyperframes] check: craft 143/599
+[hyperframes] check: craft 144/599
+[hyperframes] check: craft 145/599
+[hyperframes] check: craft 146/599
+[hyperframes] check: craft 147/599
+[hyperframes] check: craft 148/599
+[hyperframes] check: craft 149/599
+[hyperframes] check: craft 150/599
+[hyperframes] check: craft 151/599
+[hyperframes] check: craft 152/599
+[hyperframes] check: craft 153/599
+[hyperframes] check: craft 154/599
+[hyperframes] check: craft 155/599
+[hyperframes] check: craft 156/599
+[hyperframes] check: craft 157/599
+[hyperframes] check: craft 158/599
+[hyperframes] check: craft 159/599
+[hyperframes] check: craft 160/599
+[hyperframes] check: craft 161/599
+[hyperframes] check: craft 162/599
+[hyperframes] check: craft 163/599
+[hyperframes] check: craft 164/599
+[hyperframes] check: craft 165/599
+[hyperframes] check: craft 166/599
+[hyperframes] check: craft 167/599
+[hyperframes] check: craft 168/599
+[hyperframes] check: craft 169/599
+[hyperframes] check: craft 170/599
+[hyperframes] check: craft 171/599
+[hyperframes] check: craft 172/599
+[hyperframes] check: craft 173/599
+[hyperframes] check: craft 174/599
+[hyperframes] check: craft 175/599
+[hyperframes] check: craft 176/599
+[hyperframes] check: craft 177/599
+[hyperframes] check: craft 178/599
+[hyperframes] check: craft 179/599
+[hyperframes] check: craft 180/599
+[hyperframes] check: craft 181/599
+[hyperframes] check: craft 182/599
+[hyperframes] check: craft 183/599
+[hyperframes] check: craft 184/599
+[hyperframes] check: craft 185/599
+[hyperframes] check: craft 186/599
+[hyperframes] check: craft 187/599
+[hyperframes] check: craft 188/599
+[hyperframes] check: craft 189/599
+[hyperframes] check: craft 190/599
+[hyperframes] check: craft 191/599
+[hyperframes] check: craft 192/599
+[hyperframes] check: craft 193/599
+[hyperframes] check: craft 194/599
+[hyperframes] check: craft 195/599
+[hyperframes] check: craft 196/599
+[hyperframes] check: craft 197/599
+[hyperframes] check: craft 198/599
+[hyperframes] check: craft 199/599
+[hyperframes] check: craft 200/599
+[hyperframes] check: craft 201/599
+[hyperframes] check: craft 202/599
+[hyperframes] check: craft 203/599
+[hyperframes] check: craft 204/599
+[hyperframes] check: craft 205/599
+[hyperframes] check: craft 206/599
+[hyperframes] check: craft 207/599
+[hyperframes] check: craft 208/599
+[hyperframes] check: craft 209/599
+[hyperframes] check: craft 210/599
+[hyperframes] check: craft 211/599
+[hyperframes] check: craft 212/599
+[hyperframes] check: craft 213/599
+[hyperframes] check: craft 214/599
+[hyperframes] check: craft 215/599
+[hyperframes] check: craft 216/599
+[hyperframes] check: craft 217/599
+[hyperframes] check: craft 218/599
+[hyperframes] check: craft 219/599
+[hyperframes] check: craft 220/599
+[hyperframes] check: craft 221/599
+[hyperframes] check: craft 222/599
+[hyperframes] check: craft 223/599
+[hyperframes] check: craft 224/599
+[hyperframes] check: craft 225/599
+[hyperframes] check: craft 226/599
+[hyperframes] check: craft 227/599
+[hyperframes] check: craft 228/599
+[hyperframes] check: craft 229/599
+[hyperframes] check: craft 230/599
+[hyperframes] check: craft 231/599
+[hyperframes] check: craft 232/599
+[hyperframes] check: craft 233/599
+[hyperframes] check: craft 234/599
+[hyperframes] check: craft 235/599
+[hyperframes] check: craft 236/599
+[hyperframes] check: craft 237/599
+[hyperframes] check: craft 238/599
+[hyperframes] check: craft 239/599
+[hyperframes] check: craft 240/599
+[hyperframes] check: craft 241/599
+[hyperframes] check: craft 242/599
+[hyperframes] check: craft 243/599
+[hyperframes] check: craft 244/599
+[hyperframes] check: craft 245/599
+[hyperframes] check: craft 246/599
+[hyperframes] check: craft 247/599
+[hyperframes] check: craft 248/599
+[hyperframes] check: craft 249/599
+[hyperframes] check: craft 250/599
+[hyperframes] check: craft 251/599
+[hyperframes] check: craft 252/599
+[hyperframes] check: craft 253/599
+[hyperframes] check: craft 254/599
+[hyperframes] check: craft 255/599
+[hyperframes] check: craft 256/599
+[hyperframes] check: craft 257/599
+[hyperframes] check: craft 258/599
+[hyperframes] check: craft 259/599
+[hyperframes] check: craft 260/599
+[hyperframes] check: craft 261/599
+[hyperframes] check: craft 262/599
+[hyperframes] check: craft 263/599
+[hyperframes] check: craft 264/599
+[hyperframes] check: craft 265/599
+[hyperframes] check: craft 266/599
+[hyperframes] check: craft 267/599
+[hyperframes] check: craft 268/599
+[hyperframes] check: craft 269/599
+[hyperframes] check: craft 270/599
+[hyperframes] check: craft 271/599
+[hyperframes] check: craft 272/599
+[hyperframes] check: craft 273/599
+[hyperframes] check: craft 274/599
+[hyperframes] check: craft 275/599
+[hyperframes] check: craft 276/599
+[hyperframes] check: craft 277/599
+[hyperframes] check: craft 278/599
+[hyperframes] check: craft 279/599
+[hyperframes] check: craft 280/599
+[hyperframes] check: craft 281/599
+[hyperframes] check: craft 282/599
+[hyperframes] check: craft 283/599
+[hyperframes] check: craft 284/599
+[hyperframes] check: craft 285/599
+[hyperframes] check: craft 286/599
+[hyperframes] check: craft 287/599
+[hyperframes] check: craft 288/599
+[hyperframes] check: craft 289/599
+[hyperframes] check: craft 290/599
+[hyperframes] check: craft 291/599
+[hyperframes] check: craft 292/599
+[hyperframes] check: craft 293/599
+[hyperframes] check: craft 294/599
+[hyperframes] check: craft 295/599
+[hyperframes] check: craft 296/599
+[hyperframes] check: craft 297/599
+[hyperframes] check: craft 298/599
+[hyperframes] check: craft 299/599
+[hyperframes] check: craft 300/599
+[hyperframes] check: craft 301/599
+[hyperframes] check: craft 302/599
+[hyperframes] check: craft 303/599
+[hyperframes] check: craft 304/599
+[hyperframes] check: craft 305/599
+[hyperframes] check: craft 306/599
+[hyperframes] check: craft 307/599
+[hyperframes] check: craft 308/599
+[hyperframes] check: craft 309/599
+[hyperframes] check: craft 310/599
+[hyperframes] check: craft 311/599
+[hyperframes] check: craft 312/599
+[hyperframes] check: craft 313/599
+[hyperframes] check: craft 314/599
+[hyperframes] check: craft 315/599
+[hyperframes] check: craft 316/599
+[hyperframes] check: craft 317/599
+[hyperframes] check: craft 318/599
+[hyperframes] check: craft 319/599
+[hyperframes] check: craft 320/599
+[hyperframes] check: craft 321/599
+[hyperframes] check: craft 322/599
+[hyperframes] check: craft 323/599
+[hyperframes] check: craft 324/599
+[hyperframes] check: craft 325/599
+[hyperframes] check: craft 326/599
+[hyperframes] check: craft 327/599
+[hyperframes] check: craft 328/599
+[hyperframes] check: craft 329/599
+[hyperframes] check: craft 330/599
+[hyperframes] check: craft 331/599
+[hyperframes] check: craft 332/599
+[hyperframes] check: craft 333/599
+[hyperframes] check: craft 334/599
+[hyperframes] check: craft 335/599
+[hyperframes] check: craft 336/599
+[hyperframes] check: craft 337/599
+[hyperframes] check: craft 338/599
+[hyperframes] check: craft 339/599
+[hyperframes] check: craft 340/599
+[hyperframes] check: craft 341/599
+[hyperframes] check: craft 342/599
+[hyperframes] check: craft 343/599
+[hyperframes] check: craft 344/599
+[hyperframes] check: craft 345/599
+[hyperframes] check: craft 346/599
+[hyperframes] check: craft 347/599
+[hyperframes] check: craft 348/599
+[hyperframes] check: craft 349/599
+[hyperframes] check: craft 350/599
+[hyperframes] check: craft 351/599
+[hyperframes] check: craft 352/599
+[hyperframes] check: craft 353/599
+[hyperframes] check: craft 354/599
+[hyperframes] check: craft 355/599
+[hyperframes] check: craft 356/599
+[hyperframes] check: craft 357/599
+[hyperframes] check: craft 358/599
+[hyperframes] check: craft 359/599
+[hyperframes] check: craft 360/599
+[hyperframes] check: craft 361/599
+[hyperframes] check: craft 362/599
+[hyperframes] check: craft 363/599
+[hyperframes] check: craft 364/599
+[hyperframes] check: craft 365/599
+[hyperframes] check: craft 366/599
+[hyperframes] check: craft 367/599
+[hyperframes] check: craft 368/599
+[hyperframes] check: craft 369/599
+[hyperframes] check: craft 370/599
+[hyperframes] check: craft 371/599
+[hyperframes] check: craft 372/599
+[hyperframes] check: craft 373/599
+[hyperframes] check: craft 374/599
+[hyperframes] check: craft 375/599
+[hyperframes] check: craft 376/599
+[hyperframes] check: craft 377/599
+[hyperframes] check: craft 378/599
+[hyperframes] check: craft 379/599
+[hyperframes] check: craft 380/599
+[hyperframes] check: craft 381/599
+[hyperframes] check: craft 382/599
+[hyperframes] check: craft 383/599
+[hyperframes] check: craft 384/599
+[hyperframes] check: craft 385/599
+[hyperframes] check: craft 386/599
+[hyperframes] check: craft 387/599
+[hyperframes] check: craft 388/599
+[hyperframes] check: craft 389/599
+[hyperframes] check: craft 390/599
+[hyperframes] check: craft 391/599
+[hyperframes] check: craft 392/599
+[hyperframes] check: craft 393/599
+[hyperframes] check: craft 394/599
+[hyperframes] check: craft 395/599
+[hyperframes] check: craft 396/599
+[hyperframes] check: craft 397/599
+[hyperframes] check: craft 398/599
+[hyperframes] check: craft 399/599
+[hyperframes] check: craft 400/599
+[hyperframes] check: craft 401/599
+[hyperframes] check: craft 402/599
+[hyperframes] check: craft 403/599
+[hyperframes] check: craft 404/599
+[hyperframes] check: craft 405/599
+[hyperframes] check: craft 406/599
+[hyperframes] check: craft 407/599
+[hyperframes] check: craft 408/599
+[hyperframes] check: craft 409/599
+[hyperframes] check: craft 410/599
+[hyperframes] check: craft 411/599
+[hyperframes] check: craft 412/599
+[hyperframes] check: craft 413/599
+[hyperframes] check: craft 414/599
+[hyperframes] check: craft 415/599
+[hyperframes] check: craft 416/599
+[hyperframes] check: craft 417/599
+[hyperframes] check: craft 418/599
+[hyperframes] check: craft 419/599
+[hyperframes] check: craft 420/599
+[hyperframes] check: craft 421/599
+[hyperframes] check: craft 422/599
+[hyperframes] check: craft 423/599
+[hyperframes] check: craft 424/599
+[hyperframes] check: craft 425/599
+[hyperframes] check: craft 426/599
+[hyperframes] check: craft 427/599
+[hyperframes] check: craft 428/599
+[hyperframes] check: craft 429/599
+[hyperframes] check: craft 430/599
+[hyperframes] check: craft 431/599
+[hyperframes] check: craft 432/599
+[hyperframes] check: craft 433/599
+[hyperframes] check: craft 434/599
+[hyperframes] check: craft 435/599
+[hyperframes] check: craft 436/599
+[hyperframes] check: craft 437/599
+[hyperframes] check: craft 438/599
+[hyperframes] check: craft 439/599
+[hyperframes] check: craft 440/599
+[hyperframes] check: craft 441/599
+[hyperframes] check: craft 442/599
+[hyperframes] check: craft 443/599
+[hyperframes] check: craft 444/599
+[hyperframes] check: craft 445/599
+[hyperframes] check: craft 446/599
+[hyperframes] check: craft 447/599
+[hyperframes] check: craft 448/599
+[hyperframes] check: craft 449/599
+[hyperframes] check: craft 450/599
+[hyperframes] check: craft 451/599
+[hyperframes] check: craft 452/599
+[hyperframes] check: craft 453/599
+[hyperframes] check: craft 454/599
+[hyperframes] check: craft 455/599
+[hyperframes] check: craft 456/599
+[hyperframes] check: craft 457/599
+[hyperframes] check: craft 458/599
+[hyperframes] check: craft 459/599
+[hyperframes] check: craft 460/599
+[hyperframes] check: craft 461/599
+[hyperframes] check: craft 462/599
+[hyperframes] check: craft 463/599
+[hyperframes] check: craft 464/599
+[hyperframes] check: craft 465/599
+[hyperframes] check: craft 466/599
+[hyperframes] check: craft 467/599
+[hyperframes] check: craft 468/599
+[hyperframes] check: craft 469/599
+[hyperframes] check: craft 470/599
+[hyperframes] check: craft 471/599
+[hyperframes] check: craft 472/599
+[hyperframes] check: craft 473/599
+[hyperframes] check: craft 474/599
+[hyperframes] check: craft 475/599
+[hyperframes] check: craft 476/599
+[hyperframes] check: craft 477/599
+[hyperframes] check: craft 478/599
+[hyperframes] check: craft 479/599
+[hyperframes] check: craft 480/599
+[hyperframes] check: craft 481/599
+[hyperframes] check: craft 482/599
+[hyperframes] check: craft 483/599
+[hyperframes] check: craft 484/599
+[hyperframes] check: craft 485/599
+[hyperframes] check: craft 486/599
+[hyperframes] check: craft 487/599
+[hyperframes] check: craft 488/599
+[hyperframes] check: craft 489/599
+[hyperframes] check: craft 490/599
+[hyperframes] check: craft 491/599
+[hyperframes] check: craft 492/599
+[hyperframes] check: craft 493/599
+[hyperframes] check: craft 494/599
+[hyperframes] check: craft 495/599
+[hyperframes] check: craft 496/599
+[hyperframes] check: craft 497/599
+[hyperframes] check: craft 498/599
+[hyperframes] check: craft 499/599
+[hyperframes] check: craft 500/599
+[hyperframes] check: craft 501/599
+[hyperframes] check: craft 502/599
+[hyperframes] check: craft 503/599
+[hyperframes] check: craft 504/599
+[hyperframes] check: craft 505/599
+[hyperframes] check: craft 506/599
+[hyperframes] check: craft 507/599
+[hyperframes] check: craft 508/599
+[hyperframes] check: craft 509/599
+[hyperframes] check: craft 510/599
+[hyperframes] check: craft 511/599
+[hyperframes] check: craft 512/599
+[hyperframes] check: craft 513/599
+[hyperframes] check: craft 514/599
+[hyperframes] check: craft 515/599
+[hyperframes] check: craft 516/599
+[hyperframes] check: craft 517/599
+[hyperframes] check: craft 518/599
+[hyperframes] check: craft 519/599
+[hyperframes] check: craft 520/599
+[hyperframes] check: craft 521/599
+[hyperframes] check: craft 522/599
+[hyperframes] check: craft 523/599
+[hyperframes] check: craft 524/599
+[hyperframes] check: craft 525/599
+[hyperframes] check: craft 526/599
+[hyperframes] check: craft 527/599
+[hyperframes] check: craft 528/599
+[hyperframes] check: craft 529/599
+[hyperframes] check: craft 530/599
+[hyperframes] check: craft 531/599
+[hyperframes] check: craft 532/599
+[hyperframes] check: craft 533/599
+[hyperframes] check: craft 534/599
+[hyperframes] check: craft 535/599
+[hyperframes] check: craft 536/599
+[hyperframes] check: craft 537/599
+[hyperframes] check: craft 538/599
+[hyperframes] check: craft 539/599
+[hyperframes] check: craft 540/599
+[hyperframes] check: craft 541/599
+[hyperframes] check: craft 542/599
+[hyperframes] check: craft 543/599
+[hyperframes] check: craft 544/599
+[hyperframes] check: craft 545/599
+[hyperframes] check: craft 546/599
+[hyperframes] check: craft 547/599
+[hyperframes] check: craft 548/599
+[hyperframes] check: craft 549/599
+[hyperframes] check: craft 550/599
+[hyperframes] check: craft 551/599
+[hyperframes] check: craft 552/599
+[hyperframes] check: craft 553/599
+[hyperframes] check: craft 554/599
+[hyperframes] check: craft 555/599
+[hyperframes] check: craft 556/599
+[hyperframes] check: craft 557/599
+[hyperframes] check: craft 558/599
+[hyperframes] check: craft 559/599
+[hyperframes] check: craft 560/599
+[hyperframes] check: craft 561/599
+[hyperframes] check: craft 562/599
+[hyperframes] check: craft 563/599
+[hyperframes] check: craft 564/599
+[hyperframes] check: craft 565/599
+[hyperframes] check: craft 566/599
+[hyperframes] check: craft 567/599
+[hyperframes] check: craft 568/599
+[hyperframes] check: craft 569/599
+[hyperframes] check: craft 570/599
+[hyperframes] check: craft 571/599
+[hyperframes] check: craft 572/599
+[hyperframes] check: craft 573/599
+[hyperframes] check: craft 574/599
+[hyperframes] check: craft 575/599
+[hyperframes] check: craft 576/599
+[hyperframes] check: craft 577/599
+[hyperframes] check: craft 578/599
+[hyperframes] check: craft 579/599
+[hyperframes] check: craft 580/599
+[hyperframes] check: craft 581/599
+[hyperframes] check: craft 582/599
+[hyperframes] check: craft 583/599
+[hyperframes] check: craft 584/599
+[hyperframes] check: craft 585/599
+[hyperframes] check: craft 586/599
+[hyperframes] check: craft 587/599
+[hyperframes] check: craft 588/599
+[hyperframes] check: craft 589/599
+[hyperframes] check: craft 590/599
+[hyperframes] check: craft 591/599
+[hyperframes] check: craft 592/599
+[hyperframes] check: craft 593/599
+[hyperframes] check: craft 594/599
+[hyperframes] check: craft 595/599
+[hyperframes] check: craft 596/599
+[hyperframes] check: craft 597/599
+[hyperframes] check: craft 598/599
+[hyperframes] check: craft 599/599
+[hyperframes] check: overlap 1/23
+[hyperframes] check: overlap 2/23
+[hyperframes] check: overlap 3/23
+[hyperframes] check: overlap 4/23
+[hyperframes] check: overlap 5/23
+[hyperframes] check: overlap 6/23
+[hyperframes] check: overlap 7/23
+[hyperframes] check: overlap 8/23
+[hyperframes] check: overlap 9/23
+[hyperframes] check: overlap 10/23
+[hyperframes] check: overlap 11/23
+[hyperframes] check: overlap 12/23
+[hyperframes] check: overlap 13/23
+[hyperframes] check: overlap 14/23
+[hyperframes] check: overlap 15/23
+[hyperframes] check: overlap 16/23
+[hyperframes] check: overlap 17/23
+[hyperframes] check: overlap 18/23
+[hyperframes] check: overlap 19/23
+[hyperframes] check: overlap 20/23
+[hyperframes] check: overlap 21/23
+[hyperframes] check: overlap 22/23
+[hyperframes] check: overlap 23/23
+[hyperframes] check: analyze 0/3
+[hyperframes] check: analyze 1/3
+[hyperframes] check: analyze 2/3
+
+Lint
+  ⚠ duplicate_media_discovery_risk: Detected 2 matching img entries with the same source/start/duration.
+    C:\videomaker\hyperframes-workspace\index.html [data-composition-id] t=0s
+    Fix: Avoid duplicated media nodes that can be discovered twice during compilation.
+  ⚠ timeline_track_too_dense: Track 1 has 9 timed elements in this HTML file. Smaller sub-compositions keep timelines easier to read, iterate on, and diff.
+    C:\videomaker\hyperframes-workspace\index.html [data-composition-id] t=0s
+    Fix: Move coherent scene groups into separate .html files under compositions/ and mount them from the parent with data-composition-src so the timeline stays easier to inspect, revise, and validate.
+  ⚠ timeline_track_too_dense: Track 2 has 6 timed elements in this HTML file. Smaller sub-compositions keep timelines easier to read, iterate on, and diff.
+    C:\videomaker\hyperframes-workspace\index.html [data-composition-id] t=0s
+    Fix: Move coherent scene groups into separate .html files under compositions/ and mount them from the parent with data-composition-src so the timeline stays easier to inspect, revise, and validate.
+  ⚠ nested_structure_needs_subcomposition: <div id="intro-capa"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #intro-capa t=0s
+    Fix: Move <div id="intro-capa"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s_intro"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s_intro t=0s
+    Fix: Move <div id="s_intro"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s0"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s0 t=0s
+    Fix: Move <div id="s0"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s1"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s1 t=0s
+    Fix: Move <div id="s1"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s2"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s2 t=0s
+    Fix: Move <div id="s2"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s3"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s3 t=0s
+    Fix: Move <div id="s3"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s4"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s4 t=0s
+    Fix: Move <div id="s4"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s5"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s5 t=0s
+    Fix: Move <div id="s5"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s6"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s6 t=0s
+    Fix: Move <div id="s6"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s7"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s7 t=0s
+    Fix: Move <div id="s7"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s8"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s8 t=0s
+    Fix: Move <div id="s8"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s9"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s9 t=0s
+    Fix: Move <div id="s9"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s_final"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s_final t=0s
+    Fix: Move <div id="s_final"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="s_outro"> is a timeline element that contains nested <img>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #s_outro t=0s
+    Fix: Move <div id="s_outro"> and its contents into a sub-composition file and mount it with data-composition-src.
+  ⚠ nested_structure_needs_subcomposition: <div id="outro-final"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.
+    C:\videomaker\hyperframes-workspace\index.html #outro-final t=0s
+    Fix: Move <div id="outro-final"> and its contents into a sub-composition file and mount it with data-composition-src.
+  0 error(s), 18 warning(s), 0 info(s)
+
+Runtime
+  ⚠ console_warning: GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+    index.html [data-composition-id] t=0s
+  ⚠ console_warning: GSAP target  not found. https://gsap.com
+    index.html [data-composition-id] t=0s
+  ⚠ console_warning: GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+    index.html [data-composition-id] t=0s
+  ⚠ console_warning: GSAP target  not found. https://gsap.com
+    index.html [data-composition-id] t=0s
+  0 error(s), 4 warning(s), 0 info(s)
+
+Layout
+  ℹ t=12.798s container_overflow #s_intro > img:nth-of-type(1) inside #s_intro overflowed left 133.51px, right 164.23px, top 90.56px, bottom 76.92px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=12.798s container_overflow #s_intro > img:nth-of-type(2) inside #s_intro overflowed left 195.22px, right 181.09px, top 100.83px, bottom 110.84px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=38.395s container_overflow #s1 > img:nth-of-type(1) inside #s1 overflowed left 118.76px, right 139.5px, top 77.24px, bottom 68.04px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=38.395s container_overflow #s1 > img:nth-of-type(2) inside #s1 overflowed left 167.08px, right 164.04px, top 88.12px, bottom 98.14px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=38.395s container_overflow #s1 > img:nth-of-type(3) inside #s1 overflowed left 145.69px, right 144.73px, top 79.91px, bottom 83.45px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=63.992s container_overflow #s2 > img:nth-of-type(1) inside #s2 overflowed left 126.67px, right 152.76px, top 84.38px, bottom 72.8px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=63.992s container_overflow #s2 > img:nth-of-type(2) inside #s2 overflowed left 182.16px, right 173.17px, top 94.93px, bottom 104.95px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=63.992s container_overflow #s2 > img:nth-of-type(3) inside #s2 overflowed left 154.82px, right 159.81px, top 85.24px, bottom 91.75px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=63.992s container_overflow #s2 > img:nth-of-type(4) inside #s2 overflowed left 170.19px, right 164.8px, top 92.96px, bottom 95.47px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=89.589s container_overflow #s3 > img:nth-of-type(1) inside #s3 overflowed left 137.86px, right 171.48px, top 94.47px, bottom 79.54px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=89.589s container_overflow #s3 > img:nth-of-type(2) inside #s3 overflowed left 203.34px, right 185.99px, top 104.49px, bottom 114.51px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=89.589s container_overflow #s3 > img:nth-of-type(3) inside #s3 overflowed left 167.63px, right 180.99px, top 92.71px, bottom 103.4px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=89.589s container_overflow #s3 > img:nth-of-type(4) inside #s3 overflowed left 189.69px, right 179.28px, top 100.43px, bottom 107.12px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=115.186s container_overflow #s5 > img:nth-of-type(1) inside #s5 overflowed left 100.91px, right 109.53px, top 61.1px, bottom 57.28px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=140.783s container_overflow #s6 > img:nth-of-type(1) inside #s6 overflowed left 118.31px, right 138.73px, top 76.83px, bottom 67.76px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=140.783s container_overflow #s6 > img:nth-of-type(2) inside #s6 overflowed left 166.19px, right 163.5px, top 87.72px, bottom 97.74px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=140.783s container_overflow #s6 > img:nth-of-type(3) inside #s6 overflowed left 145.15px, right 143.84px, top 79.6px, bottom 82.96px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=166.38s container_overflow #s7 > img:nth-of-type(1) inside #s7 overflowed left 134.82px, right 166.38px, top 91.72px, bottom 77.71px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=166.38s container_overflow #s7 > img:nth-of-type(2) inside #s7 overflowed left 197.52px, right 182.45px, top 101.86px, bottom 111.88px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=166.38s container_overflow #s7 > img:nth-of-type(3) inside #s7 overflowed left 164.1px, right 175.17px, top 90.64px, bottom 100.19px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=166.38s container_overflow #s7 > img:nth-of-type(4) inside #s7 overflowed left 184.33px, right 175.29px, top 98.37px, bottom 103.92px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=191.977s container_overflow #s9 > img:nth-of-type(1) inside #s9 overflowed left 101.74px, right 110.94px, top 61.85px, bottom 57.78px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=191.977s container_overflow #s9 > img:nth-of-type(2) inside #s9 overflowed left 134.52px, right 144.3px, top 73.41px, bottom 83.43px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  ℹ t=217.574s container_overflow #s_outro > img:nth-of-type(1) inside #s_outro overflowed left 106.3px, right 118.59px, top 65.97px, bottom 60.53px — Element extends outside a clipping layout container.
+        Fix: Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.
+  0 error(s), 0 warning(s), 24 info(s)
+
+Motion
+  ◇ 0 errors, 0 warnings
+
+Contrast
+  ◇ 0/0 text checks pass WCAG AA
+
+Craft
+  ⚠ text_below_floor: Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and "FRIDA E LUNA" renders at 25 px for 4.23 s: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.
+    index.html div.eyebrow t=0s
+  0 error(s), 1 warning(s), 0 info(s)
+
+Audio
+  ◇ 0 errors, 0 warnings
+
+Snapshots
+  ◇ disabled
+
+◇  Check passed
+Report: C:\videomaker\hyperframes-workspace\.hyperframes\artifacts\checks\2d53e464-085b-47ea-b2b6-4d9b22d9a347.json
+Revision: a85b46f8-51cc-4776-b740-7e34abe85fd9 (recorded-revision)
+== npm run render -- --workers 10
+npm notice run render
+npm notice run npx --yes hyperframes@0.8.225 render --workers 10
+npm notice run npx
+npm notice run hyperframes render --workers 10
+
+◆  Rendering hyperframes-workspace → C:\videomaker\hyperframes-workspace\renders\hyperframes-workspace_2026-11-09_19-41-42.mp4
+   30fps · standard · 10 workers
+   GPU: browser GPU (auto-detect)
+
+
+  Lint: 0 error(s), 18 warning(s) — run `hyperframes lint` for full output.
+  Continuing render despite lint issues. Use --strict to block errors.
+
+Checking browser...
+Browser: cache
+[INFO] [Render] Pipeline started {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","platform":"win32","arch":"x64","nodeVersion":"v26.13.0","fps":{"num":30,"den":1},"format":"mp4","quality":"standard","browserGpuMode":"auto","forceScreenshot":false,"protocolTimeout":300000,"browserTimeout":120000,"pageNavigationTimeout":60000,"playerReadyTimeout":45000}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"pipeline","status":"checkpoint","elapsedMs":11,"message":"started","format":"mp4","quality":"standard","browserGpuMode":"auto","forceScreenshot":false,"protocolTimeoutMs":300000,"pageNavigationTimeoutMs":60000,"playerReadyTimeoutMs":45000,"requestedWorkers":10}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"compile","status":"start","elapsedMs":17,"needsAlpha":false}
+  █░░░░░░░░░░░░░░░░░░░░░░░░  5%  Compiling composition
+@hf-progress {"code":"compile","pct":5}
+[INFO] [Compiler] Fetched 11 font face(s) for "Roboto" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\roboto)
+[INFO] [Compiler] Fetched 11 font face(s) for "Inter" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\inter)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Injected deterministic @font-face rules for 4 requested font families
+[INFO] [Compiler] Inlined CDN script: https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js
+[INFO] Compiled composition metadata {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","entryFile":"index.html","staticDuration":230.372,"width":1920,"height":1080,"videoCount":0,"audioCount":1,"renderModeHints":{"recommendScreenshot":false,"reasons":[]}}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"compile","status":"end","elapsedMs":8774,"durationMs":8757,"needsAlpha":false}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"compile","status":"checkpoint","elapsedMs":8776,"message":"composition metadata resolved","width":1920,"height":1080,"videoCount":0,"audioCount":1,"imageCount":43,"deviceScaleFactor":1,"forceScreenshot":false,"compositionHash":"cdae55a288ab36c4"}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"browser_probe","status":"start","elapsedMs":8777,"forceScreenshot":false,"stagePhase":"calibrating"}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"browser_probe","status":"end","elapsedMs":16017,"durationMs":7239,"forceScreenshot":false,"stagePhase":"calibrating"}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"browser_probe","status":"checkpoint","elapsedMs":16021,"message":"duration resolved","durationSeconds":230.372,"totalFrames":6912,"compositionHash":"cdae55a288ab36c4","beginFrameStalled":false}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"video_extract","status":"start","elapsedMs":16023,"videoCount":0}
+  ██░░░░░░░░░░░░░░░░░░░░░░░  10%  Extracting video frames
+@hf-progress {"code":"extract_video","pct":10}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"video_extract","status":"end","elapsedMs":16081,"durationMs":57,"videoCount":0}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"video_extract","status":"checkpoint","elapsedMs":16094,"message":"frames resolved","videoCount":0,"extractedVideoCount":0,"totalFramesExtracted":0,"maxFramesPerVideo":0,"avgFramesPerExtractedVideo":null,"vfrPreflightCount":null,"vfrPreflightMs":null,"cacheHits":null,"cacheMisses":null,"transientRetries":null,"minVideoFrameCoverageRatio":null,"authoredTimedClipCount":17}
+[INFO] [Render] No HDR sources detected, rendering SDR {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750"}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"hdr_detection","status":"checkpoint","elapsedMs":16097,"message":"resolved","requestedHdrMode":"auto","effectiveHdr":"sdr","nativeHdrVideoCount":0,"nativeHdrImageCount":0}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"audio_process","status":"start","elapsedMs":16098,"audioCount":1}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"file_server","status":"start","elapsedMs":16116,"reused":false}
+  █████░░░░░░░░░░░░░░░░░░░░  20%  Processing audio tracks
+@hf-progress {"code":"process_audio","pct":20}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Starting frame capture
+@hf-progress {"code":"start_browsers","pct":25}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"file_server","status":"end","elapsedMs":16491,"durationMs":372}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Checking browser GPU
+@hf-progress {"code":"start_browsers","pct":25}
+[hyperframes] browserGpuMode probe → hardware (WebGL renderer vendor="Google Inc. (AMD)" renderer="ANGLE (AMD, AMD Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)")
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_calibration","status":"checkpoint","elapsedMs":31452,"message":"skipped","requestedWorkers":10,"totalFrames":6912,"htmlInCanvasDetected":false,"lowMemoryMode":false,"deInversionEligible":false,"deParallelRouterEligible":false}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"worker_resolution","status":"checkpoint","elapsedMs":31476,"message":"resolved","workerCount":10}
+[INFO] [Render] Fast capture: default-on drawElement disabled for this render: parallel capture has no runtime self-verification. Set PRODUCER_EXPERIMENTAL_FAST_CAPTURE=true to override. {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750"}
+[INFO] streaming-encode gate {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","enabled":false,"reason":"multi_worker","configFlag":true,"durationCapEnabled":false,"outputFormat":"mp4","workerCount":10,"durationSeconds":230.372,"maxDurationSeconds":240}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_strategy","status":"checkpoint","elapsedMs":31517,"message":"resolved","workerCount":10,"forceScreenshot":false,"captureBeyondViewport":null,"useStreamingEncode":false,"useLayeredComposite":false,"usePageSideCompositing":false,"hasHdrContent":false,"hasShaderTransitions":false,"isPngSequence":false}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"audio_process","status":"checkpoint","elapsedMs":46196,"message":"stage still running","audioCount":1,"heartbeatIndex":1,"stageElapsedMs":30096}
+[INFO] [audio] phases {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","prepare":22225,"groups":0,"mix":2599,"master":0,"encode":12871,"guard":3770}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"audio_process","status":"end","elapsedMs":57575,"durationMs":41476,"audioCount":1}
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_disk","status":"start","elapsedMs":57842,"stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,"totalFrames":6912,"framesCompleted":0,"captureMode":"screenshot","captureOperation":"captureScreenshot"}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Starting browsers (0/10 ready)
+@hf-progress {"code":"start_browsers","done":0,"total":10,"pct":25}
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[initSession:screenshot] page.goto start (1ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, headlessShell=true, platform=win32)
+[initSession:screenshot] page.goto complete (3364ms)
+[initSession:screenshot] page.goto complete (3804ms)
+[initSession:screenshot] page.goto complete (3830ms)
+[initSession:screenshot] page.goto complete (3584ms)
+[initSession:screenshot] page.goto complete (3726ms)
+[initSession:screenshot] page.goto complete (3594ms)
+[initSession:screenshot] page.goto complete (3603ms)
+[initSession:screenshot] page.goto complete (3793ms)
+[initSession:screenshot] page.goto complete (3647ms)
+[initSession:screenshot] GSAP proxy flush complete (4588ms)
+[initSession:screenshot] page.goto start (0ms)
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_disk","status":"checkpoint","elapsedMs":88250,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,"totalFrames":6912,"framesCompleted":0,"captureMode":"screenshot","captureOperation":"captureScreenshot","heartbeatIndex":1,"stageElapsedMs":30408}
+[initSession:screenshot] GSAP proxy flush complete (5508ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5313ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5560ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5447ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5539ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5514ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5560ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (5594ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] pollHfReady complete (12295ms)
+[initSession:screenshot] pollHfReady complete (12709ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (12296ms)
+[initSession:screenshot] applyVideoMetadataHints complete (12297ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (12711ms)
+[initSession:screenshot] applyVideoMetadataHints complete (12711ms)
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] pollHfReady complete (12992ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (12993ms)
+[initSession:screenshot] applyVideoMetadataHints complete (12993ms)
+[initSession:screenshot] pollHfReady complete (12768ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (12770ms)
+[initSession:screenshot] applyVideoMetadataHints complete (12770ms)
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] pollHfReady complete (13087ms)
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (13141ms)
+[initSession:screenshot] applyVideoMetadataHints complete (13141ms)
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] pollHfReady complete (13072ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (13079ms)
+[initSession:screenshot] applyVideoMetadataHints complete (13079ms)
+[initSession:screenshot] pollHfReady complete (13174ms)
+[initSession:screenshot] pollHfReady complete (13174ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (13187ms)
+[initSession:screenshot] applyVideoMetadataHints complete (13187ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (13191ms)
+[initSession:screenshot] applyVideoMetadataHints complete (13191ms)
+[initSession:screenshot] pollHfReady complete (13364ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (13407ms)
+[initSession:screenshot] applyVideoMetadataHints complete (13408ms)
+[initSession:screenshot] page.goto complete (15334ms)
+[initSession:screenshot] GSAP proxy flush complete (16006ms)
+[HyperFrames] render runtime fps {"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] pollHfReady complete (16668ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (16677ms)
+[initSession:screenshot] applyVideoMetadataHints complete (16677ms)
+[initSession:screenshot] media + fonts + tailwind ready (22521ms)
+[initSession:screenshot] media + fonts + tailwind ready (22466ms)
+[initSession:screenshot] media + fonts + tailwind ready (22558ms)
+[initSession:screenshot] media + fonts + tailwind ready (22337ms)
+[non-blocking] Failed to load resource: net::ERR_INSUFFICIENT_RESOURCES
+[initSession:screenshot] media + fonts + tailwind ready (28269ms)
+[initSession:screenshot] media + fonts + tailwind ready (28169ms)
+[initSession:screenshot] media + fonts + tailwind ready (30986ms)
+[non-blocking] Failed to load resource: net::ERR_INSUFFICIENT_RESOURCES
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_disk","status":"checkpoint","elapsedMs":118433,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,"totalFrames":6912,"framesCompleted":0,"captureMode":"screenshot","captureOperation":"captureScreenshot","heartbeatIndex":2,"stageElapsedMs":60591}
+[non-blocking] Failed to load resource: net::ERR_INSUFFICIENT_RESOURCES
+[initSession:screenshot] media + fonts + tailwind ready (59046ms)
+[FrameCapture:media_load_failed] image media failed to load before capture {
+  mediaType: 'image',
+  sources: [
+    'http://localhost:49885/assets/images/o_ch_especial_scene_c.jpg',
+    'http://localhost:49885/assets/images/o_grande_espirro_scene_d.jpg'
+  ],
+  timeoutMs: 45000
+}
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, screenshots=25, seeks=26, elapsedMs=4859) (69249ms)
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Starting browsers (1/10 ready)
+@hf-progress {"code":"start_browsers","done":1,"total":10,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 1/6912 (10 workers)
+@hf-progress {"code":"capture","done":1,"total":6912,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 2/6912 (10 workers)
+@hf-progress {"code":"capture","done":2,"total":6912,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 4/6912 (10 workers)
+@hf-progress {"code":"capture","done":4,"total":6912,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 5/6912 (10 workers)
+@hf-progress {"code":"capture","done":5,"total":6912,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 6/6912 (10 workers)
+@hf-progress {"code":"capture","done":6,"total":6912,"pct":25}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Capturing frame 9/6912 (10 workers)
+@hf-progress {"code":"capture","done":9,"total":6912,"pct":25}
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (77149ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (76903ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (77129ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (76796ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (77214ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (77027ms)
+[initSession:screenshot] static-frame dedup: disabled (verification infrastructure failure) (72206ms)
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[FrameCapture] Timed out closing browser; forcing browser process shutdown
+[INFO] [Render:trace] {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","phase":"capture_disk","status":"error","elapsedMs":168368,"durationMs":110526,"message":"[Parallel] Capture failed: Worker 0: Parallel worker cancelled; Worker 1: Parallel worker cancelled; Worker 2: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/final_mix.m4a resource=media error=ne…","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,"totalFrames":6912,"framesCompleted":10,"captureMode":"screenshot","captureOperation":"captureScreenshot"}
+  ██████░░░░░░░░░░░░░░░░░░░  25%  Failed: [Parallel] Capture failed: Worker 0: Parallel worker cancelled; Worker 1: Parallel worker cancelled; Worker 2: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/final_mix.m4a resource=media error=net::ERR_INSUFFICIENT_RESOURCES; Worker 3: Parallel worker cancelled; Worker 4: Parallel worker cancelled; Worker 5: Parallel worker cancelled; Worker 6: Disk capture may need ~5695.2 MB of temporary frame storage (measured from the first 10 frames), but only 6025.0 MB is free at C:\Users\Pires\AppData\Local\Temp\hf-render-V0x8Zt\captured-frames. Disk capture stores every frame as an image file (JPEG, or PNG for alpha). This render stores frames because it captures with 10 workers. Free up disk space, or re-run this render with --workers 1 to stream frames into the encoder instead. One worker is slower, so keep the default worker count for renders that fit on disk.; Worker 7: Parallel worker cancelled; Worker 8: Parallel worker cancelled; Worker 9: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_ch_especial_scene_c.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES | [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_grande_espirro_scene_d.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES
+[INFO] [Render] Failure summary {"renderJobId":"f2fe8bbd-70a3-410b-bf5b-f87f10c94750","failedStage":"Capturing frame 9/6912 (10 workers)","error":"[Parallel] Capture failed: Worker 0: Parallel worker cancelled; Worker 1: Parallel worker cancelled; Worker 2: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/final_mix.m4a resource=media error=net::ERR_INSUFFICIENT_RESOURCES; Worker 3: Parallel worker cancelled; Worker 4: Parallel worker cancelled; Worker 5: Parallel worker cancelled; Worker 6: Disk capture may need ~5695.2 MB of temporary frame storage (measured from the first 10 frames), but only 6025.0 MB is free at C:\\Users\\Pires\\AppData\\Local\\Temp\\hf-render-V0x8Zt\\captured-frames. Disk capture stores every frame as an image file (JPEG, or PNG for alpha). This render stores frames because it captures with 10 workers. Free up disk space, or re-run this render with --workers 1 to stream frames into the encoder instead. One worker is slower, so keep the default worker count for renders that fit on disk.; Worker 7: Parallel worker cancelled; Worker 8: Parallel worker cancelled; Worker 9: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_ch_especial_scene_c.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES | [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_grande_espirro_scene_d.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES","elapsedMs":168536,"stageTimings":{"compileOnlyMs":2515,"browserProbeMs":7236,"compileMs":16005,"videoExtractMs":57,"audioProcessMs":41467},"isTimeout":false,"workers":10,"protocolTimeout":300000,"observedFailedPhase":"capture_disk","observedLastPhase":"capture_disk","observedLastStatus":"error","browserDiagnostics":{"total":0,"errors":0,"pageErrors":0,"requestFailed":0,"httpErrors":0,"navigationStarts":0,"navigationFailures":0,"consoleErrors":0,"consoleWarnings":0},"extraction":{"videoCount":0,"extractedVideoCount":0,"totalFramesExtracted":0,"maxFramesPerVideo":0,"authoredTimedClipCount":17},"browserConsoleErrors":[]}
+@hf-diagnostic {"version":1,"operation":"render","code":"CAPTURE_AUTHORING"}
+
+✗  Render failed
+
+   [Parallel] Capture failed: Worker 0: Parallel worker cancelled; Worker 1: Parallel worker cancelled; Worker 2: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/final_mix.m4a resource=media error=net::ERR_INSUFFICIENT_RESOURCES; Worker 3: Parallel worker cancelled; Worker 4: Parallel worker cancelled; Worker 5: Parallel worker cancelled; Worker 6: Disk capture may need ~5695.2 MB of temporary frame storage (measured from the first 10 frames), but only 6025.0 MB is free at C:\Users\Pires\AppData\Local\Temp\hf-render-V0x8Zt\captured-frames. Disk capture stores every frame as an image file (JPEG, or PNG for alpha). This render stores frames because it captures with 10 workers. Free up disk space, or re-run this render with --workers 1 to stream frames into the encoder instead. One worker is slower, so keep the default worker count for renders that fit on disk.; Worker 7: Parallel worker cancelled; Worker 8: Parallel worker cancelled; Worker 9: Parallel worker cancelled; diagnostics: [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_ch_especial_scene_c.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES | [Browser:REQUESTFAILED] GET http://localhost:49885/assets/images/o_grande_espirro_scene_d.jpg resource=image error=net::ERR_INSUFFICIENT_RESOURCES
+   Try --docker for containerized rendering
+
+render falhou
+No C:\videomaker\scripts\render.ps1:54 caractere:32
++     if ($LASTEXITCODE -ne 0) { throw "render falhou" }
++                                ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (render falhou:String) [], RuntimeException
+    + FullyQualifiedErrorId : render falhou
+ 
+Traceback (most recent call last):
+  File "C:\videomaker\scripts\pipeline.py", line 2231, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\videomaker\scripts\pipeline.py", line 2227, in main
+    return args.func(args)
+           ~~~~~~~~~^^^^^^
+  File "C:\videomaker\scripts\pipeline.py", line 1880, in cmd_full
+    execute_phases(args, p, phases_to_run, force=force)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\videomaker\scripts\pipeline.py", line 1474, in execute_phases
+    PHASE_FN[phase](args, p)
+    ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\videomaker\scripts\pipeline.py", line 1247, in phase_render
+    run(cmd, "FASE render: renderizando video (HyperFrames)")
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\videomaker\scripts\pipeline.py", line 588, in run
+    raise RuntimeError(f"{msg} (exit {r.returncode})")
+RuntimeError: FASE render: renderizando video (HyperFrames) (exit 1)

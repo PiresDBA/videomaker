@@ -1,0 +1,24 @@
+Cota já usada hoje neste canal (estimativa): 1650/10000
+
+=== Canal PT | 1 projeto(s) | limite 5 upload(s) ===
+Credenciais: client_secret_pt.json + youtube_token_pt.json
+
+
+====================================================================
+o-campeonato-de-caes-mais-maluco-do-mundo [PT]
+  título: O Campeonato Mais Maluco
+  descrição: 2465 chars | 407 palavras
+    enviando pt: o-campeonato-de-caes-mais-maluco-do-mundo_pt.mp4
+    vídeo no YouTube: https://youtu.be/XqA_Z_I2lZU
+    legenda pt: OK
+
+====================================================================
+RELATÓRIO — PT
+====================================================================
+enviados agora .......... 1
+   OK  o-campeonato-de-caes-mais-maluco-do-mundo
+já publicados antes ..... 0
+sem MP4 _pt .......... 0
+sem script_pt.json ... 0
+erros ................... 0
+cota estimada usada ..... 3300/10000 unidades

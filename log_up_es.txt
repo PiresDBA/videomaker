@@ -1,0 +1,24 @@
+Cota já usada hoje neste canal (estimativa): 1650/10000
+
+=== Canal ES | 1 projeto(s) | limite 5 upload(s) ===
+Credenciais: client_secret_es.json + youtube_token_es.json
+
+
+====================================================================
+o-campeonato-de-caes-mais-maluco-do-mundo [ES]
+  título: ¡El campeonato más loco del mundo!
+  descrição: 2571 chars | 427 palavras
+    enviando es: o-campeonato-de-caes-mais-maluco-do-mundo_es.mp4
+    vídeo no YouTube: https://youtu.be/vPDLGKncOAc
+    legenda es: OK
+
+====================================================================
+RELATÓRIO — ES
+====================================================================
+enviados agora .......... 1
+   OK  o-campeonato-de-caes-mais-maluco-do-mundo
+já publicados antes ..... 0
+sem MP4 _es .......... 0
+sem script_es.json ... 0
+erros ................... 0
+cota estimada usada ..... 3300/10000 unidades

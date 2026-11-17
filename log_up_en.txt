@@ -1,0 +1,24 @@
+Cota já usada hoje neste canal (estimativa): 1650/10000
+
+=== Canal EN | 1 projeto(s) | limite 5 upload(s) ===
+Credenciais: client_secret_en.json + youtube_token_en.json
+
+
+====================================================================
+o-campeonato-de-caes-mais-maluco-do-mundo [EN]
+  título: The Wackiest Championship Ever
+  descrição: 2462 chars | 428 palavras
+    enviando en: o-campeonato-de-caes-mais-maluco-do-mundo_en.mp4
+    vídeo no YouTube: https://youtu.be/4pVgomlPvfw
+    legenda en: OK
+
+====================================================================
+RELATÓRIO — EN
+====================================================================
+enviados agora .......... 1
+   OK  o-campeonato-de-caes-mais-maluco-do-mundo
+já publicados antes ..... 0
+sem MP4 _en .......... 0
+sem script_en.json ... 0
+erros ................... 0
+cota estimada usada ..... 3300/10000 unidades

@@ -1,0 +1,253 @@
+Encontrados 14 projeto(s) com MP4 final.
+
+======================================================================
+PROJETO: a-frida-a-buldogue-brincou-na-chuva-o-di
+======================================================================
+  pulado (ja processado: PT, EN e ES ja existem)
+
+======================================================================
+PROJETO: a-frida-espirrinho-luninha-cuida
+======================================================================
+  pulado (ja processado: PT, EN e ES ja existem)
+
+======================================================================
+PROJETO: depois-de-assistir-o-filme-do-tarzan-a-l
+======================================================================
+  pulado (ja processado: PT, EN e ES ja existem)
+  pulado (sem MP4 final): frida-e-luna-astronautas-encontram-um-ca
+
+======================================================================
+PROJETO: frida-e-luna-em-marte
+======================================================================
+  [1/4] Backfill de idiomas EN e ES...
+== backfill frida-e-luna-em-marte
+== traducao en
+== Traduzindo roteiro para EN...
+== narracao en
+TOTAL 129.5s  [en]
+== legenda en
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-em-marte\assets\subtitles\en\frida-e-luna-em-marte.srt (14 blocos)
+== traducao es
+== Traduzindo roteiro para ES...
+== narracao es
+TOTAL 150.9s  [es]
+== legenda es
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-em-marte\assets\subtitles\es\frida-e-luna-em-marte.srt (14 blocos)
+== Backfill concluido.
+    backup PT salvo: frida-e-luna-em-marte_pt.mp4
+  [2/4] Re-render em inglês...
+== render en frida-e-luna-em-marte
+== ASSUNTO/TEMA: None
+== Projeto: C:\videomaker\projects\frida-e-luna-em-marte
+== Planejado: ['narration', 'subtitles', 'timeline', 'mix', 'compose', 'preprocess', 'render']
+== FASE narration: iniciando
+== FASE narration[en]: Edge-TTS 'en-US-AriaNeural' (local, sem API)
+TOTAL 129.5s  [en]
+== FASE subtitles: iniciando
+== FASE subtitles[en]: gerando frida-e-luna-em-marte.srt
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-em-marte\assets\subtitles\en\frida-e-luna-em-marte.srt (14 blocos)
+== FASE timeline: iniciando
+== FASE timeline: linha do tempo (local)
+== FASE mix: iniciando
+== FASE mix: narracao + trilha (local)
+== FASE compose: iniciando
+== FASE compose: composicao HyperFrames (local)
+== FASE preprocess: iniciando
+== FASE preprocess: imagens para o HyperFrames (local)
+== FASE render: iniciando
+== FASE render: renderizando video (HyperFrames)
+== FFmpeg no PATH: C:\videomaker\ffmpeg\bin
+== composicao linkeda: C:\videomaker\projects\frida-e-luna-em-marte\composition.html -> C:\videomaker\hyperframes-workspace\index.html
+== mix linkado: C:\videomaker\projects\frida-e-luna-em-marte\assets\audio\final_mix.m4a -> C:\videomaker\hyperframes-workspace\final_mix.m4a
+== HyperFrames: C:\videomaker\hyperframes-workspace
+== npm run render -- --workers 10
+== copiado para C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4
+STATUS  : OK
+== FASE render: verificando saida
+STATUS  : OK
+== PIPELINE CONCLUIDO em 378.9s
+== VIDEO FINAL: C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4
+== CONTROLE: gravado em C:\videomaker\projects\frida-e-luna-em-marte\project-control.json
+== ENTREGA: registrado em C:\videomaker\projects-deliveries.json
+== BANCOS: sincronizando imagens e mÃºsicas para os bancos globais...
+== Varredura: a-frida-a-buldogue-brincou-na-chuva-o-di
+== Varredura: a-frida-espirrinho-luninha-cuida
+== Varredura: depois-de-assistir-o-filme-do-tarzan-a-l
+== Varredura: frida-e-luna-astronautas-encontram-um-ca
+== Varredura: frida-e-luna-em-marte
+== Varredura: frida-e-luna-fazenda-minas-gerais
+== Varredura: frida-e-luna-nao-contar-mentira
+== Varredura: frida-e-luna-no-zoologico
+== Varredura: frida-e-luna-passeio-sao-paulo
+== Varredura: fridoca-e-luninha-conhecendo-rio-de-janeiro-e-o-carnaval-9d95
+== Varredura: fridoca-e-luninha-cuidados-banho-cachorros
+== Varredura: fridoca-e-luninha-evitar-cocegar
+== Varredura: fridoca-e-luninha-na-festa-do-dia-de-los-muertos-no-mexico
+== Varredura: luna-a-salsicha-fica-com-medo-de-trovao
+== Varredura: teste-gemini-1min
+== Banco de imagens: 0 nova(s) copiada(s)
+== Banco de musicas: 0 nova(s) copiada(s)
+== Ignorados (ja existiam): 459
+== Falhas: 0
+== Concluido.
+== YOUTUBE: NAO PUBLICADO (use --publish para publicar automaticamente).
+== Para publicar depois: python scripts/youtube_upload.py --video "C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4"
+    renomeado para frida-e-luna-em-marte_en.mp4
+  [3/4] Re-render em espanhol...
+== render es frida-e-luna-em-marte
+== ASSUNTO/TEMA: None
+== Projeto: C:\videomaker\projects\frida-e-luna-em-marte
+== Planejado: ['narration', 'subtitles', 'timeline', 'mix', 'compose', 'preprocess', 'render']
+== FASE narration: iniciando
+== FASE narration[es]: Edge-TTS 'es-ES-ElviraNeural' (local, sem API)
+TOTAL 150.9s  [es]
+== FASE subtitles: iniciando
+== FASE subtitles[es]: gerando frida-e-luna-em-marte.srt
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-em-marte\assets\subtitles\es\frida-e-luna-em-marte.srt (14 blocos)
+== FASE timeline: iniciando
+== FASE timeline: linha do tempo (local)
+== FASE mix: iniciando
+== FASE mix: narracao + trilha (local)
+== FASE compose: iniciando
+== FASE compose: composicao HyperFrames (local)
+== FASE preprocess: iniciando
+== FASE preprocess: imagens para o HyperFrames (local)
+== FASE render: iniciando
+== FASE render: renderizando video (HyperFrames)
+== FFmpeg no PATH: C:\videomaker\ffmpeg\bin
+== composicao linkeda: C:\videomaker\projects\frida-e-luna-em-marte\composition.html -> C:\videomaker\hyperframes-workspace\index.html
+== mix linkado: C:\videomaker\projects\frida-e-luna-em-marte\assets\audio\final_mix.m4a -> C:\videomaker\hyperframes-workspace\final_mix.m4a
+== HyperFrames: C:\videomaker\hyperframes-workspace
+== npm run render -- --workers 10
+== copiado para C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4
+STATUS  : OK
+== FASE render: verificando saida
+STATUS  : OK
+== PIPELINE CONCLUIDO em 445.1s
+== VIDEO FINAL: C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4
+== CONTROLE: gravado em C:\videomaker\projects\frida-e-luna-em-marte\project-control.json
+== ENTREGA: registrado em C:\videomaker\projects-deliveries.json
+== BANCOS: sincronizando imagens e mÃºsicas para os bancos globais...
+== Varredura: a-frida-a-buldogue-brincou-na-chuva-o-di
+== Varredura: a-frida-espirrinho-luninha-cuida
+== Varredura: depois-de-assistir-o-filme-do-tarzan-a-l
+== Varredura: frida-e-luna-astronautas-encontram-um-ca
+== Varredura: frida-e-luna-em-marte
+== Varredura: frida-e-luna-fazenda-minas-gerais
+== Varredura: frida-e-luna-nao-contar-mentira
+== Varredura: frida-e-luna-no-zoologico
+== Varredura: frida-e-luna-passeio-sao-paulo
+== Varredura: fridoca-e-luninha-conhecendo-rio-de-janeiro-e-o-carnaval-9d95
+== Varredura: fridoca-e-luninha-cuidados-banho-cachorros
+== Varredura: fridoca-e-luninha-evitar-cocegar
+== Varredura: fridoca-e-luninha-na-festa-do-dia-de-los-muertos-no-mexico
+== Varredura: luna-a-salsicha-fica-com-medo-de-trovao
+== Varredura: teste-gemini-1min
+== Banco de imagens: 0 nova(s) copiada(s)
+== Banco de musicas: 0 nova(s) copiada(s)
+== Ignorados (ja existiam): 459
+== Falhas: 0
+== Concluido.
+== YOUTUBE: NAO PUBLICADO (use --publish para publicar automaticamente).
+== Para publicar depois: python scripts/youtube_upload.py --video "C:\videomaker\projects\frida-e-luna-em-marte\output\frida-e-luna-em-marte.mp4"
+    renomeado para frida-e-luna-em-marte_es.mp4
+    PT restaurado: frida-e-luna-em-marte.mp4
+  [4/4] Upload para o YouTube...
+== upload pt frida-e-luna-em-marte.mp4
+== Thumbnail: C:\videomaker\projects\frida-e-luna-em-marte\assets\images\gemini\scenes\agradecimento_scene.jpg
+UPLOAD 4%
+UPLOAD 9%
+UPLOAD 13%
+UPLOAD 18%
+UPLOAD 23%
+UPLOAD 27%
+UPLOAD 32%
+UPLOAD 37%
+UPLOAD 41%
+UPLOAD 46%
+UPLOAD 51%
+UPLOAD 55%
+UPLOAD 60%
+UPLOAD 65%
+UPLOAD 69%
+UPLOAD 74%
+UPLOAD 79%
+UPLOAD 83%
+UPLOAD 88%
+UPLOAD 93%
+UPLOAD 97%
+UPLOAD 100%
+== upload en frida-e-luna-em-marte_en.mp4
+== Thumbnail: C:\videomaker\projects\frida-e-luna-em-marte\assets\images\gemini\scenes\agradecimento_scene.jpg
+UPLOAD 5%
+UPLOAD 10%
+UPLOAD 15%
+UPLOAD 20%
+UPLOAD 25%
+UPLOAD 30%
+UPLOAD 35%
+UPLOAD 40%
+UPLOAD 45%
+UPLOAD 50%
+UPLOAD 55%
+UPLOAD 60%
+UPLOAD 65%
+UPLOAD 70%
+UPLOAD 76%
+UPLOAD 81%
+UPLOAD 86%
+UPLOAD 91%
+UPLOAD 96%
+UPLOAD 100%
+== upload es frida-e-luna-em-marte_es.mp4
+== Thumbnail: C:\videomaker\projects\frida-e-luna-em-marte\assets\images\gemini\scenes\agradecimento_scene.jpg
+UPLOAD 4%
+UPLOAD 9%
+UPLOAD 13%
+UPLOAD 18%
+UPLOAD 23%
+UPLOAD 27%
+UPLOAD 32%
+UPLOAD 36%
+UPLOAD 41%
+UPLOAD 46%
+UPLOAD 50%
+UPLOAD 55%
+UPLOAD 60%
+UPLOAD 64%
+UPLOAD 69%
+UPLOAD 73%
+UPLOAD 78%
+UPLOAD 83%
+UPLOAD 87%
+UPLOAD 92%
+UPLOAD 97%
+UPLOAD 100%
+  concluído: frida-e-luna-em-marte
+
+======================================================================
+PROJETO: frida-e-luna-fazenda-minas-gerais
+======================================================================
+  pulado (ja processado: PT, EN e ES ja existem)
+
+======================================================================
+PROJETO: frida-e-luna-nao-contar-mentira
+======================================================================
+  [1/4] Backfill de idiomas EN e ES...
+== backfill frida-e-luna-nao-contar-mentira
+== traducao en
+== Traduzindo roteiro para EN...
+== narracao en
+TOTAL 159.7s  [en]
+== legenda en
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-nao-contar-mentira\assets\subtitles\en\frida-e-luna-nao-contar-mentira.srt (12 blocos)
+== traducao es
+== Traduzindo roteiro para ES...
+== narracao es
+TOTAL 172.2s  [es]
+== legenda es
+== Legenda gerada: C:\videomaker\projects\frida-e-luna-nao-contar-mentira\assets\subtitles\es\frida-e-luna-nao-contar-mentira.srt (12 blocos)
+== Backfill concluido.
+    backup PT salvo: frida-e-luna-nao-contar-mentira_pt.mp4
+  [2/4] Re-render em inglês...
+== render en frida-e-luna-nao-contar-mentira

@@ -1,0 +1,1972 @@
+======================================================================
+CAPITULO TRILINGUE: O campeonato de c├â┬úes mais maluco do mundo
+Slug: o-campeonato-de-caes-mais-maluco-do-mundo
+Projeto: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo
+======================================================================
+== FASE script: ja existe, reaproveitando
+== FASE scenes: ja existe, reaproveitando
+== TRAVA: prompt anti-repeticao
+[OK] prompts sem pedido de repeticao (1 projeto(s) conferido(s))
+== FASE images: todas as 21 imagens ja existem, reaproveitando (PT/EN/ES usam ESTAS mesmas imagens; nada sera gerado de novo)
+== TRAVA: imagens diferentes entre si
+[OK] nenhuma imagem repetida (21 imagem(ns) conferida(s))
+== TRAVA: imagens compartilhadas entre idiomas (manifesto)
+[OK] manifesto gravado: 21 imagens compartilhadas por PT/EN/ES (images_manifest.json)
+== FASE music: trilha ja existe, reaproveitando (bgm_gemini.wav)
+
+============================================================
+IDIOMA EN
+============================================================
+== TRADUCAO[en]: traduzindo roteiro (Gemini WEB, so o texto; imagens/cenas nao mudam)
+== Traduzindo roteiro para EN...
+   salvo: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\artifacts\script_en.json (11 secoes)
+== FASE overlays[en]: textos de tela em en
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s_intro.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s0.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s1.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s2.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s3.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s4.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s5.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s6.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s7.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s_final.html
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\scenes\en\s_outro.html
+== NARRACAO[en]: gerando narra├º├úo (Edge-TTS local)
+== FASE narration[en]: Edge-TTS local
+s_intro    9.65s
+s2       17.11s
+s0        8.93s
+s1       18.24s
+s3       16.66s
+s5       16.15s
+s4       17.33s
+s7       13.10s
+s6       16.80s
+s_final    5.45s
+s_outro   15.38s
+TOTAL 154.8s  [en]
+== FASE subtitles[en]: o-campeonato-de-caes-mais-maluco-do-mundo.srt
+== Legenda gerada: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\assets\subtitles\en\o-campeonato-de-caes-mais-maluco-do-mundo.srt (11 blocos)
+== TRAVA: imagens compartilhadas antes do render en
+[OK] imagens compartilhadas: 21 iguais para PT/EN/ES
+== IMAGENS[en]: reaproveitando as 21 imagens de PT (nenhuma imagem nova e gerada por idioma)
+== FASE timeline[en]
+narration_full: 177.993s
+  s_intro    0.000 ->   10.463
+  s0     11.463 ->   21.143
+  s1     22.143 ->   41.945
+  s2     42.945 ->   61.521
+  s3     62.521 ->   80.601
+  s4     81.601 ->  100.411
+  s5    101.411 ->  118.943
+  s6    119.943 ->  138.179
+  s7    139.179 ->  153.398
+  s_final  154.398 ->  160.296
+  s_outro  161.296 ->  177.993
+== FASE mix[en]
+mix: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\assets\audio\final_mix.m4a -> C:\videomaker\hyperframes-workspace\final_mix.m4a
+Input Integrated:    -14.0 LUFS
+Input True Peak:      -1.2 dBTP
+== FASE compose[en]
+wrote C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\composition.html 17939 bytes; total 186.993 s
+== FASE preprocess[en]
+introdu_o_do_v_deo_scene.jpg -> introdu_o_do_v_deo_scene.jpg
+introdu_o_do_v_deo_scene_b.jpg -> introdu_o_do_v_deo_scene_b.jpg
+apresenta_o_do_canal_scene.jpg -> apresenta_o_do_canal_scene.jpg
+gancho_da_historia_scene.jpg -> gancho_da_historia_scene.jpg
+gancho_da_historia_scene_b.jpg -> gancho_da_historia_scene_b.jpg
+desenvolvimento_1_scene.jpg -> desenvolvimento_1_scene.jpg
+desenvolvimento_1_scene_b.jpg -> desenvolvimento_1_scene_b.jpg
+desenvolvimento_2_scene.jpg -> desenvolvimento_2_scene.jpg
+desenvolvimento_2_scene_b.jpg -> desenvolvimento_2_scene_b.jpg
+desenvolvimento_3_scene.jpg -> desenvolvimento_3_scene.jpg
+desenvolvimento_3_scene_b.jpg -> desenvolvimento_3_scene_b.jpg
+desenvolvimento_4_scene.jpg -> desenvolvimento_4_scene.jpg
+desenvolvimento_4_scene_b.jpg -> desenvolvimento_4_scene_b.jpg
+desenvolvimento_5_scene.jpg -> desenvolvimento_5_scene.jpg
+desenvolvimento_5_scene_b.jpg -> desenvolvimento_5_scene_b.jpg
+desenvolvimento_6_scene.jpg -> desenvolvimento_6_scene.jpg
+desenvolvimento_6_scene_b.jpg -> desenvolvimento_6_scene_b.jpg
+o_v_deo_acabou_scene.jpg -> o_v_deo_acabou_scene.jpg
+o_v_deo_acabou_scene_b.jpg -> o_v_deo_acabou_scene_b.jpg
+agradecimento_scene.jpg  -> agradecimento_scene.jpg
+agradecimento_scene_b.jpg -> agradecimento_scene_b.jpg
+== FASE render[en]
+== FFmpeg no PATH: C:\videomaker\ffmpeg\bin
+== composicao linkeda: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\composition.html -> C:\videomaker\hyperframes-workspace\index.html
+== mix linkado: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\assets\audio\final_mix.m4a -> C:\videomaker\hyperframes-workspace\final_mix.m4a
+== HyperFrames: C:\videomaker\hyperframes-workspace
+== npm run render -- --workers 10
+python.exe : npm notice run render
+No C:\videomaker\run_en.ps1:2 caractere:1
++ & "C:\OpenMontage\.venv\Scripts\python.exe" scripts\gerar_capitulo_tr ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm notice run render:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm notice run npx --yes hyperframes@0.8.225 render --workers 10
+npm notice run npx
+npm notice run hyperframes render --workers 10
+
+Ôùå  Rendering hyperframes-workspace ÔåÆ C:\videomaker\hyperframes-workspace\renders\hyperframes-workspace_2026-11-15_19-44-30.mp4
+   30fps ┬À standard ┬À 10 workers
+   GPU: browser GPU (auto-detect)
+
+
+  Lint: 0 error(s), 16 warning(s) ÔÇö run `hyperframes lint` for full output.
+  Continuing render despite lint issues. Use --strict to block errors.
+
+Checking browser...
+Browser: cache
+[INFO] [Render] Pipeline started {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","platform":"win32","arch":"x64",
+"nodeVersion":"v26.13.0","fps":{"num":30,"den":1},"format":"mp4","quality":"standard","browserGpuMode":"auto","forceScr
+eenshot":false,"protocolTimeout":300000,"browserTimeout":120000,"pageNavigationTimeout":60000,"playerReadyTimeout":4500
+0}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"pipeline","status":"checkpoint","e
+lapsedMs":5,"message":"started","format":"mp4","quality":"standard","browserGpuMode":"auto","forceScreenshot":false,"pr
+otocolTimeoutMs":300000,"pageNavigationTimeoutMs":60000,"playerReadyTimeoutMs":45000,"requestedWorkers":10}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"compile","status":"start","elapsed
+Ms":7,"needsAlpha":false}
+  ÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  5%  Compiling composition
+@hf-progress {"code":"compile","pct":5}
+[INFO] [Compiler] Fetched 11 font face(s) for "Roboto" from Google Fonts (cached to 
+C:\Users\Pires\.cache\hyperframes\fonts\roboto)
+[INFO] [Compiler] Fetched 11 font face(s) for "Inter" from Google Fonts (cached to 
+C:\Users\Pires\.cache\hyperframes\fonts\inter)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to 
+C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Fetched 7 font face(s) for "EB Garamond" from Google Fonts (cached to 
+C:\Users\Pires\.cache\hyperframes\fonts\eb-garamond)
+[INFO] [Compiler] Injected deterministic @font-face rules for 4 requested font families
+[INFO] [Compiler] Inlined CDN script: https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js
+[INFO] Compiled composition metadata {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","entryFile":"index.html","st
+aticDuration":186.993,"width":1920,"height":1080,"videoCount":0,"audioCount":1,"renderModeHints":{"recommendScreenshot"
+:false,"reasons":[]}}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"compile","status":"end","elapsedMs
+":745,"durationMs":738,"needsAlpha":false}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"compile","status":"checkpoint","el
+apsedMs":746,"message":"composition metadata resolved","width":1920,"height":1080,"videoCount":0,"audioCount":1,"imageC
+ount":22,"deviceScaleFactor":1,"forceScreenshot":false,"compositionHash":"5ebb2b1f2cc10b4b"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"browser_probe","status":"start","e
+lapsedMs":747,"forceScreenshot":false,"stagePhase":"calibrating"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"browser_probe","status":"end","ela
+psedMs":1175,"durationMs":428,"forceScreenshot":false,"stagePhase":"calibrating"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"browser_probe","status":"checkpoin
+t","elapsedMs":1176,"message":"duration 
+resolved","durationSeconds":186.993,"totalFrames":5610,"compositionHash":"5ebb2b1f2cc10b4b","beginFrameStalled":false}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"video_extract","status":"start","e
+lapsedMs":1176,"videoCount":0}
+  ÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  10%  Extracting video frames
+@hf-progress {"code":"extract_video","pct":10}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"video_extract","status":"end","ela
+psedMs":1183,"durationMs":6,"videoCount":0}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"video_extract","status":"checkpoin
+t","elapsedMs":1185,"message":"frames resolved","videoCount":0,"extractedVideoCount":0,"totalFramesExtracted":0,"maxFra
+mesPerVideo":0,"avgFramesPerExtractedVideo":null,"vfrPreflightCount":null,"vfrPreflightMs":null,"cacheHits":null,"cache
+Misses":null,"transientRetries":null,"minVideoFrameCoverageRatio":null,"authoredTimedClipCount":15}
+[INFO] [Render] No HDR sources detected, rendering SDR {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"hdr_detection","status":"checkpoin
+t","elapsedMs":1186,"message":"resolved","requestedHdrMode":"auto","effectiveHdr":"sdr","nativeHdrVideoCount":0,"native
+HdrImageCount":0}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"audio_process","status":"start","e
+lapsedMs":1187,"audioCount":1}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"file_server","status":"start","ela
+psedMs":1189,"reused":false}
+  ÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  20%  Processing audio tracks
+@hf-progress {"code":"process_audio","pct":20}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Starting frame capture
+@hf-progress {"code":"start_browsers","pct":25}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"file_server","status":"end","elaps
+edMs":1196,"durationMs":7}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Checking browser GPU
+@hf-progress {"code":"start_browsers","pct":25}
+[hyperframes] browserGpuMode probe ÔåÆ hardware (WebGL renderer vendor="Google Inc. (AMD)" renderer="ANGLE (AMD, AMD 
+Radeon (TM) Graphics (0x000015E7) Direct3D11 vs_5_0 ps_5_0, D3D11)")
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_calibration","status":"che
+ckpoint","elapsedMs":1967,"message":"skipped","requestedWorkers":10,"totalFrames":5610,"htmlInCanvasDetected":false,"lo
+wMemoryMode":false,"deInversionEligible":false,"deParallelRouterEligible":false}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"worker_resolution","status":"check
+point","elapsedMs":1968,"message":"resolved","workerCount":10}
+[INFO] [Render] Fast capture: default-on drawElement disabled for this render: parallel capture has no runtime 
+self-verification. Set PRODUCER_EXPERIMENTAL_FAST_CAPTURE=true to override. 
+{"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde"}
+[INFO] streaming-encode gate {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","enabled":false,"reason":"multi_work
+er","configFlag":true,"durationCapEnabled":false,"outputFormat":"mp4","workerCount":10,"durationSeconds":186.993,"maxDu
+rationSeconds":240}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_strategy","status":"checkp
+oint","elapsedMs":1969,"message":"resolved","workerCount":10,"forceScreenshot":false,"captureBeyondViewport":null,"useS
+treamingEncode":false,"useLayeredComposite":false,"usePageSideCompositing":false,"hasHdrContent":false,"hasShaderTransi
+tions":false,"isPngSequence":false}
+[INFO] [audio] phases {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","prepare":876,"groups":0,"mix":219,"master"
+:0,"encode":2039,"guard":834}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"audio_process","status":"end","ela
+psedMs":5162,"durationMs":3975,"audioCount":1}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"start","el
+apsedMs":5241,"stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,"totalFrames":5610,"
+framesCompleted":0,"captureMode":"screenshot","captureOperation":"captureScreenshot"}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Starting browsers (0/10 ready)
+@hf-progress {"code":"start_browsers","done":0,"total":10,"pct":25}
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto start (0ms)
+[BrowserManager] Browser launched (HeadlessChrome/152.0.7977.30, screenshot, gl=--use-gl=angle --use-angle=d3d11, 
+headlessShell=true, platform=win32)
+[initSession:screenshot] page.goto start (0ms)
+[initSession:screenshot] page.goto complete (613ms)
+[initSession:screenshot] page.goto complete (1926ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (1942ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] GSAP proxy flush complete (2125ms)
+[initSession:screenshot] page.goto complete (2126ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2123ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2130ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2141ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2145ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2143ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] page.goto complete (2076ms)
+[HyperFrames] render runtime fps 
+{"canonicalFps":30,"source":"render-options","rawFpsSource":"render-options","rawFps":30}
+[initSession:screenshot] GSAP proxy flush complete (2208ms)
+[initSession:screenshot] GSAP proxy flush complete (2207ms)
+[initSession:screenshot] GSAP proxy flush complete (2245ms)
+[initSession:screenshot] GSAP proxy flush complete (2244ms)
+[initSession:screenshot] pollHfReady complete (2252ms)
+[initSession:screenshot] GSAP proxy flush complete (2252ms)
+[initSession:screenshot] GSAP proxy flush complete (2246ms)
+[initSession:screenshot] GSAP proxy flush complete (2255ms)
+[initSession:screenshot] GSAP proxy flush complete (2255ms)
+[initSession:screenshot] pollHfReady complete (2287ms)
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(1) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[Browser:WARN] GSAP target #outro-final .body:nth-of-type(2) not found. https://gsap.com
+[Browser:WARN] GSAP target  not found. https://gsap.com
+[initSession:screenshot] GSAP proxy flush complete (2161ms)
+[initSession:screenshot] pollHfReady complete (2291ms)
+[initSession:screenshot] pollHfReady complete (2307ms)
+[initSession:screenshot] pollHfReady complete (2315ms)
+[initSession:screenshot] pollHfReady complete (2309ms)
+[initSession:screenshot] pollHfReady complete (2316ms)
+[initSession:screenshot] pollHfReady complete (2310ms)
+[initSession:screenshot] pollHfReady complete (2315ms)
+[initSession:screenshot] pollHfReady complete (2270ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2453ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2453ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2514ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2514ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2514ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2514ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2539ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2539ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2549ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2549ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2546ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2546ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2546ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2546ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2555ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2555ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2460ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2460ms)
+[initSession:screenshot] pollSubCompositionTimelines complete (ready) (2690ms)
+[initSession:screenshot] applyVideoMetadataHints complete (2690ms)
+[initSession:screenshot] media + fonts + tailwind ready (3589ms)
+[initSession:screenshot] media + fonts + tailwind ready (3655ms)
+[initSession:screenshot] media + fonts + tailwind ready (3683ms)
+[initSession:screenshot] media + fonts + tailwind ready (3691ms)
+[initSession:screenshot] media + fonts + tailwind ready (3697ms)
+[initSession:screenshot] media + fonts + tailwind ready (3720ms)
+[initSession:screenshot] media + fonts + tailwind ready (3727ms)
+[initSession:screenshot] media + fonts + tailwind ready (3726ms)
+[initSession:screenshot] media + fonts + tailwind ready (3726ms)
+[initSession:screenshot] media + fonts + tailwind ready (3598ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3103) (10449ms)
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Starting browsers (1/10 ready)
+@hf-progress {"code":"start_browsers","done":1,"total":10,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 1/5610 (10 workers)
+@hf-progress {"code":"capture","done":1,"total":5610,"pct":25}
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3348) (10701ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3361) (10729ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3413) (10882ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3436) (10900ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3391) (10908ms)
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 2/5610 (10 workers)
+@hf-progress {"code":"capture","done":2,"total":5610,"pct":25}
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3544) (10974ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3504) (10981ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3663) (11082ms)
+[initSession:screenshot] static-frame dedup: 48/48 predicted frame(s) reusable (outcome=verified, runs=1/1, 
+screenshots=25, seeks=26, elapsedMs=3711) (11208ms)
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 6/5610 (10 workers)
+@hf-progress {"code":"capture","done":6,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 14/5610 (10 workers)
+@hf-progress {"code":"capture","done":14,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 25/5610 (10 workers)
+@hf-progress {"code":"capture","done":25,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 33/5610 (10 workers)
+@hf-progress {"code":"capture","done":33,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 44/5610 (10 workers)
+@hf-progress {"code":"capture","done":44,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 46/5610 (10 workers)
+@hf-progress {"code":"capture","done":46,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  25%  Capturing frame 56/5610 (10 workers)
+@hf-progress {"code":"capture","done":56,"total":5610,"pct":25}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 65/5610 (10 workers)
+@hf-progress {"code":"capture","done":65,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 71/5610 (10 workers)
+@hf-progress {"code":"capture","done":71,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 75/5610 (10 workers)
+@hf-progress {"code":"capture","done":75,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 83/5610 (10 workers)
+@hf-progress {"code":"capture","done":83,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 84/5610 (10 workers)
+@hf-progress {"code":"capture","done":84,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 94/5610 (10 workers)
+@hf-progress {"code":"capture","done":94,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 101/5610 (10 workers)
+@hf-progress {"code":"capture","done":101,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 102/5610 (10 workers)
+@hf-progress {"code":"capture","done":102,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 112/5610 (10 workers)
+@hf-progress {"code":"capture","done":112,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 122/5610 (10 workers)
+@hf-progress {"code":"capture","done":122,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 132/5610 (10 workers)
+@hf-progress {"code":"capture","done":132,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 142/5610 (10 workers)
+@hf-progress {"code":"capture","done":142,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 152/5610 (10 workers)
+@hf-progress {"code":"capture","done":152,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 160/5610 (10 workers)
+@hf-progress {"code":"capture","done":160,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 164/5610 (10 workers)
+@hf-progress {"code":"capture","done":164,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 175/5610 (10 workers)
+@hf-progress {"code":"capture","done":175,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  26%  Capturing frame 185/5610 (10 workers)
+@hf-progress {"code":"capture","done":185,"total":5610,"pct":26}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 195/5610 (10 workers)
+@hf-progress {"code":"capture","done":195,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 205/5610 (10 workers)
+@hf-progress {"code":"capture","done":205,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 215/5610 (10 workers)
+@hf-progress {"code":"capture","done":215,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 225/5610 (10 workers)
+@hf-progress {"code":"capture","done":225,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 230/5610 (10 workers)
+@hf-progress {"code":"capture","done":230,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 237/5610 (10 workers)
+@hf-progress {"code":"capture","done":237,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 247/5610 (10 workers)
+@hf-progress {"code":"capture","done":247,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 257/5610 (10 workers)
+@hf-progress {"code":"capture","done":257,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 266/5610 (10 workers)
+@hf-progress {"code":"capture","done":266,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 267/5610 (10 workers)
+@hf-progress {"code":"capture","done":267,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 275/5610 (10 workers)
+@hf-progress {"code":"capture","done":275,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 277/5610 (10 workers)
+@hf-progress {"code":"capture","done":277,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 287/5610 (10 workers)
+@hf-progress {"code":"capture","done":287,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 297/5610 (10 workers)
+@hf-progress {"code":"capture","done":297,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 300/5610 (10 workers)
+@hf-progress {"code":"capture","done":300,"total":5610,"pct":27}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  27%  Capturing frame 307/5610 (10 workers)
+@hf-progress {"code":"capture","done":307,"total":5610,"pct":27}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"checkpoint
+","elapsedMs":35248,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"force
+Screenshot":false,"totalFrames":5610,"framesCompleted":316,"captureMode":"screenshot","captureOperation":"captureScreen
+shot","heartbeatIndex":1,"stageElapsedMs":30006}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 317/5610 (10 workers)
+@hf-progress {"code":"capture","done":317,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 322/5610 (10 workers)
+@hf-progress {"code":"capture","done":322,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 327/5610 (10 workers)
+@hf-progress {"code":"capture","done":327,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 337/5610 (10 workers)
+@hf-progress {"code":"capture","done":337,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 347/5610 (10 workers)
+@hf-progress {"code":"capture","done":347,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 352/5610 (10 workers)
+@hf-progress {"code":"capture","done":352,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 358/5610 (10 workers)
+@hf-progress {"code":"capture","done":358,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 368/5610 (10 workers)
+@hf-progress {"code":"capture","done":368,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 378/5610 (10 workers)
+@hf-progress {"code":"capture","done":378,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 388/5610 (10 workers)
+@hf-progress {"code":"capture","done":388,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 398/5610 (10 workers)
+@hf-progress {"code":"capture","done":398,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 404/5610 (10 workers)
+@hf-progress {"code":"capture","done":404,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 408/5610 (10 workers)
+@hf-progress {"code":"capture","done":408,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 412/5610 (10 workers)
+@hf-progress {"code":"capture","done":412,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 418/5610 (10 workers)
+@hf-progress {"code":"capture","done":418,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 429/5610 (10 workers)
+@hf-progress {"code":"capture","done":429,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  28%  Capturing frame 430/5610 (10 workers)
+@hf-progress {"code":"capture","done":430,"total":5610,"pct":28}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 440/5610 (10 workers)
+@hf-progress {"code":"capture","done":440,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 442/5610 (10 workers)
+@hf-progress {"code":"capture","done":442,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 452/5610 (10 workers)
+@hf-progress {"code":"capture","done":452,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 462/5610 (10 workers)
+@hf-progress {"code":"capture","done":462,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 472/5610 (10 workers)
+@hf-progress {"code":"capture","done":472,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 481/5610 (10 workers)
+@hf-progress {"code":"capture","done":481,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 482/5610 (10 workers)
+@hf-progress {"code":"capture","done":482,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 492/5610 (10 workers)
+@hf-progress {"code":"capture","done":492,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 502/5610 (10 workers)
+@hf-progress {"code":"capture","done":502,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 512/5610 (10 workers)
+@hf-progress {"code":"capture","done":512,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 517/5610 (10 workers)
+@hf-progress {"code":"capture","done":517,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 524/5610 (10 workers)
+@hf-progress {"code":"capture","done":524,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 534/5610 (10 workers)
+@hf-progress {"code":"capture","done":534,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 544/5610 (10 workers)
+@hf-progress {"code":"capture","done":544,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  29%  Capturing frame 554/5610 (10 workers)
+@hf-progress {"code":"capture","done":554,"total":5610,"pct":29}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 564/5610 (10 workers)
+@hf-progress {"code":"capture","done":564,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 574/5610 (10 workers)
+@hf-progress {"code":"capture","done":574,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 584/5610 (10 workers)
+@hf-progress {"code":"capture","done":584,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 588/5610 (10 workers)
+@hf-progress {"code":"capture","done":588,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 596/5610 (10 workers)
+@hf-progress {"code":"capture","done":596,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 605/5610 (10 workers)
+@hf-progress {"code":"capture","done":605,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 606/5610 (10 workers)
+@hf-progress {"code":"capture","done":606,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 616/5610 (10 workers)
+@hf-progress {"code":"capture","done":616,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 626/5610 (10 workers)
+@hf-progress {"code":"capture","done":626,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 630/5610 (10 workers)
+@hf-progress {"code":"capture","done":630,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 638/5610 (10 workers)
+@hf-progress {"code":"capture","done":638,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 648/5610 (10 workers)
+@hf-progress {"code":"capture","done":648,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 658/5610 (10 workers)
+@hf-progress {"code":"capture","done":658,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 666/5610 (10 workers)
+@hf-progress {"code":"capture","done":666,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 668/5610 (10 workers)
+@hf-progress {"code":"capture","done":668,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  30%  Capturing frame 678/5610 (10 workers)
+@hf-progress {"code":"capture","done":678,"total":5610,"pct":30}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 686/5610 (10 workers)
+@hf-progress {"code":"capture","done":686,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 689/5610 (10 workers)
+@hf-progress {"code":"capture","done":689,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 699/5610 (10 workers)
+@hf-progress {"code":"capture","done":699,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 709/5610 (10 workers)
+@hf-progress {"code":"capture","done":709,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 719/5610 (10 workers)
+@hf-progress {"code":"capture","done":719,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 729/5610 (10 workers)
+@hf-progress {"code":"capture","done":729,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 739/5610 (10 workers)
+@hf-progress {"code":"capture","done":739,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 749/5610 (10 workers)
+@hf-progress {"code":"capture","done":749,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 759/5610 (10 workers)
+@hf-progress {"code":"capture","done":759,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 764/5610 (10 workers)
+@hf-progress {"code":"capture","done":764,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 770/5610 (10 workers)
+@hf-progress {"code":"capture","done":770,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 780/5610 (10 workers)
+@hf-progress {"code":"capture","done":780,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 790/5610 (10 workers)
+@hf-progress {"code":"capture","done":790,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 800/5610 (10 workers)
+@hf-progress {"code":"capture","done":800,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 802/5610 (10 workers)
+@hf-progress {"code":"capture","done":802,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  31%  Capturing frame 807/5610 (10 workers)
+@hf-progress {"code":"capture","done":807,"total":5610,"pct":31}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 815/5610 (10 workers)
+@hf-progress {"code":"capture","done":815,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 825/5610 (10 workers)
+@hf-progress {"code":"capture","done":825,"total":5610,"pct":32}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"checkpoint
+","elapsedMs":65296,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"force
+Screenshot":false,"totalFrames":5610,"framesCompleted":834,"captureMode":"screenshot","captureOperation":"captureScreen
+shot","heartbeatIndex":2,"stageElapsedMs":60054}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 835/5610 (10 workers)
+@hf-progress {"code":"capture","done":835,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 842/5610 (10 workers)
+@hf-progress {"code":"capture","done":842,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 845/5610 (10 workers)
+@hf-progress {"code":"capture","done":845,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 850/5610 (10 workers)
+@hf-progress {"code":"capture","done":850,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 856/5610 (10 workers)
+@hf-progress {"code":"capture","done":856,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 866/5610 (10 workers)
+@hf-progress {"code":"capture","done":866,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 875/5610 (10 workers)
+@hf-progress {"code":"capture","done":875,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 877/5610 (10 workers)
+@hf-progress {"code":"capture","done":877,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 886/5610 (10 workers)
+@hf-progress {"code":"capture","done":886,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 887/5610 (10 workers)
+@hf-progress {"code":"capture","done":887,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 897/5610 (10 workers)
+@hf-progress {"code":"capture","done":897,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 907/5610 (10 workers)
+@hf-progress {"code":"capture","done":907,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 917/5610 (10 workers)
+@hf-progress {"code":"capture","done":917,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  32%  Capturing frame 927/5610 (10 workers)
+@hf-progress {"code":"capture","done":927,"total":5610,"pct":32}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 937/5610 (10 workers)
+@hf-progress {"code":"capture","done":937,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 943/5610 (10 workers)
+@hf-progress {"code":"capture","done":943,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 949/5610 (10 workers)
+@hf-progress {"code":"capture","done":949,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 951/5610 (10 workers)
+@hf-progress {"code":"capture","done":951,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 960/5610 (10 workers)
+@hf-progress {"code":"capture","done":960,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 970/5610 (10 workers)
+@hf-progress {"code":"capture","done":970,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 980/5610 (10 workers)
+@hf-progress {"code":"capture","done":980,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 990/5610 (10 workers)
+@hf-progress {"code":"capture","done":990,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 998/5610 (10 workers)
+@hf-progress {"code":"capture","done":998,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1001/5610 (10 workers)
+@hf-progress {"code":"capture","done":1001,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1011/5610 (10 workers)
+@hf-progress {"code":"capture","done":1011,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1021/5610 (10 workers)
+@hf-progress {"code":"capture","done":1021,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1032/5610 (10 workers)
+@hf-progress {"code":"capture","done":1032,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1042/5610 (10 workers)
+@hf-progress {"code":"capture","done":1042,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  33%  Capturing frame 1053/5610 (10 workers)
+@hf-progress {"code":"capture","done":1053,"total":5610,"pct":33}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1063/5610 (10 workers)
+@hf-progress {"code":"capture","done":1063,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1066/5610 (10 workers)
+@hf-progress {"code":"capture","done":1066,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1074/5610 (10 workers)
+@hf-progress {"code":"capture","done":1074,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1084/5610 (10 workers)
+@hf-progress {"code":"capture","done":1084,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1094/5610 (10 workers)
+@hf-progress {"code":"capture","done":1094,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1104/5610 (10 workers)
+@hf-progress {"code":"capture","done":1104,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1114/5610 (10 workers)
+@hf-progress {"code":"capture","done":1114,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1121/5610 (10 workers)
+@hf-progress {"code":"capture","done":1121,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1127/5610 (10 workers)
+@hf-progress {"code":"capture","done":1127,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1136/5610 (10 workers)
+@hf-progress {"code":"capture","done":1136,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1138/5610 (10 workers)
+@hf-progress {"code":"capture","done":1138,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1145/5610 (10 workers)
+@hf-progress {"code":"capture","done":1145,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1148/5610 (10 workers)
+@hf-progress {"code":"capture","done":1148,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1158/5610 (10 workers)
+@hf-progress {"code":"capture","done":1158,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1168/5610 (10 workers)
+@hf-progress {"code":"capture","done":1168,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1178/5610 (10 workers)
+@hf-progress {"code":"capture","done":1178,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  34%  Capturing frame 1179/5610 (10 workers)
+@hf-progress {"code":"capture","done":1179,"total":5610,"pct":34}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1188/5610 (10 workers)
+@hf-progress {"code":"capture","done":1188,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1190/5610 (10 workers)
+@hf-progress {"code":"capture","done":1190,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1199/5610 (10 workers)
+@hf-progress {"code":"capture","done":1199,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1209/5610 (10 workers)
+@hf-progress {"code":"capture","done":1209,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1216/5610 (10 workers)
+@hf-progress {"code":"capture","done":1216,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1220/5610 (10 workers)
+@hf-progress {"code":"capture","done":1220,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1230/5610 (10 workers)
+@hf-progress {"code":"capture","done":1230,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1232/5610 (10 workers)
+@hf-progress {"code":"capture","done":1232,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1241/5610 (10 workers)
+@hf-progress {"code":"capture","done":1241,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1251/5610 (10 workers)
+@hf-progress {"code":"capture","done":1251,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1261/5610 (10 workers)
+@hf-progress {"code":"capture","done":1261,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1271/5610 (10 workers)
+@hf-progress {"code":"capture","done":1271,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1281/5610 (10 workers)
+@hf-progress {"code":"capture","done":1281,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1286/5610 (10 workers)
+@hf-progress {"code":"capture","done":1286,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1292/5610 (10 workers)
+@hf-progress {"code":"capture","done":1292,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1300/5610 (10 workers)
+@hf-progress {"code":"capture","done":1300,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  35%  Capturing frame 1303/5610 (10 workers)
+@hf-progress {"code":"capture","done":1303,"total":5610,"pct":35}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1312/5610 (10 workers)
+@hf-progress {"code":"capture","done":1312,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1314/5610 (10 workers)
+@hf-progress {"code":"capture","done":1314,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1324/5610 (10 workers)
+@hf-progress {"code":"capture","done":1324,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1329/5610 (10 workers)
+@hf-progress {"code":"capture","done":1329,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1336/5610 (10 workers)
+@hf-progress {"code":"capture","done":1336,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1346/5610 (10 workers)
+@hf-progress {"code":"capture","done":1346,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1356/5610 (10 workers)
+@hf-progress {"code":"capture","done":1356,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1366/5610 (10 workers)
+@hf-progress {"code":"capture","done":1366,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1376/5610 (10 workers)
+@hf-progress {"code":"capture","done":1376,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1380/5610 (10 workers)
+@hf-progress {"code":"capture","done":1380,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1387/5610 (10 workers)
+@hf-progress {"code":"capture","done":1387,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1397/5610 (10 workers)
+@hf-progress {"code":"capture","done":1397,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1407/5610 (10 workers)
+@hf-progress {"code":"capture","done":1407,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1417/5610 (10 workers)
+@hf-progress {"code":"capture","done":1417,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1427/5610 (10 workers)
+@hf-progress {"code":"capture","done":1427,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  36%  Capturing frame 1431/5610 (10 workers)
+@hf-progress {"code":"capture","done":1431,"total":5610,"pct":36}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1438/5610 (10 workers)
+@hf-progress {"code":"capture","done":1438,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1448/5610 (10 workers)
+@hf-progress {"code":"capture","done":1448,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1458/5610 (10 workers)
+@hf-progress {"code":"capture","done":1458,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1459/5610 (10 workers)
+@hf-progress {"code":"capture","done":1459,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1468/5610 (10 workers)
+@hf-progress {"code":"capture","done":1468,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1469/5610 (10 workers)
+@hf-progress {"code":"capture","done":1469,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1479/5610 (10 workers)
+@hf-progress {"code":"capture","done":1479,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1489/5610 (10 workers)
+@hf-progress {"code":"capture","done":1489,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1499/5610 (10 workers)
+@hf-progress {"code":"capture","done":1499,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1509/5610 (10 workers)
+@hf-progress {"code":"capture","done":1509,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1519/5610 (10 workers)
+@hf-progress {"code":"capture","done":1519,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1529/5610 (10 workers)
+@hf-progress {"code":"capture","done":1529,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1539/5610 (10 workers)
+@hf-progress {"code":"capture","done":1539,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1545/5610 (10 workers)
+@hf-progress {"code":"capture","done":1545,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  37%  Capturing frame 1550/5610 (10 workers)
+@hf-progress {"code":"capture","done":1550,"total":5610,"pct":37}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1560/5610 (10 workers)
+@hf-progress {"code":"capture","done":1560,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1570/5610 (10 workers)
+@hf-progress {"code":"capture","done":1570,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1580/5610 (10 workers)
+@hf-progress {"code":"capture","done":1580,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1591/5610 (10 workers)
+@hf-progress {"code":"capture","done":1591,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1601/5610 (10 workers)
+@hf-progress {"code":"capture","done":1601,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1611/5610 (10 workers)
+@hf-progress {"code":"capture","done":1611,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1621/5610 (10 workers)
+@hf-progress {"code":"capture","done":1621,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1631/5610 (10 workers)
+@hf-progress {"code":"capture","done":1631,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1641/5610 (10 workers)
+@hf-progress {"code":"capture","done":1641,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1651/5610 (10 workers)
+@hf-progress {"code":"capture","done":1651,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1661/5610 (10 workers)
+@hf-progress {"code":"capture","done":1661,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1671/5610 (10 workers)
+@hf-progress {"code":"capture","done":1671,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  38%  Capturing frame 1681/5610 (10 workers)
+@hf-progress {"code":"capture","done":1681,"total":5610,"pct":38}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1691/5610 (10 workers)
+@hf-progress {"code":"capture","done":1691,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1701/5610 (10 workers)
+@hf-progress {"code":"capture","done":1701,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1708/5610 (10 workers)
+@hf-progress {"code":"capture","done":1708,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1712/5610 (10 workers)
+@hf-progress {"code":"capture","done":1712,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1722/5610 (10 workers)
+@hf-progress {"code":"capture","done":1722,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1732/5610 (10 workers)
+@hf-progress {"code":"capture","done":1732,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1734/5610 (10 workers)
+@hf-progress {"code":"capture","done":1734,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1743/5610 (10 workers)
+@hf-progress {"code":"capture","done":1743,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1750/5610 (10 workers)
+@hf-progress {"code":"capture","done":1750,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1754/5610 (10 workers)
+@hf-progress {"code":"capture","done":1754,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1764/5610 (10 workers)
+@hf-progress {"code":"capture","done":1764,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1774/5610 (10 workers)
+@hf-progress {"code":"capture","done":1774,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1784/5610 (10 workers)
+@hf-progress {"code":"capture","done":1784,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1788/5610 (10 workers)
+@hf-progress {"code":"capture","done":1788,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1795/5610 (10 workers)
+@hf-progress {"code":"capture","done":1795,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1804/5610 (10 workers)
+@hf-progress {"code":"capture","done":1804,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  39%  Capturing frame 1805/5610 (10 workers)
+@hf-progress {"code":"capture","done":1805,"total":5610,"pct":39}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1815/5610 (10 workers)
+@hf-progress {"code":"capture","done":1815,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1825/5610 (10 workers)
+@hf-progress {"code":"capture","done":1825,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1831/5610 (10 workers)
+@hf-progress {"code":"capture","done":1831,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1837/5610 (10 workers)
+@hf-progress {"code":"capture","done":1837,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1847/5610 (10 workers)
+@hf-progress {"code":"capture","done":1847,"total":5610,"pct":40}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"checkpoint
+","elapsedMs":125356,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forc
+eScreenshot":false,"totalFrames":5610,"framesCompleted":1852,"captureMode":"screenshot","captureOperation":"captureScre
+enshot","heartbeatIndex":3,"stageElapsedMs":120114}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1857/5610 (10 workers)
+@hf-progress {"code":"capture","done":1857,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1866/5610 (10 workers)
+@hf-progress {"code":"capture","done":1866,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1867/5610 (10 workers)
+@hf-progress {"code":"capture","done":1867,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1877/5610 (10 workers)
+@hf-progress {"code":"capture","done":1877,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1887/5610 (10 workers)
+@hf-progress {"code":"capture","done":1887,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1897/5610 (10 workers)
+@hf-progress {"code":"capture","done":1897,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1907/5610 (10 workers)
+@hf-progress {"code":"capture","done":1907,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1917/5610 (10 workers)
+@hf-progress {"code":"capture","done":1917,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1920/5610 (10 workers)
+@hf-progress {"code":"capture","done":1920,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  40%  Capturing frame 1928/5610 (10 workers)
+@hf-progress {"code":"capture","done":1928,"total":5610,"pct":40}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1938/5610 (10 workers)
+@hf-progress {"code":"capture","done":1938,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1948/5610 (10 workers)
+@hf-progress {"code":"capture","done":1948,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1952/5610 (10 workers)
+@hf-progress {"code":"capture","done":1952,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1962/5610 (10 workers)
+@hf-progress {"code":"capture","done":1962,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1972/5610 (10 workers)
+@hf-progress {"code":"capture","done":1972,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1982/5610 (10 workers)
+@hf-progress {"code":"capture","done":1982,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1992/5610 (10 workers)
+@hf-progress {"code":"capture","done":1992,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 1999/5610 (10 workers)
+@hf-progress {"code":"capture","done":1999,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2004/5610 (10 workers)
+@hf-progress {"code":"capture","done":2004,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2014/5610 (10 workers)
+@hf-progress {"code":"capture","done":2014,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2025/5610 (10 workers)
+@hf-progress {"code":"capture","done":2025,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2035/5610 (10 workers)
+@hf-progress {"code":"capture","done":2035,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2037/5610 (10 workers)
+@hf-progress {"code":"capture","done":2037,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2046/5610 (10 workers)
+@hf-progress {"code":"capture","done":2046,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  41%  Capturing frame 2048/5610 (10 workers)
+@hf-progress {"code":"capture","done":2048,"total":5610,"pct":41}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2057/5610 (10 workers)
+@hf-progress {"code":"capture","done":2057,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2067/5610 (10 workers)
+@hf-progress {"code":"capture","done":2067,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2071/5610 (10 workers)
+@hf-progress {"code":"capture","done":2071,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2078/5610 (10 workers)
+@hf-progress {"code":"capture","done":2078,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2088/5610 (10 workers)
+@hf-progress {"code":"capture","done":2088,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2098/5610 (10 workers)
+@hf-progress {"code":"capture","done":2098,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2103/5610 (10 workers)
+@hf-progress {"code":"capture","done":2103,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2109/5610 (10 workers)
+@hf-progress {"code":"capture","done":2109,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2119/5610 (10 workers)
+@hf-progress {"code":"capture","done":2119,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2129/5610 (10 workers)
+@hf-progress {"code":"capture","done":2129,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2138/5610 (10 workers)
+@hf-progress {"code":"capture","done":2138,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2140/5610 (10 workers)
+@hf-progress {"code":"capture","done":2140,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2150/5610 (10 workers)
+@hf-progress {"code":"capture","done":2150,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2153/5610 (10 workers)
+@hf-progress {"code":"capture","done":2153,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2160/5610 (10 workers)
+@hf-progress {"code":"capture","done":2160,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2165/5610 (10 workers)
+@hf-progress {"code":"capture","done":2165,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2170/5610 (10 workers)
+@hf-progress {"code":"capture","done":2170,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  42%  Capturing frame 2180/5610 (10 workers)
+@hf-progress {"code":"capture","done":2180,"total":5610,"pct":42}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2182/5610 (10 workers)
+@hf-progress {"code":"capture","done":2182,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2191/5610 (10 workers)
+@hf-progress {"code":"capture","done":2191,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2192/5610 (10 workers)
+@hf-progress {"code":"capture","done":2192,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2202/5610 (10 workers)
+@hf-progress {"code":"capture","done":2202,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2212/5610 (10 workers)
+@hf-progress {"code":"capture","done":2212,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2222/5610 (10 workers)
+@hf-progress {"code":"capture","done":2222,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2232/5610 (10 workers)
+@hf-progress {"code":"capture","done":2232,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2242/5610 (10 workers)
+@hf-progress {"code":"capture","done":2242,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2246/5610 (10 workers)
+@hf-progress {"code":"capture","done":2246,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2253/5610 (10 workers)
+@hf-progress {"code":"capture","done":2253,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2263/5610 (10 workers)
+@hf-progress {"code":"capture","done":2263,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2273/5610 (10 workers)
+@hf-progress {"code":"capture","done":2273,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2283/5610 (10 workers)
+@hf-progress {"code":"capture","done":2283,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2293/5610 (10 workers)
+@hf-progress {"code":"capture","done":2293,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2300/5610 (10 workers)
+@hf-progress {"code":"capture","done":2300,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  43%  Capturing frame 2304/5610 (10 workers)
+@hf-progress {"code":"capture","done":2304,"total":5610,"pct":43}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2314/5610 (10 workers)
+@hf-progress {"code":"capture","done":2314,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2324/5610 (10 workers)
+@hf-progress {"code":"capture","done":2324,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2334/5610 (10 workers)
+@hf-progress {"code":"capture","done":2334,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2344/5610 (10 workers)
+@hf-progress {"code":"capture","done":2344,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2354/5610 (10 workers)
+@hf-progress {"code":"capture","done":2354,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2364/5610 (10 workers)
+@hf-progress {"code":"capture","done":2364,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2374/5610 (10 workers)
+@hf-progress {"code":"capture","done":2374,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2376/5610 (10 workers)
+@hf-progress {"code":"capture","done":2376,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2379/5610 (10 workers)
+@hf-progress {"code":"capture","done":2379,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2387/5610 (10 workers)
+@hf-progress {"code":"capture","done":2387,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2390/5610 (10 workers)
+@hf-progress {"code":"capture","done":2390,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2398/5610 (10 workers)
+@hf-progress {"code":"capture","done":2398,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2407/5610 (10 workers)
+@hf-progress {"code":"capture","done":2407,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2408/5610 (10 workers)
+@hf-progress {"code":"capture","done":2408,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2418/5610 (10 workers)
+@hf-progress {"code":"capture","done":2418,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2423/5610 (10 workers)
+@hf-progress {"code":"capture","done":2423,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  44%  Capturing frame 2429/5610 (10 workers)
+@hf-progress {"code":"capture","done":2429,"total":5610,"pct":44}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2435/5610 (10 workers)
+@hf-progress {"code":"capture","done":2435,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2441/5610 (10 workers)
+@hf-progress {"code":"capture","done":2441,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2451/5610 (10 workers)
+@hf-progress {"code":"capture","done":2451,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2461/5610 (10 workers)
+@hf-progress {"code":"capture","done":2461,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2471/5610 (10 workers)
+@hf-progress {"code":"capture","done":2471,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2481/5610 (10 workers)
+@hf-progress {"code":"capture","done":2481,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2491/5610 (10 workers)
+@hf-progress {"code":"capture","done":2491,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2502/5610 (10 workers)
+@hf-progress {"code":"capture","done":2502,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2512/5610 (10 workers)
+@hf-progress {"code":"capture","done":2512,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2515/5610 (10 workers)
+@hf-progress {"code":"capture","done":2515,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2523/5610 (10 workers)
+@hf-progress {"code":"capture","done":2523,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2533/5610 (10 workers)
+@hf-progress {"code":"capture","done":2533,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2534/5610 (10 workers)
+@hf-progress {"code":"capture","done":2534,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2544/5610 (10 workers)
+@hf-progress {"code":"capture","done":2544,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2550/5610 (10 workers)
+@hf-progress {"code":"capture","done":2550,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  45%  Capturing frame 2554/5610 (10 workers)
+@hf-progress {"code":"capture","done":2554,"total":5610,"pct":45}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2564/5610 (10 workers)
+@hf-progress {"code":"capture","done":2564,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2574/5610 (10 workers)
+@hf-progress {"code":"capture","done":2574,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2575/5610 (10 workers)
+@hf-progress {"code":"capture","done":2575,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2584/5610 (10 workers)
+@hf-progress {"code":"capture","done":2584,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2594/5610 (10 workers)
+@hf-progress {"code":"capture","done":2594,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2596/5610 (10 workers)
+@hf-progress {"code":"capture","done":2596,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2606/5610 (10 workers)
+@hf-progress {"code":"capture","done":2606,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2616/5610 (10 workers)
+@hf-progress {"code":"capture","done":2616,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2626/5610 (10 workers)
+@hf-progress {"code":"capture","done":2626,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2630/5610 (10 workers)
+@hf-progress {"code":"capture","done":2630,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2637/5610 (10 workers)
+@hf-progress {"code":"capture","done":2637,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2647/5610 (10 workers)
+@hf-progress {"code":"capture","done":2647,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2656/5610 (10 workers)
+@hf-progress {"code":"capture","done":2656,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2657/5610 (10 workers)
+@hf-progress {"code":"capture","done":2657,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2667/5610 (10 workers)
+@hf-progress {"code":"capture","done":2667,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2677/5610 (10 workers)
+@hf-progress {"code":"capture","done":2677,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  46%  Capturing frame 2678/5610 (10 workers)
+@hf-progress {"code":"capture","done":2678,"total":5610,"pct":46}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2685/5610 (10 workers)
+@hf-progress {"code":"capture","done":2685,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2691/5610 (10 workers)
+@hf-progress {"code":"capture","done":2691,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2692/5610 (10 workers)
+@hf-progress {"code":"capture","done":2692,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2702/5610 (10 workers)
+@hf-progress {"code":"capture","done":2702,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2712/5610 (10 workers)
+@hf-progress {"code":"capture","done":2712,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2720/5610 (10 workers)
+@hf-progress {"code":"capture","done":2720,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2722/5610 (10 workers)
+@hf-progress {"code":"capture","done":2722,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2725/5610 (10 workers)
+@hf-progress {"code":"capture","done":2725,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2733/5610 (10 workers)
+@hf-progress {"code":"capture","done":2733,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2739/5610 (10 workers)
+@hf-progress {"code":"capture","done":2739,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2744/5610 (10 workers)
+@hf-progress {"code":"capture","done":2744,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2747/5610 (10 workers)
+@hf-progress {"code":"capture","done":2747,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2755/5610 (10 workers)
+@hf-progress {"code":"capture","done":2755,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2757/5610 (10 workers)
+@hf-progress {"code":"capture","done":2757,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2767/5610 (10 workers)
+@hf-progress {"code":"capture","done":2767,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2772/5610 (10 workers)
+@hf-progress {"code":"capture","done":2772,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2777/5610 (10 workers)
+@hf-progress {"code":"capture","done":2777,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2787/5610 (10 workers)
+@hf-progress {"code":"capture","done":2787,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  47%  Capturing frame 2797/5610 (10 workers)
+@hf-progress {"code":"capture","done":2797,"total":5610,"pct":47}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2807/5610 (10 workers)
+@hf-progress {"code":"capture","done":2807,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2816/5610 (10 workers)
+@hf-progress {"code":"capture","done":2816,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2818/5610 (10 workers)
+@hf-progress {"code":"capture","done":2818,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2827/5610 (10 workers)
+@hf-progress {"code":"capture","done":2827,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2829/5610 (10 workers)
+@hf-progress {"code":"capture","done":2829,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2839/5610 (10 workers)
+@hf-progress {"code":"capture","done":2839,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2848/5610 (10 workers)
+@hf-progress {"code":"capture","done":2848,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2850/5610 (10 workers)
+@hf-progress {"code":"capture","done":2850,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2860/5610 (10 workers)
+@hf-progress {"code":"capture","done":2860,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2869/5610 (10 workers)
+@hf-progress {"code":"capture","done":2869,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2870/5610 (10 workers)
+@hf-progress {"code":"capture","done":2870,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2880/5610 (10 workers)
+@hf-progress {"code":"capture","done":2880,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2890/5610 (10 workers)
+@hf-progress {"code":"capture","done":2890,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2891/5610 (10 workers)
+@hf-progress {"code":"capture","done":2891,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2901/5610 (10 workers)
+@hf-progress {"code":"capture","done":2901,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2911/5610 (10 workers)
+@hf-progress {"code":"capture","done":2911,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2921/5610 (10 workers)
+@hf-progress {"code":"capture","done":2921,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  48%  Capturing frame 2922/5610 (10 workers)
+@hf-progress {"code":"capture","done":2922,"total":5610,"pct":48}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2932/5610 (10 workers)
+@hf-progress {"code":"capture","done":2932,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2936/5610 (10 workers)
+@hf-progress {"code":"capture","done":2936,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2943/5610 (10 workers)
+@hf-progress {"code":"capture","done":2943,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2948/5610 (10 workers)
+@hf-progress {"code":"capture","done":2948,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2953/5610 (10 workers)
+@hf-progress {"code":"capture","done":2953,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2957/5610 (10 workers)
+@hf-progress {"code":"capture","done":2957,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2964/5610 (10 workers)
+@hf-progress {"code":"capture","done":2964,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2974/5610 (10 workers)
+@hf-progress {"code":"capture","done":2974,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2983/5610 (10 workers)
+@hf-progress {"code":"capture","done":2983,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2986/5610 (10 workers)
+@hf-progress {"code":"capture","done":2986,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2989/5610 (10 workers)
+@hf-progress {"code":"capture","done":2989,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 2996/5610 (10 workers)
+@hf-progress {"code":"capture","done":2996,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3006/5610 (10 workers)
+@hf-progress {"code":"capture","done":3006,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3015/5610 (10 workers)
+@hf-progress {"code":"capture","done":3015,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3018/5610 (10 workers)
+@hf-progress {"code":"capture","done":3018,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3026/5610 (10 workers)
+@hf-progress {"code":"capture","done":3026,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3030/5610 (10 workers)
+@hf-progress {"code":"capture","done":3030,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3040/5610 (10 workers)
+@hf-progress {"code":"capture","done":3040,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  49%  Capturing frame 3050/5610 (10 workers)
+@hf-progress {"code":"capture","done":3050,"total":5610,"pct":49}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3059/5610 (10 workers)
+@hf-progress {"code":"capture","done":3059,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3061/5610 (10 workers)
+@hf-progress {"code":"capture","done":3061,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3067/5610 (10 workers)
+@hf-progress {"code":"capture","done":3067,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3075/5610 (10 workers)
+@hf-progress {"code":"capture","done":3075,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3083/5610 (10 workers)
+@hf-progress {"code":"capture","done":3083,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3085/5610 (10 workers)
+@hf-progress {"code":"capture","done":3085,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3095/5610 (10 workers)
+@hf-progress {"code":"capture","done":3095,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3105/5610 (10 workers)
+@hf-progress {"code":"capture","done":3105,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3106/5610 (10 workers)
+@hf-progress {"code":"capture","done":3106,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3115/5610 (10 workers)
+@hf-progress {"code":"capture","done":3115,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3118/5610 (10 workers)
+@hf-progress {"code":"capture","done":3118,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3128/5610 (10 workers)
+@hf-progress {"code":"capture","done":3128,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3138/5610 (10 workers)
+@hf-progress {"code":"capture","done":3138,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3148/5610 (10 workers)
+@hf-progress {"code":"capture","done":3148,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3151/5610 (10 workers)
+@hf-progress {"code":"capture","done":3151,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3159/5610 (10 workers)
+@hf-progress {"code":"capture","done":3159,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3161/5610 (10 workers)
+@hf-progress {"code":"capture","done":3161,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3169/5610 (10 workers)
+@hf-progress {"code":"capture","done":3169,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  50%  Capturing frame 3171/5610 (10 workers)
+@hf-progress {"code":"capture","done":3171,"total":5610,"pct":50}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3181/5610 (10 workers)
+@hf-progress {"code":"capture","done":3181,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3182/5610 (10 workers)
+@hf-progress {"code":"capture","done":3182,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3191/5610 (10 workers)
+@hf-progress {"code":"capture","done":3191,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3192/5610 (10 workers)
+@hf-progress {"code":"capture","done":3192,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3193/5610 (10 workers)
+@hf-progress {"code":"capture","done":3193,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3202/5610 (10 workers)
+@hf-progress {"code":"capture","done":3202,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3203/5610 (10 workers)
+@hf-progress {"code":"capture","done":3203,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3213/5610 (10 workers)
+@hf-progress {"code":"capture","done":3213,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3223/5610 (10 workers)
+@hf-progress {"code":"capture","done":3223,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3232/5610 (10 workers)
+@hf-progress {"code":"capture","done":3232,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3234/5610 (10 workers)
+@hf-progress {"code":"capture","done":3234,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3244/5610 (10 workers)
+@hf-progress {"code":"capture","done":3244,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3245/5610 (10 workers)
+@hf-progress {"code":"capture","done":3245,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3255/5610 (10 workers)
+@hf-progress {"code":"capture","done":3255,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3257/5610 (10 workers)
+@hf-progress {"code":"capture","done":3257,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3267/5610 (10 workers)
+@hf-progress {"code":"capture","done":3267,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3270/5610 (10 workers)
+@hf-progress {"code":"capture","done":3270,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3275/5610 (10 workers)
+@hf-progress {"code":"capture","done":3275,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3280/5610 (10 workers)
+@hf-progress {"code":"capture","done":3280,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3288/5610 (10 workers)
+@hf-progress {"code":"capture","done":3288,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3291/5610 (10 workers)
+@hf-progress {"code":"capture","done":3291,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  51%  Capturing frame 3301/5610 (10 workers)
+@hf-progress {"code":"capture","done":3301,"total":5610,"pct":51}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3311/5610 (10 workers)
+@hf-progress {"code":"capture","done":3311,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3321/5610 (10 workers)
+@hf-progress {"code":"capture","done":3321,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3322/5610 (10 workers)
+@hf-progress {"code":"capture","done":3322,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3332/5610 (10 workers)
+@hf-progress {"code":"capture","done":3332,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3343/5610 (10 workers)
+@hf-progress {"code":"capture","done":3343,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3353/5610 (10 workers)
+@hf-progress {"code":"capture","done":3353,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3354/5610 (10 workers)
+@hf-progress {"code":"capture","done":3354,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3360/5610 (10 workers)
+@hf-progress {"code":"capture","done":3360,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3367/5610 (10 workers)
+@hf-progress {"code":"capture","done":3367,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3377/5610 (10 workers)
+@hf-progress {"code":"capture","done":3377,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3387/5610 (10 workers)
+@hf-progress {"code":"capture","done":3387,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3395/5610 (10 workers)
+@hf-progress {"code":"capture","done":3395,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3398/5610 (10 workers)
+@hf-progress {"code":"capture","done":3398,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3408/5610 (10 workers)
+@hf-progress {"code":"capture","done":3408,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3418/5610 (10 workers)
+@hf-progress {"code":"capture","done":3418,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  52%  Capturing frame 3427/5610 (10 workers)
+@hf-progress {"code":"capture","done":3427,"total":5610,"pct":52}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3429/5610 (10 workers)
+@hf-progress {"code":"capture","done":3429,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3439/5610 (10 workers)
+@hf-progress {"code":"capture","done":3439,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3449/5610 (10 workers)
+@hf-progress {"code":"capture","done":3449,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3459/5610 (10 workers)
+@hf-progress {"code":"capture","done":3459,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3469/5610 (10 workers)
+@hf-progress {"code":"capture","done":3469,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3479/5610 (10 workers)
+@hf-progress {"code":"capture","done":3479,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3489/5610 (10 workers)
+@hf-progress {"code":"capture","done":3489,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3498/5610 (10 workers)
+@hf-progress {"code":"capture","done":3498,"total":5610,"pct":53}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"checkpoint
+","elapsedMs":245355,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forc
+eScreenshot":false,"totalFrames":5610,"framesCompleted":3498,"captureMode":"screenshot","captureOperation":"captureScre
+enshot","heartbeatIndex":4,"stageElapsedMs":240113}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3499/5610 (10 workers)
+@hf-progress {"code":"capture","done":3499,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3506/5610 (10 workers)
+@hf-progress {"code":"capture","done":3506,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3512/5610 (10 workers)
+@hf-progress {"code":"capture","done":3512,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3522/5610 (10 workers)
+@hf-progress {"code":"capture","done":3522,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3530/5610 (10 workers)
+@hf-progress {"code":"capture","done":3530,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3533/5610 (10 workers)
+@hf-progress {"code":"capture","done":3533,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  53%  Capturing frame 3543/5610 (10 workers)
+@hf-progress {"code":"capture","done":3543,"total":5610,"pct":53}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3553/5610 (10 workers)
+@hf-progress {"code":"capture","done":3553,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3563/5610 (10 workers)
+@hf-progress {"code":"capture","done":3563,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3564/5610 (10 workers)
+@hf-progress {"code":"capture","done":3564,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3574/5610 (10 workers)
+@hf-progress {"code":"capture","done":3574,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3576/5610 (10 workers)
+@hf-progress {"code":"capture","done":3576,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3586/5610 (10 workers)
+@hf-progress {"code":"capture","done":3586,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3588/5610 (10 workers)
+@hf-progress {"code":"capture","done":3588,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3598/5610 (10 workers)
+@hf-progress {"code":"capture","done":3598,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3607/5610 (10 workers)
+@hf-progress {"code":"capture","done":3607,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3608/5610 (10 workers)
+@hf-progress {"code":"capture","done":3608,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3618/5610 (10 workers)
+@hf-progress {"code":"capture","done":3618,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3627/5610 (10 workers)
+@hf-progress {"code":"capture","done":3627,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3630/5610 (10 workers)
+@hf-progress {"code":"capture","done":3630,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3640/5610 (10 workers)
+@hf-progress {"code":"capture","done":3640,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3650/5610 (10 workers)
+@hf-progress {"code":"capture","done":3650,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3660/5610 (10 workers)
+@hf-progress {"code":"capture","done":3660,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  54%  Capturing frame 3670/5610 (10 workers)
+@hf-progress {"code":"capture","done":3670,"total":5610,"pct":54}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3680/5610 (10 workers)
+@hf-progress {"code":"capture","done":3680,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3683/5610 (10 workers)
+@hf-progress {"code":"capture","done":3683,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3684/5610 (10 workers)
+@hf-progress {"code":"capture","done":3684,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3694/5610 (10 workers)
+@hf-progress {"code":"capture","done":3694,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3695/5610 (10 workers)
+@hf-progress {"code":"capture","done":3695,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3704/5610 (10 workers)
+@hf-progress {"code":"capture","done":3704,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3706/5610 (10 workers)
+@hf-progress {"code":"capture","done":3706,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3716/5610 (10 workers)
+@hf-progress {"code":"capture","done":3716,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3717/5610 (10 workers)
+@hf-progress {"code":"capture","done":3717,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3727/5610 (10 workers)
+@hf-progress {"code":"capture","done":3727,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3737/5610 (10 workers)
+@hf-progress {"code":"capture","done":3737,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3747/5610 (10 workers)
+@hf-progress {"code":"capture","done":3747,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3757/5610 (10 workers)
+@hf-progress {"code":"capture","done":3757,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3758/5610 (10 workers)
+@hf-progress {"code":"capture","done":3758,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3768/5610 (10 workers)
+@hf-progress {"code":"capture","done":3768,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3778/5610 (10 workers)
+@hf-progress {"code":"capture","done":3778,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3787/5610 (10 workers)
+@hf-progress {"code":"capture","done":3787,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3788/5610 (10 workers)
+@hf-progress {"code":"capture","done":3788,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3789/5610 (10 workers)
+@hf-progress {"code":"capture","done":3789,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  55%  Capturing frame 3799/5610 (10 workers)
+@hf-progress {"code":"capture","done":3799,"total":5610,"pct":55}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3808/5610 (10 workers)
+@hf-progress {"code":"capture","done":3808,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3811/5610 (10 workers)
+@hf-progress {"code":"capture","done":3811,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3821/5610 (10 workers)
+@hf-progress {"code":"capture","done":3821,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3823/5610 (10 workers)
+@hf-progress {"code":"capture","done":3823,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3833/5610 (10 workers)
+@hf-progress {"code":"capture","done":3833,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3843/5610 (10 workers)
+@hf-progress {"code":"capture","done":3843,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3847/5610 (10 workers)
+@hf-progress {"code":"capture","done":3847,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3855/5610 (10 workers)
+@hf-progress {"code":"capture","done":3855,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3865/5610 (10 workers)
+@hf-progress {"code":"capture","done":3865,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3867/5610 (10 workers)
+@hf-progress {"code":"capture","done":3867,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3877/5610 (10 workers)
+@hf-progress {"code":"capture","done":3877,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3879/5610 (10 workers)
+@hf-progress {"code":"capture","done":3879,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3887/5610 (10 workers)
+@hf-progress {"code":"capture","done":3887,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3892/5610 (10 workers)
+@hf-progress {"code":"capture","done":3892,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3903/5610 (10 workers)
+@hf-progress {"code":"capture","done":3903,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3911/5610 (10 workers)
+@hf-progress {"code":"capture","done":3911,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3914/5610 (10 workers)
+@hf-progress {"code":"capture","done":3914,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  56%  Capturing frame 3924/5610 (10 workers)
+@hf-progress {"code":"capture","done":3924,"total":5610,"pct":56}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3934/5610 (10 workers)
+@hf-progress {"code":"capture","done":3934,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3944/5610 (10 workers)
+@hf-progress {"code":"capture","done":3944,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3954/5610 (10 workers)
+@hf-progress {"code":"capture","done":3954,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3965/5610 (10 workers)
+@hf-progress {"code":"capture","done":3965,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3975/5610 (10 workers)
+@hf-progress {"code":"capture","done":3975,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3983/5610 (10 workers)
+@hf-progress {"code":"capture","done":3983,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3986/5610 (10 workers)
+@hf-progress {"code":"capture","done":3986,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 3996/5610 (10 workers)
+@hf-progress {"code":"capture","done":3996,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4006/5610 (10 workers)
+@hf-progress {"code":"capture","done":4006,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4007/5610 (10 workers)
+@hf-progress {"code":"capture","done":4007,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4017/5610 (10 workers)
+@hf-progress {"code":"capture","done":4017,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4027/5610 (10 workers)
+@hf-progress {"code":"capture","done":4027,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4037/5610 (10 workers)
+@hf-progress {"code":"capture","done":4037,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  57%  Capturing frame 4047/5610 (10 workers)
+@hf-progress {"code":"capture","done":4047,"total":5610,"pct":57}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4057/5610 (10 workers)
+@hf-progress {"code":"capture","done":4057,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4058/5610 (10 workers)
+@hf-progress {"code":"capture","done":4058,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4064/5610 (10 workers)
+@hf-progress {"code":"capture","done":4064,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4070/5610 (10 workers)
+@hf-progress {"code":"capture","done":4070,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4079/5610 (10 workers)
+@hf-progress {"code":"capture","done":4079,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4082/5610 (10 workers)
+@hf-progress {"code":"capture","done":4082,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4091/5610 (10 workers)
+@hf-progress {"code":"capture","done":4091,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4092/5610 (10 workers)
+@hf-progress {"code":"capture","done":4092,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4102/5610 (10 workers)
+@hf-progress {"code":"capture","done":4102,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4110/5610 (10 workers)
+@hf-progress {"code":"capture","done":4110,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4112/5610 (10 workers)
+@hf-progress {"code":"capture","done":4112,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4122/5610 (10 workers)
+@hf-progress {"code":"capture","done":4122,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4132/5610 (10 workers)
+@hf-progress {"code":"capture","done":4132,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4141/5610 (10 workers)
+@hf-progress {"code":"capture","done":4141,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4143/5610 (10 workers)
+@hf-progress {"code":"capture","done":4143,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4153/5610 (10 workers)
+@hf-progress {"code":"capture","done":4153,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4163/5610 (10 workers)
+@hf-progress {"code":"capture","done":4163,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4173/5610 (10 workers)
+@hf-progress {"code":"capture","done":4173,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  58%  Capturing frame 4175/5610 (10 workers)
+@hf-progress {"code":"capture","done":4175,"total":5610,"pct":58}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4185/5610 (10 workers)
+@hf-progress {"code":"capture","done":4185,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4189/5610 (10 workers)
+@hf-progress {"code":"capture","done":4189,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4199/5610 (10 workers)
+@hf-progress {"code":"capture","done":4199,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4209/5610 (10 workers)
+@hf-progress {"code":"capture","done":4209,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4219/5610 (10 workers)
+@hf-progress {"code":"capture","done":4219,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4229/5610 (10 workers)
+@hf-progress {"code":"capture","done":4229,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4239/5610 (10 workers)
+@hf-progress {"code":"capture","done":4239,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4240/5610 (10 workers)
+@hf-progress {"code":"capture","done":4240,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4249/5610 (10 workers)
+@hf-progress {"code":"capture","done":4249,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4259/5610 (10 workers)
+@hf-progress {"code":"capture","done":4259,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4260/5610 (10 workers)
+@hf-progress {"code":"capture","done":4260,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4270/5610 (10 workers)
+@hf-progress {"code":"capture","done":4270,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4274/5610 (10 workers)
+@hf-progress {"code":"capture","done":4274,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4283/5610 (10 workers)
+@hf-progress {"code":"capture","done":4283,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4286/5610 (10 workers)
+@hf-progress {"code":"capture","done":4286,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  59%  Capturing frame 4296/5610 (10 workers)
+@hf-progress {"code":"capture","done":4296,"total":5610,"pct":59}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4306/5610 (10 workers)
+@hf-progress {"code":"capture","done":4306,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4315/5610 (10 workers)
+@hf-progress {"code":"capture","done":4315,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4317/5610 (10 workers)
+@hf-progress {"code":"capture","done":4317,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4327/5610 (10 workers)
+@hf-progress {"code":"capture","done":4327,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4330/5610 (10 workers)
+@hf-progress {"code":"capture","done":4330,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4338/5610 (10 workers)
+@hf-progress {"code":"capture","done":4338,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4347/5610 (10 workers)
+@hf-progress {"code":"capture","done":4347,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4350/5610 (10 workers)
+@hf-progress {"code":"capture","done":4350,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4360/5610 (10 workers)
+@hf-progress {"code":"capture","done":4360,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4363/5610 (10 workers)
+@hf-progress {"code":"capture","done":4363,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4364/5610 (10 workers)
+@hf-progress {"code":"capture","done":4364,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4374/5610 (10 workers)
+@hf-progress {"code":"capture","done":4374,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4375/5610 (10 workers)
+@hf-progress {"code":"capture","done":4375,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4385/5610 (10 workers)
+@hf-progress {"code":"capture","done":4385,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4395/5610 (10 workers)
+@hf-progress {"code":"capture","done":4395,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4405/5610 (10 workers)
+@hf-progress {"code":"capture","done":4405,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4415/5610 (10 workers)
+@hf-progress {"code":"capture","done":4415,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  60%  Capturing frame 4425/5610 (10 workers)
+@hf-progress {"code":"capture","done":4425,"total":5610,"pct":60}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4435/5610 (10 workers)
+@hf-progress {"code":"capture","done":4435,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4436/5610 (10 workers)
+@hf-progress {"code":"capture","done":4436,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4446/5610 (10 workers)
+@hf-progress {"code":"capture","done":4446,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4456/5610 (10 workers)
+@hf-progress {"code":"capture","done":4456,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4457/5610 (10 workers)
+@hf-progress {"code":"capture","done":4457,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4467/5610 (10 workers)
+@hf-progress {"code":"capture","done":4467,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4477/5610 (10 workers)
+@hf-progress {"code":"capture","done":4477,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4487/5610 (10 workers)
+@hf-progress {"code":"capture","done":4487,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4497/5610 (10 workers)
+@hf-progress {"code":"capture","done":4497,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4507/5610 (10 workers)
+@hf-progress {"code":"capture","done":4507,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4517/5610 (10 workers)
+@hf-progress {"code":"capture","done":4517,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4527/5610 (10 workers)
+@hf-progress {"code":"capture","done":4527,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4537/5610 (10 workers)
+@hf-progress {"code":"capture","done":4537,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  61%  Capturing frame 4547/5610 (10 workers)
+@hf-progress {"code":"capture","done":4547,"total":5610,"pct":61}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4557/5610 (10 workers)
+@hf-progress {"code":"capture","done":4557,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4567/5610 (10 workers)
+@hf-progress {"code":"capture","done":4567,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4577/5610 (10 workers)
+@hf-progress {"code":"capture","done":4577,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4587/5610 (10 workers)
+@hf-progress {"code":"capture","done":4587,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4596/5610 (10 workers)
+@hf-progress {"code":"capture","done":4596,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4598/5610 (10 workers)
+@hf-progress {"code":"capture","done":4598,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4608/5610 (10 workers)
+@hf-progress {"code":"capture","done":4608,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4610/5610 (10 workers)
+@hf-progress {"code":"capture","done":4610,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4618/5610 (10 workers)
+@hf-progress {"code":"capture","done":4618,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4619/5610 (10 workers)
+@hf-progress {"code":"capture","done":4619,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4629/5610 (10 workers)
+@hf-progress {"code":"capture","done":4629,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4639/5610 (10 workers)
+@hf-progress {"code":"capture","done":4639,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4640/5610 (10 workers)
+@hf-progress {"code":"capture","done":4640,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4650/5610 (10 workers)
+@hf-progress {"code":"capture","done":4650,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4660/5610 (10 workers)
+@hf-progress {"code":"capture","done":4660,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4661/5610 (10 workers)
+@hf-progress {"code":"capture","done":4661,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4670/5610 (10 workers)
+@hf-progress {"code":"capture","done":4670,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  62%  Capturing frame 4673/5610 (10 workers)
+@hf-progress {"code":"capture","done":4673,"total":5610,"pct":62}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4683/5610 (10 workers)
+@hf-progress {"code":"capture","done":4683,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4693/5610 (10 workers)
+@hf-progress {"code":"capture","done":4693,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4703/5610 (10 workers)
+@hf-progress {"code":"capture","done":4703,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4713/5610 (10 workers)
+@hf-progress {"code":"capture","done":4713,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4721/5610 (10 workers)
+@hf-progress {"code":"capture","done":4721,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4724/5610 (10 workers)
+@hf-progress {"code":"capture","done":4724,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4734/5610 (10 workers)
+@hf-progress {"code":"capture","done":4734,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4735/5610 (10 workers)
+@hf-progress {"code":"capture","done":4735,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4736/5610 (10 workers)
+@hf-progress {"code":"capture","done":4736,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4746/5610 (10 workers)
+@hf-progress {"code":"capture","done":4746,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4755/5610 (10 workers)
+@hf-progress {"code":"capture","done":4755,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4756/5610 (10 workers)
+@hf-progress {"code":"capture","done":4756,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4766/5610 (10 workers)
+@hf-progress {"code":"capture","done":4766,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4777/5610 (10 workers)
+@hf-progress {"code":"capture","done":4777,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4783/5610 (10 workers)
+@hf-progress {"code":"capture","done":4783,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4788/5610 (10 workers)
+@hf-progress {"code":"capture","done":4788,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4794/5610 (10 workers)
+@hf-progress {"code":"capture","done":4794,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  63%  Capturing frame 4799/5610 (10 workers)
+@hf-progress {"code":"capture","done":4799,"total":5610,"pct":63}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4809/5610 (10 workers)
+@hf-progress {"code":"capture","done":4809,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4810/5610 (10 workers)
+@hf-progress {"code":"capture","done":4810,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4820/5610 (10 workers)
+@hf-progress {"code":"capture","done":4820,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4821/5610 (10 workers)
+@hf-progress {"code":"capture","done":4821,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4831/5610 (10 workers)
+@hf-progress {"code":"capture","done":4831,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4832/5610 (10 workers)
+@hf-progress {"code":"capture","done":4832,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4842/5610 (10 workers)
+@hf-progress {"code":"capture","done":4842,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4853/5610 (10 workers)
+@hf-progress {"code":"capture","done":4853,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4863/5610 (10 workers)
+@hf-progress {"code":"capture","done":4863,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4872/5610 (10 workers)
+@hf-progress {"code":"capture","done":4872,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4873/5610 (10 workers)
+@hf-progress {"code":"capture","done":4873,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4879/5610 (10 workers)
+@hf-progress {"code":"capture","done":4879,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4884/5610 (10 workers)
+@hf-progress {"code":"capture","done":4884,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4894/5610 (10 workers)
+@hf-progress {"code":"capture","done":4894,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4904/5610 (10 workers)
+@hf-progress {"code":"capture","done":4904,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4906/5610 (10 workers)
+@hf-progress {"code":"capture","done":4906,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4914/5610 (10 workers)
+@hf-progress {"code":"capture","done":4914,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  64%  Capturing frame 4924/5610 (10 workers)
+@hf-progress {"code":"capture","done":4924,"total":5610,"pct":64}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4926/5610 (10 workers)
+@hf-progress {"code":"capture","done":4926,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4935/5610 (10 workers)
+@hf-progress {"code":"capture","done":4935,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4940/5610 (10 workers)
+@hf-progress {"code":"capture","done":4940,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4949/5610 (10 workers)
+@hf-progress {"code":"capture","done":4949,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4959/5610 (10 workers)
+@hf-progress {"code":"capture","done":4959,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4965/5610 (10 workers)
+@hf-progress {"code":"capture","done":4965,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4971/5610 (10 workers)
+@hf-progress {"code":"capture","done":4971,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4981/5610 (10 workers)
+@hf-progress {"code":"capture","done":4981,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 4991/5610 (10 workers)
+@hf-progress {"code":"capture","done":4991,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5001/5610 (10 workers)
+@hf-progress {"code":"capture","done":5001,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5011/5610 (10 workers)
+@hf-progress {"code":"capture","done":5011,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5014/5610 (10 workers)
+@hf-progress {"code":"capture","done":5014,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5018/5610 (10 workers)
+@hf-progress {"code":"capture","done":5018,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5024/5610 (10 workers)
+@hf-progress {"code":"capture","done":5024,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5033/5610 (10 workers)
+@hf-progress {"code":"capture","done":5033,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5036/5610 (10 workers)
+@hf-progress {"code":"capture","done":5036,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5041/5610 (10 workers)
+@hf-progress {"code":"capture","done":5041,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  65%  Capturing frame 5048/5610 (10 workers)
+@hf-progress {"code":"capture","done":5048,"total":5610,"pct":65}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5049/5610 (10 workers)
+@hf-progress {"code":"capture","done":5049,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5059/5610 (10 workers)
+@hf-progress {"code":"capture","done":5059,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5069/5610 (10 workers)
+@hf-progress {"code":"capture","done":5069,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5080/5610 (10 workers)
+@hf-progress {"code":"capture","done":5080,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5086/5610 (10 workers)
+@hf-progress {"code":"capture","done":5086,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5092/5610 (10 workers)
+@hf-progress {"code":"capture","done":5092,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5102/5610 (10 workers)
+@hf-progress {"code":"capture","done":5102,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5112/5610 (10 workers)
+@hf-progress {"code":"capture","done":5112,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5122/5610 (10 workers)
+@hf-progress {"code":"capture","done":5122,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5123/5610 (10 workers)
+@hf-progress {"code":"capture","done":5123,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5133/5610 (10 workers)
+@hf-progress {"code":"capture","done":5133,"total":5610,"pct":66}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"checkpoint
+","elapsedMs":365364,"message":"stage still running","stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forc
+eScreenshot":false,"totalFrames":5610,"framesCompleted":5133,"captureMode":"screenshot","captureOperation":"captureScre
+enshot","heartbeatIndex":5,"stageElapsedMs":360122}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5134/5610 (10 workers)
+@hf-progress {"code":"capture","done":5134,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5144/5610 (10 workers)
+@hf-progress {"code":"capture","done":5144,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5145/5610 (10 workers)
+@hf-progress {"code":"capture","done":5145,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5151/5610 (10 workers)
+@hf-progress {"code":"capture","done":5151,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5157/5610 (10 workers)
+@hf-progress {"code":"capture","done":5157,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5167/5610 (10 workers)
+@hf-progress {"code":"capture","done":5167,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  66%  Capturing frame 5168/5610 (10 workers)
+@hf-progress {"code":"capture","done":5168,"total":5610,"pct":66}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5178/5610 (10 workers)
+@hf-progress {"code":"capture","done":5178,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5188/5610 (10 workers)
+@hf-progress {"code":"capture","done":5188,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5198/5610 (10 workers)
+@hf-progress {"code":"capture","done":5198,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5208/5610 (10 workers)
+@hf-progress {"code":"capture","done":5208,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5218/5610 (10 workers)
+@hf-progress {"code":"capture","done":5218,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5220/5610 (10 workers)
+@hf-progress {"code":"capture","done":5220,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5230/5610 (10 workers)
+@hf-progress {"code":"capture","done":5230,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5240/5610 (10 workers)
+@hf-progress {"code":"capture","done":5240,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5249/5610 (10 workers)
+@hf-progress {"code":"capture","done":5249,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5250/5610 (10 workers)
+@hf-progress {"code":"capture","done":5250,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5260/5610 (10 workers)
+@hf-progress {"code":"capture","done":5260,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5270/5610 (10 workers)
+@hf-progress {"code":"capture","done":5270,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5280/5610 (10 workers)
+@hf-progress {"code":"capture","done":5280,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5290/5610 (10 workers)
+@hf-progress {"code":"capture","done":5290,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5292/5610 (10 workers)
+@hf-progress {"code":"capture","done":5292,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  67%  Capturing frame 5296/5610 (10 workers)
+@hf-progress {"code":"capture","done":5296,"total":5610,"pct":67}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5304/5610 (10 workers)
+@hf-progress {"code":"capture","done":5304,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5314/5610 (10 workers)
+@hf-progress {"code":"capture","done":5314,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5320/5610 (10 workers)
+@hf-progress {"code":"capture","done":5320,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5325/5610 (10 workers)
+@hf-progress {"code":"capture","done":5325,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5330/5610 (10 workers)
+@hf-progress {"code":"capture","done":5330,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5335/5610 (10 workers)
+@hf-progress {"code":"capture","done":5335,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5341/5610 (10 workers)
+@hf-progress {"code":"capture","done":5341,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5346/5610 (10 workers)
+@hf-progress {"code":"capture","done":5346,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5356/5610 (10 workers)
+@hf-progress {"code":"capture","done":5356,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5366/5610 (10 workers)
+@hf-progress {"code":"capture","done":5366,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5376/5610 (10 workers)
+@hf-progress {"code":"capture","done":5376,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5387/5610 (10 workers)
+@hf-progress {"code":"capture","done":5387,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5388/5610 (10 workers)
+@hf-progress {"code":"capture","done":5388,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5399/5610 (10 workers)
+@hf-progress {"code":"capture","done":5399,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5410/5610 (10 workers)
+@hf-progress {"code":"capture","done":5410,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5415/5610 (10 workers)
+@hf-progress {"code":"capture","done":5415,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  68%  Capturing frame 5422/5610 (10 workers)
+@hf-progress {"code":"capture","done":5422,"total":5610,"pct":68}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5424/5610 (10 workers)
+@hf-progress {"code":"capture","done":5424,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5435/5610 (10 workers)
+@hf-progress {"code":"capture","done":5435,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5441/5610 (10 workers)
+@hf-progress {"code":"capture","done":5441,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5451/5610 (10 workers)
+@hf-progress {"code":"capture","done":5451,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5457/5610 (10 workers)
+@hf-progress {"code":"capture","done":5457,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5467/5610 (10 workers)
+@hf-progress {"code":"capture","done":5467,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5471/5610 (10 workers)
+@hf-progress {"code":"capture","done":5471,"total":5610,"pct":69}
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2636ms saved (avg 659ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2628ms saved (avg 657ms/frame)
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5480/5610 (10 workers)
+@hf-progress {"code":"capture","done":5480,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5494/5610 (10 workers)
+@hf-progress {"code":"capture","done":5494,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5508/5610 (10 workers)
+@hf-progress {"code":"capture","done":5508,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5514/5610 (10 workers)
+@hf-progress {"code":"capture","done":5514,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5523/5610 (10 workers)
+@hf-progress {"code":"capture","done":5523,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5528/5610 (10 workers)
+@hf-progress {"code":"capture","done":5528,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5532/5610 (10 workers)
+@hf-progress {"code":"capture","done":5532,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  69%  Capturing frame 5543/5610 (10 workers)
+@hf-progress {"code":"capture","done":5543,"total":5610,"pct":69}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5550/5610 (10 workers)
+@hf-progress {"code":"capture","done":5550,"total":5610,"pct":70}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5564/5610 (10 workers)
+@hf-progress {"code":"capture","done":5564,"total":5610,"pct":70}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5575/5610 (10 workers)
+@hf-progress {"code":"capture","done":5575,"total":5610,"pct":70}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5586/5610 (10 workers)
+@hf-progress {"code":"capture","done":5586,"total":5610,"pct":70}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5597/5610 (10 workers)
+@hf-progress {"code":"capture","done":5597,"total":5610,"pct":70}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5605/5610 (10 workers)
+@hf-progress {"code":"capture","done":5605,"total":5610,"pct":70}
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2644ms saved (avg 661ms/frame)
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  70%  Capturing frame 5610/5610 (10 workers)
+@hf-progress {"code":"capture","done":5610,"total":5610,"pct":70}
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2648ms saved (avg 662ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2668ms saved (avg 667ms/frame)
+[static-dedup] reused 3/561 frame(s) (1%), est. ~1995ms saved (avg 665ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2656ms saved (avg 664ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2664ms saved (avg 666ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2668ms saved (avg 667ms/frame)
+[static-dedup] reused 4/561 frame(s) (1%), est. ~2672ms saved (avg 668ms/frame)
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"capture_disk","status":"end","elap
+sedMs":429462,"durationMs":424220,"stagePhase":"capturing","needsAlpha":false,"workerCount":10,"forceScreenshot":false,
+"totalFrames":5610,"framesCompleted":5610,"captureMode":"screenshot","captureOperation":"encode"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"encode","status":"start","elapsedM
+s":429463,"stagePhase":"capturing","hasAudio":true,"isPngSequence":false,"isGif":false,"chunkedEncode":false,"workerCou
+nt":10,"forceScreenshot":false,"totalFrames":5610,"framesCompleted":5610,"captureMode":"screenshot","captureOperation":
+"encode"}
+[INFO] [Render] Encoded frames while capturing 
+{"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","framesFed":5610,"totalFrames":5610}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæÔûæÔûæÔûæÔûæ  75%  Encoding video
+@hf-progress {"code":"encode","done":0,"total":5610,"pct":75}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæ  90%  Encoding frame 5610/5610
+@hf-progress {"code":"encode","done":5610,"total":5610,"pct":90}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"encode","status":"end","elapsedMs"
+:429648,"durationMs":185,"stagePhase":"capturing","hasAudio":true,"isPngSequence":false,"isGif":false,"chunkedEncode":f
+alse,"workerCount":10,"forceScreenshot":false,"totalFrames":5610,"framesCompleted":5610,"captureMode":"screenshot","cap
+tureOperation":"encode"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"assemble","status":"start","elapse
+dMs":429650,"stagePhase":"capturing","hasAudio":true,"workerCount":10,"forceScreenshot":false,"totalFrames":5610,"frame
+sCompleted":5610,"captureMode":"screenshot","captureOperation":"encode"}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæÔûæÔûæ  90%  Assembling final video
+@hf-progress {"code":"assemble","done":0,"total":186.993,"pct":90}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûæ  99%  Assembling final video
+@hf-progress {"code":"assemble","done":186.993,"total":186.993,"pct":99}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"assemble","status":"end","elapsedM
+s":431426,"durationMs":1776,"stagePhase":"capturing","hasAudio":true,"workerCount":10,"forceScreenshot":false,"totalFra
+mes":5610,"framesCompleted":5610,"captureMode":"screenshot","captureOperation":"encode"}
+[INFO] [Render:trace] {"renderJobId":"cba25362-832a-4808-81e7-6c24c71a7cde","phase":"pipeline","status":"checkpoint","e
+lapsedMs":431647,"message":"artifact validated","totalElapsedMs":431569}
+  ÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûêÔûê  100%  Render complete
+
+Ôùç  C:\videomaker\hyperframes-workspace\renders\hyperframes-workspace_2026-11-15_19-44-30.mp4
+   169.6 MB ┬À 3m 7.0s video ┬À rendered in 7m 16.0s
+   screenshot capture ┬À hardware gpu ┬À compile 1.2s ┬À extract 0.0s ┬À audio 4.0s ┬À probe 0.4s ┬À setup 4.1s ┬À capture 7m 4.2s ┬À encode 0.2s ┬À assemble 1.8s
+   Keep editing by chatting with Framey in the HyperFrames desktop app ÔåÆ https://hyperframes.studio/studio/download?os=windows&src=cli
+== copiado para C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\output\o-campeonato-de-caes-mais-maluco-do-mundo.mp4
+arquivo : C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\output\o-campeonato-de-caes-mais-maluco-do-mundo.mp4
+duracao : 187.00 s
+tamanho : 169.6 MB
+video   : h264 1920x1080 @ 30/1 fps
+audio   : aac
+timeline: 177.99 s + capa/outro 9.0 s = 186.99 s (delta 0.01 s)
+Input Integrated:    -14.0 LUFS
+Input True Peak:      -1.2 dBTP
+STATUS  : OK
+== Video EN: o-campeonato-de-caes-mais-maluco-do-mundo_en.mp4
+
+======================================================================
+CAPITULO CONCLUIDO: O campeonato de c├â┬úes mais maluco do mundo
+======================================================================
+  OK EN: C:\videomaker\projects\o-campeonato-de-caes-mais-maluco-do-mundo\output\o-campeonato-de-caes-mais-maluco-do-mundo_en.mp4 (177.8 MB)
