@@ -102,7 +102,8 @@ _ORIENTACAO_TEXTO = {
 
 
 def montar_prompt_lote(itens, biblia: str, colagem: bool = False,
-                       orientacao: str = "lado_a_lado", n_paineis: int = 0) -> str:
+                       orientacao: str = "lado_a_lado", n_paineis: int = 0,
+                       curto: bool = False) -> str:
     """Monta o prompt unico do lote com cenas numeradas.
 
     colagem=True: pede UMA imagem 16:9 com N paineis internos (2/3/4), na
@@ -112,6 +113,27 @@ def montar_prompt_lote(itens, biblia: str, colagem: bool = False,
     O Flow as vezes entrega colagem mesmo pedindo separadas; o divisor detecta.
     """
     n = len(itens)
+    if curto:
+        # As cenas ja trazem identidade e regras em ingles. Nao adicionar os
+        # blocos longos em portugues: o filtro do Flow rejeita prompts > ~3k chars.
+        if colagem and n > 1:
+            qtd = min(max(int(n_paineis or n), 2), 4)
+            descricao = ("vertical panels side by side" if orientacao == "lado_a_lado"
+                         else "horizontal panels stacked")
+            cabecalho = (
+                "Create ONE static 16:9 image divided into %d %s, "
+                "panel 1 = CENA 1, panel 2 = CENA 2, etc. "
+                "No text, no words, no video." % (qtd, descricao)
+            )
+        else:
+            cabecalho = (
+                "Create %d separate static 16:9 images, numbered 1 to %d, "
+                "all different. No text, no words, no video." % (n, n)
+            )
+        linhas = [cabecalho, ""]
+        for idx, (name, cena) in enumerate(itens, 1):
+            linhas.append("CENA %d (%s): %s" % (idx, name, cena))
+        return "\n".join(linhas)
     if colagem and n > 1:
         qtd = min(max(int(n_paineis or n), 2), 4)
         descricao = _ORIENTACAO_TEXTO.get(orientacao, _ORIENTACAO_TEXTO["lado_a_lado"])
@@ -306,10 +328,12 @@ def dividir_colagem(body: bytes, n: int, orientacao: str = ""):
 
 
 async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
-                         colagem=False, orientacao="lado_a_lado", n_paineis=0):
+                         colagem=False, orientacao="lado_a_lado", n_paineis=0,
+                         curto=False):
     """Envia um lote e devolve os bytes das imagens novas nao-duplicadas."""
     prompt = montar_prompt_lote(itens, biblia, colagem=colagem,
-                                orientacao=orientacao, n_paineis=n_paineis)
+                                orientacao=orientacao, n_paineis=n_paineis,
+                                curto=curto)
     layout = ("colagem de %d paineis %s" % (n_paineis or len(itens), orientacao)
               if colagem else "imagens separadas (1 painel)")
     print("\n=== LOTE: %d cena(s) | layout=%s | prompt %d chars ===" % (
@@ -325,11 +349,16 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
     # NAO usa _enforce_image_only: ele injeta "gere SOMENTE UMA IMAGEM" e o Flow
     # responde com um triptico dentro de um unico arquivo. Aqui queremos N imagens
     # SEPARADAS. Mantemos so a injecao de personagens e a regra anti-video.
-    chars = ff._enforce_characters(prompt)
-    for pat, repl in ff.VIDEO_REQUEST_PATTERNS:
-        import re as _re
-        chars = _re.sub(pat, repl, chars, flags=_re.I)
-    full = chars
+    if curto:
+        # As cenas ja descrevem Frida/Luna em ingles e o cabecalho pede imagens
+        # estaticas. _enforce_characters injetaria ~4k chars extras -> filtro.
+        full = prompt
+    else:
+        chars = ff._enforce_characters(prompt)
+        for pat, repl in ff.VIDEO_REQUEST_PATTERNS:
+            import re as _re
+            chars = _re.sub(pat, repl, chars, flags=_re.I)
+        full = chars
     # Uma colagem 16:9 e UMA imagem: esperar N aqui causaria um timeout de minutos.
     esperadas = 1 if colagem else len(itens)
     captor = asyncio.create_task(baixar_novas(page, esperadas, wait_s))
@@ -358,7 +387,7 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
 
 
 async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4,
-                         layout="auto", orientacao_fixa="auto"):
+                         layout="auto", orientacao_fixa="auto", curto=False):
     """Gera o lote e recupera automaticamente as imagens que o Flow nao gerou.
 
     O Flow as vezes gera menos imagens que o pedido (ex.: 8 de 10). As imagens
@@ -405,7 +434,7 @@ async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4,
              else "separadas (1 painel)")), flush=True)
         novas = await _enviar_uma_vez(page, itens_lote, biblia, wait_s, hashes,
                                       colagem=colagem, orientacao=orientacao,
-                                      n_paineis=n_paineis)
+                                      n_paineis=n_paineis, curto=curto)
         if not novas:
             print("  nenhuma imagem nova recebida; tentando de novo...", flush=True)
             await page.wait_for_timeout(5000)
@@ -465,7 +494,8 @@ async def main_async(args):
             _, faltantes = await processar_lote(page, lote, biblia, out_dir,
                                                 args.wait, args.max_attempts,
                                                 layout=args.layout,
-                                                orientacao_fixa=args.orientacao)
+                                                orientacao_fixa=args.orientacao,
+                                                curto=args.prompt_curto)
             todos_faltantes.extend(faltantes)
             await page.wait_for_timeout(args.pause * 1000)
         if todos_faltantes:
@@ -491,6 +521,9 @@ def main():
                     help="auto sortea entre 1 painel e colagens de 2/3/4 (padrao)")
     ap.add_argument("--orientacao", choices=("auto", "lado_a_lado", "empilhado"),
                     default="auto", help="orientacao dos paineis da colagem")
+    ap.add_argument("--prompt-curto", action="store_true",
+                    help="template compacto para image_prompts_short.json: "
+                         "evita os blocos longos que o filtro do Flow rejeita")
     ap.add_argument("--cdp-url", default=DEFAULT_CDP)
     args = ap.parse_args()
     if args.project_dir and not args.out_dir:
