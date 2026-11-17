@@ -4671,3 +4671,62 @@ próximo.
 
 ---
 
+## 63. Batimento roteiro <-> imagem e consistência (2026-11-17)
+
+### 63.1. Problema encontrado no vídeo da caminha
+
+Ao assistir ao render: narração 8 s à frente das imagens, clipe do meio
+congelado e subscribe sem áudio. Em paralelo, **17 imagens mostravam OUTRO
+vídeo** (parque, troféu, festa, floresta) — vieram do `banco de imagens` porque
+os nomes eram genéricos (`desenvolvimento_5_scene`) e colidiram com arquivos de
+projetos antigos. O pipeline só checa `exists()` + tamanho > 0, então passaram
+como válidas.
+
+### 63.2. Regra de ouro (usuário)
+
+> A imagem tem que mostrar **exatamente o que a narração fala no beat**.
+> "cheirou a cama" -> nariz na caminha; "jogou a bolinha de tênis" -> bolinha;
+> "tomou susto e foi pra trás" -> imagem do susto.
+> **Similaridade entre imagens é NATURAL** (história no mesmo lugar) e NÃO é
+> erro. Erro é imagem de OUTRO tema ou imagem que não bate com a fala.
+
+### 63.3. Suite de scripts de consistência (versionados)
+
+| Script | Função |
+|---|---|
+| `batimento_roteiro_foto.py` | **Batimento**: por beat, compara texto falado com nome/prompt da imagem. Classifica OK / SUSPEITO / **ERRADO** (outro tema). Saída `artifacts/batimento_roteiro_foto.txt`. Uso: `--slug <proj>`. |
+| `detecta_paineis.py` | detecta colagens 2/3/4 painéis -> `paineis_manifest.json`. |
+| `make_contact_sheet.py` | folhas de contato rotuladas para inspeção visual em massa. |
+| `casar_imagens.py` | casa imagens novas (nomes descritivos do Flow) com cenas. |
+| `aplicar_trocas.py` | aplica `plano_trocas.json`: move errada para `_erradas_<data>/` e copia a nova com o nome da cena. |
+| `refazer_plano_semantico.py` | mapa manual ação da fala -> imagem correta. |
+| `resolver_duplicatas_v2.py` | remove duplicatas visuais respeitando semântica. |
+| `desempatar_duplicatas.py` | transformação mínima (crop 1.5% + cor) em cópias idênticas, preservando nome e conteúdo. |
+
+### 63.4. Ajustes de geração aplicados
+
+- `check_imagens_repetidas.py`: `TOL_PADRAO` 2.0 -> 0.05. Antes bloqueava
+  variações do mesmo cenário (natural); agora só pega cópias idênticas.
+- `build_composition.py`: cenas começam em **0** (narração do 1º ao último
+  segundo); `audio_dur = total` (subscribe não fica mudo); intro sobreposta
+  nos primeiros 8 s; colagens (2/3/4 painéis) só com deriva lenta (sem zoom
+  vai-e-vem que cortava painéis); clipe do meio virou **híbrido**: 8 s de
+  vídeo + imagens da cena no tempo restante (antes congelava ~29 s).
+
+### 63.5. Como usar daqui pra frente
+
+1. `python scripts/batimento_roteiro_foto.py --slug <proj>` após gerar imagens.
+2. Se houver `ERRADO`, usar `make_contact_sheet.py` + `casar_imagens.py` e
+   gerar as imagens no Flow (lote de 10 pelo modo Agente).
+3. Nome de arquivo pode mudar **se necessário**, mas manter a amarração com
+   `scenes.json`/`image_prompts.json` (é o que a renderização consome).
+
+### 63.6. Estado do vídeo da caminha
+
+- 17 imagens de outro tema trocadas; 0 ERRADOS no batimento.
+- 4 clipes: intro (0 s), meio híbrido (s9), pata com confete (pre-final),
+  subscribe (final).
+- Narração/música: 0 -> 705 s (mix 705.034 s = total do vídeo).
+
+---
+
