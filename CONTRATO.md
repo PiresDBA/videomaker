@@ -511,6 +511,16 @@ auditar as imagens antes de renderizar:
 - Se um commit mudou manual e o grafo ficou velho, rode `graphify . --update`
   manualmente antes do push. Grafo desatualizado = próximo agente repete trabalho.
 
+## 5.17. Prompt de imagem: curto e em inglês (regra dura)
+
+- O Flow rejeita prompts longos em português (~3.000+ chars) com "Falha: esta
+  geração talvez viole nossas políticas" (sem cobrança). Não é falta de crédito.
+- Usar prompts **curtos (~400 chars) em inglês**: estilo Pixar 3D + identidade de
+  Frida/Luna pelo nome + a cena em 1 linha + proibições básicas.
+- `scripts/encurtar_prompts.py` gera `image_prompts_short.json`; o batch usa esse
+  arquivo. Com prompt curto o Flow gera na 1ª tentativa e mantém os personagens.
+- Auditoria visual (§5.13) continua obrigatória: verificar personagem e cenário.
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.

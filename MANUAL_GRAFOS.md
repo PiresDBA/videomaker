@@ -4324,6 +4324,31 @@ Pitch mais alto dá o tom jovem/sorriso; rate levemente maior dá energia sem
 derrubar a duração abaixo de 10 min. A emoção também vem do texto (frases curtas,
 "..." e "Hahaha!" lidos em voz alta).
 
+### 58.9.7. Prompt curto em ingles vence o filtro do Flow (2026-11-17)
+
+O Flow rejeitava prompts longos em portugues (~3.200 chars com Biblia + regras)
+com "Falha - Esta geracao talvez viole nossas politicas" (sem cobranca).
+A causa era o **tamanho/idioma do prompt**, nao credito.
+
+Solução: `scripts/encurtar_prompts.py` converte `image_prompts.json` em
+`image_prompts_short.json` com prompts curtos (~406 chars) em ingles:
+estilo Pixar 3D + identidade fixa de Frida/Luna pelo nome + a cena (1 linha) +
+proibicoes basicas. Com isso o Flow gera na 1a tentativa e **mantem os
+personagens corretos** (Frida buldogue fawn com perolas, Luna salsicha marrom
+com coleira dourada) em praticamente todas as imagens.
+
+Comando:
+
+```powershell
+python scripts/encurtar_prompts.py --proj <proj>
+# apontar flow_agent_batch.py --prompts-file para image_prompts_short.json
+```
+
+Auditoria visual das 95 imagens do projeto `a-caminha-nova-que-ninguem-quer-usar`
+(contatos em `auditoria/contato_1..5.jpg`): personagens corretos em todas;
+algumas cenas fogem para parque/festa/nuvem (cenário), mas os caes estao sempre
+certos. `check_imagens_repetidas.py`: 95 imagens, nenhuma repetida.
+
 ### 58.9.6. Variedade visual: colagens triptico/dupla (2026-11-17)
 
 O Flow, ao receber um prompt com varias cenas numeradas, as vezes devolve **uma
