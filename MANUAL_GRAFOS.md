@@ -4573,3 +4573,76 @@ no fim — nesse caso, mover uma das imagens para
 
 ---
 
+## 62. Regras para o PRÓXIMO vídeo (2026-11-17)
+
+> Estas regras **não foram aplicadas ao vídeo da caminha** — ele já estava em
+> produção e precisa terminar. Aplicar na geração do próximo projeto.
+
+### 62.1. Nome da imagem deve permitir buscar pelo nome
+
+Regra do usuário: o nome de cada `.jpg` precisa identificar **o vídeo, a cena
+e o número da imagem dentro da cena**. Assim, ao baixar/recuperar imagens, basta
+pesquisar pelo nome e conferir se bate — sem se perder.
+
+Padrão recomendado (slug ASCII, sem acentos/espaços):
+
+```
+<video>_cena_01_imagem_01.jpg
+<video>_cena_01_imagem_02.jpg
+<video>_cena_01_imagem_03.jpg
+<video>_cena_02_imagem_01.jpg
+<video>_cena_02_imagem_02.jpg
+...
+```
+
+Onde `<video>` é o slug do título (ex.: `a_caminha`), `cena_NN` é a cena
+1-based do roteiro e `imagem_MN` é a imagem dentro daquela cena.
+
+**Status:** hoje `generate_scenes_and_prompts.py` já nomeia por cena
+(`desenvolvimento_1_scene`, `_b`, `_c`...), derivado do `label` da seção —
+ou seja, **já existe a parte "cena"**, mas falta o slug do vídeo e a numeração
+explícita `imagem_NN`. Implementar no próximo vídeo (idealmente uma flag
+`--structured-names`, desligada por padrão, para não quebrar os projetos
+existentes que já referenciam os nomes legados em `scenes.json`).
+
+### 62.2. Gerar em LOTE com modo Agente — nunca 1 por 1
+
+Regra do usuário: o Google Flow consegue gerar **10 a 15 imagens de uma vez**
+com o **modo Agente** ligado. Um lote precisa **misturar** os formatos:
+
+- 1 imagem tríptica (3 painéis),
+- 1 imagem quádrupla (4 painéis),
+- 1 imagem dupla (2 painéis),
+- 1 imagem simples (1 painel),
+- e assim por diante, girando a variedade dentro do mesmo lote.
+
+Isso **ganha tempo** e mantém a continuidade (mesmos Frida/Luna e mesma
+caminha vermelha de corações em todos os painéis).
+
+**Status:** `flow_agent_batch.py` já tem `PANEIS_POSSIVEIS = (2, 3, 4)` e
+sorteia a quantidade/orientação por tentativa. Porém:
+
+- `run_caminha_agent.ps1` usa `--batch-size 3 --max-attempts 3`, limitando o
+  lote a 3 cenas e a no máximo 3 painéis (qüádrupla **nunca** aparece);
+- `dividir_colagem()` preserva colagens 16:9 **inteiras** (efeito quadrinho) e
+  só fatia proporções extremas. Como o Flow devolve 1 arquivo por envio, o
+  batch salva 1 nome e reenvia os demais — daí a aparência "1 por 1";
+- `--prompt-curto` mantém cada envio em ~1.500 chars (aceito pelo filtro),
+  então **subir o batch-size é seguro**: cada envio continua com no máximo
+  4 cenas, mesmo com lote de 10.
+
+Ajuste previsto para o próximo vídeo:
+`--batch-size 10 --max-attempts 8 --layout auto --prompt-curto` (com `auto`
+para alternar entre separadas e colagens 2/3/4 dentro do mesmo lote).
+
+### 62.3. Por que o vídeo da caminha ficou 1 por 1 (não mexer agora)
+
+Sequência típica do log: `3 cenas → 2 cenas → 1 cena` em até 3 tentativas.
+O Flow aceita o submit, devolve **1** arquivo e as cenas restantes são
+reenviadas. Com 1 cena restante, o layout cai para "separadas (1 painel)".
+Foi o jeito encontrado para não travar no filtro e **não recomeçar do zero**
+(checkpoint por nome). Está aceito para este vídeo; o lote misto fica para o
+próximo.
+
+---
+
