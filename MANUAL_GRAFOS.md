@@ -4500,7 +4500,76 @@ Tudo em `scripts/flow_agent_batch.py`:
   painéis, fatiamento nas duas direções, captura de 1 imagem para colagens e
   novas flags de controle.
 - `scripts/test_paineis.py` — teste sem navegador das variações.
-- `MANUAL_GRAFOS.md` — esta seção (atualiza o registro de §60.2).
+- `MANUAL_GRAFOS.md` - esta seção (atualiza o registro de §60.2).
+
+---
+
+## 61. Filtro do Google Flow e prompts curtos (2026-11-17)
+
+### 61.1. Sintoma
+
+O batch de imagens `run_caminha_agent.ps1` travava: `submit: {'ok': True}` mas
+nenhuma imagem era capturada. Na tela do Flow aparecia:
+
+> **Falha** - "Esta geração talvez viole nossas políticas. Tente usar outro
+> comando ou envie feedback. **Não houve cobrança por esta geração.**"
+
+Ou seja: **não era falta de crédito**, era o filtro rejeitando o prompt.
+
+### 61.2. Causa raiz
+
+Mesmo usando `image_prompts_short.json` (~406 chars por cena), o
+`flow_agent_batch.py` montava o prompt do lote com:
+
+- `montar_prompt_lote()`: cabeçalho + `IDENTIDADE_PERSONAGENS` (~1.100 chars)
+  + bloco `REGRAS PARA TODAS` (~700 chars) → **3.859 chars**;
+- `_enforce_characters()` de `flow_fetch.py`: injetava mais ~4.150 chars
+  (`CHARACTER_REF_TEMPLATE` + `CHARACTER_STYLE_BLOCK`) → **8.009 chars** no
+  prompt final enviado ao Flow.
+
+O teste `test_prompt_curto.py`, que funcionava na primeira tentativa, usava
+apenas **~350 chars**.
+
+### 61.3. Correção
+
+`flow_agent_batch.py` ganhou a flag `--prompt-curto`:
+
+- `montar_prompt_lote(..., curto=True)` usa um cabeçalho compacto em inglês e
+  **não** injeta `IDENTIDADE_PERSONAGENS` nem o bloco longo de regras;
+- `_enviar_uma_vez(..., curto=True)` **não** chama `_enforce_characters()`.
+
+Resultado: lote de 3 cenas cai de **8.009 → ~1.500 chars**, mantendo a
+identidade de Frida/Luna em inglês dentro de cada cena (`image_prompts_short.json`).
+O filtro para de rejeitar e as imagens voltam a ser salvas.
+
+`run_caminha_agent.ps1` passou a usar:
+
+```
+python scripts/flow_agent_batch.py --prompts-file ...image_prompts_short.json \
+  --batch-size 3 --wait 180 --pause 2 --max-attempts 3 \
+  --layout colagem --prompt-curto
+```
+
+### 61.4. Checkpoint (não recomeçar do zero)
+
+`main_async()` filtra `pendentes` por nome de arquivo: só gera o `.jpg` que
+não existe (ou está vazio). Em 17/11 o projeto `a-caminha` tinha 41 imagens
+→ o batch recomeçou com `Total: 95 | pendentes: 54`.
+
+`processar_lote()` também guarda `_hashes_existentes(out_dir)` e descarta
+imagens iguais às já salvas ("duplicata da galeria").
+
+**Atenção:** o filtro de duplicatas do batch é por hash **exato**. A trava
+`check_imagens_repetidas.py` (perceptual) pode ainda acusar quase-duplicatas
+no fim — nesse caso, mover uma das imagens para
+`banco de imagens/_duplicatas_<data>/` e gerar só aquela de novo.
+
+### 61.5. Arquivos alterados
+
+- `scripts/encurtar_prompts.py` - converte prompts PT longos → EN curtos.
+- `scripts/flow_agent_batch.py` - flag `--prompt-curto` e template compacto.
+- `run_caminha_agent.ps1` - aponta para `image_prompts_short.json` com a flag.
+- `test_prompt_curto.py` - validação do prompt curto que passa no filtro.
 
 ---
 
