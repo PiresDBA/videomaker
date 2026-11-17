@@ -50,6 +50,19 @@ def main():
             if n not in names:
                 names.append(n)
 
+    # Clipes de video (intro/meio/outro) injetados via video_clips.json.
+    clips_cfg = proj / "artifacts" / "video_clips.json"
+    if clips_cfg.exists():
+        vc = load_json(clips_cfg)
+        for key in ("intro", "outro"):
+            n = vc.get(key, "")
+            if n and n not in names:
+                names.append(n)
+        meio = vc.get("meio", {})
+        n = meio.get("file", "") if isinstance(meio, dict) else ""
+        if n and n not in names:
+            names.append(n)
+
     only = {x.strip() for x in args.only.split(",") if x.strip()}
     if only:
         names = [n for n in names if n in only]

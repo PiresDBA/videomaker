@@ -34,6 +34,7 @@ body{font-family:"Segoe UI","Trebuchet MS",sans-serif;-webkit-font-smoothing:ant
 .scene{position:absolute;inset:0;overflow:hidden;background:#0A0705}
 .cam{position:absolute;left:-3%;top:-3%;width:106%;height:106%;object-fit:cover;will-change:transform;transform-origin:50% 50%}
 video.cam{object-fit:cover;width:106%;height:106%;left:-3%;top:-3%;position:absolute;will-change:transform;background:#000}
+video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
 .cam-b{opacity:0}
 .ov{position:absolute;inset:0;pointer-events:none}
 .scrim-b{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(0deg,rgba(8,5,3,.88) 0%,rgba(8,5,3,.55) 24%,rgba(8,5,3,.12) 50%,rgba(8,5,3,0) 70%)}
@@ -179,8 +180,27 @@ EASE_SAIDA = '"power1.inOut"'    # saida de cena mais suave
 EASE_CAMERA = '"power1.inOut"'  # camera com movimento continuo, sem overshoot final
 CAM_VIBRANCI = 2.4   # amplia o deslocamento de camera (motion mais vivo)
 
-INTRO_DUR = 4.0   # duracao da tela inicial (capa)
-OUTRO_DUR = 5.0   # duracao da tela final (agradecimento)
+def _video_clips_config():
+    """Le artifacts/video_clips.json do projeto (via VIDEOMAKER_PROJ).
+
+    Formato:
+      {"intro":"intro_8s.mp4","intro_dur":8,
+       "meio":{"scene":"s10","file":"meio_8s.mp4"},
+       "outro":"subscribe_8s.mp4","outro_dur":8}
+    Sem o arquivo, mantem o comportamento classico (capa/outro estaticos).
+    """
+    p = Path(os.environ.get("VIDEOMAKER_PROJ", "")) / "artifacts" / "video_clips.json"
+    try:
+        if p.exists():
+            return load_json(p)
+    except Exception:
+        pass
+    return {}
+
+
+_CLIPS = _video_clips_config()
+INTRO_DUR = float(_CLIPS.get("intro_dur", 4.0))   # duracao da capa
+OUTRO_DUR = float(_CLIPS.get("outro_dur", 5.0))   # duracao da tela final
 
 # Textos da capa e do encerramento, no idioma do video (regra: nenhum texto
 # na tela pode ficar em PT nos videos EN/ES). Padrao pt = comportamento antigo.
@@ -217,10 +237,19 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     # ========== TELA INICIAL (CAPA) ==========
     intro_id = "intro-capa"
     intro_start = 0.0
-    scenes.append(
+    intro_video = _CLIPS.get("intro", "")
+    if intro_video:
+        cam_intro = ('<video class="cam cam-0 intro-video" src="assets/images/%s" '
+                     'muted playsinline autoplay loop></video>' % intro_video)
+    else:
+        cam_intro = ('<img class="cam cam-0" '
+                     'src="assets/images/apresenta_o_do_canal_scene.jpg" alt="">')
+    # O <video> nao pode ficar dentro de um div com data-start (o HyperFrames
+    # exige midia temporizada como filha direta do stage). Por isso o clipe e
+    # emitido como elemento de timeline separado, e o div da capa so tem texto.
+    intro_html = (
         '<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="1">'
         '<div class="ov grain"></div>'
-        '<img class="cam cam-0" src="assets/images/apresenta_o_do_canal_scene.jpg" alt="">'
         '<div class="ov" style="background:radial-gradient(circle at 50%% 50%%,rgba(240,178,74,.18) 0%%,rgba(8,5,3,.95) 100%%)"></div>'
         '<div class="block tc" style="top:42%%;">'
         '<div class="eyebrow">%s</div>'
@@ -232,6 +261,14 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                      _txt(CHANNEL_EYEBROW, lang), title,
                      _txt(INTRO_TEXTS, lang))
     )
+    scenes.append(intro_html)
+    if intro_video:
+        scenes.append(
+            '<video class="cam clip-video" id="intro-video" '
+            'src="assets/images/%s" muted playsinline '
+            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
+            % (intro_video, intro_start, INTRO_DUR)
+        )
     js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:0.9,ease:"back.out(2.4)"},0.3);')
     js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
     js.append('tl.fromTo("#intro-capa .cam-0",{scale:1},{scale:1.12,duration:4,ease:"none"},0);')
@@ -246,6 +283,10 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         timeline_shifted.append(s)
     cursor = cursor + float(timeline[-1]["end"]) if timeline else cursor
 
+    meio_cfg = _CLIPS.get("meio", {})
+    meio_scene = meio_cfg.get("scene", "")
+    meio_file = meio_cfg.get("file", "")
+
     for idx, sec in enumerate(timeline_shifted):
         sid = sec["id"]
         start = float(sec["start"])
@@ -255,6 +296,12 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         cams = cfg.get("camera", [])
         split = cfg.get("split")
         at = cfg.get("at")
+        # Clipe de video no meio do filme (substitui os stills da cena marcada).
+        if meio_file and sid == meio_scene:
+            print("  clipe do meio na cena %s -> %s" % (sid, meio_file), flush=True)
+            images = [meio_file]
+            at = None
+            split = None
 
         trans = str(cfg.get("transicao") or "crossfade").lower()
         T = float(TRANSICOES.get(trans, XFADE)) if trans in TRANSICOES else XFADE
@@ -283,10 +330,18 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             images_resolvidas.append(name)
             ultima_valida = name
 
+        videos_desta_cena = []
         for i, name in enumerate(images_resolvidas):
             cls = "cam cam-%d%s" % (i, " cam-b" if i > 0 else "")
             if name.lower().endswith(".mp4"):
-                parts.append('<video class="%s" src="assets/images/%s" muted playsinline></video>' % (cls, name))
+                # Midia temporizada deve ser filha direta do stage (check do
+                # HyperFrames), nao ficar dentro do div data-start da cena.
+                videos_desta_cena.append(
+                    '<video class="%s clip-video" id="%s-video" '
+                    'src="assets/images/%s" muted playsinline '
+                    'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
+                    % (cls, sid, name, start, dur, track)
+                )
             else:
                 parts.append('<img class="%s" src="assets/images/%s" alt="">' % (cls, name))
 
@@ -295,6 +350,7 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         parts.append('<div class="ov grain"></div>')
         parts.append("</div>")
         scenes.append("".join(parts))
+        scenes.extend(videos_desta_cena)
 
         n_img = len(images)
         has_video = any(n.lower().endswith(".mp4") for n in images)
@@ -419,24 +475,48 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     outro_id = "outro-final"
     outro_start = cursor
     outro_txts = _txt(OUTRO_TEXTS, lang)
-    scenes.append(
+    outro_video = _CLIPS.get("outro", "")
+    if outro_video:
+        # Video ja traz logo do YouTube + joinha + SUBSCRIBE embutidos.
+        # Nao sobrepoem os textos para nao competir com o SUBSCRIBE do clipe.
+        cam_outro = ('<video class="cam cam-0 outro-video" src="assets/images/%s" '
+                     'muted playsinline autoplay loop></video>' % outro_video)
+        cta_bloco = ('<div class="block tc" style="top:88%%;">'
+                     '<div class="body" data-anim="rise" data-delay="0.4">%s</div>'
+                     '</div>' % outro_txts[0])
+    else:
+        cam_outro = ('<div class="ov" style="background:radial-gradient(circle at 50%% 50%%,'
+                     'rgba(240,178,74,.18) 0%%,rgba(8,5,3,.95) 100%%)"></div>')
+        cta_bloco = (
+            '<div class="block tc" style="top:38%%;">'
+            '<div class="h-lg serif" data-anim="pop" data-delay="0.2">%s</div>'
+            '<div class="divider" style="margin:24px auto;"></div>'
+            '<div class="body" data-anim="rise" data-delay="0.6">%s</div>'
+            '<div class="body" data-anim="rise" data-delay="1.1">%s</div>'
+            '<div class="body" data-anim="rise" data-delay="1.6">%s</div>'
+            '</div>' % (outro_txts[0], outro_txts[1], outro_txts[2], outro_txts[3])
+        )
+    outro_html = (
         '<div id="%s" class="clip scene" data-start="%.3f" data-duration="%.3f" data-track-index="%s">'
         '<div class="ov grain"></div>'
-        '<div class="ov" style="background:radial-gradient(circle at 50%% 50%%,rgba(240,178,74,.18) 0%%,rgba(8,5,3,.95) 100%%)"></div>'
-        '<div class="block tc" style="top:38%%;">'
-        '<div class="h-lg serif" data-anim="pop" data-delay="0.2">%s</div>'
-        '<div class="divider" style="margin:24px auto;"></div>'
-        '<div class="body" data-anim="rise" data-delay="0.6">%s</div>'
-        '<div class="body" data-anim="rise" data-delay="1.1">%s</div>'
-        '<div class="body" data-anim="rise" data-delay="1.6">%s</div>'
-        '</div>'
-        '</div>' % (outro_id, outro_start, OUTRO_DUR, "1",
-                    outro_txts[0], outro_txts[1], outro_txts[2], outro_txts[3])
+        '%s'
+        '</div>' % (outro_id, outro_start, OUTRO_DUR, "1", cta_bloco)
     )
+    scenes.append(outro_html)
+    if outro_video:
+        scenes.append(
+            '<video class="cam clip-video" id="outro-video" '
+            'src="assets/images/%s" muted playsinline '
+            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
+            % (outro_video, outro_start, OUTRO_DUR)
+        )
     js.append('tl.set("#%s",{opacity:0},0);' % outro_id)
-    js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:0.8,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
-    for delay, sel in [(0.6, ".body:nth-of-type(1)"), (1.1, ".body:nth-of-type(2)"), (1.6, ".body:nth-of-type(3)")]:
-        js.append('tl.from("#%s %s",{opacity:0,y:30,duration:0.55,ease:"power3.out"},%.3f);' % (outro_id, sel, outro_start + delay))
+    if not outro_video:
+        js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:0.8,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
+        for delay, sel in [(0.6, ".body:nth-of-type(1)"), (1.1, ".body:nth-of-type(2)"), (1.6, ".body:nth-of-type(3)")]:
+            js.append('tl.from("#%s %s",{opacity:0,y:30,duration:0.55,ease:"power3.out"},%.3f);' % (outro_id, sel, outro_start + delay))
+    else:
+        js.append('tl.from("#%s .body",{opacity:0,y:30,duration:0.6,ease:"power3.out"},%.3f);' % (outro_id, outro_start + 0.4))
     js.append('tl.to("#%s",{opacity:0,duration:0.8,ease:"power2.in"},%.3f);' % (outro_id, outro_start + OUTRO_DUR - 0.9))
 
     total = outro_start + OUTRO_DUR

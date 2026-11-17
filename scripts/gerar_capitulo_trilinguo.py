@@ -39,6 +39,7 @@ Uso:
   python scripts/gerar_capitulo_trilinguo.py --slug luna-e-frida-conhecem-um-parque-de-diver --only-lang es
 """
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -519,6 +520,9 @@ def main():
     prompt = args.prompt
     slug = args.slug or slugify(prompt)
     p_dir = ROOT / "projects" / slug
+    # build_composition/mix_audio/verify_output leem video_clips.json do projeto
+    # no import, via VIDEOMAKER_PROJ. Propaga para todos os subprocessos.
+    os.environ["VIDEOMAKER_PROJ"] = str(p_dir)
 
     print("=" * 70)
     print(f"CAPITULO TRILINGUE: {prompt}")
