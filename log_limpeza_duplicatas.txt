@@ -1,0 +1,24 @@
+12:43:01 === monitor de duplicatas iniciado ===
+13:26:33 === batch encerrado; monitor finalizado ===
+13:26:34 checagem final: OK
+13:26:34 total de imagens: 89
+13:28:16 === monitor de duplicatas iniciado ===
+13:29:54 1 par(es) duplicado(s) detectado(s) (91 imagens)
+13:29:54   movida: desenvolvimento_5_scene_e.jpg -> desenvolvimento_5_scene_e_dup_132954.jpg  (par desenvolvimento_14_scene.jpg == desenvolvimento_5_scene_e.jpg)
+13:32:02 1 par(es) duplicado(s) detectado(s) (92 imagens)
+13:32:02   movida: desenvolvimento_11_scene_f.jpg -> desenvolvimento_11_scene_f_dup_133202.jpg  (par desenvolvimento_11_scene_f.jpg == desenvolvimento_14_scene.jpg)
+13:35:11 === batch encerrado; monitor finalizado ===
+13:35:13 checagem final: OK
+13:35:13 total de imagens: 91
+13:36:27 === monitor de duplicatas iniciado ===
+13:37:01 1 par(es) duplicado(s) detectado(s) (93 imagens)
+13:37:01   movida: desenvolvimento_8_scene_e.jpg -> desenvolvimento_8_scene_e_dup_133701.jpg  (par desenvolvimento_15_scene.jpg == desenvolvimento_8_scene_e.jpg)
+13:37:33 1 par(es) duplicado(s) detectado(s) (93 imagens)
+13:37:33   movida: desenvolvimento_11_scene_f.jpg -> desenvolvimento_11_scene_f_dup_133733.jpg  (par desenvolvimento_11_scene_f.jpg == desenvolvimento_15_scene.jpg)
+13:38:35 === batch encerrado; monitor finalizado ===
+13:38:36 checagem final: OK
+13:38:36 total de imagens: 93
+13:39:56 === monitor de duplicatas iniciado ===
+13:41:01 === batch encerrado; monitor finalizado ===
+13:41:02 checagem final: OK
+13:41:02 total de imagens: 95

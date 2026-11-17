@@ -1,0 +1,114 @@
+Biblia encontrada: False
+Total: 6 | pendentes: 6
+
+=== LOTE 1/2 ===
+
+--- tentativa 1/3: 3 cena(s) pendente(s) | layout=colagem 3 paineis empilhado ---
+
+=== LOTE: 3 cena(s) | layout=colagem de 3 paineis empilhado | prompt 1426 chars ===
+   - desenvolvimento_4_scene_f : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_5_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_8_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/jpeg, 777737 bytes)
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_4_scene_f.jpg
+
+--- tentativa 2/3: 2 cena(s) pendente(s) | layout=colagem 2 paineis empilhado ---
+
+=== LOTE: 2 cena(s) | layout=colagem de 2 paineis empilhado | prompt 1000 chars ===
+   - desenvolvimento_5_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_8_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/webp, 151408 bytes)
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_5_scene_e.jpg
+
+--- tentativa 3/3: 1 cena(s) pendente(s) | layout=separadas (1 painel) ---
+
+=== LOTE: 1 cena(s) | layout=imagens separadas (1 painel) | prompt 514 chars ===
+   - desenvolvimento_8_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  AVISO: opcao 'Imagem' nao apareceu no painel; o Flow ja gera imagem por padrão, seguindo.
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/webp, 151408 bytes)
+  descartada (duplicata da galeria)
+  uteis: 0 de 1 recebidas (apos tratar colagens)
+  nenhuma imagem nova recebida; tentando de novo...
+
+!!! FALTANDO APOS 3 TENTATIVAS: desenvolvimento_8_scene_e
+   FALTANDO: ('desenvolvimento_8_scene_e', 'Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn English bulldog with a pearl necklace; LUNA = a long low chocolate-brown dachshund (sausage dog) with a gold collar. Scene: mesmo espaço! Foi uma confusão de patas. No humans, no cats, no other dog breeds. No text, no words. The red dog bed with golden hearts looks identical in every image.')
+
+=== LOTE 2/2 ===
+
+--- tentativa 1/3: 3 cena(s) pendente(s) | layout=colagem 3 paineis empilhado ---
+
+=== LOTE: 3 cena(s) | layout=colagem de 3 paineis empilhado | prompt 1476 chars ===
+   - desenvolvimento_11_scene_d : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_11_scene_f : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_12_scene : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/jpeg, 774780 bytes)
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_11_scene_d.jpg
+
+--- tentativa 2/3: 2 cena(s) pendente(s) | layout=colagem 2 paineis empilhado ---
+
+=== LOTE: 2 cena(s) | layout=colagem de 2 paineis empilhado | prompt 1005 chars ===
+   - desenvolvimento_11_scene_f : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+   - desenvolvimento_12_scene : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  capturada 1/1 (image/webp, 151408 bytes)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_11_scene_f.jpg
+
+--- tentativa 3/3: 1 cena(s) pendente(s) | layout=separadas (1 painel) ---
+
+=== LOTE: 1 cena(s) | layout=imagens separadas (1 painel) | prompt 530 chars ===
+   - desenvolvimento_12_scene : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  uteis: 0 de 0 recebidas (apos tratar colagens)
+  nenhuma imagem nova recebida; tentando de novo...
+
+!!! FALTANDO APOS 3 TENTATIVAS: desenvolvimento_12_scene
+   FALTANDO: ('desenvolvimento_12_scene', 'Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn English bulldog with a pearl necklace; LUNA = a long low chocolate-brown dachshund (sausage dog) with a gold collar. Scene: De repente, um barulho estranho ecoou na cozinha da casa. No humans, no cats, no other dog breeds. No text, no words. The red dog bed with golden hearts looks identical in every image.')
+
+============================================================
+IMAGENS QUE FALTARAM (gerar depois):
+  - ('desenvolvimento_8_scene_e', 'Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn English bulldog with a pearl necklace; LUNA = a long low chocolate-brown dachshund (sausage dog) with a gold collar. Scene: mesmo espaço! Foi uma confusão de patas. No humans, no cats, no other dog breeds. No text, no words. The red dog bed with golden hearts looks identical in every image.')
+  - ('desenvolvimento_12_scene', 'Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn English bulldog with a pearl necklace; LUNA = a long low chocolate-brown dachshund (sausage dog) with a gold collar. Scene: De repente, um barulho estranho ecoou na cozinha da casa. No humans, no cats, no other dog breeds. No text, no words. The red dog bed with golden hearts looks identical in every image.')
+============================================================

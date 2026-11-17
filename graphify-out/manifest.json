@@ -134,9 +134,9 @@
     "ast_empty": true
   },
   "run_caminha_agent.ps1": {
-    "mtime": 1794928305.203569,
-    "seen": 1794928959.7696412,
-    "ast_hash": "e31c18293c74c56bcd5e8710378ab7a8",
+    "mtime": 1794929373.0829742,
+    "seen": 1794929407.1213517,
+    "ast_hash": "01ec50f49209e88c69cc9abe8bb7ff7d",
     "semantic_hash": ""
   },
   "run_caminha_pt.ps1": {
@@ -356,9 +356,9 @@
     "semantic_hash": "2223dc3a9869992e0e0150226663dfea"
   },
   "scripts/flow_agent_batch.py": {
-    "mtime": 1794924934.0862503,
-    "seen": 1794925065.205962,
-    "ast_hash": "fd8023ed07d3a06ec91c34ac2df24975",
+    "mtime": 1794929357.935559,
+    "seen": 1794929407.1214747,
+    "ast_hash": "e79134e26c14ca03f3b28f4e7cb7da5c",
     "semantic_hash": ""
   },
   "scripts/flow_fetch.py": {
@@ -1407,15 +1407,15 @@
     "semantic_hash": ""
   },
   "MANUAL_GRAFOS.md": {
-    "mtime": 1794925026.3102996,
-    "seen": 1794925065.2061377,
-    "ast_hash": "be6333b447b4db6050de1913604056d7",
+    "mtime": 1794929597.5445988,
+    "seen": 1794930203.591583,
+    "ast_hash": "fe15ded9ca6acfd3628b8cda09fb673f",
     "semantic_hash": ""
   },
   "log_caminha_final.txt": {
-    "mtime": 1794928327.285164,
-    "seen": 1794928959.7702043,
-    "ast_hash": "66097233e9e727dfcca0d0bd739da8d5",
+    "mtime": 1794930195.7527225,
+    "seen": 1794930203.5916007,
+    "ast_hash": "8ba51e185450769eccf84acd0cc57f60",
     "semantic_hash": ""
   },
   "log_en_utf8.txt": {
@@ -1446,6 +1446,18 @@
     "mtime": 1794928150.7213676,
     "seen": 1794928959.7700653,
     "ast_hash": "79de1ff94f7dc6d0a2076f7dd3253ad5",
+    "semantic_hash": ""
+  },
+  "scripts/monitor_duplicatas.py": {
+    "mtime": 1794930147.648196,
+    "seen": 1794930203.5914524,
+    "ast_hash": "20c09b0595b476f5b78985f18c16ca0e",
+    "semantic_hash": ""
+  },
+  "log_limpeza_duplicatas.txt": {
+    "mtime": 1794930181.5172546,
+    "seen": 1794930203.5916154,
+    "ast_hash": "3357d377dd9463b4b25b771394b83d2b",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {

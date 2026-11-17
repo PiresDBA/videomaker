@@ -1,0 +1,36 @@
+Biblia encontrada: False
+Total: 2 | pendentes: 2
+
+=== LOTE 1/2 ===
+
+--- tentativa 1/5: 1 cena(s) pendente(s) | layout=separadas (1 painel) ---
+
+=== LOTE: 1 cena(s) | layout=imagens separadas (1 painel) | prompt 620 chars ===
+   - desenvolvimento_8_scene_e : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/jpeg, 759567 bytes)
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_8_scene_e.jpg
+
+=== LOTE 2/2 ===
+
+--- tentativa 1/5: 1 cena(s) pendente(s) | layout=separadas (1 painel) ---
+
+=== LOTE: 1 cena(s) | layout=imagens separadas (1 painel) | prompt 627 chars ===
+   - desenvolvimento_11_scene_f : Pixar-style 3D cartoon, 16:9. Use the SAME two dogs in every image: FRIDA = a big fawn Eng
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  modo Agente: OFF (bom)
+  modo Imagem selecionado (x1, 16:9) (nunca video)
+  x1 já selecionado (1 imagem)
+  envio confirmado (tentativa 1)
+  submit: {'ok': True, 'error': None}
+  prompt enviado; aguardando imagens...
+  capturada 1/1 (image/webp, 133738 bytes)
+  uteis: 1 de 1 recebidas (apos tratar colagens)
+  salvo: desenvolvimento_11_scene_f.jpg
