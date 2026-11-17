@@ -423,6 +423,15 @@ já publicado, ou usar tema que não está na lista sem acrescentá-lo antes.
 O hook `.githooks/pre-commit` roda `scripts/check_topico_novo.py` e bloqueia
 commit com fila ausente/vazia ou sem nenhum tema livre.
 
+## 5.12. Duração mínima do vídeo e áudio — REGRA DE OURO (regra dura)
+
+- Vídeo e áudio devem ter **mais de 10 minutos**, preferencialmente **15 minutos**.
+- O áudio final (`assets/audio/final_mix.m4a`) deve durar entre **10 e 15 minutos**.
+- O roteiro core (seções s1 até antes de s_final) deve ter entre **1 500 e 2 000 palavras**.
+- Se a narração/áudio final for inferior a 10 minutos ou o roteiro core ficar fora de 1 500-2 000 palavras, o vídeo está **reprovado** e deve ser refeito integralmente (roteiro mais longo, mais beats, ou re-geração).
+- Essa regra vale para PT/EN/ES; a geração de imagens é única, mas a duração do áudio narrado é verificada por idioma.
+- O pipeline deve validar duração após `final_mix` e abortar publicação caso a regra seja violada.
+
 ---
 
 ## 6. Resumo em 30 segundos

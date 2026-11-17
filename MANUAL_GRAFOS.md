@@ -4168,6 +4168,85 @@ gerado a partir dessa fila e está registrado em USADOS.
 
 ---
 
+## 58.8. Duração mínima do vídeo e áudio — REGRA DE OURO (regra dura)
+
+- Vídeo e áudio devem ter **mais de 10 minutos**, preferencialmente **15 minutos**.
+- O áudio final (`assets/audio/final_mix.m4a`) por idioma deve durar entre **10 e 15 minutos**.
+- O roteiro core (seções s1 até antes de s_final) deve ter entre **1 500 e 2 000 palavras**.
+- Se a narração/áudio final for inferior a 10 minutos ou o roteiro core ficar fora de 1 500-2 000 palavras, o vídeo está **reprovado** e deve ser refeito integralmente (roteiro mais longo, mais beats, ou re-geração).
+- Essa regra vale para PT/EN/ES; a geração de imagens é única, mas a duração do áudio narrado é verificada por idioma.
+- O pipeline deve validar duração após `final_mix` e abortar publicação caso a regra seja violada.
+- Documentada também em `CONTRATO.md` §5.12 e `AGENTS.md` item 11.
+
+---
+
+## 58.9. Roteiro longo e densidade de imagens (2026-11-17)
+
+Para cumprir a REGRA DE OURO (§58.8), o gerador de roteiro
+(`scripts/generate_script_from_prompt.py`) foi ajustado para pedir ao Gemini:
+
+- **18 seções de história**, cada uma com **120 a 150 palavras**;
+- roteiro core total entre **1 500 e 2 000 palavras**;
+- se o Gemini devolver menos de 1 500 palavras core, **regerar** o roteiro antes
+  de seguir para cenas/imagens.
+
+O gerador de cenas (`generate_scenes_and_prompts.py`) continua em
+`scene_mode = "beats"`, mas para vídeos longos usa densidade maior:
+
+- `--max-images-per-section 8`
+- `--min-words-per-beat 7`
+- `--max-words-per-beat 12`
+
+Isso gera ~95 imagens para ~21 seções (ex.: projeto
+`a-caminha-nova-que-ninguem-quer-usar`, 1 773 palavras core → 21 cenas / 95
+imagens), em vez das ~30 imagens dos vídeos curtos antigos.
+
+Comando usado para forçar cenas novas após trocar o roteiro:
+
+```powershell
+python scripts/pipeline.py resume --slug <slug> --only scenes `
+  --scene-mode beats --max-images-per-section 8 `
+  --min-words-per-beat 7 --max-words-per-beat 12 --force
+```
+
+Depois disso, `gerar_capitulo_trilinguo.py --only-lang pt` gera as imagens no
+Flow, narração, mix e render. A fase de imagens é demorada (95+ chamadas ao
+Flow); rodar em background com log.
+
+### 58.9.1. Continuidade de objetos/cenário — Bíblia de Continuidade (2026-11-17)
+
+Problema registrado pelo usuário: o Flow mantinha Frida e Luna, mas **perdia o
+objeto central** entre imagens (ex.: caixa de presente grande na primeira,
+caixinha minúscula na segunda, algo sem relação na terceira).
+
+Investigação feita nesta sessão:
+
+- `flow_fetch.py --ref-image` **não resolve**: no Flow, o botão “Adicionar mídia
+  → Enviar” abre um seletor de arquivos que **não expõe `input[type=file]` nem
+  evento `filechooser` via CDP**; clicar trava o Chrome. Não há como anexar a
+  imagem anterior de forma confiável no modo CDP/headless.
+- Colar imagem no campo de prompt via clipboard **não funciona**: o Flow não
+  insere a imagem no ProseMirror (`Ctrl+V` não gera `<img>` no editor).
+
+Solução adotada: **descrever a continuidade em texto, dentro do prompt**.
+
+- `artifacts/script.json` ganhou o campo `continuity_notes` (descrição fixa do
+  objeto central, cor, formato, tamanho e posição, mais a regra de que a caixa
+  aparece só no começo e a caminha já está fora dela depois).
+- `generate_scenes_and_prompts.py` lê `continuity_notes` e injeta o bloco
+  `BIBLIA DE CONTINUIDADE (prioridade maxima em TODAS as imagens do video)` em
+  **todos** os prompts de imagem.
+- `MAX_PROMPT_CHARS` subiu de 1400 para 2600 para a Bíblia não ser cortada.
+- A REGRA ANTI-REPETIÇÃO foi ajustada: a CENA manda na **ação**; a Bíblia manda
+  nos **objetos e no cenário**. O texto “mude os objetos de cena” foi removido
+  de `flow_fetch.py` e de `generate_scenes_and_prompts.py` para não conflitar.
+
+Para vídeos novos, basta preencher `continuity_notes` no `script.json` antes da
+fase `scenes`. Se o roteiro não tiver esse campo, o comportamento antigo
+continua (sem Bíblia).
+
+---
+
 ## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)
 
 ### 59.1. Objetivo

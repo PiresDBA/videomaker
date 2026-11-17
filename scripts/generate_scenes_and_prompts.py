@@ -31,7 +31,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 PROJECT = HERE.parent
 
-MAX_PROMPT_CHARS = 1400
+MAX_PROMPT_CHARS = 2600
 
 
 def load_json(p):
@@ -289,9 +289,10 @@ REF_CHARS = (
     "fawn, grande e compacta (rugas suaves, colar de perolas). "
     "ESTILO IGUAL A REFERENCIA (obrigatorio): mesmo traco, textura, paleta de "
     "cores, iluminacao e nivel de detalhe da imagem de referencia. "
-    "REGRA ANTI-REPETICAO (OBRIGATORIA): esta e uma CENA NOVA. A CENA manda em "
-    "tudo e a referencia nunca define a cena: mude a composicao, o enquadramento, "
-    "o angulo, as poses, os objetos e o fundo. "
+    "REGRA ANTI-REPETICAO (OBRIGATORIA): esta e uma CENA NOVA. A CENA manda na "
+    "acao, mas a BIBLIA DE CONTINUIDADE manda nos objetos e no cenario: mude a "
+    "composicao, o enquadramento, o angulo, as poses e a distancia da camera, "
+    "NUNCA os objetos fixos da historia. "
     "Desenho animado original e ludico "
     "(nao copie outros desenhos, filmes ou marcas existentes), "
     "visto do ponto de vista dos caes, sem humanos."
@@ -324,7 +325,7 @@ def soften_terms(text):
     return text
 
 
-def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a", cenario="", lugar="", passeio=False):
+def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False, variant="a", cenario="", lugar="", passeio=False, continuidade=""):
     """Monta o prompt curto, sem redundancia e sem marcas.
     Cada prompt gera UMA imagem. variant 'a' = cena principal; 'b' = close-up
     / reacao dos personagens (segunda imagem da mesma cena, para engajamento).
@@ -364,6 +365,14 @@ def build_prompt(title, scene_text, style_clean, frida_luna, has_reference=False
         parts.append(
             "Cenario de base do video (o MESMO tipo de lugar, porem com "
             "enquadramento, angulo e fundo diferentes em cada imagem): %s." % cenario
+        )
+    if continuidade:
+        parts.append(
+            "BIBLIA DE CONTINUIDADE (prioridade maxima em TODAS as imagens do video): "
+            "%s. O objeto central e o cenario NUNCA mudam de cor, formato, tamanho ou "
+            "posicao entre uma imagem e outra. Mude somente o angulo, o enquadramento, "
+            "a distancia da camera e as poses dos personagens. NAO crie versoes novas, "
+            "menores ou diferentes do objeto central." % continuidade.strip()
         )
     if frida_luna:
         if has_reference:
@@ -544,6 +553,7 @@ def main():
     sections = script.get("sections", [])
     style = script.get("style_notes", "")
     style = sanitize_style(style)
+    continuidade = clean_text(script.get("continuity_notes", ""))
     title = clean_text(script.get("title", "video explicativo"))
     frida_luna = is_frida_luna_script(script)
     cenario = _extrair_cenario(script)
@@ -601,7 +611,8 @@ def main():
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
                                                has_reference=has_ref, variant="a",
                                                cenario=c_cen, lugar=c_lug,
-                                               passeio=passeio)
+                                               passeio=passeio,
+                                               continuidade=continuidade)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name],
                 "split": None,
@@ -618,11 +629,13 @@ def main():
             prompts[scene_name] = build_prompt(title, text, style, frida_luna,
                                                has_reference=has_ref, variant="a",
                                                cenario=c_cen, lugar=c_lug,
-                                               passeio=passeio)
+                                               passeio=passeio,
+                                               continuidade=continuidade)
             prompts[scene_name + "_b"] = build_prompt(title, text, style, frida_luna,
                                                       has_reference=has_ref, variant="b",
                                                       cenario=c_cen, lugar=c_lug,
-                                                      passeio=passeio)
+                                                      passeio=passeio,
+                                                      continuidade=continuidade)
             scenes[sid] = {
                 "images": ["%s.jpg" % scene_name, "%s_b.jpg" % scene_name],
                 "split": 0.5,
@@ -654,7 +667,8 @@ def main():
             prompts[name] = build_prompt(title, beat, style, frida_luna,
                                          has_reference=has_ref, variant=variants[k],
                                          cenario=b_cen, lugar=b_lug,
-                                         passeio=passeio)
+                                         passeio=passeio,
+                                         continuidade=continuidade)
             images.append("%s.jpg" % name)
             cams.append(CAMERAS[k % len(CAMERAS)])
         scenes[sid] = {

@@ -55,6 +55,7 @@ perguntas **antes** de escrever código:
     `python scripts/atualizar_kids.py <pt|en|es>` para marcar todos de uma vez
     ou `python scripts/youtube_metadados.py --lang <lang> --video-id <ID>
     --proj <caminho> --atualizar --nao-kids` para um vídeo individual.
+11. **Duração mínima obrigatória — REGRA DE OURO.** O vídeo e o áudio devem ter **mais de 10 minutos**, preferencialmente **15 minutos**. O áudio final (`assets/audio/final_mix.m4a`) deve durar entre 10 e 15 minutos. O roteiro core deve ter entre **1 500 e 2 000 palavras**. Se não atingir, o vídeo está **reprovado** e deve ser refeito.
 
 Se qualquer resposta for "sim, estou fazendo isso" → **pare e conserte antes**.
 Detalhes: `CONTRATO.md` §5.8 e `MANUAL_GRAFOS.md` §58.6.
