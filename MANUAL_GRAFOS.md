@@ -4356,6 +4356,25 @@ imagem válida da sequência. O caminho do projeto é lido da variável de ambie
 
 ---
 
+## 58.10. Grafo de conhecimento — memória viva do projeto (2026-11-17)
+
+O `graphify-out/` é o grafo de conhecimento do repositório, gerado pelo pacote
+`graphify` (`graphify . --update` para incremental, `graphify . --force` para
+rebuild completo). É a forma barata em token de qualquer agente novo entender o
+sistema.
+
+Regras (CONTRATO §5.16 / AGENTS.md topo):
+
+- Todo agente começa com `graphify query "<pergunta>" --budget 1500`.
+- O hook `post-commit` (`graphify hook install`) atualiza o grafo após cada
+  commit. Verificar com `graphify hook status`.
+- Se um manual mudou, o grafo vai no **mesmo commit**; se ficou velho,
+  `graphify . --update` antes do push.
+- Saídas: `graph.json` (dados), `GRAPH_REPORT.md` (relatório legível),
+  `graph.html` (visual), `manifest.json` (cache incremental).
+
+---
+
 ## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)
 
 ### 59.1. Objetivo
@@ -4445,36 +4464,43 @@ padrão de variação visual do canal:
 - todos os painéis mantêm Frida, Luna, Pipoca, Penélope e a Bíblia de
   Continuidade (CONTRATO §5.13). Não usar essa variação para repetir figura.
 
-### 60.2. Estado da implementação (registro honesto)
+### 60.2. Implementação (2026-11-17)
 
-Hoje `scripts/flow_agent_batch.py` já faz colagem de N painéis:
+Tudo em `scripts/flow_agent_batch.py`:
 
-- `montar_prompt_lote(..., colagem=True)` pede UMA imagem 16:9 dividida em N
-  painéis verticais **lado a lado**, na ordem das cenas;
-- `dividir_colagem(body, n)` detecta a colagem pela proporção largura/altura >
-  1.9, remove as linhas divisórias e salva um `.jpg` por painel;
-- `processar_lote` escolhe colagem aleatoriamente (50% para lotes de 3+, 35%
-  para lotes de 2) na primeira tentativa.
-
-**Ainda NÃO implementado:** a variação de orientação (painéis empilhados /
-divisão vertical da tela) e a escolha explícita de 4 painéis. `dividir_colagem`
-só reconhece colagem larga; uma colagem empilhada (alta) passa como imagem
-única. Para cumprir a regra §60.1 será preciso:
-
-1. sortear orientação junto com a quantidade de painéis em `processar_lote`;
-2. estender `montar_prompt_lote` para pedir "N painéis horizontais empilhados";
-3. estender `dividir_colagem` para detectar proporção alta (altura/largura >
-   1.9) e fatiar com cortes horizontais.
-
-Até lá, a colagem lado a lado (3 e 2 painéis) continua válida e é a que foi
-validada visualmente (§58.9.6).
+- `ORIENTACOES = ("lado_a_lado", "empilhado")` e `PANEIS_POSSIVEIS = (2, 3, 4)`.
+- `processar_lote` sortea, na primeira tentativa de cada lote, entre **imagens
+  separadas (1 painel)** e **colagem de 2/3/4 painéis** na orientação sorteada.
+  Recuperações usam imagens separadas para não repetir cena já entregue. As
+  flags `--layout auto|separado|colagem` e
+  `--orientacao auto|lado_a_lado|empilhado` permitem forçar um modo (útil para
+  teste); o default é `auto`.
+- `montar_prompt_lote(..., colagem, orientacao, n_paineis)` pede UMA imagem 16:9
+  com N painéis: `lado_a_lado` = colunas, painel 1 à esquerda; `empilhado` =
+  linhas, painel 1 no topo. Cada painel é uma CENA diferente, na ordem.
+- `dividir_colagem(body, n, orientacao)` **preserva colagens 16:9 inteiras** —
+  é exatamente esse o quadrinho que aparece no vídeo. Só fatia proporções
+  extremas: largura/altura > 1.9 em colunas, altura/largura > 1.9 em linhas
+  (com margem de 6 px para remover as linhas divisórias).
+- Com colagem 16:9 o captor espera **1 imagem** (não N), evitando timeout de
+  minutos; os nomes restantes do lote seguem para a próxima tentativa.
 
 ### 60.3. Validação antes de renderizar
 
-Abrir os `.jpg` gerados e conferir: painéis na ordem das cenas, personagens
-corretos, cenas diferentes entre si, e a divisão (horizontal/vertical)
-alternando entre beats. Se houver painel repetido, **não renderizar nem
-publicar** (CONTRATO §5.8).
+- Teste rápido, sem Chrome: `python scripts/test_paineis.py` — valida o
+  fatiamento largo/alto, a preservação do 16:9 e os textos dos prompts.
+- Abrir os `.jpg` gerados e conferir: painéis na ordem das cenas, personagens
+  corretos, cenas diferentes entre si, e a divisão (lado a lado/empilhada)
+  alternando entre beats. Se houver painel repetido, **não renderizar nem
+  publicar** (CONTRATO §5.8).
+
+### 60.4. Arquivos alterados
+
+- `scripts/flow_agent_batch.py` — variação de quantidade e orientação dos
+  painéis, fatiamento nas duas direções, captura de 1 imagem para colagens e
+  novas flags de controle.
+- `scripts/test_paineis.py` — teste sem navegador das variações.
+- `MANUAL_GRAFOS.md` — esta seção (atualiza o registro de §60.2).
 
 ---
 

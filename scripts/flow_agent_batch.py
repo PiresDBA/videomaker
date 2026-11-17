@@ -11,9 +11,15 @@ Fluxo:
      e envia com o modo Agente ligado.
   5. Captura as imagens via response handler (na ordem em que o Flow baixa) e salva
      com os nomes corretos do lote.
+  6. VARIEDADE VISUAL (CONTRATO §5.15 / MANUAL_GRAFOS.md §60): em cada lote sortea
+     entre imagens separadas (1 painel) e colagens de 2/3/4 painéis, lado a lado
+     (linhas verticais) ou empilhados (linhas horizontais), estilo história em
+     quadrinho. Colagens 16:9 ficam inteiras (é o efeito desejado no vídeo); só
+     proporções extremas são fatiadas pelo `dividir_colagem`.
 
 Uso:
   python scripts/flow_agent_batch.py --project-dir <proj> --batch-size 10 --wait 600
+  python scripts/flow_agent_batch.py ... --layout colagem --orientacao empilhado
 """
 from __future__ import annotations
 
@@ -78,21 +84,44 @@ IDENTIDADE_PERSONAGENS = (
     "desenho dele - NAO troque a raca de um cachorro entre imagens."
 )
 
+# Orientacoes possiveis dos paineis (estilo historia em quadrinho).
+ORIENTACOES = ("lado_a_lado", "empilhado")
+PANEIS_POSSIVEIS = (2, 3, 4)
 
-def montar_prompt_lote(itens, biblia: str, colagem: bool = False) -> str:
+_ORIENTACAO_TEXTO = {
+    "lado_a_lado": (
+        "paineis VERTICAIS iguais LADO A LADO (divisao em colunas): o painel 1 e o "
+        "mais a ESQUERDA, o painel 2 o seguinte, e assim por diante, da esquerda "
+        "para a direita"
+    ),
+    "empilhado": (
+        "paineis HORIZONTAIS iguais EMPILHADOS (divisao em linhas): o painel 1 e o "
+        "mais ACIMA, o painel 2 o seguinte, e assim por diante, de cima para baixo"
+    ),
+}
+
+
+def montar_prompt_lote(itens, biblia: str, colagem: bool = False,
+                       orientacao: str = "lado_a_lado", n_paineis: int = 0) -> str:
     """Monta o prompt unico do lote com cenas numeradas.
 
-    colagem=True: pede UMA imagem unica dividida em N paineis (triptico/dupla),
-    que depois e fatiada pelo script. colagem=False: pede N imagens separadas.
+    colagem=True: pede UMA imagem 16:9 com N paineis internos (2/3/4), na
+    orientacao escolhida (`lado_a_lado` ou `empilhado`). Colagens 16:9 sao
+    preservadas inteiras pelo `dividir_colagem` — esse e o efeito de historia
+    em quadrinho mostrado no video. colagem=False: pede N imagens separadas.
     O Flow as vezes entrega colagem mesmo pedindo separadas; o divisor detecta.
     """
     n = len(itens)
     if colagem and n > 1:
+        qtd = min(max(int(n_paineis or n), 2), 4)
+        descricao = _ORIENTACAO_TEXTO.get(orientacao, _ORIENTACAO_TEXTO["lado_a_lado"])
         cabecalho = (
-            "Crie UMA UNICA imagem estatica em 16:9, dividida em %d paineis verticais "
-            "iguais lado a lado (uma colagem de %d cenas), com linhas finas separando os "
-            "paineis. O painel 1 (mais a esquerda) e a CENA 1, o painel 2 e a CENA 2, "
-            "e assim por diante, NA ORDEM. Cada painel e uma cena diferente." % (n, n)
+            "Crie UMA UNICA imagem estatica em 16:9, dividida em %d %s, com linhas "
+            "finas separando os paineis. Cada painel mostra uma CENA diferente e "
+            "segue a ordem: painel 1 = CENA 1, painel 2 = CENA 2, e assim por diante. "
+            "A cena manda em cada painel: mude angulo, enquadramento e poses entre "
+            "eles. NAO escreva NADA na imagem: sem palavras, numeros, legendas ou "
+            "baloes." % (qtd, descricao)
         )
     else:
         cabecalho = (
@@ -234,36 +263,57 @@ def salvar_como_jpg(body: bytes, destino: Path):
         destino.write_bytes(body)
 
 
-def dividir_colagem(body: bytes, n: int):
-    """Se a imagem for uma colagem de N paineis, devolve N bytes (um por painel).
-    Se nao for colagem, devolve [body]."""
+def dividir_colagem(body: bytes, n: int, orientacao: str = ""):
+    """Trata uma imagem que pode ser colagem de N paineis internos.
+
+    - colagem LARGA (largura/altura > 1.9): fatia em N colunas verticais;
+    - colagem ALTA (altura/largura > 1.9): fatia em N linhas horizontais;
+    - imagem 16:9 com paineis internos: devolve INTEIRA — e exatamente esse o
+      efeito de historia em quadrinho que aparece no video (CONTRATO §5.15).
+
+    Devolve sempre uma lista de bytes (1 item quando nao ha fatia extrema).
+    """
     try:
         from PIL import Image
         im = Image.open(BytesIO(body)).convert("RGB")
         w, h = im.size
-        # colagem: proporcao largura/altura bem maior que 16:9 (ex.: 3:1, 2:1)
+        margem = 6  # remove linhas divisoriais
+
         if n > 1 and w / h > 1.9:
-            margem = 6  # remove linhas divisoriais
             paineis = []
             for i in range(n):
                 x0 = int(w * i / n) + (margem if i else 0)
                 x1 = int(w * (i + 1) / n) - (margem if i < n - 1 else 0)
-                p = im.crop((x0, 0, x1, h))
                 buf = BytesIO()
-                p.save(buf, format="JPEG", quality=92)
+                im.crop((x0, 0, x1, h)).save(buf, format="JPEG", quality=92)
                 paineis.append(buf.getvalue())
-            print("  dividida colagem em %d paineis (%dx%d)" % (n, w, h), flush=True)
+            print("  dividida colagem LARGA em %d paineis (%dx%d)" % (n, w, h), flush=True)
+            return paineis
+
+        if n > 1 and h / w > 1.9:
+            paineis = []
+            for i in range(n):
+                y0 = int(h * i / n) + (margem if i else 0)
+                y1 = int(h * (i + 1) / n) - (margem if i < n - 1 else 0)
+                buf = BytesIO()
+                im.crop((0, y0, w, y1)).save(buf, format="JPEG", quality=92)
+                paineis.append(buf.getvalue())
+            print("  dividida colagem ALTA em %d paineis (%dx%d)" % (n, w, h), flush=True)
             return paineis
     except Exception as e:
         print("  aviso ao dividir colagem: %s" % str(e)[:60], flush=True)
     return [body]
 
 
-async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos, colagem=False):
-    """Envia um lote e devolves (nome, body) das imagens novas nao-duplicadas."""
-    prompt = montar_prompt_lote(itens, biblia, colagem=colagem)
-    print("\n=== LOTE: %d imagem(ns) | colagem=%s | prompt %d chars ===" % (
-        len(itens), colagem, len(prompt)), flush=True)
+async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
+                         colagem=False, orientacao="lado_a_lado", n_paineis=0):
+    """Envia um lote e devolve os bytes das imagens novas nao-duplicadas."""
+    prompt = montar_prompt_lote(itens, biblia, colagem=colagem,
+                                orientacao=orientacao, n_paineis=n_paineis)
+    layout = ("colagem de %d paineis %s" % (n_paineis or len(itens), orientacao)
+              if colagem else "imagens separadas (1 painel)")
+    print("\n=== LOTE: %d cena(s) | layout=%s | prompt %d chars ===" % (
+        len(itens), layout, len(prompt)), flush=True)
     for name, cena in itens:
         print("   -", name, ":", cena[:90], flush=True)
 
@@ -280,7 +330,9 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos, colage
         import re as _re
         chars = _re.sub(pat, repl, chars, flags=_re.I)
     full = chars
-    captor = asyncio.create_task(baixar_novas(page, len(itens), wait_s))
+    # Uma colagem 16:9 e UMA imagem: esperar N aqui causaria um timeout de minutos.
+    esperadas = 1 if colagem else len(itens)
+    captor = asyncio.create_task(baixar_novas(page, esperadas, wait_s))
     res = await ff.submit_flow_prompt(page, full, clear=True)
     print("  submit:", res, flush=True)
     if not res.get("ok"):
@@ -296,20 +348,25 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos, colage
             print("  descartada (duplicata da galeria)", flush=True)
             continue
         hashes_conhecidos.add(h)
-        # se o Flow entregou uma colagem, divide nos N paineis
-        paineis = dividir_colagem(body, len(itens))
+        # colagens 16:9 ficam inteiras (efeito quadrinho); proporcoes extremas
+        # sao fatiadas em N paineis na orientacao sorteada
+        paineis = dividir_colagem(body, len(itens), orientacao=orientacao)
         novas.extend(paineis)
-    print("  uteis: %d de %d recebidas (apos dividir colagens)" % (
+    print("  uteis: %d de %d recebidas (apos tratar colagens)" % (
         len(novas), len(bodies)), flush=True)
     return novas
 
 
-async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4):
+async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4,
+                         layout="auto", orientacao_fixa="auto"):
     """Gera o lote e recupera automaticamente as imagens que o Flow nao gerou.
 
     O Flow as vezes gera menos imagens que o pedido (ex.: 8 de 10). As imagens
     chegam na ordem do prompt, entao salvamos as M primeiras nos primeiros M nomes
     e reenviamos somente os nomes restantes, ate max_tentativas.
+
+    `layout`/`orientacao_fixa` permitem forcar um modo (uteis para teste); o
+    default `auto` sortea a variacao visual a cada lote (MANUAL_GRAFOS §60).
     """
     import random
     hashes = _hashes_existentes(out_dir)
@@ -318,18 +375,37 @@ async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4)
     for tentativa in range(1, max_tentativas + 1):
         if not pendentes:
             break
-        # VARIEDADE: escolhe aleatoriamente entre colagem (triptico/dupla) e
-        # imagens separadas. Na primeira tentativa de um lote de 3+, 50% colagem.
         tamanho = len(pendentes)
-        if tamanho >= 3 and tentativa == 1:
+
+        # VARIEDADE VISUAL: 1 painel (imagens separadas) ou colagem de 2/3/4
+        # paineis, lado a lado ou empilhados. Recuperacoes usam imagens separadas
+        # para nao repetir a cena ja entregue na colagem.
+        if layout == "separado":
+            colagem = False
+        elif layout == "colagem":
+            colagem = tamanho >= 2
+        elif tamanho >= 3 and tentativa == 1:
             colagem = random.random() < 0.5
         elif tamanho == 2 and tentativa == 1:
             colagem = random.random() < 0.35
         else:
             colagem = False
-        print("\n--- tentativa %d/%d: %d imagem(ns) pendente(s) | colagem=%s ---" % (
-            tentativa, max_tentativas, len(pendentes), colagem), flush=True)
-        novas = await _enviar_uma_vez(page, pendentes, biblia, wait_s, hashes, colagem=colagem)
+
+        if colagem:
+            n_paineis = min(random.choice(PANEIS_POSSIVEIS), tamanho)
+            orientacao = (random.choice(ORIENTACOES) if orientacao_fixa == "auto"
+                          else orientacao_fixa)
+            itens_lote = pendentes[:n_paineis]
+        else:
+            n_paineis, orientacao, itens_lote = 0, "lado_a_lado", pendentes
+
+        print("\n--- tentativa %d/%d: %d cena(s) pendente(s) | layout=%s ---" % (
+            tentativa, max_tentativas, tamanho,
+            ("colagem %d paineis %s" % (n_paineis, orientacao) if colagem
+             else "separadas (1 painel)")), flush=True)
+        novas = await _enviar_uma_vez(page, itens_lote, biblia, wait_s, hashes,
+                                      colagem=colagem, orientacao=orientacao,
+                                      n_paineis=n_paineis)
         if not novas:
             print("  nenhuma imagem nova recebida; tentando de novo...", flush=True)
             await page.wait_for_timeout(5000)
@@ -387,7 +463,9 @@ async def main_async(args):
         for li, lote in enumerate(lotes, 1):
             print("\n=== LOTE %d/%d ===" % (li, len(lotes)), flush=True)
             _, faltantes = await processar_lote(page, lote, biblia, out_dir,
-                                                args.wait, args.max_attempts)
+                                                args.wait, args.max_attempts,
+                                                layout=args.layout,
+                                                orientacao_fixa=args.orientacao)
             todos_faltantes.extend(faltantes)
             await page.wait_for_timeout(args.pause * 1000)
         if todos_faltantes:
@@ -409,6 +487,10 @@ def main():
     ap.add_argument("--pause", type=float, default=4.0)
     ap.add_argument("--max-attempts", type=int, default=4,
                     help="tentativas para recuperar imagens faltantes de um lote")
+    ap.add_argument("--layout", choices=("auto", "separado", "colagem"), default="auto",
+                    help="auto sortea entre 1 painel e colagens de 2/3/4 (padrao)")
+    ap.add_argument("--orientacao", choices=("auto", "lado_a_lado", "empilhado"),
+                    default="auto", help="orientacao dos paineis da colagem")
     ap.add_argument("--cdp-url", default=DEFAULT_CDP)
     args = ap.parse_args()
     if args.project_dir and not args.out_dir:
