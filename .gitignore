@@ -19,6 +19,13 @@ node_modules/
 .DS_Store
 Thumbs.db
 
+# --- Grafo de conhecimento (memória viva: subir só artefatos, nao cache) ---
+graphify-out/cache/
+graphify-out/2026-*/
+graphify-out/.graphify_python
+graphify-out/.graphify_root
+graphify-out/cost.json
+
 # --- Logs ---
 *.log
 logs/

@@ -496,6 +496,21 @@ auditar as imagens antes de renderizar:
 
 ---
 
+## 5.16. Grafo de conhecimento é a memória viva (regra dura)
+
+- O knowledge graph em `graphify-out/` (gerado pelo graphify) é a **fonte
+  comprimida** de tudo que já foi decidido e feito no sistema.
+- **Todo agente que entrar aqui deve começar com `graphify query "<pergunta>" --budget 1500`**
+  em vez de ler arquivos gigantes — economiza token e não perde contexto.
+- **Sempre que qualquer manual mudar** (`AGENTS.md`, `CONTRATO.md`,
+  `MANUAL_GRAFOS.md`) é obrigatório atualizar o grafo **no mesmo commit**:
+  `graphify . --update` (incremental/barato) — ou o hook `post-commit` faz isso.
+- O hook `graphify hook install` roda após cada `git commit` e mantém
+  `graph.json` / `GRAPH_REPORT.md` atualizados. Verificar com
+  `graphify hook status`.
+- Se um commit mudou manual e o grafo ficou velho, rode `graphify . --update`
+  manualmente antes do push. Grafo desatualizado = próximo agente repete trabalho.
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.

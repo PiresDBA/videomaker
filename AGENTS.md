@@ -4,9 +4,25 @@
 O manual é a fonte de verdade do produto: o que já está feito, como está e por
 quê. Não refaça e não desfaça o que já está resolvido.
 
+**🧠 GRAFO (memória viva) — leia ANTES de qualquer pergunta sobre o sistema.**
+O knowledge graph em `graphify-out/` é a fonte comprimida do que já foi feito.
+Para não gastar token lendo arquivos gigantes, rode primeiro:
+
+```powershell
+graphify query "sua pergunta" --budget 1500
+```
+
+Exemplos: `graphify query "como gerar imagens com personagens consistentes"`,
+`graphify query "qual a regra de duracao do video"`.
+O grafo é atualizado automaticamente a cada commit pelo hook `post-commit`
+(`graphify hook install`). Se você alterou um manual e o grafo parecer velho,
+rode `graphify . --update` (incremental, barato) antes de sair.
+
 | Arquivo | Ler quando |
 |---------|-----------|
-| `CONTRATO.md` | sempre, primeiro (regras de trabalho) — ver §5.8 antes de mexer em imagem |
+| `graphify-out/GRAPH_REPORT.md` | **primeiro** — resumo do grafo (comunidades, nós-de-deus, decisões) |
+| `graphify query "..."` | para qualquer pergunta específica (barato em token) |
+| `CONTRATO.md` | sempre (regras de trabalho) — ver §5.8 antes de mexer em imagem |
 | `MANUAL_GRAFOS.md` | sempre (estado do produto, grafo, decisões) — ver §58.6 |
 | `scripts/topics.txt` | ao criar vídeo novo (tema obrigatório, §5.11) |
 | `scripts/pipeline.py` (topo) | antes de mexer no pipeline (comandos e argumentos) |
