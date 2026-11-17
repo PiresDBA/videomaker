@@ -314,7 +314,12 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         # A pasta de imagens e resolvida de IMAGES_DIR (definida pelo chamador) ou
         # do projeto atual via variavel de ambiente VIDEOMAKER_PROJ.
         _proj = os.environ.get("VIDEOMAKER_PROJ")
-        dir_images = (Path(_proj) / "assets" / "images") if _proj else None
+        # As imagens de cena ficam em assets/images/gemini/scenes (ver
+        # preprocess_images.py). Checar em assets/images fazia TODA imagem
+        # parecer faltante e ser trocada pela anterior (bug: mesma imagem
+        # repetida por um minuto).
+        dir_images = ((Path(_proj) / "assets" / "images" / "gemini" / "scenes")
+                      if _proj else None)
         ultima_valida = None
         images_resolvidas = []
         for name in images:
