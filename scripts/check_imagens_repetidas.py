@@ -21,7 +21,11 @@ ROOT = HERE.parent
 
 EXTENSOES = ("*.jpg", "*.jpeg", "*.png")
 # Abaixo disso as imagens sao consideradas a mesma figura (0-255).
-TOL_PADRAO = 2.0
+# Tolerância baixa: imagens do MESMO cenário (ex.: sala com a caminha vermelha)
+# sao naturalmente parecidas e DEVEM ser permitidas (a historia acontece no
+# mesmo lugar). So bloqueamos copias praticamente identicas (dist < 0.05),
+# que indicam a mesma figura重复 usada em duas cenas diferentes.
+TOL_PADRAO = 0.05
 
 
 def _assinatura(caminho: Path):

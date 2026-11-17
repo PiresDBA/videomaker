@@ -202,6 +202,22 @@ _CLIPS = _video_clips_config()
 INTRO_DUR = float(_CLIPS.get("intro_dur", 4.0))   # duracao da capa
 OUTRO_DUR = float(_CLIPS.get("outro_dur", 5.0))   # duracao da tela final
 
+
+def _load_paineis():
+    """Mapa nome->quantidade de paineis (detecta_paineis.py). Colagens nao
+    recebem zoom vai-e-vem para nao cortar os paineis."""
+    proj = os.environ.get("VIDEOMAKER_PROJ", "")
+    p = Path(proj) / "assets" / "images" / "gemini" / "paineis_manifest.json"
+    try:
+        if p.exists():
+            return load_json(p)
+    except Exception:
+        pass
+    return {}
+
+
+_PAINEIS = _load_paineis()
+
 # Textos da capa e do encerramento, no idioma do video (regra: nenhum texto
 # na tela pode ficar em PT nos videos EN/ES). Padrao pt = comportamento antigo.
 INTRO_TEXTS = {
@@ -269,12 +285,17 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
             % (intro_video, intro_start, INTRO_DUR)
         )
-    js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:0.9,ease:"back.out(2.4)"},0.3);')
-    js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
-    js.append('tl.fromTo("#intro-capa .cam-0",{scale:1},{scale:1.12,duration:4,ease:"none"},0);')
-    cursor = INTRO_DUR
+    # Narração cobre o vídeo TODO desde o segundo 0 (intro incluso). Para isso
+    # as cenas NÃO são deslocadas: começam em 0, juntamente com a narração.
+    # A capa animated (intro_8s) fica como camada de sobreposição nos primeiros
+    # INTRO_DUR segundos (track 0, por cima), abaixando depois.
+    if not intro_video:
+        js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:0.9,ease:"back.out(2.4)"},0.3);')
+        js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
+        js.append('tl.fromTo("#intro-capa .cam-0",{scale:1},{scale:1.12,duration:4,ease:"none"},0);')
+    cursor = 0.0
 
-    # Desloca todas as cenas originais apos a capa
+    # Cenas começam em 0 (sem offset): narração e imagem alinhadas desde o 1o s.
     timeline_shifted = []
     for sec in timeline:
         s = dict(sec)
@@ -296,12 +317,13 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         cams = cfg.get("camera", [])
         split = cfg.get("split")
         at = cfg.get("at")
-        # Clipe de video no meio do filme (substitui os stills da cena marcada).
+        # Clipe de video no meio do filme (modo hibrido): o clipe ocupa os
+        # primeiros clip_dur segundos e as imagens da cena preenchem o resto,
+        # distribuidas no tempo restante. Nao congela nem substitui as imagens.
+        meio_clip_dur = float(meio_cfg.get("clip_dur", 8.0)) if isinstance(meio_cfg, dict) else 8.0
         if meio_file and sid == meio_scene:
-            print("  clipe do meio na cena %s -> %s" % (sid, meio_file), flush=True)
-            images = [meio_file]
-            at = None
-            split = None
+            print("  clipe do meio na cena %s -> %s (%ss + stills)" %
+                  (sid, meio_file, meio_clip_dur), flush=True)
 
         trans = str(cfg.get("transicao") or "crossfade").lower()
         T = float(TRANSICOES.get(trans, XFADE)) if trans in TRANSICOES else XFADE
@@ -336,6 +358,15 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             ultima_valida = name
 
         videos_desta_cena = []
+        # Clipe do meio: ocupa os primeiros clip_dur segundos da cena; as
+        # imagens entram logo depois (ver _reveal_time com deslocamento).
+        if meio_file and sid == meio_scene:
+            videos_desta_cena.append(
+                '<video class="cam clip-video" id="%s-video" '
+                'src="assets/images/%s" muted playsinline '
+                'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
+                % (sid, meio_file, start, meio_clip_dur, track)
+            )
         for i, name in enumerate(images_resolvidas):
             cls = "cam cam-%d%s" % (i, " cam-b" if i > 0 else "")
             if name.lower().endswith(".mp4"):
@@ -360,26 +391,43 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         n_img = len(images)
         has_video = any(n.lower().endswith(".mp4") for n in images)
 
+        imagens_apos_clipe = bool(meio_file and sid == meio_scene)
+        inicio_imgs = start + (meio_clip_dur if imagens_apos_clipe else 0.0)
+        dur_imgs = (dur - meio_clip_dur) if imagens_apos_clipe else dur
+
         def _reveal_time(i):
             # Tempo (absoluto no timeline) em que a imagem i deve estar
-            # visivel. Beat de fala = inicio da pausa correspondente; imagem 0
-            # sempre comeca no inicio da secao. Sem "at": 2 imagens usam "split";
-            # 3+ distribui uniformemente.
-            if has_video or i == 0:
-                return start
+            # visivel. Se a cena tem clipe de video no inicio, as imagens
+            # entram depois dele e se distribuem no tempo restante.
+            if i == 0:
+                return inicio_imgs
             if at is not None and i < len(at):
-                return start + float(at[i]) * dur
+                return inicio_imgs + float(at[i]) * dur_imgs
             if split is not None and n_img == 2:
-                return start + float(split) * dur
+                return inicio_imgs + float(split) * dur_imgs
             if n_img > 1:
-                return start + (i / float(n_img)) * dur
-            return start
+                return inicio_imgs + (i / float(n_img)) * dur_imgs
+            return inicio_imgs
 
         for i, name in enumerate(images):
             if name.lower().endswith(".mp4"):
                 continue
             cam = cams[i] if i < len(cams) else [1.02, 1.10, 0, 14, 0, -8]
             s0, s1, x0, x1, y0, y1 = cam
+            # REGRA do usuario: colagem (2/3/4 paineis) ja tem muita informacao:
+            # NAO fazer zoom vai-e-vem (isso corta os paineis). So uma leve
+            # deriva lenta. Zoom dinamico apenas em imagem unica.
+            n_pain = _PAINEIS.get(name, 1)
+            if n_pain > 1:
+                t_i = _reveal_time(i)
+                t_next = (_reveal_time(i + 1) if i + 1 < n_img else (start + dur))
+                seg = max(0.8, t_next - t_i)
+                js.append(
+                    'tl.fromTo("#%s .cam-%d",{scale:1.00,x:0,y:0},'
+                    '{scale:1.03,x:0,y:0,duration:%.3f,ease:"none"},%.3f);'
+                    % (sid, i, seg, t_i)
+                )
+                continue
             # Variação de zoom por beat para evitar repetição: algumas cenas começam
             # com zoom máximo e diminuem, outras começam mínimo e aumentam.
             scale_pairs = [(1.50,1.05),(1.05,1.50),(1.38,1.10),(1.10,1.45)]
@@ -475,6 +523,11 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 to = start + float(a["data-out"]) * dur
                 js.append('tl.to("#%s",{opacity:0,y:-22,duration:0.55,ease:"power2.in"},%.3f);'
                           % (aid, to))
+
+    # O introoccupied os primeiros INTRO_DUR segundos (camada sobre as cenas).
+    # Somamos esse tempo ao cursor para manter a duração total (cenas começam
+    # em 0, mas o vídeo ainda tem os 8s de capa no início).
+    cursor += INTRO_DUR
 
     # ========== CLIPE PRE-FINAL (pata com confete) ==========
     # Video extra logo antes da despedida, para aproveitar os 4 clipes gerados.
@@ -584,8 +637,11 @@ def main():
             overlays[sec["id"]] = inject_ids(html, sec["id"])
 
     body, js, total = build(scene_cfg, tl, overlays, title=video_title, lang=lang)
+    # Narração começa no segundo 0 (junto com as cenas e o intro) e vai até
+    # o último frame. O mix ja foi gerado com lead=0 e duração total (inclui
+    # pre_final e outro/subscribe), então aqui só alinhamos audio_start=0.
     audio_start = 0.0
-    audio_dur = total - OUTRO_DUR
+    audio_dur = total
 
     html = """<!doctype html>
 <html lang="pt-BR" data-lang="%s" data-resolution="landscape">
