@@ -24,7 +24,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from build_composition import INTRO_DUR
+from build_composition import INTRO_DUR, OUTRO_DUR
 
 HERE = Path(__file__).resolve().parent
 
@@ -79,8 +79,12 @@ def main():
         return 2
 
     total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
-    total_mix = INTRO_DUR + total
-    lead_ms = int(round(INTRO_DUR * 1000))
+    # A narração cobre o video INTEIRO: começa no segundo 0 (junto com o clipe
+    # de abertura) e termina no ultimo frame (durante o clipe do SUBSCRIBE).
+    # Antes: lead=INTRO_DUR (atrasava 8s) e total_mix=INTRO+total (cortava 8s
+    # antes do fim). Agora: lead=0 e inclui OUTRO_DUR.
+    total_mix = INTRO_DUR + total + OUTRO_DUR
+    lead_ms = 0
 
     # loop com crossfade ate passar do total
     loop = aud / ("bgm_%s_loop.wav" % provider)
@@ -121,7 +125,8 @@ def main():
         "[bgm][key]sidechaincompress=threshold=%s:ratio=%s:attack=%s:release=%s[duck];"
         "[voice][duck]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[mix];"
         "[mix]loudnorm=I=%s:TP=%s:LRA=%s[out]"
-        % (gain, fade_in, total_mix - fade_out, fade_out, lead_ms, INTRO_DUR,
+        % (gain, fade_in, total_mix - fade_out, fade_out, lead_ms,
+           total_mix - total,
            music.get("duck_threshold", 0.05), music.get("duck_ratio", 9),
            music.get("duck_attack_ms", 15), music.get("duck_release_ms", 350),
            loud.get("final_i", -14), loud.get("true_peak", -1.5), loud.get("lra", 11))
