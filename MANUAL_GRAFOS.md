@@ -4426,3 +4426,55 @@ beat corretos (ex.: fade-in do segundo beat = beat anterior + duração da cena)
 
 ---
 
+## 60. Variedade visual de painéis — 1/2/3/4 e horizontal/vertical (2026-11-17)
+
+### 60.1. Decisão do canal (preferência validada)
+
+O usuário validou visualmente o esquema de **história em quadrinho**: a tela
+dividida em painéis, cada painel contando um pedacinho da história. Adotar como
+padrão de variação visual do canal:
+
+- a quantidade de painéis **varia entre 1, 2, 3 (tríptico) e 4**;
+- a **orientação também varia de um beat para outro**: às vezes os painéis ficam
+  **lado a lado** (divisão horizontal da tela), às vezes **empilhados** (divisão
+  vertical da tela);
+- alternar ao longo do vídeo — nunca repetir a mesma divisão em beats seguidos;
+- a cena de cada painel continua mandando (CONTRATO §5.8): painel diferente =
+  cena nova, com enquadramento/ângulo/poses diferentes. A imagem de referência
+  serve **só** para design das personagens e estilo do traço;
+- todos os painéis mantêm Frida, Luna, Pipoca, Penélope e a Bíblia de
+  Continuidade (CONTRATO §5.13). Não usar essa variação para repetir figura.
+
+### 60.2. Estado da implementação (registro honesto)
+
+Hoje `scripts/flow_agent_batch.py` já faz colagem de N painéis:
+
+- `montar_prompt_lote(..., colagem=True)` pede UMA imagem 16:9 dividida em N
+  painéis verticais **lado a lado**, na ordem das cenas;
+- `dividir_colagem(body, n)` detecta a colagem pela proporção largura/altura >
+  1.9, remove as linhas divisórias e salva um `.jpg` por painel;
+- `processar_lote` escolhe colagem aleatoriamente (50% para lotes de 3+, 35%
+  para lotes de 2) na primeira tentativa.
+
+**Ainda NÃO implementado:** a variação de orientação (painéis empilhados /
+divisão vertical da tela) e a escolha explícita de 4 painéis. `dividir_colagem`
+só reconhece colagem larga; uma colagem empilhada (alta) passa como imagem
+única. Para cumprir a regra §60.1 será preciso:
+
+1. sortear orientação junto com a quantidade de painéis em `processar_lote`;
+2. estender `montar_prompt_lote` para pedir "N painéis horizontais empilhados";
+3. estender `dividir_colagem` para detectar proporção alta (altura/largura >
+   1.9) e fatiar com cortes horizontais.
+
+Até lá, a colagem lado a lado (3 e 2 painéis) continua válida e é a que foi
+validada visualmente (§58.9.6).
+
+### 60.3. Validação antes de renderizar
+
+Abrir os `.jpg` gerados e conferir: painéis na ordem das cenas, personagens
+corretos, cenas diferentes entre si, e a divisão (horizontal/vertical)
+alternando entre beats. Se houver painel repetido, **não renderizar nem
+publicar** (CONTRATO §5.8).
+
+---
+

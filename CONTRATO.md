@@ -432,14 +432,19 @@ commit com fila ausente/vazia ou sem nenhum tema livre.
 - Essa regra vale para PT/EN/ES; a geração de imagens é única, mas a duração do áudio narrado é verificada por idioma.
 - O pipeline deve validar duração após `final_mix` e abortar publicação caso a regra seja violada.
 
-## 5.15. Variedade visual: colagens (triptico/dupla) e imagens individuais
+## 5.15. Variedade visual: colagens (1/2/3/4 painéis) e imagens individuais
 
-Para o visual não ficar "chapado", o gerador de imagens alterna aleatoriamente
-entre:
+Para o visual não ficar "chapado", o gerador de imagens alterna entre:
 
-- **colagem de 3 cenas** (triptico, 3 paineis lado a lado),
+- **colagem de 3 cenas** (tríptico, 3 painéis lado a lado),
 - **colagem de 2 cenas** (dupla),
+- **colagem de 4 cenas** (4 painéis),
 - **imagem individual** (uma cena por arquivo).
+
+A **orientação também varia entre beats**: às vezes os painéis ficam lado a lado
+(divisão horizontal da tela), às vezes empilhados (divisão vertical da tela),
+como histórias em quadrinho. O canal validou esse estilo em 2026-11-17; detalhes
+e estado da implementação em `MANUAL_GRAFOS.md` §60.
 
 Regras:
 
@@ -450,7 +455,8 @@ Regras:
   o divisor detecta pela proporção e fatia da mesma forma.
 - Todo painel precisa manter **os mesmos personagens nomeados** (Frida, Luna,
   Pipoca, Penélope) e a Bíblia de Continuidade (§5.13).
-- O triptico foi validado visualmente e agrada o canal — usar com frequência.
+- O tríptico foi validado visualmente e agrada o canal — usar com frequência.
+- Nunca repetir a mesma divisão (quantidade + orientação) em beats seguidos.
 
 ## 5.14. Narração com emoção (regra dura)
 
