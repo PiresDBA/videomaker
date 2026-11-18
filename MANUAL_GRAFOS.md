@@ -4962,49 +4962,121 @@ Partículas triplicadas (489 → 1467), maiores e mais opacas. Colagens (2/3
 
 paineis) continuam com scale:1 (ZERO zoom), garantidas pelo paineis_manifest
 
-copiado para o workspace no preprocess_images.py.
-
-
-## 67. Sonoplastia (sound design) - analise com earshot (2026-11-18)
-
-### 67.1. Regra de ouro estendida ao audio
-
-> Todo efeito sonoro tem que casar com o que e FALADO e VISTO no MESMO
-> instante (extensao da regra de ouro §65). Foley discreto sob a narração;
-> efeitos fortes só em clipes e no CTA. Nunca mascarar a voz: o mix ja tem
-> sidechaincompress (ducking), basta adicionar as camadas.
-
-### 67.2. Analise VAD com earshot 1.2.2
-
-scripts/analisar_earshot.py: extrai audio do MP4 para WAV 16 kHz mono int16,
-roda detector.predict_i16 frame-a-frame (256 amostras = 16 ms) e replica os
-defaults do segmentador Rust (smoothing=0.4, attack=0.6, decay=0.5,
-preroll=5, min_duration=6, start_delay=2, end_delay=4). ATENCAO: a binding
-Python NAO expoe earshot.segments()/SegmenterOptions - so Detector.
-
-Resultado no video PT: 171 segmentos de voz, 901.62s com voz (96.4%),
-33.25s de silencio. Relatorio: relatorio_earshot.txt.
-
-### 67.3. Mapa de sonoplastia
-
-scripts/sugerir_sonoplastia.py cruza: (1) pausas do earshot, (2) transcricao
-palavra-a-palavra (Foley por palavra-chave), (3) entradas dos 5 clipes.
-Gera 32 pontos: Foley (osso, bola, espirro, asas, carro, abelha, comida),
-transicoes whoosh nas pausas, efeitos de clipe e CTA. Saida:
-artifacts/auditoria/mapa_sonoplastia.txt.
-
-### 67.4. Geracao e aplicacao
-
-scripts/gerar_sonoplastia.py sintetiza os efeitos com ffmpeg (sine/ruido +
-filtros + envelope) e os mixa por cima do final_mix.m4a atual, gerando
-final_mix_sonoplastia.m4a (NAO altera o original). Para renderizar: trocar
-temporariamente a fase mix por um stub que copia esse arquivo, remover o MP4
-antigo para forcar re-render (deps nao incluem o mix), renderizar, restaurar
-mix_audio.py original e renomear o novo video.
-
-### 67.5. Comparacao SEM vs COM sonoplastia
-
-Backup em _BACKUP_SEM_SONOPLASTIA/ (video + meta + mix original).
-Videos finais na output/:
-- e-se-os-..._pt.mp4 = SEM sonoplastia (original, restaurado)
+copiado para o workspace no preprocess_images.py.
+
+
+
+
+
+## 67. Sonoplastia (sound design) - analise com earshot (2026-11-18)
+
+
+
+### 67.1. Regra de ouro estendida ao audio
+
+
+
+> Todo efeito sonoro tem que casar com o que e FALADO e VISTO no MESMO
+
+> instante (extensao da regra de ouro §65). Foley discreto sob a narração;
+
+> efeitos fortes só em clipes e no CTA. Nunca mascarar a voz: o mix ja tem
+
+> sidechaincompress (ducking), basta adicionar as camadas.
+
+
+
+### 67.2. Analise VAD com earshot 1.2.2
+
+
+
+scripts/analisar_earshot.py: extrai audio do MP4 para WAV 16 kHz mono int16,
+
+roda detector.predict_i16 frame-a-frame (256 amostras = 16 ms) e replica os
+
+defaults do segmentador Rust (smoothing=0.4, attack=0.6, decay=0.5,
+
+preroll=5, min_duration=6, start_delay=2, end_delay=4). ATENCAO: a binding
+
+Python NAO expoe earshot.segments()/SegmenterOptions - so Detector.
+
+
+
+Resultado no video PT: 171 segmentos de voz, 901.62s com voz (96.4%),
+
+33.25s de silencio. Relatorio: relatorio_earshot.txt.
+
+
+
+### 67.3. Mapa de sonoplastia
+
+
+
+scripts/sugerir_sonoplastia.py cruza: (1) pausas do earshot, (2) transcricao
+
+palavra-a-palavra (Foley por palavra-chave), (3) entradas dos 5 clipes.
+
+Gera 32 pontos: Foley (osso, bola, espirro, asas, carro, abelha, comida),
+
+transicoes whoosh nas pausas, efeitos de clipe e CTA. Saida:
+
+artifacts/auditoria/mapa_sonoplastia.txt.
+
+
+
+### 67.4. Geracao e aplicacao
+
+
+
+scripts/gerar_sonoplastia.py sintetiza os efeitos com ffmpeg (sine/ruido +
+
+filtros + envelope) e os mixa por cima do final_mix.m4a atual, gerando
+
+final_mix_sonoplastia.m4a (NAO altera o original). Para renderizar: trocar
+
+temporariamente a fase mix por um stub que copia esse arquivo, remover o MP4
+
+antigo para forcar re-render (deps nao incluem o mix), renderizar, restaurar
+
+mix_audio.py original e renomear o novo video.
+
+
+
+### 67.5. Comparacao SEM vs COM sonoplastia
+
+
+
+Backup em _BACKUP_SEM_SONOPLASTIA/ (video + meta + mix original).
+
+Videos finais na output/:
+
+- e-se-os-..._pt.mp4 = SEM sonoplastia (original, restaurado)
+
 - e-se-os-..._pt_COM_SONOPLASTIA.mp4 = COM sonoplastia (novo)
+
+
+## 68. Intro de boas-vindas dublado por idioma - REGRA DE CONTRATO (2026-11-18)
+
+### 68.1. Regra de ouro (usuario)
+
+> Sempre que houver um video de intro/boas-vindas no comeco (ex.:
+> "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas
+> aventuras!"), ele TEM que ser feito em 3 versoes — uma para cada idioma
+> (PT, ES, EN). Nunca reaproveitar a voz PT nos videos ES/EN.
+
+### 68.2. Como fazer
+
+- scripts/dublar_intro_voicecraft.py: transcreve o intro PT (faster-whisper)
+  para obter os beats/tempos reais, gera a traducao de cada frase via
+  VoiceCraft (Gemini Aoede, perfil infantil), comprime com atempo para caber
+  no beat, posiciona com adelay e substitui o audio do video mantendo o
+  video (lip-sync).
+- Saida: intro-nova-8s_<lang>.mp4 (es/en) em assets/images/gemini/scenes/.
+- build_composition.py prioriza o intro com sufixo do idioma quando existe
+  (intro-nova-8s_es.mp4 para ES, _en.mp4 para EN); PT usa o original.
+
+### 68.3. Intros do projeto atual
+
+PT: "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas aventuras!"
+ES: "¡Buenos días! ¡Bienvenidos a nuestro canal! ¡Disfruten otra de nuestras aventuras!"
+EN: "Good morning! Welcome to our channel! Enjoy another one of our adventures!"
