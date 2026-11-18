@@ -401,7 +401,8 @@ SCRIPTS = {
     "flow_agent_batch": HERE / "flow_agent_batch.py",
     "preprocess_images": HERE / "preprocess_images.py",
     "fetch_music": HERE / "fetch_music_gemini.py",
-    "gen_narration": HERE / "gen_narration_edge.py",
+    "gen_narration": HERE / "gen_narration_voicecraft.py",  # 1a opcao: voz com emocao (API 8090)
+    "gen_narration_edge": HERE / "gen_narration_edge.py",  # fallback
     "gen_narration_gemini_sections": HERE / "gen_narration_gemini_sections.py",
     "verify_narration": HERE / "verify_narration.py",
     "build_timeline": HERE / "build_timeline.py",

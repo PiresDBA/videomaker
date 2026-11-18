@@ -316,23 +316,15 @@ def garantir_narracao(args, p_dir, lang, script_lang):
               f"reaproveitando", flush=True)
         return
 
-    print(f"== NARRACAO[{lang}]: gerando narração (Edge-TTS local, maxima emoção)", flush=True)
-    voice = {"pt": "pt-BR-ThalitaNeural", "en": "en-US-AriaNeural",
-             "es": "es-ES-ElviraNeural"}[lang]
-    # REGRA: narração infantil com maxima emoção. Pitch mais alto da voz jovem
-    # e sorriso; rate levemente acelerado dá energia sem encurtar abaixo de 10 min.
-    # (CONTRATO.md §5.14 — a voz tem que ter emoção.)
-    rate = {"pt": "+6%", "en": "+4%", "es": "+4%"}[lang]
-    pitch = {"pt": "+12Hz", "en": "+8Hz", "es": "+8Hz"}[lang]
+    print(f"== NARRACAO[{lang}]: gerando narração (VoiceCraft - voz com emoção)", flush=True)
+    # PRIMEIRA OPÇÃO: VoiceCraft (API 8090) com perfil infantil (Gemini/Aoede).
+    # Fallback para Edge-TTS se a API nao estiver no ar.
     run([sys.executable, str(SCRIPTS["gen_narration"]),
          "--proj", str(p_dir),
          "--lang", lang,
          "--script", str(script_lang),
-         "--voice", voice,
-         "--rate", rate,
-         "--pitch", pitch,
          "--workers", str(args.workers)],
-        f"FASE narration[{lang}]: Edge-TTS local (emoção máxima)")
+        f"FASE narration[{lang}]: VoiceCraft (voz com emoção)")
 
 
 def garantir_legendas(args, p_dir, lang, script_lang):
