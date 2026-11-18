@@ -4862,5 +4862,55 @@ está pronto; a regra vale daqui em diante.
 - Tópicos dos 8 vídeos já feitos marcados como USADOS em `scripts/topics.txt`
   para evitar duplicação de tema.
 
----
-
+---
+
+
+## 66. Auditoria de sincronia com narração REAL e proteção do fluxo (2026-11-18)
+
+### 66.1. Regra de ouro reforçada: não adianta arrumar uma e quebrar dez
+
+> Toda correção tem que preservar o FLUXO INTEIRO. Antes de renderizar,
+> rodar os checks e garantir que a correção não mexeu em capa/outro/subscribe
+> nem nos clipes. Ordem sagrada: branch → código → grafo/manual →
+> checks → commit → push → render.
+
+### 66.2. Causa raiz das imagens fora do tempo
+
+O ressincronizador antigo (ressincronizar_v2.py) calculava `at` com posição
+no TEXTO, não com TEMPO do áudio. Resultado: 72 imagens adiantadas/atrasadas
+(ex.: carro vermelho falado em 4:25 aparecia em 4:42). Além disso:
+
+1. O mix de áudio começa em 0 (lead_ms=0), mas o build_composition desloca
+   as cenas em +INTRO_DUR (8s de capa) → toda imagem estava 8s atrasada.
+2. Cenas com clipe têm regras próprias: middle (s1/bolinha) empurra imagens
+   pós-clipe em +clip_dur; hybrid (s12/osso) usa inicio=start+clip_dur.
+
+### 66.3. Ferramentas de auditoria (rodar antes de renderizar)
+
+- scripts/auditoria_transcrever.py → transcreve narração REAL com faster-whisper
+  small (array numpy p/ evitar bug PyAV metadata_errors). Gera transcricao.json.
+- scripts/auditoria_cruzar.py → cruza fala real ↔ imagens RESPEITANDO o fluxo
+  (+8s capa, clipes middle/hybrid). Gera relatorio_sincronia.txt e proposta_novos_at.json.
+- scripts/auditoria_aplicar.py → aplica novos at no scenes.json (backup .bak-auditoria).
+
+### 66.4. REGRA DURA: cenas de capa/encerramento NÃO são auditadas
+
+s_intro, s_final, s_outro têm lógica própria (sub_start do subscribe usa
+outro_beats_at[1]; capa usa textos próprios). Auditar essas cenas e mudar seus
+`at` MOVE O "Inscreva-se" e quebra o final. O auditor pula essas cenas e
+preserva o at original. Bug corrigido em 2026-11-18 (subscribe foi de 929.9s
+para 923.8s e foi restaurado).
+
+### 66.5. Múltiplos clipes na MESMA cena
+
+build_composition suporta vários clipes por cena (meio, meio2, meio3...): o
+PRIMEIRO controla o deslocamento das imagens, os demais entram via offset
+próprio. Aplicado: meio3 = meio_8s.mp4 (bolinha de tênis) em s1,
+offset=29.857 → entra em 60.9s (01:01) na fala "Era uma poirinha dourada".
+
+### 66.6. Efeitos visíveis
+
+Partículas triplicadas (489 → 1467), maiores e mais opacas. Colagens (2/3
+paineis) continuam com scale:1 (ZERO zoom), garantidas pelo paineis_manifest
+copiado para o workspace no preprocess_images.py.
+
