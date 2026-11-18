@@ -19,22 +19,23 @@ P = Path(r"C:\videomaker\projects\e-se-os-cachorros-pudessem-falar-por-um-dia")
 AUD = P / "assets/audio"
 MAPA = P / "artifacts/auditoria/mapa_sonoplastia.txt"
 MIX_ORIG = AUD / "final_mix.m4a"
-MIX_NOVO = AUD / "final_mix_sonoplastia.m4a"
+MIX_NOVO = AUD / "final_mix_sonoplastia_v2.m4a"
 SR = 44100
 
 # tipos de efeito -> (gerador ffmpeg, duracao s, ganho)
-# cada gerador produz 1s de audio mono no tempo 0; o adelay posiciona
+# GANHOS RECALIBRADOS (2026-11-18): analise com earshot mostrou que os efeitos
+# estavam a 4-12% da voz (inaudiveis). Alvo: 25-35% da voz, sem mascarar.
 TIPOS = {
-    "CLIPE":    ("swish",   0.7, 0.28),
-    "ABERTURA": ("chord",   1.2, 0.30),
-    "FOLEY":    ("foley",   0.45, 0.16),
-    "TRANSICAO":("whoosh",  0.45, 0.13),
-    "CTA":      ("bell",    0.9, 0.32),
+    "CLIPE":    ("swish",   0.7, 0.36),
+    "ABERTURA": ("chord",   1.2, 0.38),
+    "FOLEY":    ("foley",   0.45, 0.26),
+    "TRANSICAO":("whoosh",  0.45, 0.28),
+    "CTA":      ("bell",    0.9, 0.40),
 }
 # ajuste de ganho por palavra-chave no motivo
 GANHO_PALAVRA = {
-    "espirro": 0.34, "osso": 0.30, "bola": 0.30, "mágic": 0.26,
-    "poeira": 0.26, "confete": 0.34, "subscribe": 0.36, "fanfarra": 0.32,
+    "espirro": 0.42, "osso": 0.40, "bola": 0.40, "mágic": 0.38,
+    "poeira": 0.38, "confete": 0.42, "subscribe": 0.44, "fanfarra": 0.42,
 }
 
 
@@ -57,22 +58,22 @@ def filtro_efeito(kind):
     """Retorna (filtro ffmpeg de entrada, duracao). Gera audio de 1s."""
     if kind == "swish":   # subida rapida + brilho
         return ("sine=frequency=880:sample_rate=%d,"
-                "tremolo=f=12:d=0.8,"
+                "tremolo=f=12:d=0.8,volume=1.5,"
                 "afade=t=in:st=0:d=0.05,afade=t=out:st=0.2:d=0.5" % SR, 0.7)
-    if kind == "chord":   # acorde alegre (3 senos somados)
-        return ("sine=frequency=523.25:sample_rate=%d,"
+    if kind == "chord":   # acorde alegre
+        return ("sine=frequency=523.25:sample_rate=%d,volume=1.5,"
                 "afade=t=in:st=0:d=0.05,afade=t=out:st=0.5:d=0.7" % SR, 1.2)
     if kind == "whoosh":  # ruido filtrado passante (simula whoosh)
-        return ("anoisesrc=color=pink:amplitude=0.6:sample_rate=%d,"
-                "highpass=f=400,lowpass=f=3000,"
+        return ("anoisesrc=color=pink:amplitude=1.0:sample_rate=%d,"
+                "highpass=f=400,lowpass=f=3000,volume=2.0,"
                 "afade=t=in:st=0:d=0.08,afade=t=out:st=0.15:d=0.3" % SR, 0.45)
-    if kind == "bell":    # campainha (sino = seno com decaimento)
+    if kind == "bell":    # campainha (sino)
         return ("sine=frequency=1318.5:sample_rate=%d,"
-                "tremolo=f=8:d=0.5,"
+                "tremolo=f=8:d=0.5,volume=1.5,"
                 "afade=t=in:st=0:d=0.01,afade=t=out:st=0.1:d=0.8" % SR, 0.9)
-    # foley generico: ruido curto com envelope (serve para passos, tigela, asas...)
-    return ("anoisesrc=color=white:amplitude=0.4:sample_rate=%d,"
-            "bandpass=f=1200:width_type=o:w=2,"
+    # foley generico: ruido curto com envelope
+    return ("anoisesrc=color=white:amplitude=0.9:sample_rate=%d,"
+            "bandpass=f=1200:width_type=o:w=2,volume=2.0,"
             "afade=t=in:st=0:d=0.01,afade=t=out:st=0.08:d=0.35" % SR, 0.45)
 
 
