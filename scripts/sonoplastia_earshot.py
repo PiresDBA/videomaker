@@ -63,15 +63,21 @@ CUES = [
     (218.70, "pro_pop/chirp", 0.35, "PASSARINHO 'minhoca mais saborosa'"),
     (238.70, "tap/soft", 0.30, "PATA 'correndo com patinhas firmes'"),
     (256.40, "swish/soft", 0.25, "sol subindo / grama"),
-    # MINUTO 4-5 - carros, gargalhada, pombo, borboleta
-    (271.10, "whoosh_big/gust", 0.45, "CARROS VERMELHOS passando"),
-    (278.40, "whoosh_big/jet", 0.40, "CARROS - passada"),
-    (286.70, "whoosh_fast/whistle", 0.35, "RISADA da Frida - assobio alegre"),
-    (298.80, "pro_pop/chirp", 0.30, "POMBO rechonchudo"),
-    (330.00, "hover_tick/air", 0.35, "BORBOLETA AZUL na margarida - asinhas"),
-    (330.50, "pro_shimmer/m2", 0.30, "borboleta - sparkle azul"),
-    (335.90, "hover_tick/high", 0.30, "'conversar com a borboleta' - asinhas"),
-    (341.70, "shimmer/m3", 0.30, "'apenas dançavam no vento' - brilho"),
+    # MINUTO 4-5 - carros, gargalhada, pombo, borboleta (SOM NA PALAVRA EXATA)
+    (275.04, "BUZINA", 0.55, "'carros' vermelhos - BIP-BIP de buzina"),
+    (276.00, "whoosh_big/gust", 0.35, "'carros' - passada do carro"),
+    (280.80, "BUZINA", 0.55, "'carros' - BIP-BIP de buzina"),
+    (282.00, "whoosh_big/jet", 0.35, "'carros' - passada"),
+    (285.48, "BUZINA", 0.50, "'bombeiros' - buzina de bombeiro"),
+    (286.70, "pro_pop/chirp", 0.35, "'gargalhada forte' da Frida"),
+    (296.00, "POMBA", 0.60, "'pombo' rechonchudo - BURR-BRU"),
+    (299.52, "POMBA", 0.60, "'pombo' inflou o peito - BURR-BRU"),
+    (310.24, "POMBA", 0.55, "'pombo' - conversa com Frida"),
+    (316.62, "POMBA", 0.55, "'pombo' - dois passinhos"),
+    (331.60, "hover_tick/air", 0.40, "'borboleta' AZUL pousada - asinhas"),
+    (332.00, "pro_shimmer/m2", 0.30, "borboleta - sparkle azul"),
+    (338.26, "hover_tick/high", 0.35, "'conversar com a borboleta' - asinhas"),
+    (342.16, "shimmer/m3", 0.30, "'apenas dançavam no vento' - brilho"),
     (360.20, "pro_pop/chirp", 0.25, "PASSARINHO 'voz ecoava entre arvores'"),
     # MINUTO 6-7 - fonte, agua, formiga
     (392.40, "drip/drop", 0.35, "AGUA 'fonte de pedra' - pingo"),
@@ -109,13 +115,22 @@ CUES = [
 def render_cue(sid, cache):
     if sid in cache:
         return cache[sid]
-    y, meta = bank.render(sid)
-    if getattr(y, "ndim", 1) == 2:
-        y = y.mean(axis=1)
-    if meta.get("sr", SR) != SR:
-        n = int(len(y) * SR / meta["sr"])
-        y = np.interp(np.linspace(0, len(y), n), np.arange(len(y)), y)
-    y = y.astype(np.float32)
+    # sons personalizados (Forge): nao estao no banco, sintetizados com numpy
+    if sid in ("BUZINA", "POMBA"):
+        nome = "buzina_bibi.wav" if sid == "BUZINA" else "pomba_coo.wav"
+        y, sr = sf.read(AUD / "sons" / nome, dtype="float32")
+        if sr != SR:
+            n = int(len(y) * SR / sr)
+            y = np.interp(np.linspace(0, len(y), n), np.arange(len(y)), y)
+        y = y.astype(np.float32)
+    else:
+        y, meta = bank.render(sid)
+        if getattr(y, "ndim", 1) == 2:
+            y = y.mean(axis=1)
+        if meta.get("sr", SR) != SR:
+            n = int(len(y) * SR / meta["sr"])
+            y = np.interp(np.linspace(0, len(y), n), np.arange(len(y)), y)
+        y = y.astype(np.float32)
     cache[sid] = y
     return y
 

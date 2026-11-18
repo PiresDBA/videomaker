@@ -14,10 +14,10 @@ VIDEO_SEM = OUT / "e-se-os-cachorros-pudessem-falar-por-um-dia_pt.mp4"  # sem so
 
 # (nome, start, dur) - trechos com os efeitos que o usuario pediu
 CLIPES = [
-    ("TESTE_01_manha_poeirinha_espirro.mp4", 28.0, 50.0),   # passarinhos(31), borboletas(49.5), poeirinha(61.8), espirro(67.6)
-    ("TESTE_02_borboleta.mp4",              322.0, 28.0),   # borboleta(330), dança no vento(341.7)
-    ("TESTE_03_carros_osso_estrelas.mp4",   268.0, 22.0),   # carros(271/278)
-    ("TESTE_04_osso_ cantoria.mp4",         611.0, 22.0),   # ossinhos(619), passarinhos(630)
+    ("TESTE_01_manha_poeirinha_espirro.mp4", 28.0, 50.0),   # passarinhos(31), borboletas(51.5), poeirinha(61.8), espirro(67.6)
+    ("TESTE_02_borboleta.mp4",              328.0, 20.0),   # borboleta(331.6), conversa(338.3), dança(342.2)
+    ("TESTE_03_carro_pomba.mp4",            272.0, 50.0),   # BUZINA(275/280/285), POMBA(296/299/310/316)
+    ("TESTE_04_osso_cantoria.mp4",          611.0, 24.0),   # ossinhos(619), passarinhos(630)
     ("TESTE_05_final_subscribe.mp4",        915.0, 20.0),   # confete(915), inscreva-se(929.9)
 ]
 
