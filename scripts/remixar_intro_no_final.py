@@ -34,7 +34,7 @@ def main():
     subprocess.run([FF, "-y", "-v", "error", "-i", str(voz), "-i", str(MUSICA),
                     "-filter_complex",
                     "[0:a]volume=25dB,alimiter=limit=0.95[v];"
-                    "[1:a]volume=-8dB[m];"
+                    "[1:a]volume=-2dB[m];"
                     "[v][m]amix=inputs=2:duration=first:dropout_transition=0:"
                     "weights=1 1,alimiter=limit=0.95[out]",
                     "-map", "[out]", "-t", "8", "-ar", "44100", "-ac", "2",
