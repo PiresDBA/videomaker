@@ -341,20 +341,32 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     intro_id = "intro-capa"
     intro_start = 0.0
     intro_video = _CLIPS.get("intro", "")
-    # Prioriza o intro declarado no video_clips.json do proprio projeto (ex.:
-    # intro-nova-8s.mp4). Se ele nao existir, cai no mapa por idioma dos
-    # projetos antigos (intro_8s_pt/_es.mp4, original para en).
     _proj_intro = Path(os.environ.get("VIDEOMAKER_PROJ", "")) / "assets/images/gemini/scenes"
     _config_intro = intro_video  # veio do video_clips.json
-    if not (_config_intro and (_proj_intro / _config_intro).exists()):
+
+    # REGRA DE OURO (contrato): o intro de boas-vindas TEM que ser falado no
+    # idioma da versao. O intro configurado (intro-nova-8s.mp4) tem voz PT;
+    # para ES/EN existem as versoes dubladas intro-nova-8s_<lang>.mp4.
+    # Sempre prioriza a versao com sufixo do idioma quando ela existir.
+    _lang = (lang or "pt").lower()
+    if _config_intro and _config_intro.lower().endswith(".mp4"):
+        _base, _ext = _config_intro.rsplit(".", 1)
+        _localizado = f"{_base}_{_lang}.{_ext}"
+        if (_proj_intro / _localizado).exists():
+            intro_video = _localizado
+            print("  intro no idioma %s -> %s" % (_lang.upper(), _localizado), flush=True)
+    # Fallback: se o intro escolhido nao existir no projeto, usa os intros
+    # por idioma dos projetos antigos (intro_8s_pt/_es.mp4, original para en).
+    if not (intro_video and (_proj_intro / intro_video).exists()):
         _intro_por_idioma = {
             "pt": "intro_8s_pt.mp4",
             "es": "intro_8s_es.mp4",
             "en": "intro_8s.mp4",
         }
-        _cand = _intro_por_idioma.get((lang or "pt").lower(), "")
+        _cand = _intro_por_idioma.get(_lang, "")
         if _cand and (_proj_intro / _cand).exists():
             intro_video = _cand
+            print("  intro fallback idioma %s -> %s" % (_lang.upper(), _cand), flush=True)
     # Avisa o preprocess_images qual intro copiar para o workspace
     # (ele roda depois e precisa do MESMO nome escolhido aqui).
     try:
