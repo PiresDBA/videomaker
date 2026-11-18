@@ -50,6 +50,14 @@ def main():
         for png in efeitos_src.glob("*.png"):
             _sh.copy2(png, efeitos_dst / png.name)
 
+    # Manifest de paineis (colagens 2/3/4) -> workspace. Sem ele o
+    # build_composition nao detecta colagens e aplica zoom (corta os paineis).
+    painel_src = proj / "assets" / "images" / "gemini" / "paineis_manifest.json"
+    painel_dst_dir = hf_dir / "assets" / "images" / "gemini"
+    if painel_src.exists():
+        painel_dst_dir.mkdir(parents=True, exist_ok=True)
+        _sh.copy2(painel_src, painel_dst_dir / "paineis_manifest.json")
+
     scenes = load_json(Path(args.scenes) if args.scenes else HERE / "scenes.json")
     names = []
     for sid, cfg_s in scenes.items():

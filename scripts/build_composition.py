@@ -264,11 +264,12 @@ def _particulas_html(sid, start, dur):
     import random as _rnd
     rnd = _rnd.Random(abs(hash(sid)) % 100000)
     efeito = cfg.get("efeito", "")
-    # quantidade e classe por efeito
-    QTD = {"bolinhas_sabao":25, "folhinhas_vento":40, "estrelinhas":30,
-           "abelhinhas":12, "coracoes":20, "ossinhos":15,
-           "racao_varios_formatos":35, "soninho_zzz":8, "chuva":60,
-           "fumacinha":20, "passarinhos":18}
+    # quantidade e classe por efeito (TRIPLICADO a pedido do usuario:
+    # efeitos apareciam mas com elementos demais escondidos / pouco visiveis)
+    QTD = {"bolinhas_sabao":75, "folhinhas_vento":120, "estrelinhas":90,
+           "abelhinhas":36, "coracoes":60, "ossinhos":45,
+           "racao_varios_formatos":105, "soninho_zzz":24, "chuva":180,
+           "fumacinha":60, "passarinhos":54}
     CLS = {"bolinhas_sabao":"part-bolha", "folhinhas_vento":"part-folha",
            "estrelinhas":"part-estrela", "abelhinhas":"part-abelha",
            "coracoes":"part-coracao", "ossinhos":"part-osso",
@@ -281,10 +282,10 @@ def _particulas_html(sid, start, dur):
     for i in range(qtd):
         x = rnd.randint(0, 1850)
         y0 = rnd.randint(0, 1000)
-        size = rnd.choice([10,14,18,22,28]) if efeito not in ("fumacinha","soninho_zzz") else rnd.choice([120,170,220])
+        size = rnd.choice([14,18,24,30,38]) if efeito not in ("fumacinha","soninho_zzz") else rnd.choice([160,210,270])
         dur_i = rnd.uniform(max(2, dur*0.25), max(3, dur*0.7))
         delay = rnd.uniform(0, max(0.1, dur*0.5))
-        opac = rnd.uniform(0.35, 0.75)
+        opac = rnd.uniform(0.55, 0.9)  # mais visiveis
         pid = f"{sid}-p{i}"
         html.append(f'<div class="particula {cls}" id="{pid}" style="left:{x}px;top:{y0}px;'
                     f'width:{size}px;height:{size}px;background-size:contain;background-repeat:no-repeat"></div>')
