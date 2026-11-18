@@ -1,0 +1,2 @@
+﻿file 'C:/videomaker/es_novo8.wav'
+file 'C:/videomaker/es_resto.wav'

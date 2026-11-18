@@ -1,0 +1,17 @@
+[
+  {
+    "start": 1.1,
+    "end": 3.6,
+    "text": "Hello there, welcome to our home."
+  },
+  {
+    "start": 3.6,
+    "end": 5.86,
+    "text": "We are so glad you came to visit us."
+  },
+  {
+    "start": 5.86,
+    "end": 8.04,
+    "text": "Come on in and make yourself comfortable."
+  }
+]
