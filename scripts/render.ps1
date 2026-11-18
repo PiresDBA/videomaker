@@ -85,6 +85,12 @@ if ($CompFile -and (Test-Path $CompFile)) {
 if ($MixFile -and (Test-Path $MixFile)) {
     Copy-Item -LiteralPath $MixFile -Destination (Join-Path $HF "final_mix.m4a") -Force
     Write-Host "== mix linkado: $MixFile -> $HF\final_mix.m4a"
+    # Musica dos primeiros 8s (junta com o intro dublado)
+    $IntroMusic = Join-Path (Split-Path $MixFile -Parent) "intro_music.m4a"
+    if (Test-Path $IntroMusic) {
+        Copy-Item -LiteralPath $IntroMusic -Destination (Join-Path $HF "intro_music.m4a") -Force
+        Write-Host "== intro_music linkado -> $HF\intro_music.m4a"
+    }
 } else {
     Write-Host "== usando mix existente em $HF\final_mix.m4a"
 }

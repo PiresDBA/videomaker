@@ -653,6 +653,8 @@ def main():
     <div id="root" data-composition-id="main" data-start="0" data-duration="%.3f"
          data-width="1920" data-height="1080">
 %s
+      <audio id="intro-music" src="intro_music.m4a" data-start="0.000" data-duration="%.3f"
+             data-track-index="1" data-volume="1"></audio>
       <audio id="mix-audio" src="final_mix.m4a" data-start="%.3f" data-duration="%.3f"
              data-track-index="2" data-volume="1"></audio>
     </div>
@@ -661,7 +663,7 @@ def main():
     </script>
   </body>
 </html>
-""" % (lang, CSS, total, body, audio_start, audio_dur, js)
+""" % (lang, CSS, total, body, INTRO_DUR, audio_start, audio_dur, js)
 
     out = Path(args.out)
     out.write_text(html, encoding="utf-8")
