@@ -2300,18 +2300,6 @@
     "ast_hash": "1ba0ddeea5befe66a4801ecfb9d042de",
     "semantic_hash": ""
   },
-  "_amostra_lista.txt": {
-    "mtime": 1795008737.7587702,
-    "seen": 1795010685.4146054,
-    "ast_hash": "ac913ca9fd76baa3709294ee85472202",
-    "semantic_hash": ""
-  },
-  "_sil.mp3": {
-    "mtime": 1795008708.0382915,
-    "seen": 1795010685.4149241,
-    "ast_hash": "854b77a12edd04cd6265f2172627c5aa",
-    "semantic_hash": ""
-  },
   "scripts/criar_efeitos_final.py": {
     "mtime": 1795011229.5811434,
     "seen": 1795011393.3973904,
