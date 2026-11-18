@@ -254,6 +254,18 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     intro_id = "intro-capa"
     intro_start = 0.0
     intro_video = _CLIPS.get("intro", "")
+    # Escolhe o intro dublado conforme o idioma do video:
+    #   pt -> intro_8s_pt.mp4 | es -> intro_8s_es.mp4 | en -> intro_8s.mp4
+    # (o original ja e em ingles). Se nao existir o especifico, usa o config.
+    _intro_por_idioma = {
+        "pt": "intro_8s_pt.mp4",
+        "es": "intro_8s_es.mp4",
+        "en": "intro_8s.mp4",
+    }
+    _proj_intro = Path(os.environ.get("VIDEOMAKER_PROJ", "")) / "assets/images/gemini/scenes"
+    _cand = _intro_por_idioma.get((lang or "pt").lower(), "")
+    if _cand and (_proj_intro / _cand).exists():
+        intro_video = _cand
     if intro_video:
         cam_intro = ('<video class="cam cam-0 intro-video" src="assets/images/%s" '
                      'muted playsinline autoplay loop></video>' % intro_video)
