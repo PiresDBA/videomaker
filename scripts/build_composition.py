@@ -37,6 +37,13 @@ video.cam{object-fit:cover;width:106%;height:106%;left:-3%;top:-3%;position:abso
 video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
 .cam-b{opacity:0}
 .ov{position:absolute;inset:0;pointer-events:none}
+/* Particulas: micro bolinhas de sabao subindo - da vida as imagens sem zoom */
+.bubbles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.bubble{position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.10) 35%,rgba(180,220,255,.18) 70%,rgba(255,255,255,.05) 100%);
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:inset 0 0 6px rgba(255,255,255,.35),0 0 8px rgba(255,255,255,.12);
+  opacity:0;will-change:transform,opacity}
 .scrim-b{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(0deg,rgba(8,5,3,.88) 0%,rgba(8,5,3,.55) 24%,rgba(8,5,3,.12) 50%,rgba(8,5,3,0) 70%)}
 .scrim-l{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(90deg,rgba(8,5,3,.86) 0%,rgba(8,5,3,.55) 32%,rgba(8,5,3,.08) 62%,rgba(8,5,3,0) 78%)}
 .scrim-t{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(180deg,rgba(8,5,3,.78) 0%,rgba(8,5,3,.35) 22%,rgba(8,5,3,0) 46%)}
@@ -327,9 +334,14 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         timeline_shifted.append(s)
     cursor = cursor + float(timeline[-1]["end"]) if timeline else cursor
 
+    # Clipes do meio: 'meio' (legado) + 'meio2', 'meio3'... cada um com sua cena
     meio_cfg = _CLIPS.get("meio", {})
     meio_scene = meio_cfg.get("scene", "")
     meio_file = meio_cfg.get("file", "")
+    todos_meios = [cfg for key, cfg in _CLIPS.items()
+                   if (key == "meio" or key.startswith("meio")) and isinstance(cfg, dict) and cfg.get("file")]
+    if not todos_meios and meio_file:
+        todos_meios = [meio_cfg]
 
     for idx, sec in enumerate(timeline_shifted):
         sid = sec["id"]
@@ -340,13 +352,15 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         cams = cfg.get("camera", [])
         split = cfg.get("split")
         at = cfg.get("at")
-        # Clipe de video no meio do filme (modo hibrido): o clipe ocupa os
-        # primeiros clip_dur segundos e as imagens da cena preenchem o resto,
-        # distribuidas no tempo restante. Nao congela nem substitui as imagens.
-        meio_clip_dur = float(meio_cfg.get("clip_dur", 8.0)) if isinstance(meio_cfg, dict) else 8.0
-        if meio_file and sid == meio_scene:
-            print("  clipe do meio na cena %s -> %s (%ss + stills)" %
-                  (sid, meio_file, meio_clip_dur), flush=True)
+        # Clipe de video desta cena (se houver). Pode haver varios (meio, meio2...).
+        clipe_da_cena = next((m for m in todos_meios if m.get("scene") == sid), None)
+        meio_clip_dur = float(clipe_da_cena.get("clip_dur", 8.0)) if clipe_da_cena else 8.0
+        meio_file = clipe_da_cena.get("file", "") if clipe_da_cena else ""
+        meio_mode = clipe_da_cena.get("mode", "hybrid") if clipe_da_cena else "hybrid"
+        meio_offset = float(clipe_da_cena.get("offset", 0.0)) if clipe_da_cena else 0.0
+        if clipe_da_cena:
+            print("  clipe do meio na cena %s -> %s (%ss, mode=%s) + stills" %
+                  (sid, meio_file, meio_clip_dur, meio_mode), flush=True)
 
         trans = str(cfg.get("transicao") or "crossfade").lower()
         T = float(TRANSICOES.get(trans, XFADE)) if trans in TRANSICOES else XFADE
@@ -381,9 +395,17 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             ultima_valida = name
 
         videos_desta_cena = []
-        # Clipe do meio: ocupa os primeiros clip_dur segundos da cena; as
-        # imagens entram logo depois (ver _reveal_time com deslocamento).
-        if meio_file and sid == meio_scene:
+        # Modo "middle": clipe entra em start+offset, imagens antes/depois.
+        # Modo "hybrid" (padrao): clipe no inicio, imagens depois.
+        if meio_file and meio_mode == "middle":
+            clip_start = start + meio_offset
+            videos_desta_cena.append(
+                '<video class="cam clip-video" id="%s-video" '
+                'src="assets/images/%s" muted playsinline '
+                'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
+                % (sid, meio_file, clip_start, meio_clip_dur, track)
+            )
+        elif meio_file and sid == meio_scene:
             videos_desta_cena.append(
                 '<video class="cam clip-video" id="%s-video" '
                 'src="assets/images/%s" muted playsinline '
@@ -415,22 +437,33 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         has_video = any(n.lower().endswith(".mp4") for n in images)
 
         imagens_apos_clipe = bool(meio_file and sid == meio_scene)
-        inicio_imgs = start + (meio_clip_dur if imagens_apos_clipe else 0.0)
-        dur_imgs = (dur - meio_clip_dur) if imagens_apos_clipe else dur
+        meio_middle = imagens_apos_clipe and meio_mode == "middle"
+        inicio_imgs = start + (0.0 if meio_middle else
+                               (meio_clip_dur if imagens_apos_clipe else 0.0))
+        dur_imgs = dur
+        # no modo 'hybrid' as imagens entram depois do clipe
+        if imagens_apos_clipe and not meio_middle:
+            inicio_imgs = start + meio_clip_dur
+            dur_imgs = dur - meio_clip_dur
 
         def _reveal_time(i):
-            # Tempo (absoluto no timeline) em que a imagem i deve estar
-            # visivel. Se a cena tem clipe de video no inicio, as imagens
-            # entram depois dele e se distribuem no tempo restante.
-            if i == 0:
-                return inicio_imgs
+            # Tempo absoluto em que a imagem i entra. 'at' e fracao 0..1 da cena.
             if at is not None and i < len(at):
-                return inicio_imgs + float(at[i]) * dur_imgs
-            if split is not None and n_img == 2:
-                return inicio_imgs + float(split) * dur_imgs
-            if n_img > 1:
-                return inicio_imgs + (i / float(n_img)) * dur_imgs
-            return inicio_imgs
+                frac = float(at[i])
+            elif split is not None and n_img == 2 and i == 1:
+                frac = float(split)
+            elif n_img > 1:
+                frac = i / float(n_img)
+            else:
+                frac = 0.0
+            if meio_middle:
+                # imagens antes do clipe: tempo normal; depois: empurradas pelo clipe
+                t = start + frac * dur
+                clip_at = start + meio_offset
+                if t >= clip_at:
+                    t += meio_clip_dur
+                return min(t, start + dur)
+            return inicio_imgs + frac * dur_imgs
 
         for i, name in enumerate(images):
             if name.lower().endswith(".mp4"):
@@ -442,13 +475,12 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             # deriva lenta. Zoom dinamico apenas em imagem unica.
             n_pain = _PAINEIS.get(name, 1)
             if n_pain > 1:
-                t_i = _reveal_time(i)
-                t_next = (_reveal_time(i + 1) if i + 1 < n_img else (start + dur))
-                seg = max(0.8, t_next - t_i)
+                # REGRA DURA: colagens (2/3/4 paineis) ja preenchem toda a tela.
+                # ZERO movimento (nem Ken Burns, nem deriva): qualquer escala
+                # corta os paineis. Mantem fixo em scale:1, x:0, y:0.
                 js.append(
-                    'tl.fromTo("#%s .cam-%d",{scale:1.00,x:0,y:0},'
-                    '{scale:1.03,x:0,y:0,duration:%.3f,ease:"none"},%.3f);'
-                    % (sid, i, seg, t_i)
+                    'tl.set("#%s .cam-%d",{scale:1,x:0,y:0},%.3f);'
+                    % (sid, i, _reveal_time(i))
                 )
                 continue
             # Variação de zoom por beat para evitar repetição: algumas cenas começam

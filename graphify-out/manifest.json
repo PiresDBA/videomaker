@@ -212,9 +212,9 @@
     "semantic_hash": "7632ee729406c719656f8a09af3682f2"
   },
   "scripts/build_composition.py": {
-    "mtime": 1795002202.355735,
-    "seen": 1795002388.4127162,
-    "ast_hash": "4c5bbf21c600488b2ce056d0f35f711d",
+    "mtime": 1795009412.990563,
+    "seen": 1795010685.4141798,
+    "ast_hash": "01c1f0013b1e52aa1d96e40ffe9d1148",
     "semantic_hash": ""
   },
   "scripts/build_timeline.py": {
@@ -440,9 +440,9 @@
     "semantic_hash": "9b4a8254a5afb346f5fc314e83ba458b"
   },
   "scripts/gerar_capitulo_trilinguo.py": {
-    "mtime": 1794938865.9058702,
-    "seen": 1794940876.6527076,
-    "ast_hash": "cd6f70823857c850fd92362b2cfd4832",
+    "mtime": 1795008322.846686,
+    "seen": 1795008448.6840792,
+    "ast_hash": "2981268850423d986afc0514b507bb53",
     "semantic_hash": ""
   },
   "scripts/install_hooks.py": {
@@ -530,10 +530,10 @@
     "semantic_hash": "734d897581045e6c22fda641c1da98ff"
   },
   "scripts/pipeline.py": {
-    "mtime": 1794916239.9776874,
-    "seen": 1794924162.4131517,
-    "ast_hash": "9925d01dc21632b991fe7683cc0152fd",
-    "semantic_hash": "9925d01dc21632b991fe7683cc0152fd"
+    "mtime": 1795008298.297092,
+    "seen": 1795008448.6841187,
+    "ast_hash": "7dbb388f70046ce0b1dbaa731a517ee7",
+    "semantic_hash": ""
   },
   "scripts/pipeline_ui-old.py": {
     "mtime": 1793583377.1770477,
@@ -2136,6 +2136,216 @@
     "mtime": 1795005541.6881387,
     "seen": 1795005754.041166,
     "ast_hash": "201f5c89fd025e16ef1a0f60e6eb5d26",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/catalogo-vozes.json": {
+    "mtime": 1794916894.0,
+    "seen": 1795008448.6838381,
+    "ast_hash": "fd011dd096310d99b4a96d1aaede0376",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/contrato-grafo.json": {
+    "mtime": 1794527778.0,
+    "seen": 1795008448.6838412,
+    "ast_hash": "a94cb1647f5d36207bb0276f914a1969",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/gerar_catalogo.py": {
+    "mtime": 1794915166.0,
+    "seen": 1795008448.6838436,
+    "ast_hash": "abbcdfb2a981fef8f99b51b9671c7bde",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/prosodia.py": {
+    "mtime": 1794922066.0,
+    "seen": 1795008448.6838448,
+    "ast_hash": "702d21ba3c41fe93cd641d3cec5b1791",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/test_pipeline_smoke.py": {
+    "mtime": 1794500564.0,
+    "seen": 1795008448.6838465,
+    "ast_hash": "8bc6697a09661f0b0af94ccdebdcd249",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/testar_vozes.py": {
+    "mtime": 1794518790.0,
+    "seen": 1795008448.6838481,
+    "ast_hash": "b5adefcfbc1cc4b0260df6c95df7be09",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/tts_service.py": {
+    "mtime": 1794921896.0,
+    "seen": 1795008448.68385,
+    "ast_hash": "c7468eacd0af244eaf7f942ae6898718",
+    "semantic_hash": ""
+  },
+  "scripts/_check_voicecraft_deps.py": {
+    "mtime": 1795007905.244512,
+    "seen": 1795008448.6839259,
+    "ast_hash": "9abd324c6eb5feee9a48e4c76078b492",
+    "semantic_hash": ""
+  },
+  "scripts/criar_patch.py": {
+    "mtime": 1795007682.196605,
+    "seen": 1795008448.684017,
+    "ast_hash": "5e21b6f2e3c97d0145aee8a209fe976d",
+    "semantic_hash": ""
+  },
+  "scripts/gen_narration_voicecraft.py": {
+    "mtime": 1795008408.8611965,
+    "seen": 1795008448.6840682,
+    "ast_hash": "cd6949c756b0c136ee444558918031c1",
+    "semantic_hash": ""
+  },
+  "scripts/ressincronizar_beats.py": {
+    "mtime": 1795007135.3919804,
+    "seen": 1795008448.68416,
+    "ast_hash": "96ce55e902c76a3d17076488304a3ef1",
+    "semantic_hash": ""
+  },
+  "scripts/ressincronizar_v2.py": {
+    "mtime": 1795007295.7032473,
+    "seen": 1795008448.684162,
+    "ast_hash": "dbd0243a64b1ce613b8d2ca462c242a4",
+    "semantic_hash": ""
+  },
+  "scripts/testar_voicecraft.py": {
+    "mtime": 1795008027.9497068,
+    "seen": 1795008448.6841836,
+    "ast_hash": "08a9113d25a6173ff0e83ee19629eb65",
+    "semantic_hash": ""
+  },
+  "scripts/voicecraft_tts.py": {
+    "mtime": 1795008132.8117366,
+    "seen": 1795008448.6841996,
+    "ast_hash": "47117e71c5c320e303c1f36981600f04",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/ESPECIFICACAO-TTS.md": {
+    "mtime": 1794932608.0,
+    "seen": 1795008448.684298,
+    "ast_hash": "7c8107825a461aeb65a117b0248788d5",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/MANUAL-API.html": {
+    "mtime": 1794921922.0,
+    "seen": 1795008448.6842997,
+    "ast_hash": "4c1d0cd036352fed0f30a4696f60cb00",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/MANUAL-QUADRINHOS.html": {
+    "mtime": 1794916892.0,
+    "seen": 1795008448.6843011,
+    "ast_hash": "5a56caaa530b6292c3491f8b0076a0d4",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/README.md": {
+    "mtime": 1794915444.0,
+    "seen": 1795008448.6843028,
+    "ast_hash": "5f5501a2fcb2d703c0915d713b81c1d5",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/requirements.txt": {
+    "mtime": 1794392940.0,
+    "seen": 1795008448.6843042,
+    "ast_hash": "e0f97c0b7afaf4756e01ca2185e1c758",
+    "semantic_hash": ""
+  },
+  "VoiceCraft-portable/assets/icon.svg": {
+    "mtime": 1794336334.0,
+    "seen": 1795008448.6845164,
+    "ast_hash": "e38429d969e235df0efc977c0f94db47",
+    "semantic_hash": ""
+  },
+  "teste_voz_auto.mp3": {
+    "mtime": 1795008064.2102075,
+    "seen": 1795008448.6845572,
+    "ast_hash": "ae5c3d03722ffc57074c6baec2e2a444",
+    "semantic_hash": ""
+  },
+  "teste_voz_gemini.mp3": {
+    "mtime": 1795008069.140155,
+    "seen": 1795008448.6845589,
+    "ast_hash": "116cf04d09c2b27a037d800dbfca8bdc",
+    "semantic_hash": ""
+  },
+  "scripts/criar_bolha_png.py": {
+    "mtime": 1795010342.973448,
+    "seen": 1795010685.4142287,
+    "ast_hash": "056b79080753d3a0e45c5b8dda1607a4",
+    "semantic_hash": ""
+  },
+  "scripts/criar_bolha_png2.py": {
+    "mtime": 1795010458.3812964,
+    "seen": 1795010685.414231,
+    "ast_hash": "5fb3982dd7352c636af60ced618e0cd9",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_extras.py": {
+    "mtime": 1795010487.404418,
+    "seen": 1795010685.4142334,
+    "ast_hash": "f363088174d6667f47d7d869b282abb7",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_extras_grandes.py": {
+    "mtime": 1795010595.1195738,
+    "seen": 1795010685.4142354,
+    "ast_hash": "1fdf0119178365e5d53e3f8757a3bcbe",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_teste.py": {
+    "mtime": 1795009577.3861609,
+    "seen": 1795010685.4142382,
+    "ast_hash": "1d4c094b80e955e0fa21f25b12ab1c24",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_teste_v2.py": {
+    "mtime": 1795010241.070995,
+    "seen": 1795010685.41424,
+    "ast_hash": "e752f98438a89c5b2c809fcfc3e932be",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_teste_v3.py": {
+    "mtime": 1795010378.971836,
+    "seen": 1795010685.4142418,
+    "ast_hash": "1ba0ddeea5befe66a4801ecfb9d042de",
+    "semantic_hash": ""
+  },
+  "_amostra_lista.txt": {
+    "mtime": 1795008737.7587702,
+    "seen": 1795010685.4146054,
+    "ast_hash": "ac913ca9fd76baa3709294ee85472202",
+    "semantic_hash": ""
+  },
+  "AMOSTRA_VOZ_GEMINI.mp3": {
+    "mtime": 1795008737.8502061,
+    "seen": 1795010685.4148731,
+    "ast_hash": "a3a74b2a87fbfb99700ac933a4f1c7a8",
+    "semantic_hash": ""
+  },
+  "_sil.mp3": {
+    "mtime": 1795008708.0382915,
+    "seen": 1795010685.4149241,
+    "ast_hash": "854b77a12edd04cd6265f2172627c5aa",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_final.py": {
+    "mtime": 1795011229.5811434,
+    "seen": 1795011393.3973904,
+    "ast_hash": "c090472bc743f490db02a46ac2a99ac2",
+    "semantic_hash": ""
+  },
+  "scripts/criar_efeitos_final_v2.py": {
+    "mtime": 1795011704.7297947,
+    "seen": 1795011994.343653,
+    "ast_hash": "8f02772cd297931f7095e8c50a3d2b3d",
+    "semantic_hash": ""
+  },
+  "BIBLIOTECA_EFEITOS/GUIA_USO.md": {
+    "mtime": 1795011876.1703577,
+    "seen": 1795011994.3443115,
+    "ast_hash": "95f58d3b983dd45fb36a47f3308cb298",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {
