@@ -44,6 +44,21 @@ video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cov
   border:1px solid rgba(255,255,255,.28);
   box-shadow:inset 0 0 6px rgba(255,255,255,.35),0 0 8px rgba(255,255,255,.12);
   opacity:0;will-change:transform,opacity}
+/* Particulas tematicas (imagens PNG da BIBLIOTECA_EFEITOS) */
+.particula{position:absolute;pointer-events:none;opacity:0;will-change:transform,opacity}
+.part-folha{background-image:url('assets/efeitos/folha.png')}
+.part-bolha{background-image:url('assets/efeitos/bolha.png')}
+.part-estrela{background-image:url('assets/efeitos/estrela.png')}
+.part-coracao{background-image:url('assets/efeitos/coracao.png')}
+.part-abelha{background-image:url('assets/efeitos/abelha.png')}
+.part-osso{background-image:url('assets/efeitos/osso.png')}
+.part-zzz{background-image:url('assets/efeitos/zzz.png')}
+.part-gota{background-image:url('assets/efeitos/gota.png')}
+.part-passaro{background-image:url('assets/efeitos/passaro.png')}
+.part-fumaca{background-image:url('assets/efeitos/fumaca.png')}
+.part-racao{background-image:url('assets/efeitos/racao_bola.png')}
+.part-racao2{background-image:url('assets/efeitos/racao_tri.png')}
+.part-racao3{background-image:url('assets/efeitos/racao_oval.png')}
 .scrim-b{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(0deg,rgba(8,5,3,.88) 0%,rgba(8,5,3,.55) 24%,rgba(8,5,3,.12) 50%,rgba(8,5,3,0) 70%)}
 .scrim-l{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(90deg,rgba(8,5,3,.86) 0%,rgba(8,5,3,.55) 32%,rgba(8,5,3,.08) 62%,rgba(8,5,3,0) 78%)}
 .scrim-t{background:radial-gradient(ellipse at 50% 48%,rgba(0,0,0,0) 46%,rgba(0,0,0,.40) 100%),linear-gradient(180deg,rgba(8,5,3,.78) 0%,rgba(8,5,3,.35) 22%,rgba(8,5,3,0) 46%)}
@@ -225,6 +240,70 @@ def _load_paineis():
 
 _PAINEIS = _load_paineis()
 
+
+def _load_efeitos():
+    """Mapa sid -> efeito da BIBLIOTECA_EFEITOS (escolhido pela narracao)."""
+    proj = os.environ.get("VIDEOMAKER_PROJ", "")
+    p = Path(proj) / "artifacts" / "efeitos_por_cena.json"
+    try:
+        if p.exists():
+            return load_json(p)
+    except Exception:
+        pass
+    return {}
+
+
+_EFEITOS = _load_efeitos()
+
+
+def _particulas_html(sid, start, dur):
+    """Gera HTML+JS de particulas tematicas para uma cena."""
+    cfg = _EFEITOS.get(sid)
+    if not cfg:
+        return "", ""
+    import random as _rnd
+    rnd = _rnd.Random(abs(hash(sid)) % 100000)
+    efeito = cfg.get("efeito", "")
+    # quantidade e classe por efeito
+    QTD = {"bolinhas_sabao":25, "folhinhas_vento":40, "estrelinhas":30,
+           "abelhinhas":12, "coracoes":20, "ossinhos":15,
+           "racao_varios_formatos":35, "soninho_zzz":8, "chuva":60,
+           "fumacinha":20, "passarinhos":18}
+    CLS = {"bolinhas_sabao":"part-bolha", "folhinhas_vento":"part-folha",
+           "estrelinhas":"part-estrela", "abelhinhas":"part-abelha",
+           "coracoes":"part-coracao", "ossinhos":"part-osso",
+           "racao_varios_formatos":"part-racao", "soninho_zzz":"part-zzz",
+           "chuva":"part-gota", "fumacinha":"part-fumaca",
+           "passarinhos":"part-passaro"}
+    qtd = QTD.get(efeito, 20)
+    cls = CLS.get(efeito, "part-bolha")
+    html, js = [], []
+    for i in range(qtd):
+        x = rnd.randint(0, 1850)
+        y0 = rnd.randint(0, 1000)
+        size = rnd.choice([10,14,18,22,28]) if efeito not in ("fumacinha","soninho_zzz") else rnd.choice([120,170,220])
+        dur_i = rnd.uniform(max(2, dur*0.25), max(3, dur*0.7))
+        delay = rnd.uniform(0, max(0.1, dur*0.5))
+        opac = rnd.uniform(0.35, 0.75)
+        pid = f"{sid}-p{i}"
+        html.append(f'<div class="particula {cls}" id="{pid}" style="left:{x}px;top:{y0}px;'
+                    f'width:{size}px;height:{size}px;background-size:contain;background-repeat:no-repeat"></div>')
+        # movimento: sobe (ou desce para chuva/folhas) com leve deriva lateral
+        if efeito in ("chuva","folhinhas_vento","passarinhos","abelhinhas"):
+            dy = 1200  # desce/atravessa
+            dx = rnd.randint(-300, 300)
+        else:
+            dy = -900  # sobe
+            dx = rnd.randint(-200, 200)
+        js.append(
+            f'tl.fromTo("#{pid}",{{y:0,x:0,opacity:0}},'
+            f'{{y:{dy},x:{dx},opacity:{opac:.2f},duration:{dur_i:.2f},ease:"none"}},'
+            f'{start+delay:.3f});'
+        )
+        # fade out no fim
+        js.append(f'tl.to("#{pid}",{{opacity:0,duration:0.5}},{start+dur-0.6:.3f});')
+    return "".join(html), "\n".join(js)
+
 # Textos da capa e do encerramento, no idioma do video (regra: nenhum texto
 # na tela pode ficar em PT nos videos EN/ES). Padrao pt = comportamento antigo.
 INTRO_TEXTS = {
@@ -405,7 +484,8 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
                 % (sid, meio_file, clip_start, meio_clip_dur, track)
             )
-        elif meio_file and sid == meio_scene:
+        elif meio_file:
+            # 'clipe_da_cena' ja garante que este video pertence a cena 'sid'
             videos_desta_cena.append(
                 '<video class="cam clip-video" id="%s-video" '
                 'src="assets/images/%s" muted playsinline '
@@ -429,14 +509,19 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         overlay = overlays.get(sid, "")
         parts.append(overlay)
         parts.append('<div class="ov grain"></div>')
+        # particulas tematicas da BIBLIOTECA_EFEITOS (movimento sem zoom)
+        p_html, p_js = _particulas_html(sid, start, dur)
+        parts.append(p_html)
         parts.append("</div>")
         scenes.append("".join(parts))
         scenes.extend(videos_desta_cena)
+        if p_js:
+            js.append(p_js)
 
         n_img = len(images)
         has_video = any(n.lower().endswith(".mp4") for n in images)
 
-        imagens_apos_clipe = bool(meio_file and sid == meio_scene)
+        imagens_apos_clipe = bool(meio_file)  # clipe_da_cena ja e especifico da cena
         meio_middle = imagens_apos_clipe and meio_mode == "middle"
         inicio_imgs = start + (0.0 if meio_middle else
                                (meio_clip_dur if imagens_apos_clipe else 0.0))

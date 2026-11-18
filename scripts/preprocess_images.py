@@ -41,6 +41,15 @@ def main():
     dst_dir = hf_dir / "assets" / "images"
     dst_dir.mkdir(parents=True, exist_ok=True)
 
+    # Particulas da BIBLIOTECA_EFEITOS -> workspace/assets/efeitos
+    import shutil as _sh
+    efeitos_src = Path(r"C:\videomaker\BIBLIOTECA_EFEITOS\assets")
+    efeitos_dst = hf_dir / "assets" / "efeitos"
+    if efeitos_src.exists():
+        efeitos_dst.mkdir(parents=True, exist_ok=True)
+        for png in efeitos_src.glob("*.png"):
+            _sh.copy2(png, efeitos_dst / png.name)
+
     scenes = load_json(Path(args.scenes) if args.scenes else HERE / "scenes.json")
     names = []
     for sid, cfg_s in scenes.items():
