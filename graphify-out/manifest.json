@@ -687,10 +687,10 @@
     "semantic_hash": "773dcc7a2b4874a111f525742efec48b"
   },
   "scripts/upload_por_idioma.py": {
-    "mtime": 1794553805.7551632,
-    "seen": 1794924162.4131913,
-    "ast_hash": "e7acf40cdd2106aa102216f8a5ed477f",
-    "semantic_hash": "e7acf40cdd2106aa102216f8a5ed477f"
+    "mtime": 1794977169.6687748,
+    "seen": 1794977996.0523353,
+    "ast_hash": "42aad00fb70e4f4a92edaf0edc652e69",
+    "semantic_hash": ""
   },
   "scripts/verify_narration.py": {
     "mtime": 1793503662.531929,
@@ -1965,9 +1965,9 @@
     "semantic_hash": ""
   },
   "log_render_en.txt": {
-    "mtime": 1794972595.7545779,
-    "seen": 1794972626.277674,
-    "ast_hash": "c60b4256ba05d52482508980f3902e9a",
+    "mtime": 1794975425.3530939,
+    "seen": 1794975565.9605331,
+    "ast_hash": "ed7d766ba80266180ca9332b50c466ac",
     "semantic_hash": ""
   },
   "log_render_es.txt": {
@@ -1980,6 +1980,42 @@
     "mtime": 1794972309.6902483,
     "seen": 1794972626.2776778,
     "ast_hash": "073588fccf4bf72f4396aef476fc3d22",
+    "semantic_hash": ""
+  },
+  "scripts/_test_auth.py": {
+    "mtime": 1794976644.8442729,
+    "seen": 1794977996.0521083,
+    "ast_hash": "ad0f790bed14b86b1fd199a49c07aa2c",
+    "semantic_hash": ""
+  },
+  "scripts/publicar_3_idiomas.py": {
+    "mtime": 1794976763.6431396,
+    "seen": 1794977996.052285,
+    "ast_hash": "0a2a9a7290cf14b25a76016f5a71bd17",
+    "semantic_hash": ""
+  },
+  "LISTA_PUBLICACAO.md": {
+    "mtime": 1794977350.2248905,
+    "seen": 1794977996.0524142,
+    "ast_hash": "d933565a25a8e2737b9995b2c837e3c7",
+    "semantic_hash": ""
+  },
+  "log_upload_en.txt": {
+    "mtime": 1794977740.8403718,
+    "seen": 1794977996.0525858,
+    "ast_hash": "807e346920835de423330f38410277fb",
+    "semantic_hash": ""
+  },
+  "log_upload_es.txt": {
+    "mtime": 1794977931.4506924,
+    "seen": 1794977996.0525877,
+    "ast_hash": "dc21ae201ecf451888efc6042da42d81",
+    "semantic_hash": ""
+  },
+  "log_upload_pt.txt": {
+    "mtime": 1794977543.4758306,
+    "seen": 1794977996.0525894,
+    "ast_hash": "d5555489645cdfea52fc967aa3d559c7",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {

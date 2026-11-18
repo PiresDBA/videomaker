@@ -4730,3 +4730,79 @@ como válidas.
 
 ---
 
+## 64. Entrega final multilíngue e publicação (2026-11-18)
+
+### 64.1. Intro dublado PT/EN/ES (novo padrão)
+
+O clipe de abertura gerado no Flow fala em inglês com movimentos de lábios.
+Para cada idioma do vídeo, usamos um `intro_8s_<lang>.mp4` com a voz dublada
+**nos mesmos tempos dos lábios**:
+
+| Beat | Tempo (whisper word-timestamps) | EN original |
+|---|---|---|
+| 1 | 0.80–2.94 s | "Hello there, welcome to our home." |
+| 2 | 3.56–5.62 s | "We are so glad you came to visit us." |
+| 3 | 5.86–7.50 s | "Come on in and make yourself comfortable." |
+
+- `transcrever_intro.py` — transcreve o áudio com `faster-whisper` (word timestamps).
+- `dublar_intro_v3.py` — gera PT e ES: TTS Edge, `atempo` para caber no beat,
+  `adelay` no início real, `apad` para não achatar o `amix`, e **descarta o
+  áudio original** (sem voz inglesa duplicada). EN usa o original.
+- `build_composition.py` escolhe o intro pelo idioma (`_intro_por_idioma`) e
+  grava `artifacts/_intro_usado.txt`; `preprocess_images.py` lê esse marcador
+  para copiar o MP4 correto para o workspace (antes copiava o PT sempre).
+
+### 64.2. Independente: voz alta, música baixa (remix final)
+
+No render, voz do intro (-37 dB) ficava ABAIXO da música (-31 dB). Subir
+`volume` no MP4 final aumentava as duas juntas. Solução: **remixar as fontes
+separadas** e substituir só os 0–8 s do áudio final:
+
+- voz (`intro_8s_<lang>.mp4`) com `volume=25dB` → ~-19 dB (nível da narração);
+- música (`intro_music.m4a`) com `volume=-2dB` (fundo baixinho);
+- `remixar_intro_no_final.py` (PT) e `finalizar_es.py` (ES) fazem isso e
+  concatenam com o resto do áudio (8 s → fim) intacto.
+- `intro-music.m4a` toca de 0–8 s; `final_mix.m4a` de 8 s ao fim (gap 1 s
+  entre cenas para a música "respirar").
+
+### 64.3. Finais sem tela escura
+
+Os clipes finais **sobrepõem** a cena `s_outro` no instante da fala:
+- pata com confete em 676.5 s ("obrigado por assistir");
+- subscribe em 683.5 s ("like/se inscreva") — sincronizado by beat de `s_outro`;
+- tela de fotos de despedida cobre até o fim do mix;
+- cada vídeo é **cortado** onde a imagem fica fixa: PT 691 s, ES 722 s, EN 748 s
+  (`ajustar_final_pt.py`, `finalizar_es.py`, corte direto no EN).
+
+### 64.4. Regras de publicação seguidas (CONTRATO)
+
+- Não publicar antes de PT+EN+ES prontos (§5.6); registrar em `LISTA_PUBLICACAO.md`.
+- `selfDeclaredMadeForKids = false` **sempre** (§5.7.1) — corrigido
+  `upload_por_idioma.py`: `--made-for-kids` → `--nao-kids`.
+- Descrição **somente** via `description_template.py` (§36, 785 palavras).
+  **Nunca** passar `--description` manual no upload (foi o erro do 1º upload PT,
+  que foi apagado).
+- Título/enredo de `script_<lang>.json`; canal/token por idioma (§5.7).
+- Legendas `.srt` enviadas via `youtube_captions.py`.
+- Cota respeitada (~6 uploads/canal/dia); conferir com `listar_canal.py`.
+
+### 64.5. Publicação realizada (18/11/2026)
+
+| Idioma | Canal | Vídeo |
+|---|---|---|
+| PT | Frida e Luna | https://youtu.be/ZQFzpeTYHf4 |
+| EN | Frida and Luna | https://youtu.be/miSZXqbLYYM |
+| ES | Frida y Luna | https://youtu.be/gOENGibQGJM |
+
+### 64.6. Scripts novos desta sessão
+
+`dublar_intro.py` / `dublar_intro_v2.py` / `dublar_intro_v3.py`,
+`transcrever_intro.py`, `recalcular_tempos_beats.py`, `detecta_paineis.py`,
+`make_contact_sheet.py`, `casar_imagens.py`, `aplicar_trocas.py`,
+`refazer_plano_semantico.py`, `resolver_duplicatas.py` / `_v2.py`,
+`desempatar_duplicatas.py`, `batimento_roteiro_foto.py`,
+`ajustar_final_pt.py`, `remixar_intro_no_final.py`, `finalizar_es.py`,
+`publicar_3_idiomas.py`, `_test_auth.py`, `_diag.py`.
+
+---
+
