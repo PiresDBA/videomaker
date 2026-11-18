@@ -432,15 +432,22 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         cams = cfg.get("camera", [])
         split = cfg.get("split")
         at = cfg.get("at")
-        # Clipe de video desta cena (se houver). Pode haver varios (meio, meio2...).
-        clipe_da_cena = next((m for m in todos_meios if m.get("scene") == sid), None)
+        # Clipes de video desta cena (pode haver varios na MESMA cena).
+        # O PRIMEIro continua sendo o 'principal' (controla o deslocamento das
+        # imagens), os demais sao apenas adicionados no tempo via 'offset'.
+        clipes_da_cena = [m for m in todos_meios if m.get("scene") == sid]
+        clipe_da_cena = clipes_da_cena[0] if clipes_da_cena else None
         meio_clip_dur = float(clipe_da_cena.get("clip_dur", 8.0)) if clipe_da_cena else 8.0
         meio_file = clipe_da_cena.get("file", "") if clipe_da_cena else ""
         meio_mode = clipe_da_cena.get("mode", "hybrid") if clipe_da_cena else "hybrid"
         meio_offset = float(clipe_da_cena.get("offset", 0.0)) if clipe_da_cena else 0.0
         if clipe_da_cena:
-            print("  clipe do meio na cena %s -> %s (%ss, mode=%s) + stills" %
-                  (sid, meio_file, meio_clip_dur, meio_mode), flush=True)
+            print("  clipe do meio na cena %s -> %s (%ss, mode=%s, offset=%ss) + stills" %
+                  (sid, meio_file, meio_clip_dur, meio_mode, meio_offset), flush=True)
+            for extra in clipes_da_cena[1:]:
+                print("  clipe extra na cena %s -> %s (%ss, offset=%ss)" %
+                      (sid, extra.get("file"), extra.get("clip_dur", 8.0),
+                       extra.get("offset", 0.0)), flush=True)
 
         trans = str(cfg.get("transicao") or "crossfade").lower()
         T = float(TRANSICOES.get(trans, XFADE)) if trans in TRANSICOES else XFADE
@@ -475,23 +482,26 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
             ultima_valida = name
 
         videos_desta_cena = []
-        # Modo "middle": clipe entra em start+offset, imagens antes/depois.
-        # Modo "hybrid" (padrao): clipe no inicio, imagens depois.
-        if meio_file and meio_mode == "middle":
-            clip_start = start + meio_offset
+        # Emite TODOS os clipes desta cena. Modo "middle": clipe entra em
+        # start+offset. Modo "hybrid" (padrao): clipe no inicio da cena.
+        # Clipes extras (ex.: meio3) usam SEMPRE o seu proprio 'offset'.
+        for ci, clp in enumerate(clipes_da_cena):
+            cfile = clp.get("file", "")
+            if not cfile:
+                continue
+            cdur = float(clp.get("clip_dur", 8.0))
+            cmode = clp.get("mode", "hybrid")
+            coff = float(clp.get("offset", 0.0))
+            if cmode == "middle" or ci > 0:
+                clip_start = start + coff
+            else:
+                clip_start = start
+            vid_id = "%s-video" % sid if ci == 0 else "%s-video-%d" % (sid, ci)
             videos_desta_cena.append(
-                '<video class="cam clip-video" id="%s-video" '
+                '<video class="cam clip-video" id="%s" '
                 'src="assets/images/%s" muted playsinline '
                 'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
-                % (sid, meio_file, clip_start, meio_clip_dur, track)
-            )
-        elif meio_file:
-            # 'clipe_da_cena' ja garante que este video pertence a cena 'sid'
-            videos_desta_cena.append(
-                '<video class="cam clip-video" id="%s-video" '
-                'src="assets/images/%s" muted playsinline '
-                'data-start="%.3f" data-duration="%.3f" data-track-index="%s"></video>'
-                % (sid, meio_file, start, meio_clip_dur, track)
+                % (vid_id, cfile, clip_start, cdur, track)
             )
         for i, name in enumerate(images_resolvidas):
             cls = "cam cam-%d%s" % (i, " cam-b" if i > 0 else "")
