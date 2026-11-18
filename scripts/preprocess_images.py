@@ -73,10 +73,13 @@ def main():
             n = marker.read_text(encoding="utf-8").strip()
             if n and n not in names:
                 names.append(n)
-        meio = vc.get("meio", {})
-        n = meio.get("file", "") if isinstance(meio, dict) else ""
-        if n and n not in names:
-            names.append(n)
+        # Todos os clipes do meio (meio, meio2, meio3...).
+        for key, val in vc.items():
+            if key == "meio" or key.startswith("meio"):
+                if isinstance(val, dict):
+                    n = val.get("file", "")
+                    if n and n not in names:
+                        names.append(n)
         pre = vc.get("pre_final", {})
         n = pre.get("file", "") if isinstance(pre, dict) else ""
         if n and n not in names:
