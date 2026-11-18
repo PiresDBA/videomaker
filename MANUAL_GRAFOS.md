@@ -4806,3 +4806,61 @@ Os clipes finais **sobrepõem** a cena `s_outro` no instante da fala:
 
 ---
 
+## 65. REGRA DE OURO — sincronia imagem ↔ narração e ciclo limpo (2026-11-18)
+
+### 65.1. Regra de ouro (ditada pelo usuário)
+
+> **O que a pessoa OUVE tem que ser exatamente o que ela VÊ, no mesmo
+> instante.** Cada BEAT da fala precisa de uma imagem relacionada. Se a
+> narração fala de **osso**, a imagem tem que mostrar um osso; se fala de
+> **cama**, tem que ter uma cama; se fala de **comida**, comida na imagem.
+> **Imagens sem sentido para o roteiro são proibidas.**
+> A imagem tem que mudar conforme o texto muda, na mesma sincronia da narração.
+
+Ferramenta de apoio: `batimento_roteiro_foto.py` (§63.3) gera
+`artifacts/batimento_roteiro_foto.txt` com a classificação por beat.
+Antes de renderizar, rodar o batimento e conferir os `ERRADO`/`SUSPEITO`.
+
+### 65.2. Ciclo limpo entre vídeos (nova regra dura)
+
+> **Cada vídeo é uma história diferente.** Quando um vídeo termina
+> (renderizado + publicado), **o ciclo fecha**: nada daquele vídeo pode vazar
+> para o próximo. O novo ciclo começa do **zero**, com as variáveis limpas:
+> - sem `BIBLIA DE CONTINUIDADE` do vídeo anterior;
+> - sem cenário/objetos fixos do vídeo anterior (ex.: a caminha vermelha de
+>   corações do vídeo da caminha NÃO deve aparecer no vídeo dos cachorros
+>   falando só porque "ficou na memória");
+> - sem reaproveitar imagem, prompt, reference, manifesto ou estado.
+
+O vídeo "e-se-os-cachorros-pudessem-falar-por-um-dia" ficou com a caminha
+vermelha nas imagens justamente por esse vazamento (o gerador usava o
+`estado`/cenário base herdado). Foi **aceito excepcionalmente** porque já
+está pronto; a regra vale daqui em diante.
+
+### 65.3. Como garantir o ciclo limpo
+
+1. Cada projeto tem seu próprio `artifacts/script.json` com `style_notes` e
+   `continuity_notes` **próprios** — nunca copiar do projeto anterior.
+2. `reference_image/` é **somente identidade dos personagens** (Frida/Luna),
+   nunca cenário/objetos. A BÍBLIA de cada vídeo descreve só os objetos
+   fixos **daquela** história.
+3. Antes de gerar imagens de um vídeo novo: conferir que o prompt não contém
+   palavras do vídeo anterior (ex.: "caminha", "corações" se o tema não for
+   esse). Se contiver, limpar `continuity_notes`/cenário base.
+4. `check_prompt_repeticao.py --strict` e `batimento_roteiro_foto.py` são
+   as travas; rodar antes de renderizar.
+
+### 65.4. Caso aplicado nesta sessão
+
+- Vídeo "os cachorros falaram": 88 imagens (73 geradas + 15 agregadas do
+  roteiro antigo por batimento semântico), 4 clipes novos:
+  `intro-nova-8s.mp4` ("bem-vindos ao canal"), `osso_voador_4s.mp4` na
+  cena s12 ("ossinhos voadores", ~489 s), `final-5s.mp4` (4 patas corretas
+  + subscribe).
+- 28 imagens-colagem (2/3 painéis) marcadas em `paineis_manifest.json`
+  recebem só deriva lenta — sem zoom que corte os painéis.
+- Tópicos dos 8 vídeos já feitos marcados como USADOS em `scripts/topics.txt`
+  para evitar duplicação de tema.
+
+---
+
