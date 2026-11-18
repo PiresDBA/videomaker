@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4849153f`
+- Built from commit: `0d15b821`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -708,13 +708,13 @@ Nodes (3): _gemini_tts_key(), generate_audio_gemini(), _read_env_value()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `App` connect `Pipeline UI Upload Panel` to `Limpar Duplicados Pt / Listar Canal`, `Contrato / Agents`, `.__init__`, `TTS Quota & Voice Checks`, `Video Espirrinho Google`, `.cal_add_schedule`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.033) - this node is a cross-community bridge._
 - **What connects `Render phase: assemble (final video 231.068s)`, `bgm_gemini.wav - background music`, `FrameCapture: Timed out closing browser; forcing browser process shutdown` to the rest of the system?**
   _231 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `api.py` be split into smaller, more focused modules?**
   _Cohesion score 0.05030834144758196 - nodes in this community are weakly interconnected._
-- **Why does `CalendarDay` connect `CalendarDay` to `Limpar Duplicados Pt / Listar Canal`, `Video Espirrinho Google`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+- **Why does `Project` connect `Project` to `.__init__`, `execute_phases`, `pipeline.py`, `phase_music`, `phase_images`, `phase_youtube`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Should `gen_narration_gemini_sections.py` be split into smaller, more focused modules?**
   _Cohesion score 0.0518326545723806 - nodes in this community are weakly interconnected._
 

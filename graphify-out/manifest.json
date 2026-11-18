@@ -19,10 +19,10 @@
     "ast_empty": true
   },
   "check_agent_state.py": {
-    "mtime": 1794916705.8323894,
-    "seen": 1794924162.4130158,
-    "ast_hash": "46b71edef29678a3e5be071db3701af8",
-    "semantic_hash": "46b71edef29678a3e5be071db3701af8"
+    "mtime": 1795012120.4300478,
+    "seen": 1795012230.5419893,
+    "ast_hash": "62c2534b6a08bb0c0a3a0cf43f6d341e",
+    "semantic_hash": ""
   },
   "debug_batch.py": {
     "mtime": 1794915786.866872,
@@ -121,10 +121,10 @@
     "semantic_hash": "90fcea4abbc50b43841082d98231db7c"
   },
   "patch_flow.py": {
-    "mtime": 1794103352.4712527,
-    "seen": 1794924162.4130447,
-    "ast_hash": "6c4e56ecd7f7e95d97ee8710ba97c238",
-    "semantic_hash": "6c4e56ecd7f7e95d97ee8710ba97c238"
+    "mtime": 1795012150.3294616,
+    "seen": 1795012230.5420747,
+    "ast_hash": "c22cfc2199454847d15e7c05c187b992",
+    "semantic_hash": ""
   },
   "reprovadas.json": {
     "mtime": 1794919122.2362587,
@@ -1611,8 +1611,8 @@
     "semantic_hash": ""
   },
   "intro_transcricao.json": {
-    "mtime": 1794959928.768407,
-    "seen": 1794964583.3554554,
+    "mtime": 1795012150.328195,
+    "seen": 1795012230.5420585,
     "ast_hash": "41db03c6d3ab0016391983691ed4f2f4",
     "semantic_hash": ""
   },
@@ -1959,9 +1959,9 @@
     "semantic_hash": ""
   },
   "es_lista.txt": {
-    "mtime": 1794972485.71872,
-    "seen": 1794972626.2775803,
-    "ast_hash": "37ce64f1ae4dad4e5d86dee9d68da7af",
+    "mtime": 1795012120.4310448,
+    "seen": 1795012230.5429158,
+    "ast_hash": "2f924dd4432906b0b459465f02526e02",
     "semantic_hash": ""
   },
   "log_render_en.txt": {
@@ -2258,18 +2258,6 @@
     "ast_hash": "e38429d969e235df0efc977c0f94db47",
     "semantic_hash": ""
   },
-  "teste_voz_auto.mp3": {
-    "mtime": 1795008064.2102075,
-    "seen": 1795008448.6845572,
-    "ast_hash": "ae5c3d03722ffc57074c6baec2e2a444",
-    "semantic_hash": ""
-  },
-  "teste_voz_gemini.mp3": {
-    "mtime": 1795008069.140155,
-    "seen": 1795008448.6845589,
-    "ast_hash": "116cf04d09c2b27a037d800dbfca8bdc",
-    "semantic_hash": ""
-  },
   "scripts/criar_bolha_png.py": {
     "mtime": 1795010342.973448,
     "seen": 1795010685.4142287,
@@ -2316,12 +2304,6 @@
     "mtime": 1795008737.7587702,
     "seen": 1795010685.4146054,
     "ast_hash": "ac913ca9fd76baa3709294ee85472202",
-    "semantic_hash": ""
-  },
-  "AMOSTRA_VOZ_GEMINI.mp3": {
-    "mtime": 1795008737.8502061,
-    "seen": 1795010685.4148731,
-    "ast_hash": "a3a74b2a87fbfb99700ac933a4f1c7a8",
     "semantic_hash": ""
   },
   "_sil.mp3": {
