@@ -212,9 +212,9 @@
     "semantic_hash": "7632ee729406c719656f8a09af3682f2"
   },
   "scripts/build_composition.py": {
-    "mtime": 1795013076.0926502,
-    "seen": 1795013171.8155055,
-    "ast_hash": "0fb0904d4bf1a8c2bd9322fe7e759486",
+    "mtime": 1795026672.4555368,
+    "seen": 1795027068.5533152,
+    "ast_hash": "29f0f5faf19a997c7f3386dd4cb7e918",
     "semantic_hash": ""
   },
   "scripts/build_timeline.py": {
@@ -548,9 +548,9 @@
     "semantic_hash": "4766edf84aa98dcdd076728c471d545a"
   },
   "scripts/preprocess_images.py": {
-    "mtime": 1795013935.3612976,
-    "seen": 1795014031.044607,
-    "ast_hash": "ae88565ff5de4b8f1a3e15340fb01e2d",
+    "mtime": 1795025313.9729416,
+    "seen": 1795025853.7097747,
+    "ast_hash": "54f4020bd4a5a47c5b33d19588d19c01",
     "semantic_hash": ""
   },
   "scripts/probe_edge_voices.py": {
@@ -2324,34 +2324,28 @@
     "ast_hash": "c8b82c56d73e10f0af46c5daacec56d7",
     "semantic_hash": ""
   },
-  "scripts/_diag2.py": {
-    "mtime": 1795013818.517236,
-    "seen": 1795014031.044383,
-    "ast_hash": "20c78a321a5aaf11736631620374c5a9",
-    "semantic_hash": ""
-  },
-  "log_render_efeitos.txt": {
-    "mtime": 1795013381.6888976,
-    "seen": 1795014031.0449562,
-    "ast_hash": "64721c73ade9a0b71766e4869dcbcc49",
-    "semantic_hash": ""
-  },
-  "log_render_efeitos2.txt": {
-    "mtime": 1795014318.1552465,
-    "seen": 1795020622.5343192,
-    "ast_hash": "ec9ff78068b68a09eb93eae05ed4bbab",
-    "semantic_hash": ""
-  },
   "scripts/remover_marca_pavo.py": {
     "mtime": 1795020460.8648198,
     "seen": 1795020622.533813,
     "ast_hash": "c3eba00f00522fd4b3d532c7a4e26355",
     "semantic_hash": ""
   },
-  "log_render_efeitos3.txt": {
-    "mtime": 1795019154.1214051,
-    "seen": 1795020622.5343227,
-    "ast_hash": "7919e939694c97b93e435ce3043b282a",
+  "scripts/auditoria_aplicar.py": {
+    "mtime": 1795025483.2249298,
+    "seen": 1795025853.7096162,
+    "ast_hash": "d6c0911d922c3b14a91f5775aa8c9894",
+    "semantic_hash": ""
+  },
+  "scripts/auditoria_cruzar.py": {
+    "mtime": 1795026942.3106833,
+    "seen": 1795027068.5533056,
+    "ast_hash": "ea68152efc18e161ff20291861dc5607",
+    "semantic_hash": ""
+  },
+  "scripts/auditoria_transcrever.py": {
+    "mtime": 1795024573.0573862,
+    "seen": 1795025853.7096207,
+    "ast_hash": "407d74434b500a6887f23210f6af386d",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {
