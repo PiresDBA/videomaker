@@ -187,7 +187,8 @@ def upload(proj_slug, lang, mp4, titulo, desc, proj_dir, cs, tk, dry_run=False):
         "--tags", ",".join(TAGS[lang]),
         "--category", "24",
         "--privacy", "public",
-        "--made-for-kids",
+        # CONTRATO §5.7.1 (regra dura): NUNCA made-for-kids.
+        "--nao-kids",
         "--default-language", LANG_CREDS[lang]["code"],
         "--default-audio-language", LANG_CREDS[lang]["code"],
         "--client-secret", str(cs),
