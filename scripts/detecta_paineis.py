@@ -16,7 +16,9 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from PIL import Image
 import numpy as np
 
-SCENES = Path(r"C:\videomaker\projects\a-caminha-nova-que-ninguem-quer-usar\assets\images\gemini\scenes")
+PROJ = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(
+    r"C:\videomaker\projects\a-caminha-nova-que-ninguem-quer-usar")
+SCENES = PROJ / "assets" / "images" / "gemini" / "scenes"
 
 
 def _score_line(a, x, axis):
