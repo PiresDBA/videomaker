@@ -4862,55 +4862,149 @@ está pronto; a regra vale daqui em diante.
 - Tópicos dos 8 vídeos já feitos marcados como USADOS em `scripts/topics.txt`
   para evitar duplicação de tema.
 
----
-
-
-## 66. Auditoria de sincronia com narração REAL e proteção do fluxo (2026-11-18)
-
-### 66.1. Regra de ouro reforçada: não adianta arrumar uma e quebrar dez
-
-> Toda correção tem que preservar o FLUXO INTEIRO. Antes de renderizar,
-> rodar os checks e garantir que a correção não mexeu em capa/outro/subscribe
-> nem nos clipes. Ordem sagrada: branch → código → grafo/manual →
-> checks → commit → push → render.
-
-### 66.2. Causa raiz das imagens fora do tempo
-
-O ressincronizador antigo (ressincronizar_v2.py) calculava `at` com posição
-no TEXTO, não com TEMPO do áudio. Resultado: 72 imagens adiantadas/atrasadas
-(ex.: carro vermelho falado em 4:25 aparecia em 4:42). Além disso:
-
-1. O mix de áudio começa em 0 (lead_ms=0), mas o build_composition desloca
-   as cenas em +INTRO_DUR (8s de capa) → toda imagem estava 8s atrasada.
-2. Cenas com clipe têm regras próprias: middle (s1/bolinha) empurra imagens
-   pós-clipe em +clip_dur; hybrid (s12/osso) usa inicio=start+clip_dur.
-
-### 66.3. Ferramentas de auditoria (rodar antes de renderizar)
-
-- scripts/auditoria_transcrever.py → transcreve narração REAL com faster-whisper
-  small (array numpy p/ evitar bug PyAV metadata_errors). Gera transcricao.json.
-- scripts/auditoria_cruzar.py → cruza fala real ↔ imagens RESPEITANDO o fluxo
-  (+8s capa, clipes middle/hybrid). Gera relatorio_sincronia.txt e proposta_novos_at.json.
-- scripts/auditoria_aplicar.py → aplica novos at no scenes.json (backup .bak-auditoria).
-
-### 66.4. REGRA DURA: cenas de capa/encerramento NÃO são auditadas
-
-s_intro, s_final, s_outro têm lógica própria (sub_start do subscribe usa
-outro_beats_at[1]; capa usa textos próprios). Auditar essas cenas e mudar seus
-`at` MOVE O "Inscreva-se" e quebra o final. O auditor pula essas cenas e
-preserva o at original. Bug corrigido em 2026-11-18 (subscribe foi de 929.9s
-para 923.8s e foi restaurado).
-
-### 66.5. Múltiplos clipes na MESMA cena
-
-build_composition suporta vários clipes por cena (meio, meio2, meio3...): o
-PRIMEIRO controla o deslocamento das imagens, os demais entram via offset
-próprio. Aplicado: meio3 = meio_8s.mp4 (bolinha de tênis) em s1,
-offset=29.857 → entra em 60.9s (01:01) na fala "Era uma poirinha dourada".
-
-### 66.6. Efeitos visíveis
-
-Partículas triplicadas (489 → 1467), maiores e mais opacas. Colagens (2/3
-paineis) continuam com scale:1 (ZERO zoom), garantidas pelo paineis_manifest
+---
+
+
+
+
+
+## 66. Auditoria de sincronia com narração REAL e proteção do fluxo (2026-11-18)
+
+
+
+### 66.1. Regra de ouro reforçada: não adianta arrumar uma e quebrar dez
+
+
+
+> Toda correção tem que preservar o FLUXO INTEIRO. Antes de renderizar,
+
+> rodar os checks e garantir que a correção não mexeu em capa/outro/subscribe
+
+> nem nos clipes. Ordem sagrada: branch → código → grafo/manual →
+
+> checks → commit → push → render.
+
+
+
+### 66.2. Causa raiz das imagens fora do tempo
+
+
+
+O ressincronizador antigo (ressincronizar_v2.py) calculava `at` com posição
+
+no TEXTO, não com TEMPO do áudio. Resultado: 72 imagens adiantadas/atrasadas
+
+(ex.: carro vermelho falado em 4:25 aparecia em 4:42). Além disso:
+
+
+
+1. O mix de áudio começa em 0 (lead_ms=0), mas o build_composition desloca
+
+   as cenas em +INTRO_DUR (8s de capa) → toda imagem estava 8s atrasada.
+
+2. Cenas com clipe têm regras próprias: middle (s1/bolinha) empurra imagens
+
+   pós-clipe em +clip_dur; hybrid (s12/osso) usa inicio=start+clip_dur.
+
+
+
+### 66.3. Ferramentas de auditoria (rodar antes de renderizar)
+
+
+
+- scripts/auditoria_transcrever.py → transcreve narração REAL com faster-whisper
+
+  small (array numpy p/ evitar bug PyAV metadata_errors). Gera transcricao.json.
+
+- scripts/auditoria_cruzar.py → cruza fala real ↔ imagens RESPEITANDO o fluxo
+
+  (+8s capa, clipes middle/hybrid). Gera relatorio_sincronia.txt e proposta_novos_at.json.
+
+- scripts/auditoria_aplicar.py → aplica novos at no scenes.json (backup .bak-auditoria).
+
+
+
+### 66.4. REGRA DURA: cenas de capa/encerramento NÃO são auditadas
+
+
+
+s_intro, s_final, s_outro têm lógica própria (sub_start do subscribe usa
+
+outro_beats_at[1]; capa usa textos próprios). Auditar essas cenas e mudar seus
+
+`at` MOVE O "Inscreva-se" e quebra o final. O auditor pula essas cenas e
+
+preserva o at original. Bug corrigido em 2026-11-18 (subscribe foi de 929.9s
+
+para 923.8s e foi restaurado).
+
+
+
+### 66.5. Múltiplos clipes na MESMA cena
+
+
+
+build_composition suporta vários clipes por cena (meio, meio2, meio3...): o
+
+PRIMEIRO controla o deslocamento das imagens, os demais entram via offset
+
+próprio. Aplicado: meio3 = meio_8s.mp4 (bolinha de tênis) em s1,
+
+offset=29.857 → entra em 60.9s (01:01) na fala "Era uma poirinha dourada".
+
+
+
+### 66.6. Efeitos visíveis
+
+
+
+Partículas triplicadas (489 → 1467), maiores e mais opacas. Colagens (2/3
+
+paineis) continuam com scale:1 (ZERO zoom), garantidas pelo paineis_manifest
+
 copiado para o workspace no preprocess_images.py.
 
+
+## 67. Sonoplastia (sound design) - analise com earshot (2026-11-18)
+
+### 67.1. Regra de ouro estendida ao audio
+
+> Todo efeito sonoro tem que casar com o que e FALADO e VISTO no MESMO
+> instante (extensao da regra de ouro §65). Foley discreto sob a narração;
+> efeitos fortes só em clipes e no CTA. Nunca mascarar a voz: o mix ja tem
+> sidechaincompress (ducking), basta adicionar as camadas.
+
+### 67.2. Analise VAD com earshot 1.2.2
+
+scripts/analisar_earshot.py: extrai audio do MP4 para WAV 16 kHz mono int16,
+roda detector.predict_i16 frame-a-frame (256 amostras = 16 ms) e replica os
+defaults do segmentador Rust (smoothing=0.4, attack=0.6, decay=0.5,
+preroll=5, min_duration=6, start_delay=2, end_delay=4). ATENCAO: a binding
+Python NAO expoe earshot.segments()/SegmenterOptions - so Detector.
+
+Resultado no video PT: 171 segmentos de voz, 901.62s com voz (96.4%),
+33.25s de silencio. Relatorio: relatorio_earshot.txt.
+
+### 67.3. Mapa de sonoplastia
+
+scripts/sugerir_sonoplastia.py cruza: (1) pausas do earshot, (2) transcricao
+palavra-a-palavra (Foley por palavra-chave), (3) entradas dos 5 clipes.
+Gera 32 pontos: Foley (osso, bola, espirro, asas, carro, abelha, comida),
+transicoes whoosh nas pausas, efeitos de clipe e CTA. Saida:
+artifacts/auditoria/mapa_sonoplastia.txt.
+
+### 67.4. Geracao e aplicacao
+
+scripts/gerar_sonoplastia.py sintetiza os efeitos com ffmpeg (sine/ruido +
+filtros + envelope) e os mixa por cima do final_mix.m4a atual, gerando
+final_mix_sonoplastia.m4a (NAO altera o original). Para renderizar: trocar
+temporariamente a fase mix por um stub que copia esse arquivo, remover o MP4
+antigo para forcar re-render (deps nao incluem o mix), renderizar, restaurar
+mix_audio.py original e renomear o novo video.
+
+### 67.5. Comparacao SEM vs COM sonoplastia
+
+Backup em _BACKUP_SEM_SONOPLASTIA/ (video + meta + mix original).
+Videos finais na output/:
+- e-se-os-..._pt.mp4 = SEM sonoplastia (original, restaurado)
+- e-se-os-..._pt_COM_SONOPLASTIA.mp4 = COM sonoplastia (novo)
