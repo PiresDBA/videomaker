@@ -279,23 +279,23 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     )
     scenes.append(intro_html)
     if intro_video:
+        # O intro tem VOZ PROPRIA dublada (PT/EN/ES): nao pode ficar muted.
+        # data-has-audio=true faz o HyperFrames renderizar o audio do clipe.
         scenes.append(
             '<video class="cam clip-video" id="intro-video" '
-            'src="assets/images/%s" muted playsinline '
-            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
+            'src="assets/images/%s" playsinline data-has-audio="true" '
+            'data-start="%.3f" data-duration="%.3f" data-track-index="9"></video>'
             % (intro_video, intro_start, INTRO_DUR)
         )
-    # Narração cobre o vídeo TODO desde o segundo 0 (intro incluso). Para isso
-    # as cenas NÃO são deslocadas: começam em 0, juntamente com a narração.
-    # A capa animated (intro_8s) fica como camada de sobreposição nos primeiros
-    # INTRO_DUR segundos (track 0, por cima), abaixando depois.
+    # ESTRUTURA FINAL:
+    #   0-8s   : intro_8s dublado (voz propria) + musica, SEM narracao do pipe
+    #   8s+    : cenas deslocadas em +INTRO_DUR, narracao alinhada começa em 8s
     if not intro_video:
         js.append('tl.from("#intro-title",{opacity:0,scale:0.6,duration:0.9,ease:"back.out(2.4)"},0.3);')
         js.append('tl.to("#intro-title",{opacity:0,scale:1.1,duration:0.8,ease:"power2.in"},%.3f);' % (INTRO_DUR - 0.9))
         js.append('tl.fromTo("#intro-capa .cam-0",{scale:1},{scale:1.12,duration:4,ease:"none"},0);')
-    cursor = 0.0
+    cursor = INTRO_DUR  # cenas começam depois do intro
 
-    # Cenas começam em 0 (sem offset): narração e imagem alinhadas desde o 1o s.
     timeline_shifted = []
     for sec in timeline:
         s = dict(sec)
@@ -524,10 +524,9 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                 js.append('tl.to("#%s",{opacity:0,y:-22,duration:0.55,ease:"power2.in"},%.3f);'
                           % (aid, to))
 
-    # O introoccupied os primeiros INTRO_DUR segundos (camada sobre as cenas).
-    # Somamos esse tempo ao cursor para manter a duração total (cenas começam
-    # em 0, mas o vídeo ainda tem os 8s de capa no início).
-    cursor += INTRO_DUR
+    # (sem soma extra: as cenas ja foram deslocadas em +INTRO_DUR no inicio,
+    #  entao o cursor ja inclui os 8s do intro. Isso evita o buraco de tela
+    #  escura que havia entre o fim da narracao e o pre-final.)
 
     # ========== CLIPE PRE-FINAL (pata com confete) ==========
     # Video extra logo antes da despedida, para aproveitar os 4 clipes gerados.
@@ -637,11 +636,10 @@ def main():
             overlays[sec["id"]] = inject_ids(html, sec["id"])
 
     body, js, total = build(scene_cfg, tl, overlays, title=video_title, lang=lang)
-    # Narração começa no segundo 0 (junto com as cenas e o intro) e vai até
-    # o último frame. O mix ja foi gerado com lead=0 e duração total (inclui
-    # pre_final e outro/subscribe), então aqui só alinhamos audio_start=0.
-    audio_start = 0.0
-    audio_dur = total
+    # Narração começa em INTRO_DUR (logo após o intro dublado) e vai até o
+    # último frame. Os 8s iniciais ficam só com a voz do intro + música.
+    audio_start = INTRO_DUR
+    audio_dur = total - INTRO_DUR
 
     html = """<!doctype html>
 <html lang="pt-BR" data-lang="%s" data-resolution="landscape">
