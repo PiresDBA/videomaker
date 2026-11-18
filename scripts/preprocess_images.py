@@ -58,6 +58,12 @@ def main():
             n = vc.get(key, "")
             if n and n not in names:
                 names.append(n)
+        # O build_composition escolhe o intro pelo idioma e grava o nome aqui.
+        marker = proj / "artifacts" / "_intro_usado.txt"
+        if marker.exists():
+            n = marker.read_text(encoding="utf-8").strip()
+            if n and n not in names:
+                names.append(n)
         meio = vc.get("meio", {})
         n = meio.get("file", "") if isinstance(meio, dict) else ""
         if n and n not in names:

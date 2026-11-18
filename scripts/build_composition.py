@@ -266,6 +266,15 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     _cand = _intro_por_idioma.get((lang or "pt").lower(), "")
     if _cand and (_proj_intro / _cand).exists():
         intro_video = _cand
+    # Avisa o preprocess_images qual intro copiar para o workspace
+    # (ele roda depois e precisa do MESMO nome escolhido aqui).
+    try:
+        _marker = (Path(os.environ.get("VIDEOMAKER_PROJ", "")) /
+                   "artifacts" / "_intro_usado.txt")
+        _marker.parent.mkdir(parents=True, exist_ok=True)
+        _marker.write_text(intro_video or "", encoding="utf-8")
+    except Exception:
+        pass
     if intro_video:
         cam_intro = ('<video class="cam cam-0 intro-video" src="assets/images/%s" '
                      'muted playsinline autoplay loop></video>' % intro_video)
