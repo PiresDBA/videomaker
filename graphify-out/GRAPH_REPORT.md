@@ -1,17 +1,17 @@
 # Graph Report - videomaker  (2026-11-18)
 
 ## Corpus Check
-- 196 files · ~1,060,977 words
+- 202 files · ~1,249,338 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 10 file(s) not represented in the graph (top: .bat 6, (none) 2, .corrupt_backup 1)
 
 ## Summary
-- 2429 nodes · 4981 edges · 159 communities (110 shown, 49 thin omitted)
+- 2443 nodes · 5015 edges · 163 communities (111 shown, 52 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 340 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `378985d1`
+- Built from commit: `7f775066`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,11 +20,11 @@
 - gen_narration_gemini_sections.py
 - Publishing & Image Fetch
 - Pipeline UI Upload Panel
-- f
+- description_template.py
 - YouTube Audit & Descriptions
 - Daily Runner & Prompt Generation
 - upload_por_idioma.py
-- cmd_full
+- pipeline.py
 - argparse
 - Render Log: Novo Video 7
 - Pipeline UI Main Layout
@@ -34,13 +34,13 @@
 - os
 - Pipeline Phase Functions
 - TTS Quota & Voice Checks
-- narration_contract.py
+- audit_youtube.py
 - Narration Alignment & Timeline
 - Pipeline UI Scheduler
 - EN Production Log Concepts
 - Character Audit & Translation
 - Test & Upload Logs
-- Contract & Reproduction Guide
+- flow_agent_batch.py
 - Fazenda Pipeline Log
 - Manual de Grafos Concepts
 - React App Components
@@ -48,11 +48,11 @@
 - Gripe 8 Render & Delivery Log
 - Flow Fetch / Inspect Agent Mode2
 - publish_multilang.py
-- loop_multilang.py
+- phase_music
 - Limpar Duplicados Pt / Listar Canal
 - Es
 - Loop40
-- match_videos_by_duration.py
+- youtube_metadados.py
 - gen_music_procedural.py
 - Contrato / Agents
 - Flow Fetch
@@ -62,27 +62,26 @@
 - Topics-Old / Topics
 - Pipeline Ui-Old
 - re
-- youtube_metadados.py
+- build_description
 - Flow Fetch
 - Youtube Update Guide / Caminha Pt
 - Userunbus / Phases
-- get
+- run_setup_learning
 - Prompt Gen - Copia
 - subprocess
 - Video Espirrinho Google
-- os
+- match_videos_by_duration.py
 - rerender_all_no_text.py
 - Build Composition / Mix Audio
 - fetch_images.py
-- youtube_upload.py
 - Youtube Batch Publish
 - Loop Completo2 / Loop Completo
 - Render Bg 1966927817 / Render Bg Err
 - execute_phases
 - shutil
-- sync_bancos.py
+- loop_multilang.py
 - loop40.py
-- run_pipeline_subprocess
+- test_paineis.py
 - translate_script.py
 - Translate Script
 - Video Gripe7
@@ -92,26 +91,26 @@
 - backfill_languages.py
 - .__init__
 - canal_match.py
-- log_msg
+- check_video_idioma.py
 - Video Tarzan5 / Readme
 - Youtube Captions
 - generate_thumbnail.py
-- argparse
+- os
 - gen_narration.py
 - time
 - Gen Subtitles
-- _fire_schedule
+- hashlib
 - check_personagens_imagens.py
 - check_texto_idioma.py
 - gerar_video_flow.py
 - check_prompt_repeticao.py
 - Flow Fetch
-- diag_modelo.py
+- translate_local.py
 - Relatorio Youtube Idiomas
 - Backfill Languages
 - unicodedata
 - Pipeline
-- load_deliveries
+- setup_reference_image.py
 - Contrato / Agents
 - install_hooks.py
 - youtube_captions.py
@@ -123,7 +122,7 @@
 - Manual Usuario
 - Pipeline
 - Probe Edge Voices
-- _gemini_tts_key
+- align_narration.py
 - .__init__
 - Manual Grafos / Manual Herois Visual
 - Readme
@@ -145,15 +144,19 @@
 - check_imagens_repetidas.py
 - gen_subtitles.py
 - select_topic.py
-- validate_flow_ready
+- f
 - .cal_add_schedule
 - CalendarDay
-- pick_hook
-- loop_upload_idiomas.py
-- load_schedules
+- find_project_for_title
+- youtube_update.py
+- sync_bancos.py
 - copiar_para_projeto
-- next_topic_in_queue
+- pick_hook
+- validate_flow_ready
+- loop_upload_idiomas.py
+- scripts/make_contact_sheet.py
 - probe_edge_voices.py
+- check_manual.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `App` - 90 edges
@@ -168,12 +171,12 @@
 10. `load_json()` - 18 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `update_config()` --indirect_call--> `f()`  [INFERRED]
+  setup_reference_image.py → scripts/gen_music_procedural.py
 - `narration_contract.py — contrato de abertura/encerramento` --conceptually_related_to--> `Render HyperFrames — vídeo 'depois de assistir o filme do Tarzan'`  [INFERRED]
   scripts/README.md → log_video_tarzan5.txt
 - `render.ps1 — espaço de render compartilhado` --conceptually_related_to--> `Render HyperFrames — vídeo 'depois de assistir o filme do Tarzan'`  [INFERRED]
   scripts/README.md → log_video_tarzan5.txt
-- `update_config()` --indirect_call--> `f()`  [INFERRED]
-  setup_reference_image.py → scripts/gen_music_procedural.py
 - `scene_mode = beats (padrão desde 2026-11-15)` --semantically_similar_to--> `scene_mode fica em two (§5.8)`  [AMBIGUOUS] [semantically similar]
   AGENTS.md → CONTRATO.md
 - `Ambiente hardcoded (Python/Chrome/ffmpeg/CDP)` --semantically_similar_to--> `Pipeline de vídeo Videomaker v3 (10 fases)`  [INFERRED] [semantically similar]
@@ -234,15 +237,15 @@
 - **Personagens Frida e Luna no Google Flow** — log_video_tarzan_luna, log_video_tarzan_fridoca, log_video_tarzan_personagens_flow, log_video_tarzan2_personagens_flow [INFERRED 0.90]
 - **Mecanismo de checkpoint e retomada de fases** — log_video_tarzan_checkpoint, log_video_tarzan2_retomada, log_video_tarzan3_retomada [INFERRED 0.95]
 
-## Communities (159 total, 49 thin omitted)
+## Communities (163 total, 52 thin omitted)
 
 ### Community 0 - "api.py"
-Cohesion: 0.13
-Nodes (11): api_daily_run(), api_get_settings(), api_projects(), api_put_settings(), DailyRun, list_projects(), load_user_settings(), save_user_settings() (+3 more)
+Cohesion: 0.05
+Nodes (50): api_create_schedule(), api_daily_agent_status(), api_daily_run(), api_daily_status(), api_daily_stop_agent(), api_daily_unpause_requeue(), api_delete_schedule(), api_get_settings() (+42 more)
 
 ### Community 1 - "gen_narration_gemini_sections.py"
-Cohesion: 0.09
-Nodes (20): aplicar_substituicoes_pronunciacao(), limpar_e_preparar_texto(), limpar_texto_para_tts(), load_json(), gen_one(), remover_espaco_antes_pontuacao(), build_model_chain(), collect_keys() (+12 more)
+Cohesion: 0.05
+Nodes (41): aplicar_substituicoes_pronunciacao(), limpar_e_preparar_texto(), limpar_texto_para_tts(), load_json(), main(), gen_one(), remover_espaco_antes_pontuacao(), save_json() (+33 more)
 
 ### Community 2 - "Publishing & Image Fetch"
 Cohesion: 0.08
@@ -252,9 +255,9 @@ Nodes (37): build_prompt(), install(), key_of(), load_config(), load_json(), loa
 Cohesion: 0.08
 Nodes (5): App, list_projects(), open_path(), _sh(), slugify()
 
-### Community 4 - "f"
-Cohesion: 0.08
-Nodes (25): build_rich_description(), enrich_tags(), get_service(), list_uploads(), main(), st_flag(), main(), build_description() (+17 more)
+### Community 4 - "description_template.py"
+Cohesion: 0.21
+Nodes (5): main(), description_for_project(), main(), validate(), word_count()
 
 ### Community 5 - "YouTube Audit & Descriptions"
 Cohesion: 0.07
@@ -262,39 +265,39 @@ Nodes (38): attach_reference(), cdp_alive(), _check_refusal(), _classify_screen(
 
 ### Community 6 - "Daily Runner & Prompt Generation"
 Cohesion: 0.06
-Nodes (13): main(), main(), get_service(), main(), update_video(), main(), main(), main() (+5 more)
+Nodes (12): main(), main(), main(), main(), main(), main(), main(), main() (+4 more)
 
 ### Community 7 - "upload_por_idioma.py"
 Cohesion: 0.20
 Nodes (17): credenciais(), descricao_localizada(), enredo_localizado(), enviar_legendas(), gravar_no_projeto(), hoje(), is_done(), load_history() (+9 more)
 
-### Community 8 - "cmd_full"
-Cohesion: 0.08
-Nodes (11): cfg_ffmpeg_dir(), cmd_contract(), cmd_full(), cmd_reset(), cmd_status(), get_project(), main(), record_delivery() (+3 more)
+### Community 8 - "pipeline.py"
+Cohesion: 0.06
+Nodes (22): buscar_imagem_banco(), cfg_ffmpeg_dir(), cmd_contract(), cmd_full(), cmd_reset(), cmd_status(), extrair_palavras_chave(), find_duplicate_by_prompt() (+14 more)
 
 ### Community 9 - "argparse"
-Cohesion: 0.19
-Nodes (9): casamento_por_duracao(), extrair_duracao_local(), main(), iso_para_segundos(), list_videos(), main(), service_for(), legendas_do_video() (+1 more)
+Cohesion: 0.12
+Nodes (12): casamento_por_duracao(), extrair_duracao_local(), main(), iso_para_segundos(), list_videos(), main(), service_for(), legendas_do_video() (+4 more)
 
 ### Community 10 - "Render Log: Novo Video 7"
 Cohesion: 0.06
 Nodes (39): Render phase: assemble (final video 231.068s), Final audio loudness: -13.8 LUFS integrated, -1.4 dBTP true peak, Render phase: audio_process (prepare/groups/mix/master/encode/guard), bgm_gemini.wav - background music, FrameCapture: Timed out closing browser; forcing browser process shutdown, Screenshot capture mode: 6933 frames, 10 workers, captureOperation captureScreenshot, Render phase: compile (font fetches, @font-face, CDN inlining, composition metadata), Compiled composition: staticDuration 231.068s, 1920x1080, videoCount 0, audioCount 1, imageCount 41 (+31 more)
 
 ### Community 11 - "Pipeline UI Main Layout"
-Cohesion: 0.09
-Nodes (24): _deps_do_idioma(), fase_images(), fase_music(), fase_para_idioma(), fase_scenes(), fase_script(), garantir_legendas(), garantir_narracao() (+16 more)
+Cohesion: 0.11
+Nodes (21): _deps_do_idioma(), fase_images(), fase_music(), fase_para_idioma(), fase_scenes(), fase_script(), garantir_legendas(), garantir_narracao() (+13 more)
 
 ### Community 12 - "Debug & Test Utilities"
 Cohesion: 0.06
 Nodes (33): Projeto de video: A Frida a Buldogue Brincou na Chuva, Beat: Apresentacao do canal (apresenta_o_do_canal_scene), Banco de imagens local (banco local primeiro, Flow/Gemini se nao achar), Beat: Brincadeiras calminhas (brincadeiras_calminhas_scene), Beat: Hora do cha de mentirinha (hora_do_ch_de_mentirinha_scene), Beat: O cobertor enrolado (o_cobertor_enrolado_scene), Beat: A enfermeira Luninha (a_enfermeira_luninha_scene), Fases do pipeline: images, narration, timeline, mix, compose, preprocess, render, youtube (+25 more)
 
 ### Community 13 - "Gripe Video Story Beats"
-Cohesion: 0.09
+Cohesion: 0.10
 Nodes (22): beat_weight(), beats_to_at(), build_prompt(), _clean_scene_text(), clean_text(), _eh_passeio(), _extrair_cenario(), fix_species() (+14 more)
 
 ### Community 14 - "json"
-Cohesion: 0.07
-Nodes (22): load_json(), main(), probe_duration(), extrair_cena(), main(), load_json(), main(), generate_description() (+14 more)
+Cohesion: 0.10
+Nodes (13): main(), extrair_cena(), main(), load_json(), main(), generate_description(), main(), load_json() (+5 more)
 
 ### Community 15 - "os"
 Cohesion: 0.11
@@ -308,9 +311,9 @@ Nodes (31): autoprefixer, clsx, date-fns, framer-motion, @playwright/test, postc
 Cohesion: 0.13
 Nodes (13): desc(), CalendarHeader, Card, Collapsible, fnt(), labeled(), lbl(), make_field() (+5 more)
 
-### Community 18 - "narration_contract.py"
-Cohesion: 0.11
-Nodes (20): main(), extract_json(), main(), strip_character_sheet_prefix(), apply_contract(), build_final(), build_hook(), build_intro() (+12 more)
+### Community 18 - "audit_youtube.py"
+Cohesion: 0.22
+Nodes (6): build_rich_description(), enrich_tags(), get_service(), list_uploads(), main(), st_flag()
 
 ### Community 19 - "Narration Alignment & Timeline"
 Cohesion: 0.08
@@ -332,9 +335,9 @@ Nodes (27): Gemini TTS 'Achernar' (gemini-3.8-flash-tts), pipeline.py: error: un
 Cohesion: 0.07
 Nodes (22): Anti-duplicação de narração (faster-whisper) e frase do coração, Capa (intro-capa) sem transição inicial, Capítulo trilíngue (gerar_capitulo_trilinguo.py), Chips de palavras-chave desativados por padrão, Padrão oficial de descrição (description_template.py), Gemini TTS (Achernar/Leda) e rotação de chaves, O manual é a memória do produto, Narração multi-idioma e legendas (pt/en/es) (+14 more)
 
-### Community 24 - "Contract & Reproduction Guide"
-Cohesion: 0.06
-Nodes (25): _comparar(), main(), _manifesto(), check_project(), main(), sha256(), sidecar_lang(), ativar_agente() (+17 more)
+### Community 24 - "flow_agent_batch.py"
+Cohesion: 0.12
+Nodes (13): ativar_agente(), baixar_novas(), _biblia_do_prompt(), _cena_do_prompt(), _enviar_uma_vez(), get_page(), _hash_imagem(), _hashes_existentes() (+5 more)
 
 ### Community 25 - "Fazenda Pipeline Log"
 Cohesion: 0.16
@@ -346,14 +349,14 @@ Nodes (24): Audio mix of narration + BGM with loudness normalization (Input Inte
 
 ### Community 27 - "React App Components"
 Cohesion: 0.08
-Nodes (18): carregar_controle_musicas(), _music_prompt(), phase_compose(), phase_mix(), phase_music(), phase_narration(), run_edge(), run_gemini() (+10 more)
+Nodes (13): phase_compose(), phase_mix(), phase_narration(), run_edge(), run_gemini(), phase_preprocess(), phase_render(), phase_scenes() (+5 more)
 
 ### Community 28 - "TTS Fallback & Audio Mix Logs"
 Cohesion: 0.10
 Nodes (24): Global banks sync (images and music), HTML composition (index.html / composition.html), container_overflow layout info (22 instances), projects-deliveries.json (delivery record), duplicate_media_discovery_risk lint warning, FFmpeg media metadata tooling (on PATH), final_mix.m4a audio track (-13.9 LUFS, -1.2 dBTP), GSAP target not found runtime console warnings (4) (+16 more)
 
 ### Community 29 - "Gripe 8 Render & Delivery Log"
-Cohesion: 0.17
+Cohesion: 0.16
 Nodes (6): _log(), main(), MCPServer, _run_flow_fetch(), _sanitize_filename(), _validate_prompt()
 
 ### Community 30 - "Flow Fetch / Inspect Agent Mode2"
@@ -361,12 +364,12 @@ Cohesion: 0.10
 Nodes (22): Estrategia suave apos falha de download direto da tela, flow_fetch.py r2-2026-11-07 gerando as imagens restantes, Personagens Frida e Luna no Flow, referencia forcada: nenhuma, Fases restantes apos images: narration, timeline, mix, compose, preprocess, render, Fase narration: Gemini TTS 'Leda' (Google AI Studio), Artefatos do projeto (script.json, scenes.json, image_prompts.json, narration_timing.json, timeline.json, final_mix.m4a, composition.html), Banco de imagens local (C:\videomaker\banco de imagens), Trilha do banco local de musicas (+14 more)
 
 ### Community 31 - "publish_multilang.py"
-Cohesion: 0.15
-Nodes (17): build_description_i18n(), get_credentials(), get_storyline(), get_title_lang(), get_title_pt(), is_project_done(), load_history(), load_json() (+9 more)
+Cohesion: 0.17
+Nodes (16): build_description_i18n(), get_credentials(), get_storyline(), get_title_lang(), get_title_pt(), is_project_done(), load_history(), load_json() (+8 more)
 
-### Community 32 - "loop_multilang.py"
-Cohesion: 0.33
-Nodes (11): compose(), has_file(), main(), missing_for_lang(), mix(), narration(), process_lang(), render() (+3 more)
+### Community 32 - "phase_music"
+Cohesion: 0.20
+Nodes (6): carregar_controle_musicas(), escolher_musica_banco(), listar_musicas_banco(), _music_prompt(), phase_music(), salvar_controle_musicas()
 
 ### Community 33 - "Limpar Duplicados Pt / Listar Canal"
 Cohesion: 0.14
@@ -380,13 +383,13 @@ Nodes (23): Banco de imagens/musicas global sync, HyperFrames render (10 workers
 Cohesion: 0.11
 Nodes (23): Capitulo Trilingue (Trilingual Chapter) build, Composicao HTML (composition.html), FFmpeg (C:\videomaker\ffmpeg\bin), Captura screenshot com GPU por hardware (Chrome headless), Animacoes GSAP e fontes (Roboto, Inter, EB Garamond), 21 imagens compartilhadas por PT/EN/ES, Normalizacao de loudness (-14.0 LUFS / -1.0 dBTP), Mixagem de audio (final_mix.m4a) (+15 more)
 
-### Community 36 - "match_videos_by_duration.py"
-Cohesion: 0.33
-Nodes (7): ffprobe_duration(), get_service(), list_channel_videos(), main(), parse_iso_duration(), project_video_path(), title_score()
+### Community 36 - "youtube_metadados.py"
+Cohesion: 0.07
+Nodes (20): esperar_login(), listar_videos_shadow(), main(), navegar_videos(), js_click_texto(), js_existe_texto(), listar_videos_pagina(), main() (+12 more)
 
 ### Community 37 - "gen_music_procedural.py"
-Cohesion: 0.13
-Nodes (16): cut(), find_section(), load_audio(), load_json(), main(), norm(), transcribe_words(), add() (+8 more)
+Cohesion: 0.21
+Nodes (9): add(), bass(), env_ad(), main(), marimba(), pluck(), section(), shaker() (+1 more)
 
 ### Community 38 - "Contrato / Agents"
 Cohesion: 0.15
@@ -417,12 +420,12 @@ Cohesion: 0.11
 Nodes (19): Lista de publicação — vídeos prontos para upload EN/ES, Frida — bulldog inglesa ranzinza e dorminhoca, Luna — salsicha esperta e curiosa, Template de roteiro de episódio animado, check_topico_novo.py — checagem de duplicidade, Datas especiais (@MM-DD), Fila oficial de 365 temas de vídeo novo, Frida — Bulldogue Inglês (+11 more)
 
 ### Community 45 - "re"
-Cohesion: 0.17
-Nodes (10): main(), chips_from(), clean(), esc(), first_sentence(), is_intro_section(), load_json(), main() (+2 more)
+Cohesion: 0.21
+Nodes (9): chips_from(), clean(), esc(), first_sentence(), is_intro_section(), load_json(), main(), render_intro_overlay() (+1 more)
 
-### Community 46 - "youtube_metadados.py"
-Cohesion: 0.08
-Nodes (19): esperar_login(), listar_videos_shadow(), main(), navegar_videos(), js_click_texto(), js_existe_texto(), listar_videos_pagina(), main() (+11 more)
+### Community 46 - "build_description"
+Cohesion: 0.15
+Nodes (9): build_description(), _clean_sentence(), extract_storyline(), _fit_storyline(), phase_youtube(), update_youtube_metadata(), main(), to_utc_iso() (+1 more)
 
 ### Community 47 - "Flow Fetch"
 Cohesion: 0.16
@@ -436,21 +439,21 @@ Nodes (13): lucide-react, LiveStrip(), PipelineRail(), isLive(), LogsCtx, PHASE_
 Cohesion: 0.18
 Nodes (12): autofill(), build_master_prompt(), build_script_brief(), channel_style(), detect_pipeline(), duration_to_seconds(), episode_params(), _fill() (+4 more)
 
-### Community 50 - "get"
-Cohesion: 0.12
-Nodes (12): api_daily_agent_status(), api_daily_status(), api_health(), api_logs_recent(), api_pipeline_runs(), api_pipeline_status(), api_project_status(), api_schedules() (+4 more)
+### Community 50 - "run_setup_learning"
+Cohesion: 0.14
+Nodes (11): attach_reference(), editor(), get_page(), _login_with_user_confirmation(), LoginRequired, needs_login(), _prompt_user_confirm(), run_login() (+3 more)
 
 ### Community 51 - "Prompt Gen - Copia"
 Cohesion: 0.13
 Nodes (15): Pulo de imagens ja existentes (ja existe) em retomadas do pipeline, Falha de todas as estrategias (48s cada) e retry 1/1 em a_sesta_curativa_scene_d, Falha de todas as estrategias (48s cada) e retry 1/1 em o_v_deo_acabou_scene_b, Banco de imagens local (copia das imagens geradas), Checkpoint de fase (music feito em 2026-11-09 18:03:09, pulando), Estrategias de download: original, suave, simplificada, generica (network_fallback), Fases do pipeline: script, scenes, music, images, narration, timeline, mix, compose, preprocess, render, youtube, flow_fetch.py r2-2026-11-07 - Google Flow via CDP + Playwright + Gemini TTS (+7 more)
 
 ### Community 52 - "subprocess"
-Cohesion: 0.15
-Nodes (10): main(), duracao(), gerar_frase(), main(), batch_rodando(), log(), main(), pares_duplicados() (+2 more)
+Cohesion: 0.12
+Nodes (11): main(), load_json(), main(), probe_duration(), batch_rodando(), log(), main(), pares_duplicados() (+3 more)
 
-### Community 54 - "os"
-Cohesion: 0.30
-Nodes (6): main(), has_file(), main(), missing_for_lang(), process_lang(), run()
+### Community 54 - "match_videos_by_duration.py"
+Cohesion: 0.21
+Nodes (10): _fold(), _slug_tokens(), _tokens(), ffprobe_duration(), get_service(), list_channel_videos(), main(), parse_iso_duration() (+2 more)
 
 ### Community 55 - "rerender_all_no_text.py"
 Cohesion: 0.27
@@ -463,10 +466,6 @@ Nodes (8): build(), collect_anims(), inject_ids(), load_json(), _load_paineis(),
 ### Community 57 - "fetch_images.py"
 Cohesion: 0.22
 Nodes (8): clean_prompt_text(), copy_to_bank(), _garantir_modo_imagem(), get_ref_image(), load_json(), main(), run_single(), sanitize_prompts_file()
-
-### Community 58 - "youtube_upload.py"
-Cohesion: 0.33
-Nodes (4): get_service(), main(), to_utc_iso(), upload()
 
 ### Community 59 - "Youtube Batch Publish"
 Cohesion: 0.21
@@ -488,21 +487,21 @@ Nodes (4): execute_phases(), invalidate_downstream(), walk(), _validate_prereq()
 Cohesion: 0.20
 Nodes (10): has_file(), main(), missing_for_lang(), process_lang(), processo_projeto(), run(), load_json(), main() (+2 more)
 
-### Community 64 - "sync_bancos.py"
-Cohesion: 0.36
-Nodes (3): copy_if_missing(), main(), sync_project()
+### Community 64 - "loop_multilang.py"
+Cohesion: 0.33
+Nodes (11): compose(), has_file(), main(), missing_for_lang(), mix(), narration(), process_lang(), render() (+3 more)
 
 ### Community 65 - "loop40.py"
 Cohesion: 0.18
 Nodes (15): audit(), build_cmd(), build_reserved_index(), extract_titles(), is_reserved(), load_deliveries(), load_json_file(), main() (+7 more)
 
-### Community 66 - "run_pipeline_subprocess"
-Cohesion: 0.16
-Nodes (10): api_pipeline_resume(), api_pipeline_run(), build_upload_cmd(), _creation_flags(), _mark_youtube(), PipelineRun, run_pipeline_subprocess(), slugify() (+2 more)
+### Community 66 - "test_paineis.py"
+Cohesion: 0.28
+Nodes (5): dividir_colagem(), montar_prompt_lote(), check(), img_bytes(), main()
 
 ### Community 67 - "translate_script.py"
-Cohesion: 0.18
-Nodes (10): load_json(), main(), load_json(), main(), normalizar_apelidos(), parece_recusa(), remover_risadas(), save_json() (+2 more)
+Cohesion: 0.24
+Nodes (8): load_json(), main(), normalizar_apelidos(), parece_recusa(), remover_risadas(), save_json(), translate_script(), translate_text()
 
 ### Community 68 - "Translate Script"
 Cohesion: 0.18
@@ -518,7 +517,7 @@ Nodes (5): buscar_imagem_no_banco(), extrair_palavras_chave(), listar_imagens_di
 
 ### Community 71 - "flow_fetch.py"
 Cohesion: 0.07
-Nodes (42): _bytes_igual_ref(), cdp_alive(), _classify_screen(), _copiar_para_banco(), count_dl(), default_profile(), _dismiss_overlays(), _enforce_characters() (+34 more)
+Nodes (38): _bytes_igual_ref(), cdp_alive(), _classify_screen(), _copiar_para_banco(), count_dl(), default_profile(), _dismiss_overlays(), _enforce_characters() (+30 more)
 
 ### Community 72 - "Match Videos By Duration"
 Cohesion: 0.18
@@ -529,12 +528,12 @@ Cohesion: 0.47
 Nodes (4): backfill_project(), load_json(), main(), run()
 
 ### Community 75 - "canal_match.py"
-Cohesion: 0.21
+Cohesion: 0.20
 Nodes (8): casar_por_duracao(), duracao_mp4(), _fold(), mapa_de_videos(), melhor_projeto(), norm(), perfis_projetos(), tokens()
 
-### Community 76 - "log_msg"
-Cohesion: 0.24
-Nodes (7): api_daily_stop_agent(), api_daily_unpause_requeue(), api_pipeline_stop(), api_pipeline_stop_all(), _kill_tree(), log_msg(), _ws_push()
+### Community 76 - "check_video_idioma.py"
+Cohesion: 0.39
+Nodes (4): check_project(), main(), sha256(), sidecar_lang()
 
 ### Community 77 - "Video Tarzan5 / Readme"
 Cohesion: 0.24
@@ -548,25 +547,25 @@ Nodes (10): Sincronização de bancos de imagens e músicas, FFmpeg — PATH de 
 Cohesion: 0.53
 Nodes (4): draw_text_with_outline(), generate_thumbnail(), load_font(), main()
 
-### Community 80 - "argparse"
-Cohesion: 0.22
-Nodes (5): main(), carregar(), main(), titulo_do_script(), main()
+### Community 80 - "os"
+Cohesion: 0.30
+Nodes (6): main(), has_file(), main(), missing_for_lang(), process_lang(), run()
 
 ### Community 81 - "gen_narration.py"
-Cohesion: 0.48
-Nodes (4): ffprobe_duration(), load_json(), main(), synthesize()
+Cohesion: 0.27
+Nodes (7): duracao(), gerar_frase(), main(), ffprobe_duration(), load_json(), main(), synthesize()
 
 ### Community 82 - "time"
-Cohesion: 0.11
-Nodes (11): dismiss_ads_and_permissions(), fetch_url(), main(), main(), main(), check_pipeline_status(), monitor_pipeline(), check_pipeline_status() (+3 more)
+Cohesion: 0.13
+Nodes (10): dismiss_ads_and_permissions(), fetch_url(), main(), main(), main(), check_pipeline_status(), monitor_pipeline(), check_pipeline_status() (+2 more)
 
 ### Community 83 - "Gen Subtitles"
 Cohesion: 0.22
 Nodes (9): Auditoria do YouTube Publishing (2025-11-06), Projeto caes-de-resgate com título e descrição vazios, Novo padrão de descrição do YouTube, Scripts de padronização de descrições, Credenciais OAuth2 por idioma (client_secret_*.json + youtube_token_*.json), Erro 403 insufficientPermissions (escopo youtube.force-ssl), 3 canais separados do YouTube (PT/EN/ES), Metadado do YouTube no idioma do vídeo (§5.7) (+1 more)
 
-### Community 84 - "_fire_schedule"
-Cohesion: 0.33
-Nodes (5): _capture_loop(), _fire_schedule(), _next_recurrence_date(), _scheduler_loop(), slot_str()
+### Community 84 - "hashlib"
+Cohesion: 0.43
+Nodes (3): _comparar(), main(), _manifesto()
 
 ### Community 85 - "check_personagens_imagens.py"
 Cohesion: 0.29
@@ -577,16 +576,16 @@ Cohesion: 0.46
 Nodes (5): checar_overlay(), checar_script(), load(), main(), norm()
 
 ### Community 87 - "gerar_video_flow.py"
-Cohesion: 0.19
-Nodes (9): attach_reference(), editor(), LoginRequired, baixar(), conectar(), enviar(), main(), main_async() (+1 more)
+Cohesion: 0.15
+Nodes (9): main(), _loc_first_visible(), select_x1(), _toggle_checked(), baixar(), conectar(), main(), main_async() (+1 more)
 
 ### Community 88 - "check_prompt_repeticao.py"
 Cohesion: 0.33
 Nodes (6): _checar_build_prompt(), _checar_scene_mode(), main(), normalizar(), _varrer_fonte(), _varrer_prompts()
 
-### Community 90 - "diag_modelo.py"
-Cohesion: 0.20
-Nodes (5): main(), main(), _loc_first_visible(), select_x1(), _toggle_checked()
+### Community 90 - "translate_local.py"
+Cohesion: 0.33
+Nodes (3): main(), montar_traducao(), _secao()
 
 ### Community 91 - "Relatorio Youtube Idiomas"
 Cohesion: 0.32
@@ -597,16 +596,12 @@ Cohesion: 0.50
 Nodes (6): PageExecutivo(), LogHistogram(), PhaseGauge(), Sparkline(), Waterfall(), fmtDuration()
 
 ### Community 93 - "unicodedata"
-Cohesion: 0.36
-Nodes (5): coverage(), load_audio(), load_json(), main(), norm()
+Cohesion: 0.20
+Nodes (8): main(), n_paineis(), _score_line(), coverage(), load_audio(), load_json(), main(), norm()
 
 ### Community 94 - "Pipeline"
 Cohesion: 0.29
 Nodes (6): Backfill de idiomas EN e ES, Vozes Edge-TTS por idioma (en-US-AriaNeural, es-ES-ElviraNeural), Re-render em ingles e espanhol, Fase narration: Gemini TTS 'Achernar' (Google AI Studio), Gemini TTS (Google AI Studio) - vozes Achernar e Leda, HTTP 429: cota diaria esgotada nos modelos Gemini TTS
-
-### Community 95 - "load_deliveries"
-Cohesion: 0.25
-Nodes (4): find_duplicate_by_prompt(), find_duplicate_by_slug(), find_duplicate_project(), load_deliveries()
 
 ### Community 96 - "Contrato / Agents"
 Cohesion: 0.33
@@ -640,9 +635,9 @@ Nodes (3): Roteiro longo (18 seções) e densidade de imagens, scene_mode = beat
 Cohesion: 0.50
 Nodes (4): Agendar automático (calendário), Fluxo básico: gerar um vídeo, Páginas da interface web, Sistema de vídeos animados Frida e Luna
 
-### Community 107 - "_gemini_tts_key"
-Cohesion: 0.40
-Nodes (3): _gemini_tts_key(), generate_audio_gemini(), _read_env_value()
+### Community 107 - "align_narration.py"
+Cohesion: 0.36
+Nodes (7): cut(), find_section(), load_audio(), load_json(), main(), norm(), transcribe_words()
 
 ### Community 109 - "Manual Grafos / Manual Herois Visual"
 Cohesion: 0.67
@@ -661,16 +656,28 @@ Cohesion: 0.36
 Nodes (5): fmt_srt(), gerar_srt(), limpar_legenda(), load_json(), main()
 
 ### Community 148 - "select_topic.py"
-Cohesion: 0.21
+Cohesion: 0.25
 Nodes (7): main(), load_topics(), main(), normalize(), parecidos(), slugify(), temas_novos()
 
-### Community 155 - "load_schedules"
-Cohesion: 0.53
-Nodes (5): api_create_schedule(), api_delete_schedule(), api_mark_done(), load_schedules(), save_schedules()
+### Community 149 - "f"
+Cohesion: 0.36
+Nodes (5): read_script(), f(), improve_project_description(), load_projects(), main()
+
+### Community 153 - "find_project_for_title"
+Cohesion: 0.36
+Nodes (4): find_project_for_title(), carregar(), main(), titulo_do_script()
+
+### Community 154 - "youtube_update.py"
+Cohesion: 0.48
+Nodes (3): get_service(), main(), update_video()
+
+### Community 155 - "sync_bancos.py"
+Cohesion: 0.36
+Nodes (3): copy_if_missing(), main(), sync_project()
 
 ### Community 156 - "copiar_para_projeto"
-Cohesion: 0.17
-Nodes (7): buscar_imagem_banco(), copiar_para_projeto(), extrair_palavras_chave(), normalizar_texto_local(), phase_images(), run_single_fetch(), tentar()
+Cohesion: 0.33
+Nodes (4): copiar_para_projeto(), phase_images(), run_single_fetch(), tentar()
 
 ### Community 161 - "probe_edge_voices.py"
 Cohesion: 0.29
@@ -684,22 +691,22 @@ Nodes (4): gen(), main(), gen(), main()
 
 ## Knowledge Gaps
 - **231 isolated node(s):** `Render phase: assemble (final video 231.068s)`, `bgm_gemini.wav - background music`, `FrameCapture: Timed out closing browser; forcing browser process shutdown`, `Render phase: encode (framesFed 6799/6933)`, `FFmpeg on PATH at C:\videomaker\ffmpeg\bin` (+226 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 824 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **49 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 829 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **52 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `App` connect `Pipeline UI Upload Panel` to `Limpar Duplicados Pt / Listar Canal`, `Contrato / Agents`, `.__init__`, `TTS Quota & Voice Checks`, `Video Espirrinho Google`, `.cal_add_schedule`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
 - **What connects `Render phase: assemble (final video 231.068s)`, `bgm_gemini.wav - background music`, `FrameCapture: Timed out closing browser; forcing browser process shutdown` to the rest of the system?**
   _231 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `api.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.12554112554112554 - nodes in this community are weakly interconnected._
-- **Why does `Project` connect `React App Components` to `f`, `cmd_full`, `.__init__`, `copiar_para_projeto`, `execute_phases`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _Cohesion score 0.05030834144758196 - nodes in this community are weakly interconnected._
+- **Why does `_log()` connect `Gripe 8 Render & Delivery Log` to `time`, `json`?**
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `gen_narration_gemini_sections.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.09009009009009009 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05081081081081081 - nodes in this community are weakly interconnected._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._

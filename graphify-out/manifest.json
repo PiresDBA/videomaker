@@ -212,9 +212,9 @@
     "semantic_hash": "7632ee729406c719656f8a09af3682f2"
   },
   "scripts/build_composition.py": {
-    "mtime": 1794970346.3788033,
-    "seen": 1794972626.2772343,
-    "ast_hash": "c42e170866bd12b70114ecac50dabf6c",
+    "mtime": 1795002202.355735,
+    "seen": 1795002388.4127162,
+    "ast_hash": "4c5bbf21c600488b2ce056d0f35f711d",
     "semantic_hash": ""
   },
   "scripts/build_timeline.py": {
@@ -1353,10 +1353,10 @@
     "semantic_hash": "a7cc08fb6da2871210c4ef8d8fca86b5"
   },
   "scripts/topics.txt": {
-    "mtime": 1794783265.4215777,
-    "seen": 1794924162.4133837,
-    "ast_hash": "228d61604f701c40f376e590faba1823",
-    "semantic_hash": "228d61604f701c40f376e590faba1823"
+    "mtime": 1795002322.789963,
+    "seen": 1795002388.413487,
+    "ast_hash": "8d04bb0fa78ba782e8cf39d577643556",
+    "semantic_hash": ""
   },
   "ui/index.html": {
     "mtime": 1793662211.4807308,
@@ -1407,9 +1407,9 @@
     "semantic_hash": ""
   },
   "MANUAL_GRAFOS.md": {
-    "mtime": 1794980254.2722695,
-    "seen": 1794980309.012032,
-    "ast_hash": "f6e6ac700a6d3fbf627420c5818f4487",
+    "mtime": 1795004614.2701523,
+    "seen": 1795004810.8040538,
+    "ast_hash": "4b5c8454255cbe69bfccff2db0ce0041",
     "semantic_hash": ""
   },
   "log_caminha_final.txt": {
@@ -1653,9 +1653,9 @@
     "semantic_hash": ""
   },
   "scripts/detecta_paineis.py": {
-    "mtime": 1794950570.8119998,
-    "seen": 1794964583.3555415,
-    "ast_hash": "db1fb94d9f49419e58e34a9607da26bb",
+    "mtime": 1795001830.0509522,
+    "seen": 1795002388.4127717,
+    "ast_hash": "0f4df601e947b0baac61a2f3fff607cb",
     "semantic_hash": ""
   },
   "scripts/dublar_intro.py": {
@@ -2016,6 +2016,126 @@
     "mtime": 1794977543.4758306,
     "seen": 1794977996.0525894,
     "ast_hash": "d5555489645cdfea52fc967aa3d559c7",
+    "semantic_hash": ""
+  },
+  "artifacts/_gemini_log.json": {
+    "mtime": 1794982453.1953764,
+    "seen": 1795002388.4125965,
+    "ast_hash": "1f155d692e775dfcaf87df004cb68f4d",
+    "semantic_hash": ""
+  },
+  "artifacts/script.json": {
+    "mtime": 1794982453.3027658,
+    "seen": 1795002388.4125996,
+    "ast_hash": "8bc7e9813c52baf707c6311e9d20a991",
+    "semantic_hash": ""
+  },
+  "scripts/finalizar_novo.py": {
+    "mtime": 1794991594.5465267,
+    "seen": 1795002388.4127977,
+    "ast_hash": "ed17b80504533a87059d844a013d8732",
+    "semantic_hash": ""
+  },
+  "_novo_lista.txt": {
+    "mtime": 1794991621.1297495,
+    "seen": 1795002388.4131737,
+    "ast_hash": "d6b5f9ab2926816f5d1e853f5db51bfb",
+    "semantic_hash": ""
+  },
+  "artifacts/e-se-os-cachorros-pudessem-falar-por-um-dia.md": {
+    "mtime": 1794982453.1953764,
+    "seen": 1795002388.4131823,
+    "ast_hash": "de15f511f751222d5e1b81f68e63bafc",
+    "semantic_hash": ""
+  },
+  "log_novo_batch_img.txt": {
+    "mtime": 1794986845.8374283,
+    "seen": 1795002388.4132712,
+    "ast_hash": "fe9276466ec42edc6217d3d872651ee7",
+    "semantic_hash": ""
+  },
+  "log_novo_faltantes.txt": {
+    "mtime": 1794987072.6181834,
+    "seen": 1795002388.4132938,
+    "ast_hash": "d7e74e831fcd1e1ef6950285e81c5bba",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline.txt": {
+    "mtime": 1794982906.066497,
+    "seen": 1795002388.4132962,
+    "ast_hash": "ad1fd2689102c9126c2a722fa390814b",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline2.txt": {
+    "mtime": 1794989208.9791565,
+    "seen": 1795002388.413298,
+    "ast_hash": "a11e5f67f90d10b6552b811ba84f4c87",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline3.txt": {
+    "mtime": 1794989409.0103996,
+    "seen": 1795002388.4132996,
+    "ast_hash": "3e702b417c061de111bbafb86c6ad13a",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline4.txt": {
+    "mtime": 1794991455.5212922,
+    "seen": 1795002388.4133012,
+    "ast_hash": "409eec9dec7204dd77ef239526b054ae",
+    "semantic_hash": ""
+  },
+  "log_novo_script.txt": {
+    "mtime": 1794982453.3072999,
+    "seen": 1795002388.413303,
+    "ast_hash": "3223e493541c7a9a7b50167610f94827",
+    "semantic_hash": ""
+  },
+  "log_paineis_novo.txt": {
+    "mtime": 1795001751.188778,
+    "seen": 1795002388.4133263,
+    "ast_hash": "6823a38b88015bd42c57143d3bf13f1c",
+    "semantic_hash": ""
+  },
+  "scripts/agregar_imagens_extras.py": {
+    "mtime": 1795002940.6547122,
+    "seen": 1795003082.0594962,
+    "ast_hash": "79e22b0694611cd92975bdedc94f21f3",
+    "semantic_hash": ""
+  },
+  "scripts/make_contact_extras.py": {
+    "mtime": 1795002587.261802,
+    "seen": 1795003082.0596855,
+    "ast_hash": "4ca194d7e6bc46c44940ccf5b2b0efc8",
+    "semantic_hash": ""
+  },
+  "beats_novo.txt": {
+    "mtime": 1795002664.181015,
+    "seen": 1795003082.0600314,
+    "ast_hash": "9bae614dd4f1307fff50ed2d59fe6245",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline_final.txt": {
+    "mtime": 1795002433.0785208,
+    "seen": 1795003082.0601082,
+    "ast_hash": "01eb0ef77714d9278ac5d821d92bb0af",
+    "semantic_hash": ""
+  },
+  "scripts/trava_sincronia.py": {
+    "mtime": 1795004645.0415258,
+    "seen": 1795004810.8037899,
+    "ast_hash": "37f1345077e83590cdf9a993be4c6a71",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline_agregado.txt": {
+    "mtime": 1795003113.166333,
+    "seen": 1795004810.8043132,
+    "ast_hash": "fafbcdec1f467db0f143b71979bd40ec",
+    "semantic_hash": ""
+  },
+  "log_novo_pipeline_final2.txt": {
+    "mtime": 1795004810.6983979,
+    "seen": 1795004810.8043227,
+    "ast_hash": "8ce926f20fd9a637ebb643011f4168ed",
     "semantic_hash": ""
   },
   "ui/package-lock.json": {
