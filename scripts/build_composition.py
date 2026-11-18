@@ -528,20 +528,48 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
     #  entao o cursor ja inclui os 8s do intro. Isso evita o buraco de tela
     #  escura que havia entre o fim da narracao e o pre-final.)
 
-    # ========== CLIPE PRE-FINAL (pata com confete) ==========
-    # Video extra logo antes da despedida, para aproveitar os 4 clipes gerados.
+    # ========== CLIPES FINAIS SINCRONIZADOS COM A FALA ==========
+    # Os clipes nao vao DEPOIS da cena s_outro: sobrepoem a cena no instante
+    # exato em que a narração fala cada coisa:
+    #   "obrigado por assistir" -> pre_final (pata com confete)
+    #   "deixe seu like, se inscreva" -> subscribe (logo YouTube + joinha)
     pre_final = _CLIPS.get("pre_final", {})
     pre_file = pre_final.get("file", "") if isinstance(pre_final, dict) else ""
     pre_dur = float(pre_final.get("dur", 8.0)) if isinstance(pre_final, dict) else 8.0
-    if pre_file:
-        pre_start = cursor
+    outro_video = _CLIPS.get("outro", "")
+    outro_dur = float(_CLIPS.get("outro_dur", 8.0))
+
+    # Encontra a cena s_outro e os tempos de seus beats no timeline ja deslocado
+    outro_scene_start = None
+    outro_scene_dur = 0.0
+    outro_beats_at = []
+    for sec in timeline_shifted:
+        if sec["id"] == "s_outro":
+            outro_scene_start = float(sec["start"])
+            outro_scene_dur = float(sec["duration"])
+            break
+    cfg_outro = scene_cfg.get("s_outro", {})
+    outro_beats_at = cfg_outro.get("at", []) if isinstance(cfg_outro, dict) else []
+
+    if pre_file and outro_scene_start is not None:
+        # pre_final entra no comeco da fala de agradecimento
+        pre_start = outro_scene_start
         scenes.append(
             '<video class="cam clip-video" id="pre-final-video" '
             'src="assets/images/%s" muted playsinline '
-            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
+            'data-start="%.3f" data-duration="%.3f" data-track-index="3"></video>'
             % (pre_file, pre_start, pre_dur)
         )
-        cursor += pre_dur
+        # subscribe entra quando fala "like/se inscreva" (beat 1 de s_outro)
+        sub_start = outro_scene_start + (outro_beats_at[1] * outro_scene_dur
+                                         if len(outro_beats_at) > 1 else 0.5 * outro_scene_dur)
+        scenes.append(
+            '<video class="cam clip-video" id="outro-video" '
+            'src="assets/images/%s" muted playsinline '
+            'data-start="%.3f" data-duration="%.3f" data-track-index="4"></video>'
+            % (outro_video, sub_start, outro_dur)
+        )
+        # o cursor nao avanca: os clipes sobrepoem a cena, nao a estendem
 
     # ========== TELA FINAL (OUTRO) ==========
     outro_id = "outro-final"
@@ -575,13 +603,10 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         '</div>' % (outro_id, outro_start, OUTRO_DUR, "1", cta_bloco)
     )
     scenes.append(outro_html)
-    if outro_video:
-        scenes.append(
-            '<video class="cam clip-video" id="outro-video" '
-            'src="assets/images/%s" muted playsinline '
-            'data-start="%.3f" data-duration="%.3f" data-track-index="0"></video>'
-            % (outro_video, outro_start, OUTRO_DUR)
-        )
+    # O subscribe (outro-video) ja foi posicionado dinamicamente dentro da
+    # cena s_outro, sincronizado com a fala "like/se inscreva". NAO adicionar
+    # outro aqui (evita duplicata). A tela final abaixo serve como "fotos de
+    # despedida" caso sobre narração depois dos 8s do clipe.
     js.append('tl.set("#%s",{opacity:0},0);' % outro_id)
     if not outro_video:
         js.append('tl.from("#%s .h-lg",{opacity:0,scale:0.5,duration:0.8,ease:"back.out(2.4)"},%.3f);' % (outro_id, outro_start + 0.2))
@@ -591,7 +616,33 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
         js.append('tl.from("#%s .body",{opacity:0,y:30,duration:0.6,ease:"power3.out"},%.3f);' % (outro_id, outro_start + 0.4))
     js.append('tl.to("#%s",{opacity:0,duration:0.8,ease:"power2.in"},%.3f);' % (outro_id, outro_start + OUTRO_DUR - 0.9))
 
-    total = outro_start + OUTRO_DUR
+    # A tela de fotos de despedida cobre ate o fim do mix (musica termina no
+    # ultimo segundo). O mix tem INTRO+timeline+pre+outro = 705s; como os
+    # clipes finais agora sobrepoem a cena, estendemos a tela final ate la.
+    mix_path = (Path(os.environ.get("VIDEOMAKER_PROJ", "")) / "assets" / "audio" / "final_mix.m4a")
+    mix_dur = 0.0
+    if mix_path.exists():
+        try:
+            import subprocess as _sp
+            _cfg = load_json(HERE / "config.json")
+            _ffprobe = Path(_cfg["ffmpeg_dir"]) / "ffprobe.exe"
+            _r = _sp.run([str(_ffprobe), "-v", "error", "-show_entries", "format=duration",
+                          "-of", "default=noprint_wrappers=1:nokey=1", str(mix_path)],
+                         capture_output=True, text=True)
+            mix_dur = float(_r.stdout.strip())
+        except Exception:
+            pass
+    outro_dur_real = max(OUTRO_DUR, mix_dur - outro_start)
+    # ajusta a duracao da ultima cena no HTML e na animacao de fade
+    if abs(outro_dur_real - OUTRO_DUR) > 0.01:
+        scenes[-1] = scenes[-1].replace(
+            'data-duration="%.3f"' % OUTRO_DUR,
+            'data-duration="%.3f"' % outro_dur_real, 1)
+        js_txt = "\n".join(js).replace(
+            "outro_start + OUTRO_DUR - 0.9", "outro_start + %.3f - 0.9" % outro_dur_real)
+        js = js_txt.split("\n")
+
+    total = outro_start + outro_dur_real
     js.append('window.__timelines["main"] = tl;')
 
     return "\n".join(scenes), "\n".join(js), total
