@@ -5368,21 +5368,52 @@ As vezes o modo Agente abre um painel lateral ("Character Concepts") que
 
 desloca o prompt para o lado e trava o envio. `flow_fetch.fechar_painel_agente`
 
-detecta e clica no botao Fechar (X, aria-label="Fechar") antes de enviar.
-
-
-### 72.8. Parametros configuraveis no ORQUESTRADOR (REGRA DO USUARIO)
-
-> TODA regra deste manual e um ARGUMENTO de `scripts/pipeline.py` (o UNICO
-> orquestrador). NUNCA criar outro pipeline nem arquivo de config paralelo.
-> Editar sempre os argumentos em `common()` do pipeline.py.
-
-Argumentos adicionados em `common()` (ver `python scripts/pipeline.py full --help`):
-- `--flow-agent` / `--batch-size N` / `--max-attempts N`  imagens em lote no Flow
-- `--clipes-meio N` / `--clipes-meio-minutos "2,5,7"`  clipes de 8s no meio
-- `--sonoplastia on|off`  sonoplastia pela narracao (obrigatoria por padrao)
-- `--efeitos-fundo on|off`  estrelinhas/folhas/abelhas + blur/foco pulsante
-- `--ref-personagem on|off`  @[Frida]/@[Luna] + ref-image no Flow
-
-`phase_images` repassa `--flow-agent`/`--batch-size` ao flow_agent_batch.py.
+detecta e clica no botao Fechar (X, aria-label="Fechar") antes de enviar.
+
+
+
+
+
+### 72.8. Parametros configuraveis no ORQUESTRADOR (REGRA DO USUARIO)
+
+
+
+> TODA regra deste manual e um ARGUMENTO de `scripts/pipeline.py` (o UNICO
+
+> orquestrador). NUNCA criar outro pipeline nem arquivo de config paralelo.
+
+> Editar sempre os argumentos em `common()` do pipeline.py.
+
+
+
+Argumentos adicionados em `common()` (ver `python scripts/pipeline.py full --help`):
+
+- `--flow-agent` / `--batch-size N` / `--max-attempts N`  imagens em lote no Flow
+
+- `--clipes-meio N` / `--clipes-meio-minutos "2,5,7"`  clipes de 8s no meio
+
+- `--sonoplastia on|off`  sonoplastia pela narracao (obrigatoria por padrao)
+
+- `--efeitos-fundo on|off`  estrelinhas/folhas/abelhas + blur/foco pulsante
+
+- `--ref-personagem on|off`  @[Frida]/@[Luna] + ref-image no Flow
+
+
+
+`phase_images` repassa `--flow-agent`/`--batch-size` ao flow_agent_batch.py.
+
 Regra de ouro: um unico orquestrador (pipeline.py), manual no mesmo commit.
+
+
+### 72.9. Clipes do meio - REGRA DO USUARIO
+
+> Os 3 clipes do meio DEVEM ser de EXATAMENTE 8 SEGUNDOS. O prompt enviado ao
+> Flow TEM que escrever "8 SEGUNDOS" explicitamente (o gerar_video_flow.py
+> tambem seleciona o toggle de duracao 8s no UI). E, sempre que citar os
+> personagens no prompt, usar @[Frida] e @[Luna] (arro + colchete).
+
+Implementado em `scripts/gerar_clipes_meio.py`:
+- escolhe 1 cena do roteiro por minuto pedido (--minutos 2,5,7)
+- monta prompt com "8 SEGUNDOS" + @[Frida]/@[Luna] + tema da cena
+- chama gerar_video_flow.py (modo Video do Flow, 3 videos/dia)
+- salva clipe_meio_<i>_<min>min.mp4
