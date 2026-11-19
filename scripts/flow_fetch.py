@@ -1208,7 +1208,14 @@ def _generic_prompt(prompt: str):
 
 
 def _strategy_prompts(prompt: str):
-    return [prompt, _soften_prompt(prompt), _simplified_prompt(prompt), _generic_prompt(prompt)]
+    base = [prompt, _soften_prompt(prompt), _simplified_prompt(prompt), _generic_prompt(prompt)]
+    # O Flow as vezes reusa a MESMA imagem (ultima gerada) se o prompt for
+    # identico ao anterior. Variar o final quebra esse cache e force nova geracao.
+    variacoes = ("fresh take, new angle, different lighting, unique moment",
+                 "new composition, wide shot, bright morning light",
+                 "new scene, close up, warm afternoon light",
+                 "different pose, dynamic angle, cheerful mood")
+    return [f"{p}. Variacao: {v}." for p, v in zip(base, variacoes)]
 
 
 STRATEGY_NAMES = ("original", "suave", "simplificada", "generica")
