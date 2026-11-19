@@ -680,15 +680,44 @@ Gerada APENAS ouvindo o arquivo de narracao (faster-whisper), som na palavra
 
 exata, efeitos de fundo (estrelinhas/folhas/abelhas) e blur/foco pulsante.
 
-NUNCA pular. Flag `--sonoplastia on` e padrao.
-
-
-## REGRA RETRY RECUSA - BOTAO "TENTAR DE NOVO" (2026-11-19)
-
-> Quando o Flow mostrar "Falha - Esta geracao talvez viole nossas politicas",
-> o botao CERTO e "Tentar de novo" (icone refresh 🔄) dentro do card da falha.
-> O `flow_fetch.retry_refused_image()` clica ate 10 vezes, esperando 2 minutos
-> entre cada tentativa, ANTES de desistir. NUNCA usar "Reutilizar comando"
-> (undo/redo) - estava errado e nao resolvia.
-> Se aparecer "solicitacoes muito rapido", aumentar a pausa (padrao 120s).
+NUNCA pular. Flag `--sonoplastia on` e padrao.
+
+
+
+
+
+## REGRA RETRY RECUSA - BOTAO "TENTAR DE NOVO" (2026-11-19)
+
+
+
+> Quando o Flow mostrar "Falha - Esta geracao talvez viole nossas politicas",
+
+> o botao CERTO e "Tentar de novo" (icone refresh 🔄) dentro do card da falha.
+
+> O `flow_fetch.retry_refused_image()` clica ate 10 vezes, esperando 2 minutos
+
+> entre cada tentativa, ANTES de desistir. NUNCA usar "Reutilizar comando"
+
+> (undo/redo) - estava errado e nao resolvia.
+
+> Se aparecer "solicitacoes muito rapido", aumentar a pausa (padrao 120s).
+
 > Corrigido em `fa05f0a`.
+
+
+## COMPILACAO FINAL - VIDEOMAKER_PROJ (2026-11-19)
+
+> `build_composition.py` le `artifacts/video_clips.json` da variavel de ambiente
+> `VIDEOMAKER_PROJ` (NAO do `--proj`). Sem ela os 5 clipes manuais somem da
+> composicao e o video sai "pelado". `pipeline.phase_compose` agora seta a
+> variavel automaticamente (commit d3ba51e).
+>
+> REGRAS DA COMPILACAO FINAL:
+> 1. `pre_final` = clipe de pata/confete (final_subscribe2.mp4) no instante
+>    em que a narracao fala "obrigado por assistir".
+> 2. `outro` = final_subscribe.mp4 no instante em que fala "like/se inscreva".
+> 3. Renderizar SEM a fase `mix` (`--only compose,preprocess,render`) para nao
+>    sobrescrever `final_mix.m4a` com sonoplastia.
+> 4. Mix final DEVE ser igual a `final_mix_sonoplastia_<lang>.m4a`.
+> 5. Composicao final DEVE ter >=5 videos, particulas > 0 e focus-pulse > 0.
+> 6. Hulk valida tudo isso (regras 10 e 11) antes de publicar.

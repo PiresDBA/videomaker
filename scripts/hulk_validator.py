@@ -124,6 +124,36 @@ def main(slug, strict):
     else:
         oks.append("pausa padrao 120s (2 min) OK")
 
+    # 10) compilacao final: clipes + efeitos de fundo na composicao
+    comp = P / "composition.html"
+    if comp.exists():
+        html = comp.read_text(encoding="utf-8", errors="replace")
+        nvids = len(re.findall(r"<video", html))
+        nparts = len(re.findall(r'class="particula', html))
+        nfocus = len(re.findall(r"focus-pulse", html))
+        if nvids >= 5:
+            oks.append(f"composicao: {nvids} videos injetados (intro+3 meio+final)")
+        else:
+            erros.append(f"composicao SEM clipes: {nvids} videos (esperado >=5)")
+        if nparts > 0 and nfocus > 0:
+            oks.append(f"efeitos de fundo: {nparts} particulas, {nfocus} focus-pulse")
+        else:
+            erros.append(f"efeitos de fundo faltando: particulas={nparts}, focus-pulse={nfocus}")
+    else:
+        avisos.append("composition.html ainda nao gerado")
+
+    # 11) mix final TEM que ser a sonoplastia (nao o mix 'pelado')
+    mix = P / "assets/audio/final_mix.m4a"
+    sonoes = list((P / "assets/audio").glob("final_mix_sonoplastia_*.m4a"))
+    if mix.exists() and sonoes:
+        hmix = hashlib.sha256(mix.read_bytes()).hexdigest()
+        if any(hashlib.sha256(s.read_bytes()).hexdigest() == hmix for s in sonoes):
+            oks.append("mix final = sonoplastia gerada pela narracao")
+        else:
+            erros.append("final_mix.m4a NAO e a sonoplastia (mix pelado - recopiar)")
+    elif not sonoes:
+        avisos.append("sonoplastia ainda nao gerada")
+
     print("\n".join(f"  OK  {x}" for x in oks))
     print("\n".join(f"  AVISO  {x}" for x in avisos))
     print("\n".join(f"  ERRO  {x}" for x in erros))
