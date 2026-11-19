@@ -5052,31 +5052,83 @@ Videos finais na output/:
 
 - e-se-os-..._pt.mp4 = SEM sonoplastia (original, restaurado)
 
-- e-se-os-..._pt_COM_SONOPLASTIA.mp4 = COM sonoplastia (novo)
-
-
-## 68. Intro de boas-vindas dublado por idioma - REGRA DE CONTRATO (2026-11-18)
-
-### 68.1. Regra de ouro (usuario)
-
-> Sempre que houver um video de intro/boas-vindas no comeco (ex.:
-> "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas
-> aventuras!"), ele TEM que ser feito em 3 versoes — uma para cada idioma
-> (PT, ES, EN). Nunca reaproveitar a voz PT nos videos ES/EN.
-
-### 68.2. Como fazer
-
-- scripts/dublar_intro_voicecraft.py: transcreve o intro PT (faster-whisper)
-  para obter os beats/tempos reais, gera a traducao de cada frase via
-  VoiceCraft (Gemini Aoede, perfil infantil), comprime com atempo para caber
-  no beat, posiciona com adelay e substitui o audio do video mantendo o
-  video (lip-sync).
-- Saida: intro-nova-8s_<lang>.mp4 (es/en) em assets/images/gemini/scenes/.
-- build_composition.py prioriza o intro com sufixo do idioma quando existe
-  (intro-nova-8s_es.mp4 para ES, _en.mp4 para EN); PT usa o original.
-
-### 68.3. Intros do projeto atual
-
-PT: "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas aventuras!"
-ES: "¡Buenos días! ¡Bienvenidos a nuestro canal! ¡Disfruten otra de nuestras aventuras!"
+- e-se-os-..._pt_COM_SONOPLASTIA.mp4 = COM sonoplastia (novo)
+
+
+
+
+
+## 68. Intro de boas-vindas dublado por idioma - REGRA DE CONTRATO (2026-11-18)
+
+
+
+### 68.1. Regra de ouro (usuario)
+
+
+
+> Sempre que houver um video de intro/boas-vindas no comeco (ex.:
+
+> "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas
+
+> aventuras!"), ele TEM que ser feito em 3 versoes — uma para cada idioma
+
+> (PT, ES, EN). Nunca reaproveitar a voz PT nos videos ES/EN.
+
+
+
+### 68.2. Como fazer
+
+
+
+- scripts/dublar_intro_voicecraft.py: transcreve o intro PT (faster-whisper)
+
+  para obter os beats/tempos reais, gera a traducao de cada frase via
+
+  VoiceCraft (Gemini Aoede, perfil infantil), comprime com atempo para caber
+
+  no beat, posiciona com adelay e substitui o audio do video mantendo o
+
+  video (lip-sync).
+
+- Saida: intro-nova-8s_<lang>.mp4 (es/en) em assets/images/gemini/scenes/.
+
+- build_composition.py prioriza o intro com sufixo do idioma quando existe
+
+  (intro-nova-8s_es.mp4 para ES, _en.mp4 para EN); PT usa o original.
+
+
+
+### 68.3. Intros do projeto atual
+
+
+
+PT: "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas aventuras!"
+
+ES: "¡Buenos días! ¡Bienvenidos a nuestro canal! ¡Disfruten otra de nuestras aventuras!"
+
 EN: "Good morning! Welcome to our channel! Enjoy another one of our adventures!"
+
+
+## 69. NUNCA renderizar idiomas em paralelo no mesmo projeto (2026-11-18)
+
+### 69.1. Regra dura
+
+> Os comandos `--only-lang es` e `--only-lang en` **NUNCA** podem rodar ao
+> mesmo tempo no mesmo projeto. Eles compartilham `artifacts/timeline.json`,
+> `assets/audio/final_mix.m4a`, `composition.html` e o workspace do
+> HyperFrames — rodando em paralelo, o timeline de um idioma sobrescreve o
+> outro e o video sai com as imagens dessincronizadas do audio.
+
+### 69.2. Caso real
+
+ES (narração 978s) e EN (narração 736.9s) rodaram em paralelo. O
+`timeline.json` ficou com o valor do EN (736.9s) e o video ES saiu com 999s
+de audio mas só 757s de imagens (delta 241s, STATUS VERIFICAR). Correção:
+re-renderizar ES **sozinho**, depois que o EN terminar.
+
+### 69.3. Ordem correta
+
+1. Renderizar PT (sozinho)
+2. Renderizar ES (sozinho, com `script_es.json` e timings próprios)
+3. Renderizar EN (sozinho, com `script_en.json` e timings próprios)
+4. Conferir `STATUS: OK` e `delta ~0` na ficha de cada um antes de aceitar.
