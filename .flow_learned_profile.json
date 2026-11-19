@@ -1,0 +1,116 @@
+{
+  "learned_at": "2026-11-19T07:19:27",
+  "url": "https://flow.google.com/project/d43a0933-5310-4951-b511-911f96a6bc22",
+  "title": "Google Flow: Frida e Luna",
+  "editor_selectors": [
+    "div[role=\"textbox\"].ProseMirror",
+    "[role=\"textbox\"]",
+    "div[contenteditable=\"true\"]"
+  ],
+  "editor_details": [
+    {
+      "tag": "DIV",
+      "cls": "ProseMirror ProseMirror-focused",
+      "role": "textbox",
+      "aria": "O que você quer criar?",
+      "ce": "true",
+      "x": 392,
+      "y": 499,
+      "w": 529,
+      "h": 20
+    }
+  ],
+  "clicked_elements": [
+    {
+      "sel": "mat-icon",
+      "aria": null,
+      "texto": "close",
+      "tag": "MAT-ICON"
+    },
+    {
+      "sel": "mat-icon",
+      "aria": null,
+      "texto": "tune",
+      "tag": "MAT-ICON"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "Nunca",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "input",
+      "aria": null,
+      "texto": "",
+      "tag": "INPUT"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "16:9",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "x1",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "🍌 Nano Banana 2.1",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "🍌 Nano Banana 2.1",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "span",
+      "aria": null,
+      "texto": "Salvar",
+      "tag": "SPAN"
+    },
+    {
+      "sel": "p",
+      "aria": null,
+      "texto": "",
+      "tag": "P"
+    }
+  ],
+  "screenshot": "C:\\videomaker\\artifacts\\flow_learning\\flow_1795083566.png",
+  "version": 2,
+  "historico": [
+    {
+      "learned_at": "2026-11-19T07:08:30",
+      "url": "https://flow.google.com/project/d43a0933-5310-4951-b511-911f96a6bc22",
+      "editor_selectors": [
+        "div[role=\"textbox\"].ProseMirror",
+        "[role=\"textbox\"]",
+        "div[contenteditable=\"true\"]"
+      ]
+    },
+    {
+      "learned_at": "2026-11-19T07:19:27",
+      "url": "https://flow.google.com/project/d43a0933-5310-4951-b511-911f96a6bc22",
+      "editor_selectors": [
+        "div[role=\"textbox\"].ProseMirror",
+        "[role=\"textbox\"]",
+        "div[contenteditable=\"true\"]"
+      ]
+    }
+  ],
+  "recovery_selectors": {
+    "retry_buttons": [
+      "button[aria-label=\"Tentar de novo\"]",
+      "button:has(mat-icon:has-text(\"refresh\"))"
+    ],
+    "note": "Botao CERTO no card de falha e 'Tentar de novo' (icone refresh), NAO 'Reutilizar comando' (undo). Clicar ate 10x.",
+    "max_retries": 10,
+    "dismiss_banner": "button[aria-label=\"Fechar\"], button:has(mat-icon:has-text(\"close\"))"
+  }
+}

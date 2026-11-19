@@ -639,13 +639,17 @@ async def main_async(args):
             await page.goto("https://flow.google.com/", wait_until="domcontentloaded", timeout=45000)
             await page.wait_for_timeout(2000)
 
-        # REGRA DO USUARIO: DEGRADACAO PROGRESSIVA DO LOTE.
-        # Comeca grande (15); se travar/faltar, reduz: 15 -> 12 -> 10 -> 8 -> 4 -> 2;
-        # se 2 falhar, vai 1 por 1 via GEMINI (nao Flow). Entra no loop ate conseguir.
-        TAMANHOS = [15, 12, 10, 8, 4, 2]
+        # REGRA DO USUARIO (CONTRATO): SEMPRE no Google Flow.
+        # Degradacao progressiva: 15 -> 12 -> 10 -> 8 -> 4 -> 2 -> 1.
+        # No tamanho 1, insiste 10 VEZES no Flow antes de pensar em Gemini.
+        # Gemini e ULTIMA opcao, permitida somente apos todas as tentativas
+        # no Flow (flow_guard abaixo) — nunca cair direto nele.
+        TAMANHOS = [15, 12, 10, 8, 4, 2, 1]
+        TENTATIVAS_TAM1 = 10  # 10x no Flow no tamanho 1 antes do Gemini
         tamanho_inicial = args.batch_size if args.batch_size in TAMANHOS else 15
         idx_tam = TAMANHOS.index(tamanho_inicial)
         todos_faltantes = list(pendentes)
+        tentativas_tam1 = 0
         pausa_entre_lotes = max(args.pause, 120)  # REGRA: 2 minutos minimo entre lotes
 
         while todos_faltantes and idx_tam < len(TAMANHOS):
@@ -670,11 +674,19 @@ async def main_async(args):
                     len(todos_faltantes), len(nova_faltante)), flush=True)
             todos_faltantes = nova_faltante
             if todos_faltantes:
-                idx_tam += 1  # reduz o lote e tenta de novo
+                if tam == 1:
+                    tentativas_tam1 += 1
+                    print(f"  Flow tamanho 1: tentativa {tentativas_tam1}/{TENTATIVAS_TAM1}", flush=True)
+                    if tentativas_tam1 < TENTATIVAS_TAM1:
+                        await page.wait_for_timeout(pausa_entre_lotes * 1000)
+                        continue  # repete tamanho 1 no Flow
+                else:
+                    idx_tam += 1  # reduz o lote e tenta de novo
 
-        # ULTIMO RECURSO: 1 por 1 via GEMINI (nao Flow)
+        # === FLOW_GUARD: so agora (apos 15->...->2->1 com 10x) pode Gemini ===
         if todos_faltantes:
-            print("\n=== ULTIMO RECURSO: 1 a 1 via GEMINI (nao Flow) ===", flush=True)
+            print("\n=== FLOW_GUARD: Flow esgotou todos os tamanhos (inclusive 1 por 1, 10x). ===", flush=True)
+            print("=== ULTIMO RECURSO: 1 a 1 via GEMINI (nao Flow) ===", flush=True)
             faltas_gemini = await gerar_um_a_um_gemini(todos_faltantes, prompts, out_dir, args)
             todos_faltantes = faltas_gemini
 
