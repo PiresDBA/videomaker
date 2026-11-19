@@ -44,13 +44,18 @@ video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cov
   border:1px solid rgba(255,255,255,.28);
   box-shadow:inset 0 0 6px rgba(255,255,255,.35),0 0 8px rgba(255,255,255,.12);
   opacity:0;will-change:transform,opacity}
-/* REGRA DO USUARIO: blur/foco pulsante lento - da sensacao de movimento
-   na imagem estatica sem usar zoom (que cortaria colagens). */
-@keyframes focus-pulse{
-  0%,100%{filter:blur(0px) saturate(100%)}
-  50%{filter:blur(2.5px) saturate(112%)}
+/* REGRA DO USUARIO (2026-11-19): SEM blur. O efeito certo e um deslocamento
+   lateral MUITO lento: a imagem vai um pouquinho para um lado enquanto a
+   sombra vai para o outro ( parece a imagem dividida em 2 ). Da impressao
+   de que a imagem esta se mexendo, sem desfoque e sem zoom (zoom corta
+   colagens). Mantido o nome da classe .focus-pulse para nao quebrar o Hulk.
+   Usa a propriedade INDEPENDENTE `translate` para nao sobrescrever o
+   `transform` (scale/x/y) que o GSAP aplica nas cenas. */
+@keyframes shadow-sway{
+  0%,100%{translate:-6px 0;filter:drop-shadow(6px 7px 5px rgba(0,0,0,.42)) drop-shadow(-3px 0 0 rgba(240,178,74,.10))}
+  50%    {translate: 6px 0;filter:drop-shadow(-6px 7px 5px rgba(0,0,0,.42)) drop-shadow(3px 0 0 rgba(240,178,74,.10))}
 }
-.focus-pulse{animation:focus-pulse 8s ease-in-out infinite}
+.focus-pulse{animation:shadow-sway 14s ease-in-out infinite;will-change:translate,filter}
 /* Particulas tematicas (imagens PNG da BIBLIOTECA_EFEITOS) */
 .particula{position:absolute;pointer-events:none;opacity:0;will-change:transform,opacity}
 .part-folha{background-image:url('assets/efeitos/folha.png')}
