@@ -1521,6 +1521,17 @@ def phase_youtube(args, p: Project):
             --privacy unlisted --yt-title "Husky que faz drama"
     """
     print("== FASE youtube: iniciando", flush=True)
+    # HULK (guarda do CONTRATO): valida todas as regras ANTES de publicar.
+    # Se quebrou alguma regra, ELE AVISA e bloqueia o upload.
+    hulk = HERE / "hulk_validator.py"
+    if hulk.exists():
+        h = subprocess.run([sys.executable, str(hulk), "--slug", p.dir.name],
+                           capture_output=True, text=True)
+        print(h.stdout, flush=True)
+        if h.returncode != 0:
+            print("HULK BLOQUEOU a publicacao. Corrija os erros e tente de novo.", flush=True)
+            args.publish_ok = False
+            return False
     if not p.video.exists():
         print("== YOUTUBE: video ausente, nada para publicar", flush=True)
         args.publish_ok = False
