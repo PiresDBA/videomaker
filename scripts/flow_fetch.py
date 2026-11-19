@@ -1901,10 +1901,20 @@ async def main() -> int:
         launch_chrome(args.cdp_url, default_profile(args))
 
     async with async_playwright() as p:
-        try:
-            browser = await p.chromium.connect_over_cdp(args.cdp_url, timeout=15000)
-        except Exception as e:
-            print(f"Não conectou em {args.cdp_url}: {e}")
+        # REGRA DO USUARIO: o Chrome as vezes morre no meio da geracao. Reabrir
+        # e tentar de novo (3x) em vez de desistir a primeira vez.
+        browser = None
+        for tentativa in range(1, 4):
+            try:
+                browser = await p.chromium.connect_over_cdp(args.cdp_url, timeout=15000)
+                break
+            except Exception as e:
+                print(f"  conexao CDP falhou (tentativa {tentativa}/3): {str(e)[:80]}", flush=True)
+                if tentativa < 3:
+                    launch_chrome(args.cdp_url, default_profile(args))
+                    await asyncio.sleep(5)
+        if browser is None:
+            print(f"Não conectou em {args.cdp_url} apos 3 tentativas")
             return 3
         ctx = browser.contexts[0]
 
