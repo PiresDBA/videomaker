@@ -1424,6 +1424,9 @@ def phase_compose(args, p: Project):
     Exemplo:
         python scripts/pipeline.py full --prompt "Husky engraçado" --only compose
     """
+    # REGRA: build_composition le o video_clips.json via VIDEOMAKER_PROJ
+    # (nao via --proj). Sem isso os 5 clipes manuais somem da composicao.
+    os.environ["VIDEOMAKER_PROJ"] = str(p.dir)
     run([sys.executable, str(SCRIPTS["build_composition"]),
          "--timeline", str(p.timeline_json),
          "--scenes", str(p.scenes_json),
