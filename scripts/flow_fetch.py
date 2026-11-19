@@ -465,11 +465,16 @@ async def retry_refused_image(page, wait_s: int = 90) -> bool:
             prof = json.loads(pf.read_text(encoding="utf-8"))
     except Exception:
         pass
-    sels = prof.get("recovery_selectors", {}).get("retry_buttons", [
-        'button[aria-label="Reutilizar comando"]',
-        'button:has(mat-icon:has-text("undo"))',
-        'button:has(mat-icon:has-text("redo"))',
-    ])
+    # REGRA DO USUARIO (print da tela): o botao CERTO e 'Tentar de novo'
+    # (icone refresh) dentro do card que mostra 'Falha'. NAO e undo/redo.
+    sels = prof.get("recovery_selectors", {}).get("retry_buttons", []) or []
+    sels = ['button[aria-label="Tentar de novo"]',
+            'button:has(mat-icon:has-text("refresh"))'] + sels
+    # remove duplicatas e seletores ruins (undo/redo) do fallback
+    sels = [s for s in dict.fromkeys(sels)
+            if s not in ('button[aria-label="Reutilizar comando"]',
+                         'button:has(mat-icon:has-text("undo"))',
+                         'button:has(mat-icon:has-text("redo"))')]
 
     for tentativa in range(1, MAX + 1):
         clicou = False
