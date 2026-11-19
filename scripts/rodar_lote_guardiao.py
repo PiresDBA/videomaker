@@ -100,6 +100,7 @@ def main():
             if not cdp_ok() and not abrir_chrome():
                 return 2
             time.sleep(5)
+            continue  # volta ao topo do while para rodar o proximo lote
         if morto:
             proc.terminate()
             try:
