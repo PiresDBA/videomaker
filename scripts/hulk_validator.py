@@ -141,7 +141,9 @@ def main(slug, strict):
             erros.append(f"efeitos de fundo faltando: particulas={nparts}, shadow-sway={nfocus}")
         # REGRA DO USUARIO (2026-11-19): sem blur/desfoque. O efeito certo e
         # shadow-sway (deslocamento lateral lento + sombra), nao blur/foco.
-        if re.search(r"filter\s*:\s*blur\s*\(", html):
+        # Ignora backdrop-filter:blur() dos cards de vidro (texto) - so
+        # proibe o blur aplicado as IMAGENS (filter:blur puro).
+        if re.search(r"(?<![\w-])filter\s*:\s*blur\s*\(", html):
             erros.append("DESFOQUE (filter:blur) detectado na composicao - usar shadow-sway")
         elif "shadow-sway" not in html:
             avisos.append("shadow-sway ainda nao aplicado (composicao antiga)")
