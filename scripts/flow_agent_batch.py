@@ -429,7 +429,10 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
     bodies = await captor
     # ESTABILIZACAO: depois da ultima imagem, esperar mais para o Flow terminer
     # de renderizar/gravar todas (evita mandar prompt seguinte antes da hora).
-    estabiliza = 12 if n_cenas <= 2 else (20 if n_cenas <= 4 else 30)
+    # REGRA DO USUARIO (corrigida): ESPERAR 2 MINUTOS apos as imagens chegarem.
+    # O Flow ainda esta finalizando a geracao; se seguir antes, reinicia e
+    # manda de novo -> rate limit e imagem descartada. 120s Fixo por lote.
+    estabiliza = 120
     print("  aguardando estabilizacao (%ds) antes do proximo prompt..." % estabiliza, flush=True)
     await asyncio.sleep(estabiliza)
 
@@ -643,7 +646,7 @@ async def main_async(args):
         tamanho_inicial = args.batch_size if args.batch_size in TAMANHOS else 15
         idx_tam = TAMANHOS.index(tamanho_inicial)
         todos_faltantes = list(pendentes)
-        pausa_entre_lotes = max(args.pause, 60)
+        pausa_entre_lotes = max(args.pause, 120)  # REGRA: 2 minutos minimo entre lotes
 
         while todos_faltantes and idx_tam < len(TAMANHOS):
             tam = TAMANHOS[idx_tam]
