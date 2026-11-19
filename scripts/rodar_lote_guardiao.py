@@ -15,7 +15,7 @@ Solucao: este guardiao
 Uso: python scripts/rodar_lote_guardiao.py
 """
 from __future__ import annotations
-import subprocess, sys, time, urllib.request, os
+import subprocess, sys, time, urllib.request, os, json
 from pathlib import Path
 
 PY = sys.executable
@@ -77,8 +77,29 @@ def main():
                 morto = True
                 break
         if proc.poll() == 0 and not morto:
-            print("[guardiao] LOTE CONCLUIDO com sucesso", flush=True)
-            return 0
+            # CONFERIR se realmente gerou todas: o script retorna 0 mesmo com
+            # imagens faltando. Conta .jpg no out-dir e relanca se faltarem.
+            import re as _re
+            sc = Path(PROJ) / "artifacts/scenes.json"
+            total = 0
+            if sc.exists():
+                dados = json.loads(sc.read_text(encoding="utf-8"))
+                total = sum(1 for k, v in dados.items() if k.startswith("s")
+                            for i in v.get("images", []) if not i.endswith(".mp4"))
+            prontas = len(list(OUTDIR.glob("*.jpg")))
+            faltam = total - prontas
+            print(f"[guardiao] ./ conferencia: {prontas}/{total} jpg, faltam {faltam}", flush=True)
+            if faltam <= 0:
+                print("[guardiao] LOTE CONCLUIDO - todas as imagens prontas", flush=True)
+                return 0
+            reinicios += 1
+            print(f"[guardiao] faltam {faltam} imagens -> relancando ({reinicios}/{MAX_REINICIOS})", flush=True)
+            if reinicios > MAX_REINICIOS:
+                print("[guardiao] limite de reinicios atingido", flush=True)
+                return 3
+            if not cdp_ok() and not abrir_chrome():
+                return 2
+            time.sleep(5)
         if morto:
             proc.terminate()
             try:
