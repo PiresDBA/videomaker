@@ -5322,27 +5322,67 @@ imagens (lote Flow) -> narração -> sonoplastia (pela narração) -> timeline/m
 Ao terminar e publicar um video (PT/EN/ES), executar o "fechamento de ciclo":
 marcar tema como USADO em scripts/topics.txt, limpar variaveis de estado do
 projeto anterior (reference, biblia, clipes, prompts, manifestos, audio).
-O proximo video comeca do zero. Somente a inteligencia/ferramentas permanecem.
-
-
-### 72.6. Continuidade de personagens no Flow (REGRA DO USUARIO)
-
-> Duas camadas JUNTAS em TODO prompt de imagem/videos do Flow:
-> 1. REFERENCIA DE PERSONAGEM SALVA: escrever @[Frida] e @[Luna] (arro antes
->    do colchete) sempre que citar os personagens. O Flow puxaa os personagens
->    salvos e NAO inventa outras racas/pessoas. Aplicado por
->    `fix_prompts_ref_personagem.py` + `flow_fetch._enforce_characters` +
->    `flow_agent_batch.IDENTIDADE_PERSONAGENS`.
-> 2. IMAGEM DE REFERENCIA INICIAL: anexar/colar
->    `scripts/reference/frida_luna_reference.jpg` (a mesma que o Gerador/Gemini
->    usa) em CADA envio (`flow_fetch.attach_reference`), inclusive no lote.
->
-> Sem isso o Flow gera cachorros de outras racas, mulheres, fotos em vez de 3D,
-> quebrando a identidade. NUNCA comecar de novo: aproveitar as imagens ja
-> geradas e regerar apenas as que faltam com estas correcoes.
-
-### 72.7. Bug do painel lateral do Agente
-
-As vezes o modo Agente abre um painel lateral ("Character Concepts") que
-desloca o prompt para o lado e trava o envio. `flow_fetch.fechar_painel_agente`
+O proximo video comeca do zero. Somente a inteligencia/ferramentas permanecem.
+
+
+
+
+
+### 72.6. Continuidade de personagens no Flow (REGRA DO USUARIO)
+
+
+
+> Duas camadas JUNTAS em TODO prompt de imagem/videos do Flow:
+
+> 1. REFERENCIA DE PERSONAGEM SALVA: escrever @[Frida] e @[Luna] (arro antes
+
+>    do colchete) sempre que citar os personagens. O Flow puxaa os personagens
+
+>    salvos e NAO inventa outras racas/pessoas. Aplicado por
+
+>    `fix_prompts_ref_personagem.py` + `flow_fetch._enforce_characters` +
+
+>    `flow_agent_batch.IDENTIDADE_PERSONAGENS`.
+
+> 2. IMAGEM DE REFERENCIA INICIAL: anexar/colar
+
+>    `scripts/reference/frida_luna_reference.jpg` (a mesma que o Gerador/Gemini
+
+>    usa) em CADA envio (`flow_fetch.attach_reference`), inclusive no lote.
+
+>
+
+> Sem isso o Flow gera cachorros de outras racas, mulheres, fotos em vez de 3D,
+
+> quebrando a identidade. NUNCA comecar de novo: aproveitar as imagens ja
+
+> geradas e regerar apenas as que faltam com estas correcoes.
+
+
+
+### 72.7. Bug do painel lateral do Agente
+
+
+
+As vezes o modo Agente abre um painel lateral ("Character Concepts") que
+
+desloca o prompt para o lado e trava o envio. `flow_fetch.fechar_painel_agente`
+
 detecta e clica no botao Fechar (X, aria-label="Fechar") antes de enviar.
+
+
+### 72.8. Parametros configuraveis no ORQUESTRADOR (REGRA DO USUARIO)
+
+> TODA regra deste manual e um ARGUMENTO de `scripts/pipeline.py` (o UNICO
+> orquestrador). NUNCA criar outro pipeline nem arquivo de config paralelo.
+> Editar sempre os argumentos em `common()` do pipeline.py.
+
+Argumentos adicionados em `common()` (ver `python scripts/pipeline.py full --help`):
+- `--flow-agent` / `--batch-size N` / `--max-attempts N`  imagens em lote no Flow
+- `--clipes-meio N` / `--clipes-meio-minutos "2,5,7"`  clipes de 8s no meio
+- `--sonoplastia on|off`  sonoplastia pela narracao (obrigatoria por padrao)
+- `--efeitos-fundo on|off`  estrelinhas/folhas/abelhas + blur/foco pulsante
+- `--ref-personagem on|off`  @[Frida]/@[Luna] + ref-image no Flow
+
+`phase_images` repassa `--flow-agent`/`--batch-size` ao flow_agent_batch.py.
+Regra de ouro: um unico orquestrador (pipeline.py), manual no mesmo commit.
