@@ -56,7 +56,7 @@ def cmd_lote():
     return [PY, str(SCRIPTS / "flow_agent_batch_on.py"),
             "--prompts-file", str(PROMPTS), "--project-dir", PROJ,
             "--out-dir", str(OUTDIR), "--batch-size", "10",
-            "--wait", "600", "--pause", "15"]
+            "--wait", "600", "--pause", "60"]
 
 
 def main():

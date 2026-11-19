@@ -964,6 +964,15 @@ REFUSAL_PATTERNS = [
     "youtube",
     "impróprio",
     "inadequado",
+    # RATE LIMIT do Flow (usuario mostrou na tela): nao e politica, e ritmo.
+    "solicitações muito rápido",
+    "solicitacoes muito rapido",
+    "diminua o ritmo",
+    "muito rápido",
+    "muito rapido",
+    "tente de novo mais tarde",
+    "too many requests",
+    "rate limit",
 ]
 
 async def _check_refusal(page) -> bool:

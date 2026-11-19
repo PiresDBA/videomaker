@@ -2299,8 +2299,10 @@ def main():
             "--wait", type=int, default=420,
             help="espera maxima (s) por resposta do Gemini Web nas imagens. Padrao: 420. Ex: --wait 600")
         sp.add_argument(
-            "--pause", type=int, default=8,
-            help="pausa (s) entre chamadas ao Gemini Web (anti-bloqueio). Padrao: 8. Ex: --pause 15")
+            "--pause", type=int, default=45,
+            help="pausa (s) entre chamadas ao Flow/Gemini (anti rate-limit). "
+                 "Padrao: 45 (o Flow reclama 'solicitacoes muito rapido' com pausas curtas). "
+                 "Ex: --pause 90")
         # --- REGRAS CONFIGURAVEIS (ver MANUAL_GRAFOS.md §72) ----------------
         sp.add_argument(
             "--flow-agent", action="store_true",
