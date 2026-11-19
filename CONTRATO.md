@@ -702,22 +702,50 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > Se aparecer "solicitacoes muito rapido", aumentar a pausa (padrao 120s).
 
-> Corrigido em `fa05f0a`.
-
-
-## COMPILACAO FINAL - VIDEOMAKER_PROJ (2026-11-19)
-
-> `build_composition.py` le `artifacts/video_clips.json` da variavel de ambiente
-> `VIDEOMAKER_PROJ` (NAO do `--proj`). Sem ela os 5 clipes manuais somem da
-> composicao e o video sai "pelado". `pipeline.phase_compose` agora seta a
-> variavel automaticamente (commit d3ba51e).
->
-> REGRAS DA COMPILACAO FINAL:
-> 1. `pre_final` = clipe de pata/confete (final_subscribe2.mp4) no instante
->    em que a narracao fala "obrigado por assistir".
-> 2. `outro` = final_subscribe.mp4 no instante em que fala "like/se inscreva".
-> 3. Renderizar SEM a fase `mix` (`--only compose,preprocess,render`) para nao
->    sobrescrever `final_mix.m4a` com sonoplastia.
-> 4. Mix final DEVE ser igual a `final_mix_sonoplastia_<lang>.m4a`.
-> 5. Composicao final DEVE ter >=5 videos, particulas > 0 e focus-pulse > 0.
+> Corrigido em `fa05f0a`.
+
+
+
+
+
+## COMPILACAO FINAL - VIDEOMAKER_PROJ (2026-11-19)
+
+
+
+> `build_composition.py` le `artifacts/video_clips.json` da variavel de ambiente
+
+> `VIDEOMAKER_PROJ` (NAO do `--proj`). Sem ela os 5 clipes manuais somem da
+
+> composicao e o video sai "pelado". `pipeline.phase_compose` agora seta a
+
+> variavel automaticamente (commit d3ba51e).
+
+>
+
+> REGRAS DA COMPILACAO FINAL:
+
+> 1. `pre_final` = clipe de pata/confete (final_subscribe2.mp4) no instante
+
+>    em que a narracao fala "obrigado por assistir".
+
+> 2. `outro` = final_subscribe.mp4 no instante em que fala "like/se inscreva".
+
+> 3. Renderizar SEM a fase `mix` (`--only compose,preprocess,render`) para nao
+
+>    sobrescrever `final_mix.m4a` com sonoplastia.
+
+> 4. Mix final DEVE ser igual a `final_mix_sonoplastia_<lang>.m4a`.
+
+> 5. Composicao final DEVE ter >=5 videos, particulas > 0 e focus-pulse > 0.
+
 > 6. Hulk valida tudo isso (regras 10 e 11) antes de publicar.
+
+
+## VERIFY - DURACAO REAL DA COMPOSICAO (2026-11-19)
+
+> `verify_output.py` dava FALSO POSITIVO: calculava
+> `timeline + capa + pre_final + outro = 678.15s` e o video tinha 670.23s.
+> Causa: os clipes do meio e o `pre_final` SOBREPOEM as cenas, nao estendem.
+> CORRECAO: a duracao esperada agora vem do `data-duration` do `#root` no
+> `composition.html` (fonte da verdade). Fallback sem somar `pre_final`.
+> Commit `2f321d5`. Verificado: delta 0.02s, STATUS OK, audio continuo.
