@@ -237,7 +237,7 @@ def launch_chrome(cdp_url: str, profile: Path):
     print(f"Abrindo Chrome (porta {port}, perfil {profile}) -> {start_url}", flush=True)
     subprocess.Popen(
         [exe, f"--remote-debugging-port={port}", f"--user-data-dir={profile}",
-         "--no-first-run", "--no-default-browser-check", "--window-size=1920,1080",
+         "--no-first-run", "--no-default-browser-check",
          start_url],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
@@ -335,7 +335,9 @@ def load_prompts(args) -> dict[str, str]:
 async def get_page(ctx):
     page = next((p for p in ctx.pages if "flow.google.com" in p.url), None) or await ctx.new_page()
     await page.bring_to_front()
-    await page.set_viewport_size({"width": 1920, "height": 1080})
+    # NAO forcar viewport: o usuario ajustou a tela do Flow do jeito dele.
+    # set_viewport_size fazia o Flow esconder/mover campos (zoom) e quebrava
+    # o aprendizado guiado. Respeita o tamanho atual do navegador.
     return page
 
 

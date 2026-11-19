@@ -142,7 +142,7 @@ async def learn():
         ctx = browser.contexts[0]
         page = next((pg for pg in ctx.pages if "flow.google.com" in pg.url), None) or await ctx.new_page()
         await page.bring_to_front()
-        await page.set_viewport_size({"width": 1920, "height": 1080})
+        # NAO forcar viewport: respeita o tamanho que o usuario ajustou no Flow.
 
         # Vai para o projeto salvo (ou URL padrao)
         url = PROJECT_URL
