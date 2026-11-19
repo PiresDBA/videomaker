@@ -5268,43 +5268,58 @@ aria-label="Tentar de novo"), NAO 'Reutilizar comando' (undo).
 
 Insistir ate 10x no MESMO card antes de desistir. Fechar o banner de
 
-creditos se aparecer. Salvo em .flow_learned_profile.json -> recovery_selectors.
-
-
-## 72. Estrutura de clipes de video e sonoplastia obrigatoria (2026-11-19)
-
-### 72.1. Regra de ouro do usuario
-
-> Todo video do canal deve ter: 1 clipe de ABERTURA (boas-vindas), 3 clipes
-> de VIDEO no MEIO (8s cada, referentes ao que acontece na cena), e 2 clipes
-> FINAIS (like/subscribe). Todos com SONOPLASTIA.
-
-### 72.2. Clipes do meio (3 por video, 8s, via Modo Agente do Flow)
-
-Gerados com `flow_agent_batch` / modo Agente (video 8s 16:9). Pontos:
-- ~2 min: cena de acao (ex.: pulo no sofá)
-- ~5 min: cena de corrida/brincadeira (ex.: pista no tapete)
-- ~7 min: cena de fechamento emocional (ex.: cama/bocejo)
-
-Devem ser injetados no `video_clips.json` como meio/meio2/meio3 com o
-`offset` calculado no tempo da composicao. Respeitar ciclo limpo: clipes
-NOVOS por projeto, nunca reaproveitar de videos anteriores.
-
-### 72.3. Sonoplastia e uma REGRA do pipeline
-
-> A sonoplastia e OBRIGATORIA e pode (e deve) ser gerada APENAS ouvindo o
-> arquivo de NARRACAO — nao depende de assistir o video. O `faster-whisper`
-> transcreve a narração e o `sonoplastia_por_idioma.py` coloca o som na
-> palavra exata (regra §66/§67).
-
-Efeitos de fundo que DEVEM aparecer (movimento): estrelinhas, folhinhas,
-mosquinhas/abelhinhas — tudo da BIBLIOTECA_EFEITOS. Alem disso, um efeito
-de DESFOQUE/FOCO devagar (blur pulsante) para dar sensacao de movimento a
-imagem estatica. Aplicar com ffmpeg (filter `gblur` com sigma animado) ou
-CSS `filter: blur()` no build_composition.
-
-### 72.4. Ordem no pipeline
-
-1. imagens (lote Flow) -> 2. narração -> 3. sonoplastia (pela narração)
--> 4. timeline/mix -> 5. compose (com clipes + efeitos visuais + blur/foco)
--> 6. preprocess -> 7. render.
+creditos se aparecer. Salvo em .flow_learned_profile.json -> recovery_selectors.
+
+
+
+
+
+## 72. Estrutura de clipes, sonoplastia e CICLO LIMPO (2026-11-19)
+
+### 72.1. Regra de ouro do usuario (GENERICA - vale para TODO video)
+
+> Cada video e uma HISTORIA NOVA e INDEPENDENTE. As regras abaixo sao
+> GENERICAS: nao sao receitas copiaveis de um video para outro. Quando um
+> video e publicado, TODAS as variaveis daquele ciclo sao ZERADAS. So a
+> INTELIGENCIA (scripts, ferramentas, regras aprendidas, perfil do Flow)
+> permanece. NUNCA levar imagem, clipe, prompt, biblia, cenário, narracao,
+> manifesto ou estado de um video para o seguinte.
+
+### 72.2. Clipes de video (estrutura fixa, conteudo gerado por roteiro)
+
+Todo video tem:
+- 1 clipe de ABERTURA (boas-vindas no idioma)
+- 3 clipes no MEIO (8s cada, VIA MODO AGENTE DO FLOW)
+- 2 clipes FINAIS (like + subscribe)
+
+Os 3 clipes do meio DEVEM ser gerados NOVAMENTE para cada video, a partir
+do ROTEIRO DAQUELE VIDEO. O tema de cada clipe vem do que acontece na cena
+naquele ponto (ex.: se o roteiro fala de pulo no sofa, o clipe e do pulo).
+Nao existe "clipe padrao": o conteudo e sempre referente a narracao.
+
+Pontos sugeridos (ajustar ao roteiro): ~2 min (acao), ~5 min (brincadeira),
+~7 min (fechamento emocional). Injetar em video_clips.json como
+meio/meio2/meio3 com offset no tempo da composicao.
+
+### 72.3. Sonoplastia e OBRIGATORIA e vem da NARRACAO
+
+> A sonoplastia pode (e deve) ser gerada APENAS ouvindo o arquivo de
+> NARRACAO — nao depende de assistir o video. faster-whisper transcreve e
+> sonoplastia_por_idioma.py coloca o som na palavra exata (regras §§66-67).
+
+Efeitos de fundo (movimento): estrelinhas, folhinhas, mosquinhas/abelhinhas
+da BIBLIOTECA_EFEITOS. Tambem efeito de DESFOQUE/FOCO devagar (blur pulsante)
+para dar sensacao de movimento na imagem estatica (ffmpeg gblur com sigma
+animado ou CSS filter: blur no build_composition).
+
+### 72.4. Ordem no pipeline
+
+imagens (lote Flow) -> narração -> sonoplastia (pela narração) -> timeline/mix
+-> compose (clipes + efeitos + blur/foco) -> preprocess -> render.
+
+### 72.5. Checkpoint de fechamento de ciclo (apos publicar)
+
+Ao terminar e publicar um video (PT/EN/ES), executar o "fechamento de ciclo":
+marcar tema como USADO em scripts/topics.txt, limpar variaveis de estado do
+projeto anterior (reference, biblia, clipes, prompts, manifestos, audio).
+O proximo video comeca do zero. Somente a inteligencia/ferramentas permanecem.
