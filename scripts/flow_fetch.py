@@ -881,7 +881,11 @@ def _imagem_repetida(path: Path, ref_path, out_dir=None) -> bool:
                 b = Image.open(cand).convert("L").resize((48, 48))
                 diff = ImageChops.difference(a, b)
                 media = sum(ImageStat.Stat(diff).mean) / len(ImageStat.Stat(diff).mean)
-                if media < 2.0:
+                # REGRA DO USUARIO: tolerancia relaxada. Com @Frida/@Luna e
+                # ref-image anexada, cenas do MESMO personagem sao naturalmente
+                # parecidas. So descarta COPIA EXATA (media < 0.5), senao trava
+                # para sempre tentando gerar a mesma imagem (15h para 71).
+                if media < 0.5:
                     return True
             except Exception:
                 continue
