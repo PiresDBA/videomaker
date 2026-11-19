@@ -250,9 +250,26 @@ async def baixar_novas(page, quantidade: int, wait_s: int):
 
     page.on("response", on_resp)
     deadline = asyncio.get_event_loop().time() + wait_s
+    sem_novos = 0
     while len(capturadas) < quantidade and asyncio.get_event_loop().time() < deadline:
         await asyncio.sleep(2)
-    page.remove_listener("response", on_resp)
+        # Trava: se o navegador morreu (CDP fora), nao esperar 30min a toa.
+        try:
+            if page.is_closed():
+                print("  navegador fechou; abortando espera", flush=True)
+                break
+        except Exception:
+            break
+        # Trava: se nenhuma imagem nova chegou em 180s, o prompt provavelmente
+        # foi recusado ou o Flow travou -> sai para a recuperacao (refresh).
+        sem_novos += 2
+        if sem_novos >= 180 and not capturadas:
+            print("  sem imagens ha 180s; saindo para recuperacao", flush=True)
+            break
+    try:
+        page.remove_listener("response", on_resp)
+    except Exception:
+        pass
     return capturadas
 
 
