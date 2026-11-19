@@ -5430,27 +5430,62 @@ Implementado em `scripts/gerar_clipes_meio.py`:
 
 - chama gerar_video_flow.py (modo Video do Flow, 3 videos/dia)
 
-- salva clipe_meio_<i>_<min>min.mp4
-
-
-### 72.10. CORRECOES FINAIS (2026-11-19) - LER ANTES DE GERAR
-
-> SINTAXE CORRETA DAS REFERENCIAS: **@Frida e @Luna** (SO a arroba, SEM
-> colchetes). Versoes anteriores deste manual com @[Frida] estavam ERRADAS.
-> Aplicado em image_prompts.json, scenes.json e todos os scripts.
-
-> DEGRADACAO PROGRESSIVA DO LOTE (REGRA DO USUARIO): comecar mandando 15
-> imagens de uma vez. Se travar/faltar, reduzir: 15 -> 12 -> 10 -> 8 -> 4 -> 2.
-> Se 2 travar, ir para 1 imagem por vez via GEMINI (NAO Flow). Entrar nesse
-> loop ate conseguir gerar todas. Implementado em flow_agent_batch.py.
-
-> RATE LIMIT DO FLOW: quando aparecer "Voce esta fazendo solicitacoes muito
-> rapido. Diminua o ritmo", esperar e clicar "Tentar de novo". Pausa entre
-> chamadas aumentada para 45s (padrao) / 60s (entre lotes).
-
-> MODELOS DE VIDEO (usuario): usar Veo 3.1 Lite, qualidade BAIXA (10 creditos
-> por video -> ate 5 videos), exportar em 720p. Configurado em gerar_video_flow.py.
-
-> ORQUESTRADOR UNICO: `scripts/pipeline.py`. Toda inteligencia e argumento dele
-> (`--flow-agent`, `--batch-size`, `--clipes-meio`, `--sonoplastia`,
+- salva clipe_meio_<i>_<min>min.mp4
+
+
+
+
+
+### 72.10. CORRECOES FINAIS (2026-11-19) - LER ANTES DE GERAR
+
+
+
+> SINTAXE CORRETA DAS REFERENCIAS: **@Frida e @Luna** (SO a arroba, SEM
+
+> colchetes). Versoes anteriores deste manual com @[Frida] estavam ERRADAS.
+
+> Aplicado em image_prompts.json, scenes.json e todos os scripts.
+
+
+
+> DEGRADACAO PROGRESSIVA DO LOTE (REGRA DO USUARIO): comecar mandando 15
+
+> imagens de uma vez. Se travar/faltar, reduzir: 15 -> 12 -> 10 -> 8 -> 4 -> 2.
+
+> Se 2 travar, ir para 1 imagem por vez via GEMINI (NAO Flow). Entrar nesse
+
+> loop ate conseguir gerar todas. Implementado em flow_agent_batch.py.
+
+
+
+> RATE LIMIT DO FLOW: quando aparecer "Voce esta fazendo solicitacoes muito
+
+> rapido. Diminua o ritmo", esperar e clicar "Tentar de novo". Pausa entre
+
+> chamadas aumentada para 45s (padrao) / 60s (entre lotes).
+
+
+
+> MODELOS DE VIDEO (usuario): usar Veo 3.1 Lite, qualidade BAIXA (10 creditos
+
+> por video -> ate 5 videos), exportar em 720p. Configurado em gerar_video_flow.py.
+
+
+
+> ORQUESTRADOR UNICO: `scripts/pipeline.py`. Toda inteligencia e argumento dele
+
+> (`--flow-agent`, `--batch-size`, `--clipes-meio`, `--sonoplastia`,
+
 > `--efeitos-fundo`, `--ref-personagem`). NUNCA criar outro pipeline.
+
+
+### 72.11. ESPERA DE 2 MINUTOS (REGRA DO USUARIO - CORRIGIDA)
+
+> O Flow REINICIA a geracao se mandarmos o proximo prompt antes da imagem
+> ficar pronta. Por isso: ESPERAR 2 MINUTOS (120s) apos as imagens chegarem
+> (estabiliza=120s no flow_agent_batch) e pausa padrao de 120s entre chamadas
+> (`--pause 120`). Sem isso o Flow reclama 'solicitacoes muito rapido',
+> descarta a imagem e nao converge (15 horas para 71 imagens).
+
+Aplicado em: flow_agent_batch.py (estabiliza=120, pausa_entre_lotes>=120) e
+pipeline.py (--pause default=120).
