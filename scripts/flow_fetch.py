@@ -845,7 +845,9 @@ def _bytes_igual_ref(data: bytes, ref_path) -> bool:
         b = Image.open(ref).convert("L").resize((48, 48))
         diff = ImageChops.difference(a, b)
         media = sum(ImageStat.Stat(diff).mean) / len(ImageStat.Stat(diff).mean)
-        return media < 2.0
+        # REGRA DO USUARIO: so descarta COPIA EXATA (media < 0.5). Antes 2.0
+        # descartava cenas parecidas e travava a geracao.
+        return media < 0.5
     except Exception:
         return False
 
