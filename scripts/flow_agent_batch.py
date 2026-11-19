@@ -450,11 +450,83 @@ async def processar_lote(page, itens, biblia, out_dir, wait_s, max_tentativas=4,
         await page.wait_for_timeout(4000)
 
     if pendentes:
-        print("\n!!! FALTANDO APOS %d TENTATIVAS: %s" % (
-            max_tentativas, ", ".join(n for n, _ in pendentes)), flush=True)
+        # ULTIMO RECURSO (regra do usuario): as vezes 1 ou 2 imagens do lote
+        # falham e ficam com mensagem de recusa no card. O usuario clica no
+        # botao 'Reutilizar comando' (undo/redo) NA PROPRIA IMAGEM e ela gera.
+        # Fazemos o mesmo: refresh nos cards falhados do Flow ate 10x.
+        print("\n>>> tentando refresh nos cards falhados do Flow (%d imagem(ns))..." % len(pendentes), flush=True)
+        try:
+            recuperadas = await refresh_cards_falhados(page, pendentes, out_dir, wait_s, hashes)
+            if recuperadas:
+                for name, dest in recuperadas:
+                    salvos.append(dest)
+                    pendentes = [(n, c) for n, c in pendentes if n != name]
+                    print("  RECUPERADA no Flow:", name, flush=True)
+        except Exception as e:
+            print("  aviso: refresh de cards falhou (%s)" % str(e)[:100], flush=True)
+
+    if pendentes:
+        print("\n!!! FALTANDO APOS RECUPERACAO: %s" % (
+            ", ".join(n for n, _ in pendentes)), flush=True)
         for name in pendentes:
             print("   FALTANDO:", name, flush=True)
     return salvos, pendentes
+
+
+async def refresh_cards_falhados(page, pendentes, out_dir, wait_s, hashes):
+    """Clica no 'Reutilizar comando' (undo/redo) dos cards recusados do Flow.
+
+    Retorna lista de (nome, destino) recuperados.
+    """
+    import json
+    sels = ['button:has(mat-icon:has-text("undo"))',
+            'button:has(mat-icon:has-text("redo"))',
+            'button[aria-label="Reutilizar comando"]']
+    try:
+        pf = Path(r"C:\videomaker\.flow_learned_profile.json")
+        if pf.exists():
+            prof = json.loads(pf.read_text(encoding="utf-8"))
+            sels = prof.get("recovery_selectors", {}).get("retry_buttons", sels)
+    except Exception:
+        pass
+
+    recuperadas = []
+    MAX = 10
+    for name, _cena in pendentes:
+        print("  refresh card:", name, flush=True)
+        for tentativa in range(1, MAX + 1):
+            # clica no primeiro botao de refresh visivel (o card falhado)
+            clicou = False
+            for sel in sels:
+                try:
+                    loc = page.locator(sel)
+                    for j in range(await loc.count()):
+                        el = loc.nth(j)
+                        if await el.is_visible():
+                            try:
+                                await el.click(timeout=2500)
+                            except Exception:
+                                await el.evaluate("(e)=>e.click()")
+                            clicou = True
+                            break
+                except Exception:
+                    continue
+                if clicou:
+                    break
+            if not clicou:
+                print("    nenhum botao de refresh visivel", flush=True)
+                break
+            print("    refresh %d/%d" % (tentativa, MAX), flush=True)
+            # aguarda aparecer nova imagem / download
+            await page.wait_for_timeout(6000)
+            novas = await baixar_novas(page, 1, min(wait_s, 60))
+            if novas:
+                dest = out_dir / (name + ".jpg")
+                salvar_como_jpg(novas[-1], dest)
+                recuperadas.append((name, dest))
+                print("    recuperada apos %d refresh(es)" % tentativa, flush=True)
+                break
+    return recuperadas
 
 
 async def main_async(args):
