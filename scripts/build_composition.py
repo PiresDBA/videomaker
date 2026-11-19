@@ -44,6 +44,13 @@ video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cov
   border:1px solid rgba(255,255,255,.28);
   box-shadow:inset 0 0 6px rgba(255,255,255,.35),0 0 8px rgba(255,255,255,.12);
   opacity:0;will-change:transform,opacity}
+/* REGRA DO USUARIO: blur/foco pulsante lento - da sensacao de movimento
+   na imagem estatica sem usar zoom (que cortaria colagens). */
+@keyframes focus-pulse{
+  0%,100%{filter:blur(0px) saturate(100%)}
+  50%{filter:blur(2.5px) saturate(112%)}
+}
+.focus-pulse{animation:focus-pulse 8s ease-in-out infinite}
 /* Particulas tematicas (imagens PNG da BIBLIOTECA_EFEITOS) */
 .particula{position:absolute;pointer-events:none;opacity:0;will-change:transform,opacity}
 .part-folha{background-image:url('assets/efeitos/folha.png')}
@@ -527,7 +534,9 @@ def build(scene_cfg, timeline, overlays, title="Meu Video", lang="pt"):
                     % (cls, sid, name, start, dur, track)
                 )
             else:
-                parts.append('<img class="%s" src="assets/images/%s" alt="">' % (cls, name))
+                # REGRA DO USUARIO: blur/foco pulsante nas imagens (exceto
+                # colagens, onde o blur tambem e seguro pois nao corta paineis).
+                parts.append('<img class="%s focus-pulse" src="assets/images/%s" alt="">' % (cls, name))
 
         overlay = overlays.get(sid, "")
         parts.append(overlay)

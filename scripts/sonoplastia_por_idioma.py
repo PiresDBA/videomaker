@@ -11,7 +11,7 @@ Uso: python scripts/sonoplastia_por_idioma.py --lang es
 Saida: assets/audio/final_mix_sonoplastia_<lang>.m4a
 """
 from __future__ import annotations
-import sys, subprocess, shutil, json, re
+import sys, subprocess, shutil, json, re, os
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import numpy as np
@@ -22,7 +22,14 @@ sys.path.insert(0, r"C:\videomaker\earshot-sfx")
 from earshot.forge import bank
 
 FF = shutil.which("ffmpeg") or r"C:\Users\Pires\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe"
-P = Path(r"C:\videomaker\projects\e-se-os-cachorros-pudessem-falar-por-um-dia")
+# REGRA: slug via --slug (ou VIDEOMAKER_PROJ); NUNCA slug fixo de projeto antigo.
+SLUG = (os.environ.get("VIDEOMAKER_PROJ") or "").strip()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--slug" and _i + 1 < len(sys.argv):
+        SLUG = sys.argv[_i + 1]
+if not SLUG:
+    SLUG = "e-se-os-cachorros-pudessem-falar-por-um-dia"
+P = Path(SLUG) if Path(SLUG).is_absolute() else Path(r"C:\videomaker\projects") / SLUG
 AUD = P / "assets/audio"
 SR = 44100
 
