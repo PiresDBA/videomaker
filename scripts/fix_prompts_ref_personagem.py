@@ -13,9 +13,9 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def aplicar(texto: str) -> str:
-    # normaliza qualquer forma antiga (@Frida, @[Frida], [Frida]) -> @[Frida]
-    texto = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@[Frida]", texto, flags=re.I)
-    texto = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@[Luna]", texto, flags=re.I)
+    # normaliza qualquer forma antiga (@Frida, @Frida, [Frida]) -> @Frida
+    texto = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@Frida", texto, flags=re.I)
+    texto = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@Luna", texto, flags=re.I)
     return texto
 
 

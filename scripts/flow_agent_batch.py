@@ -44,9 +44,9 @@ DEFAULT_CDP = "http://127.0.0.1:18800"
 
 
 def _cena_do_prompt(prompt: str) -> str:
-    """Extrai a descricao da CENA e SEMPRE aplica @[Frida]/@[Luna].
+    """Extrai a descricao da CENA e SEMPRE aplica @Frida/@Luna.
 
-    REGRA DO USUARIO: todo prompt precisa citar @[Frida] e @[Luna] (arro +
+    REGRA DO USUARIO: todo prompt precisa citar @Frida e @Luna (arro +
     colchete) para o Flow usar os personagens SALVOS. Como a primeira linha
     as vezes diz so 'duas cachorrinhas', garantimos que os nomes aparecam.
     """
@@ -55,16 +55,16 @@ def _cena_do_prompt(prompt: str) -> str:
     if first.startswith("CENA"):
         first = first.split(":", 1)[1].strip() if ":" in first else first
     cena = first.strip() or "cena ilustrativa da historia"
-    # normaliza qualquer mencao para a sintaxe @[NOME]
-    cena = _re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@[Frida]", cena, flags=_re.I)
-    cena = _re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@[Luna]", cena, flags=_re.I)
+    # normaliza qualquer mencao para a sintaxe @NOME (arro, sem colchetes)
+    cena = _re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@Frida", cena, flags=_re.I)
+    cena = _re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@Luna", cena, flags=_re.I)
     # se nao citou nenhum dos dois, adiciona explicitamente no inicio
-    if "@[Frida]" not in cena and "@[Luna]" not in cena:
-        cena = "Com @[Frida] (buldogue inglesa fawn) e @[Luna] (dachshund marrom): " + cena
-    elif "@[Frida]" not in cena:
-        cena = "Com @[Frida] (buldogue inglesa fawn): " + cena
-    elif "@[Luna]" not in cena:
-        cena = "Com @[Luna] (dachshund marrom): " + cena
+    if "@Frida" not in cena and "@Luna" not in cena:
+        cena = "Com @Frida (buldogue inglesa fawn) e @Luna (dachshund marrom): " + cena
+    elif "@Frida" not in cena:
+        cena = "Com @Frida (buldogue inglesa fawn): " + cena
+    elif "@Luna" not in cena:
+        cena = "Com @Luna (dachshund marrom): " + cena
     return cena
 
 
@@ -86,8 +86,8 @@ def _biblia_do_prompt(prompt: str) -> str:
 
 IDENTIDADE_PERSONAGENS = (
     "IDENTIDADE FIXA DOS PERSONAGENS (vale para TODAS as imagens, SEM EXCECAO): "
-    "Use @[Frida] e @[Luna] (referencias SALVAS neste Flow) sempre que citar os "
-    "personagens. @[Frida] e um buldogue ingles FEMEA, sempre a MESMA: pelagem fawn/bege-amarelada, "
+    "Use @Frida e @Luna (referencias SALVAS neste Flow) sempre que citar os "
+    "personagens. @Frida e um buldogue ingles FEMEA, sempre a MESMA: pelagem fawn/bege-amarelada, "
     "corpo grande, compacto e robusto, rugas na cara, focinho curto e achatado, "
     "orelhas pequenas e dobradas, olhos grandes castanhos com cilios, colar de "
     "PEROLAS BRANCAS com pingente dourado. NUNCA a desenhe como outro tipo de "
@@ -636,22 +636,45 @@ async def main_async(args):
             await page.goto("https://flow.google.com/", wait_until="domcontentloaded", timeout=45000)
             await page.wait_for_timeout(2000)
 
-        lotes = [pendentes[i:i + args.batch_size]
-                 for i in range(0, len(pendentes), args.batch_size)]
-        todos_faltantes = []
-        for li, lote in enumerate(lotes, 1):
-            print("\n=== LOTE %d/%d ===" % (li, len(lotes)), flush=True)
-            _, faltantes = await processar_lote(page, lote, biblia, out_dir,
-                                                args.wait, args.max_attempts,
-                                                layout=args.layout,
-                                                orientacao_fixa=args.orientacao,
-                                                curto=args.prompt_curto)
-            todos_faltantes.extend(faltantes)
-            # REGRA DO USUARIO: esperar mais entre lotes para nao mandar o
-            # proximo prompt enquanto o Flow ainda finaliza o anterior.
-            pausa_entre_lotes = max(args.pause, 15)
-            print("  pausa entre lotes: %ds" % pausa_entre_lotes, flush=True)
-            await page.wait_for_timeout(pausa_entre_lotes * 1000)
+        # REGRA DO USUARIO: DEGRADACAO PROGRESSIVA DO LOTE.
+        # Comeca grande (15); se travar/faltar, reduz: 15 -> 12 -> 10 -> 8 -> 4 -> 2;
+        # se 2 falhar, vai 1 por 1 via GEMINI (nao Flow). Entra no loop ate conseguir.
+        TAMANHOS = [15, 12, 10, 8, 4, 2]
+        tamanho_inicial = args.batch_size if args.batch_size in TAMANHOS else 15
+        idx_tam = TAMANHOS.index(tamanho_inicial)
+        todos_faltantes = list(pendentes)
+        pausa_entre_lotes = max(args.pause, 60)
+
+        while todos_faltantes and idx_tam < len(TAMANHOS):
+            tam = TAMANHOS[idx_tam]
+            print("\n=== TENTANDO EM LOTES DE %d (%d imagem(ns) pendente(s)) ===" % (
+                tam, len(todos_faltantes)), flush=True)
+            lotes = [todos_faltantes[i:i + tam]
+                     for i in range(0, len(todos_faltantes), tam)]
+            nova_faltante = []
+            for li, lote in enumerate(lotes, 1):
+                print("\n=== LOTE %d/%d (tamanho %d) ===" % (li, len(lotes), tam), flush=True)
+                _, faltantes = await processar_lote(page, lote, biblia, out_dir,
+                                                    args.wait, args.max_attempts,
+                                                    layout=args.layout,
+                                                    orientacao_fixa=args.orientacao,
+                                                    curto=args.prompt_curto)
+                nova_faltante.extend(faltantes)
+                print("  pausa entre lotes: %ds" % pausa_entre_lotes, flush=True)
+                await page.wait_for_timeout(pausa_entre_lotes * 1000)
+            if len(nova_faltante) < len(todos_faltantes):
+                print("  progresso: %d -> %d pendentes" % (
+                    len(todos_faltantes), len(nova_faltante)), flush=True)
+            todos_faltantes = nova_faltante
+            if todos_faltantes:
+                idx_tam += 1  # reduz o lote e tenta de novo
+
+        # ULTIMO RECURSO: 1 por 1 via GEMINI (nao Flow)
+        if todos_faltantes:
+            print("\n=== ULTIMO RECURSO: 1 a 1 via GEMINI (nao Flow) ===", flush=True)
+            faltas_gemini = await gerar_um_a_um_gemini(todos_faltantes, prompts, out_dir, args)
+            todos_faltantes = faltas_gemini
+
         if todos_faltantes:
             print("\n============================================================", flush=True)
             print("IMAGENS QUE FALTARAM (gerar depois):", flush=True)
@@ -659,6 +682,27 @@ async def main_async(args):
                 print("  -", n, flush=True)
             print("============================================================", flush=True)
         # NAO chamar b.close(): conectamos via CDP e fecharia o Chrome do usuario.
+
+
+async def gerar_um_a_um_gemini(faltantes, prompts, out_dir, args):
+    """ULTIMO RECURSO: gera 1 imagem por vez via Gemini Web (NAO Flow)."""
+    faltam = []
+    for nome, _cena in faltantes:
+        jpg = out_dir / (nome + ".jpg")
+        if jpg.exists() and jpg.stat().st_size > 0:
+            continue
+        cmd = [sys.executable, str(HERE / "fetch_images.py"),
+               "--proj", args.project_dir, "--single", nome,
+               "--wait", str(args.wait), "--pause", str(args.pause)]
+        print("  Gemini 1-a-1:", nome, flush=True)
+        try:
+            r = subprocess.run(cmd, timeout=args.wait + 120)
+            if r.returncode != 0 or not jpg.exists() or jpg.stat().st_size == 0:
+                faltam.append(nome)
+        except Exception as e:
+            print(f"    falhou ({str(e)[:70]})", flush=True)
+            faltam.append(nome)
+    return faltam
 
 
 def main():

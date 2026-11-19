@@ -2332,7 +2332,7 @@ def main():
                  "Padrao: on. Ex: --efeitos-fundo off")
         sp.add_argument(
             "--ref-personagem", choices=["on", "off"], default="on",
-            help="usar @[Frida]/@[Luna] e anexar imagem de referencia no Flow. "
+            help="usar @Frida/@Luna e anexar imagem de referencia no Flow. "
                  "Padrao: on. Ex: --ref-personagem off")
         sp.add_argument(
             "--voice", default="pt-BR-ThalitaNeural",

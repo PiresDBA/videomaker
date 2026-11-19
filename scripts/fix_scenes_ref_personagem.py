@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Adiciona @[Frida]/@[Luna] nos beats do scenes.json (usados pelo lote Flow)."""
+"""Adiciona @Frida/@Luna nos beats do scenes.json (usados pelo lote Flow)."""
 from __future__ import annotations
 import json, re, sys
 from pathlib import Path
@@ -10,8 +10,8 @@ P = Path(sys.argv[1] if len(sys.argv) > 1 else
 
 
 def aplicar(t):
-    t = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@[Frida]", t, flags=re.I)
-    t = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@[Luna]", t, flags=re.I)
+    t = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@Frida", t, flags=re.I)
+    t = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@Luna", t, flags=re.I)
     return t
 
 

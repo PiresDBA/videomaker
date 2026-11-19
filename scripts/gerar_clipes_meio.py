@@ -3,7 +3,7 @@
 
 REGRA DO USUARIO (MANUAL §72):
   - clipes de EXATAMENTE 8 SEGUNDOS (escrito no prompt)
-  - @[Frida] e @[Luna] sempre que citar os personagens
+  - @Frida e @Luna sempre que citar os personagens
   - tema derivado do ROTEIRO DESTE video (nunca copiado de outro)
   - via Google Flow, modo Video (3 videos/dia)
 
@@ -27,9 +27,9 @@ def norm(s):
 
 
 def ref(t):
-    """Aplica @[Frida]/@[Luna] (arro + colchete)."""
-    t = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@[Frida]", t, flags=re.I)
-    t = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@[Luna]", t, flags=re.I)
+    """Aplica @Frida/@Luna (arro + colchete)."""
+    t = re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@Frida", t, flags=re.I)
+    t = re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@Luna", t, flags=re.I)
     return t
 
 
@@ -56,10 +56,10 @@ def make_prompt(s, minuto):
         "Gere um VIDEO ANIMADO de EXATAMENTE 8 SEGUNDOS (8s), 16:9, estilo "
         "desenho 3D cinematografico para criancas, mesmo traco/textura/paleta "
         "da imagem de referencia. "
-        "PERSONAGENS (use as referencias salvas): @[Frida] = buldogue inglesa "
-        "fawn grande e compacta com colar de perolas; @[Luna] = dachshund/"
+        "PERSONAGENS (use as referencias salvas): @Frida = buldogue inglesa "
+        "fawn grande e compacta com colar de perolas; @Luna = dachshund/"
         "salsicha marrom-chocolate comprida e baixa com coleira dourada. "
-        "Mantenha @[Frida] e @[Luna] EXATAMENTE iguais em todos os quadros "
+        "Mantenha @Frida e @Luna EXATAMENTE iguais em todos os quadros "
         "(mesmas racas, cores, rostos e tamanhos). "
         "CENA (do roteiro deste video, minuto ~%d): %s "
         "Sem humanos, sem outros cachorros, sem texto, sem marcas, sem mudanca "

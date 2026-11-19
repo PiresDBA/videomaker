@@ -53,11 +53,11 @@ IMAGE_ONLY_PREFIX = (
 
 # Personagens padrão já criados dentro do Flow. Todo prompt de imagem usa esta
 # referência; anexar arquivo só quando o usuário pedir (--ref-image / --force-ref).
-DEFAULT_CHARACTERS = "@[Frida] e @[Luna]"
+DEFAULT_CHARACTERS = "@Frida e @Luna"
 CHARACTER_REF_MARKER = "REFERENCIA DE PERSONAGENS (OBRIGATORIA)"
 CHARACTER_REF_TEMPLATE = (
     CHARACTER_REF_MARKER + ": os personagens {names} ja existem neste Google Flow "
-    "(@[Frida]: buldogue inglesa fawn, grande e compacta; @[Luna]: salsicha dachshund "
+    "(@Frida: buldogue inglesa fawn, grande e compacta; @Luna: salsicha dachshund "
     "marrom-chocolate, corpo alongado, pernas curtas). Use essas identidades SOMENTE "
     "para o design dos personagens (raca, cor, tamanho, tracos, acessorios) e para o "
     "estilo do traco. Nao altere raca, cor, tamanho, idade nem tracos dos personagens. "
