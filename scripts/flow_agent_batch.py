@@ -44,11 +44,28 @@ DEFAULT_CDP = "http://127.0.0.1:18800"
 
 
 def _cena_do_prompt(prompt: str) -> str:
-    """Extrai so a descricao da CENA (primeira linha do prompt)."""
+    """Extrai a descricao da CENA e SEMPRE aplica @[Frida]/@[Luna].
+
+    REGRA DO USUARIO: todo prompt precisa citar @[Frida] e @[Luna] (arro +
+    colchete) para o Flow usar os personagens SALVOS. Como a primeira linha
+    as vezes diz so 'duas cachorrinhas', garantimos que os nomes aparecam.
+    """
+    import re as _re
     first = (prompt or "").splitlines()[0] if prompt else ""
     if first.startswith("CENA"):
         first = first.split(":", 1)[1].strip() if ":" in first else first
-    return first.strip() or "cena ilustrativa da historia"
+    cena = first.strip() or "cena ilustrativa da historia"
+    # normaliza qualquer mencao para a sintaxe @[NOME]
+    cena = _re.sub(r"@?\[?(?:Frid[oó]ca|Frida)\]?", "@[Frida]", cena, flags=_re.I)
+    cena = _re.sub(r"@?\[?(?:Luninha|Luna)\]?", "@[Luna]", cena, flags=_re.I)
+    # se nao citou nenhum dos dois, adiciona explicitamente no inicio
+    if "@[Frida]" not in cena and "@[Luna]" not in cena:
+        cena = "Com @[Frida] (buldogue inglesa fawn) e @[Luna] (dachshund marrom): " + cena
+    elif "@[Frida]" not in cena:
+        cena = "Com @[Frida] (buldogue inglesa fawn): " + cena
+    elif "@[Luna]" not in cena:
+        cena = "Com @[Luna] (dachshund marrom): " + cena
+    return cena
 
 
 def _biblia_do_prompt(prompt: str) -> str:

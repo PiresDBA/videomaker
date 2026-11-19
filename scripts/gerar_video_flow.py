@@ -26,6 +26,11 @@ CDP = "http://127.0.0.1:18800"
 PROJECT_URL = "https://flow.google.com/project/d43a0933-5310-4951-b511-911f96a6bc22"
 VIDEO_MODE_LABELS = ("Vídeo", "Video", "Gerar vídeo", "Modo vídeo", "Veo", "Gerar video")
 DURATION_LABELS = ("8s", "8 s", "8 segundos", "8 seg")
+# MODELO ECONOMICO (usuario): Veo 3.1 Lite, qualidade baixa (10 creditos/video
+# -> ate 5 videos). Exportacao em 720p na hora de baixar.
+MODEL_LABELS = ("Veo 3.1 Lite", "3.1 Lite", "Veo 3.1-lite", "Lite")
+QUALITY_LABELS = ("Baixa", "baixa", "Low", "low", "Qualidade baixa")
+EXPORT_720_LABELS = ("720p", "720 p", "720")
 
 
 async def conectar():
