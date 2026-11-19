@@ -1384,15 +1384,18 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
             try:
                 img_src = await page.evaluate("""() => {
                     const imgs = Array.from(document.querySelectorAll('img'));
-                    // Filtra ICONES (pr_32px, ring, avatares): so aceita imagens
-                    // de conteudo grandes (> 200px nos dois eixos). Ordena maior
-                    // primeiro para pegar a imagem GERADA, nao um thumbnail.
+                    // REGRA DO USUARIO: pegar a ULTIMA imagem da galeria (a recem
+                    // gerada), NAO a maior (a folha de referencia anexada e maior
+                    // e estava sendo baixada sempre -> duplicata descartada).
                     const cand = imgs.filter(img => {
                         const w = img.naturalWidth || img.offsetWidth;
                         const h = img.naturalHeight || img.offsetHeight;
-                        return img.src && img.src.startsWith('http') && w >= 200 && h >= 200;
-                    }).sort((a,b) => (b.naturalWidth*b.naturalHeight) - (a.naturalWidth*a.naturalHeight));
-                    return cand.length ? cand[0].src : null;
+                        const src = img.src || '';
+                        return src.startsWith('http') && w >= 200 && h >= 200 &&
+                               !src.includes('gstatic') && !src.includes('googleusercontent.com/gpsx');
+                    });
+                    // pega a ULTIMA (mais recente no DOM)
+                    return cand.length ? cand[cand.length - 1].src : null;
                 }""")
                 if img_src:
                     print(f"  baixando imagem direta da tela: {img_src[:80]}...", flush=True)
