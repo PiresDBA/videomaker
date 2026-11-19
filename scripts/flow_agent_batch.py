@@ -69,7 +69,8 @@ def _biblia_do_prompt(prompt: str) -> str:
 
 IDENTIDADE_PERSONAGENS = (
     "IDENTIDADE FIXA DOS PERSONAGENS (vale para TODAS as imagens, SEM EXCECAO): "
-    "FRIDA e um buldogue ingles FEMEA, sempre a MESMA: pelagem fawn/bege-amarelada, "
+    "Use @[Frida] e @[Luna] (referencias SALVAS neste Flow) sempre que citar os "
+    "personagens. @[Frida] e um buldogue ingles FEMEA, sempre a MESMA: pelagem fawn/bege-amarelada, "
     "corpo grande, compacto e robusto, rugas na cara, focinho curto e achatado, "
     "orelhas pequenas e dobradas, olhos grandes castanhos com cilios, colar de "
     "PEROLAS BRANCAS com pingente dourado. NUNCA a desenhe como outro tipo de "
@@ -363,6 +364,19 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
 
     sys.path.insert(0, str(HERE))
     import flow_fetch as ff
+
+    # REGRA DO USUARIO (continuidade): anexar a imagem de referencia inicial
+    # (a mesma que o Gemini/Gerador usa) em TODOS os envios do lote, para o
+    # Flow nao perder a identidade/estilo dos personagens entre imagens.
+    ref_global = Path(r"C:\videomaker\scripts\reference\frida_luna_reference.jpg")
+    if not ref_global.exists():
+        ref_global = Path(r"C:\videomaker\scripts\reference\referencia.jpg")
+    if ref_global.exists():
+        try:
+            await ff.attach_reference(page, str(ref_global))
+            print("  ref-image anexada:", ref_global.name, flush=True)
+        except Exception as e:
+            print("  aviso ao anexar ref-image (%s)" % str(e)[:80], flush=True)
     # NAO usa _enforce_image_only: ele injeta "gere SOMENTE UMA IMAGEM" e o Flow
     # responde com um triptico dentro de um unico arquivo. Aqui queremos N imagens
     # SEPARADAS. Mantemos so a injecao de personagens e a regra anti-video.

@@ -53,11 +53,11 @@ IMAGE_ONLY_PREFIX = (
 
 # Personagens padrão já criados dentro do Flow. Todo prompt de imagem usa esta
 # referência; anexar arquivo só quando o usuário pedir (--ref-image / --force-ref).
-DEFAULT_CHARACTERS = "Frida e Luna"
+DEFAULT_CHARACTERS = "@[Frida] e @[Luna]"
 CHARACTER_REF_MARKER = "REFERENCIA DE PERSONAGENS (OBRIGATORIA)"
 CHARACTER_REF_TEMPLATE = (
     CHARACTER_REF_MARKER + ": os personagens {names} ja existem neste Google Flow "
-    "(Frida: buldogue inglesa fawn, grande e compacta; Luna: salsicha dachshund "
+    "(@[Frida]: buldogue inglesa fawn, grande e compacta; @[Luna]: salsicha dachshund "
     "marrom-chocolate, corpo alongado, pernas curtas). Use essas identidades SOMENTE "
     "para o design dos personagens (raca, cor, tamanho, tracos, acessorios) e para o "
     "estilo do traco. Nao altere raca, cor, tamanho, idade nem tracos dos personagens. "
@@ -523,6 +523,45 @@ def captured_body_set(page) -> bool:
     return False
 
 
+async def fechar_painel_agente(page) -> bool:
+    """Fecha o painel LATERAL do modo Agente que as vezes abre e desloca o
+    prompt para o lado, travando o envio (bug observado pelo usuario).
+
+    O painel tem titulo '... Character Concepts' e um botao Fechar (X) no
+    canto superior direito (x~1669). Apos fechar, o campo de prompt volta
+    para o centro da tela.
+    """
+    try:
+        # detecta painel lateral pelo titulo ou pelo botao Fechar no topo direito
+        painel = page.locator('header:has-text("Character Concepts"), :has(> .header-left:has-text("Character"))')
+        tem_painel = await painel.count() > 0
+        btn = page.locator('button[aria-label="Fechar"]')
+        n = await btn.count()
+        btn_top = None
+        for j in range(n):
+            b = btn.nth(j)
+            try:
+                box = await b.bounding_box()
+                if box and box["x"] > 1400 and box["y"] < 120:
+                    btn_top = b
+                    break
+            except Exception:
+                pass
+        if tem_painel or btn_top is not None:
+            alvo = btn_top or (btn.first if n > 0 else None)
+            if alvo is not None:
+                try:
+                    await alvo.click(timeout=3000)
+                except Exception:
+                    await alvo.evaluate("(e)=>e.click()")
+                await page.wait_for_timeout(1200)
+                print("  painel Agente fechado; prompt voltou ao centro", flush=True)
+                return True
+    except Exception as e:
+        print(f"  aviso ao fechar painel Agente ({str(e)[:80]})", flush=True)
+    return False
+
+
 async def select_image_mode(page, aspect: str = "16:9") -> bool:
     """Seleciona 'Imagem' no painel de configurações do Google Flow.
 
@@ -634,6 +673,9 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True,
     """
     result = {"ok": False, "error": None}
     await _dismiss_overlays(page)
+    # BUG (usuario): as vezes o painel lateral do Agente abre, desloca o prompt
+    # para o lado e o envio trava. Fecha o painel antes de qualquer coisa.
+    await fechar_painel_agente(page)
     ed = await editor(page)
     await ed.click()
     await page.wait_for_timeout(300)
@@ -646,14 +688,22 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True,
             await page.keyboard.press("Delete")
         await page.keyboard.insert_text(prompt)
     await page.wait_for_timeout(400)
-    typed = (await ed.inner_text()).strip()
+    try:
+        typed = (await ed.text_content(timeout=5000) or "").strip()
+    except Exception:
+        typed = (await ed.inner_text(timeout=5000)).strip()
     if len(typed) < min(20, len(prompt)):
         await ed.click()
         await page.keyboard.press("Control+a")
         await page.keyboard.press("Delete")
         await page.keyboard.insert_text(prompt)
         await page.wait_for_timeout(300)
-        typed = (await ed.inner_text()).strip()
+        # text_content() nao depende de visibilidade (com modo Agente o campo
+        # pode sair da viewport e inner_text() da timeout)
+        try:
+            typed = (await ed.text_content(timeout=5000) or "").strip()
+        except Exception:
+            typed = (await ed.inner_text(timeout=5000)).strip()
     if len(typed) < 5:
         result["error"] = "campo de prompt vazio após digitação"
         print(f"  ⚠ {result['error']}", flush=True)
@@ -677,7 +727,11 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True,
             try:
                 await gen_btn.click()
                 await page.wait_for_timeout(1500)
-                if len((await ed.inner_text()).strip()) < 5:
+                try:
+                    _vazio = len((await ed.text_content(timeout=5000) or "").strip()) < 5
+                except Exception:
+                    _vazio = False
+                if _vazio:
                     print(f"  envio confirmado (tentativa {attempt + 1})", flush=True)
                     result["ok"] = True
                     return result
@@ -686,7 +740,11 @@ async def submit_flow_prompt(page, prompt: str, clear: bool = True,
         # Fallback: Enter
         await page.keyboard.press("Enter")
         await page.wait_for_timeout(1500)
-        if len((await ed.inner_text()).strip()) < 5:
+        try:
+            _vazio = len((await ed.text_content(timeout=5000) or "").strip()) < 5
+        except Exception:
+            _vazio = False
+        if _vazio:
             print(f"  envio confirmado (tentativa {attempt + 1})", flush=True)
             result["ok"] = True
             return result
