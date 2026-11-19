@@ -940,6 +940,24 @@ def phase_images(args, p: Project):
         size = jpg.stat().st_size if jpg.exists() else 0
         return r2.returncode, nome, size
 
+    # Modo LOTE (--flow-agent): um prompt gera varias imagens de uma vez.
+    # O batch pula imagens ja existentes, entao pode ser rodado a qualquer
+    # momento para completar as que faltam. Depois o 1-a-1 cobre o resto.
+    if getattr(args, "flow_agent", False):
+        cmd_lote = [sys.executable, str(SCRIPTS["flow_agent_batch"]),
+                    "--prompts-file", str(p.image_prompts),
+                    "--project-dir", str(p.dir),
+                    "--out-dir", str(out_dir),
+                    "--batch-size", str(getattr(args, "batch_size", 10)),
+                    "--wait", str(args.wait),
+                    "--pause", str(getattr(args, "pause", 8)),
+                    "--max-attempts", str(getattr(args, "max_attempts", 4))]
+        print("== FASE images: lotes via modo Agente do Flow", flush=True)
+        try:
+            run(cmd_lote, "FASE images: lotes via modo Agente do Flow")
+        except Exception as e:
+            print(f"  aviso: lote falhou ({e}); seguindo 1-a-1", flush=True)
+
     # primeira passagem: todas as imagens
     quarantine = []
     for i, nome in enumerate(image_ids, 1):
@@ -2283,6 +2301,37 @@ def main():
         sp.add_argument(
             "--pause", type=int, default=8,
             help="pausa (s) entre chamadas ao Gemini Web (anti-bloqueio). Padrao: 8. Ex: --pause 15")
+        # --- REGRAS CONFIGURAVEIS (ver MANUAL_GRAFOS.md §72) ----------------
+        sp.add_argument(
+            "--flow-agent", action="store_true",
+            help="gerar imagens em lotes com o modo Agente do Flow (padrao: 1 a 1). "
+                 "Ex: --flow-agent --batch-size 10")
+        sp.add_argument(
+            "--batch-size", type=int, default=10,
+            help="quantidade de imagens por lote no modo Agente. Padrao: 10. Ex: --batch-size 20")
+        sp.add_argument(
+            "--max-attempts", type=int, default=4,
+            help="tentativas por lote antes de reportar imagem faltante. Padrao: 4. Ex: --max-attempts 6")
+        sp.add_argument(
+            "--clipes-meio", type=int, default=3,
+            help="quantidade de clipes de video de 8s no meio do video. Padrao: 3. "
+                 "0 desativa. Ex: --clipes-meio 4")
+        sp.add_argument(
+            "--clipes-meio-minutos", default="2,5,7",
+            help="minutos onde os clipes do meio entram (separados por virgula). "
+                 "Padrao: 2,5,7. Ex: --clipes-meio-minutos 1,4,6")
+        sp.add_argument(
+            "--sonoplastia", choices=["on", "off"], default="on",
+            help="sonoplastia obrigatoria gerada pela narracao (on) ou desligada (off). "
+                 "Padrao: on. Ex: --sonoplastia off")
+        sp.add_argument(
+            "--efeitos-fundo", choices=["on", "off"], default="on",
+            help="efeitos visuais de fundo (estrelinhas/folhas/abelhas) + blur/foco pulsante. "
+                 "Padrao: on. Ex: --efeitos-fundo off")
+        sp.add_argument(
+            "--ref-personagem", choices=["on", "off"], default="on",
+            help="usar @[Frida]/@[Luna] e anexar imagem de referencia no Flow. "
+                 "Padrao: on. Ex: --ref-personagem off")
         sp.add_argument(
             "--voice", default="pt-BR-ThalitaNeural",
             help="voz da narracao. Edge: pt-BR-ThalitaNeural, pt-BR-FranciscaNeural. "
