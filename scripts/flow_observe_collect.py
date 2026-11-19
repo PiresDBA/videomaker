@@ -22,8 +22,22 @@ async def main():
         await page.screenshot(path=str(shot))
 
         editor_sels = [robust_sel_from_info(e) for e in editores if robust_sel_from_info(e)]
-        botoes = [{"sel": c.get("sel"), "aria": c.get("aria"), "texto": c.get("text"), "tag": c.get("tag")}
-                  for c in cliques if c.get("sel") or c.get("aria")]
+
+        def text_sel(txt):
+            """Seletor por texto visivel (robusto a mudanca de classe)."""
+            t = (txt or "").strip().split("\n")[0].strip()
+            if t and len(t) <= 40:
+                return f'text="{t}"'
+            return ""
+
+        botoes = []
+        for c in cliques:
+            if c.get("sel") or c.get("aria") or c.get("text"):
+                botoes.append({
+                    "sel": c.get("sel"),
+                    "text_sel": text_sel(c.get("text")) or text_sel(c.get("aria")),
+                    "aria": c.get("aria"), "texto": c.get("text"), "tag": c.get("tag"),
+                })
 
         perfil = {
             "learned_at": time.strftime("%Y-%m-%dT%H:%M:%S"),

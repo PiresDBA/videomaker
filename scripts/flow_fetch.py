@@ -456,11 +456,41 @@ async def select_image_mode(page, aspect: str = "16:9") -> bool:
     """
     try:
         await _dismiss_overlays(page)
+
+        # 1) PRIMEIRO tenta os seletores APRENDIDOS no modo guiado (flow_learn).
+        #    Se o layout mudou, o usuario ja clicou nos locais certos e o perfil
+        #    tem os seletores/textos corretos (ex.: text="x1", text="tune").
+        try:
+            pf = Path(DEFAULT_ROOT) / ".flow_learned_profile.json"
+            if pf.exists():
+                prof = json.loads(pf.read_text(encoding="utf-8"))
+                learned = [c.get("text_sel") or c.get("sel") for c in prof.get("clicked_elements", [])]
+                learned = [s for s in learned if s and s not in ("span", "mat-icon", "p", "input", "div")]
+                # clica 'tune' (abre painel) e 'x1' se encontrados
+                for chave in ("tune", "x1"):
+                    for s in learned:
+                        if chave.lower() in s.lower():
+                            loc = page.locator(s).first
+                            if await loc.count() > 0:
+                                try:
+                                    await loc.click(timeout=3000)
+                                    print(f"  seletor aprendido clicado: {s}", flush=True)
+                                except Exception:
+                                    pass
+                                break
+                # se ja esta em modo imagem/x1 (configurado pelo usuario), nao aborta
+                x1 = page.locator('text="x1"')
+                if await x1.count() > 0:
+                    print("  ✓ modo x1 detectado (aprendido)", flush=True)
+                    return True
+        except Exception:
+            pass
+
         # Abrir o painel de configuracoes tentando todos os seletores conhecidos.
         trig = await _loc_first_visible(page, SETTINGS_TRIGGER_SELECTORS, timeout_ms=5000)
         if trig is None:
-            print("  AVISO: painel de configuracoes nao encontrado; abortando para nao gerar video", flush=True)
-            return False
+            print("  AVISO: painel de configuracoes nao encontrado; seguindo com configuracao atual do Flow", flush=True)
+            return True  # NAO aborta: o usuario pode ter configurado manualmente
         try:
             await trig.click(timeout=5000)
         except Exception:
@@ -1180,12 +1210,15 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
             try:
                 img_src = await page.evaluate("""() => {
                     const imgs = Array.from(document.querySelectorAll('img'));
-                    for (const img of imgs) {
-                        if (img.offsetWidth > 0 && img.offsetHeight > 0 && img.src && img.src.startsWith('http')) {
-                            return img.src;
-                        }
-                    }
-                    return null;
+                    // Filtra ICONES (pr_32px, ring, avatares): so aceita imagens
+                    // de conteudo grandes (> 200px nos dois eixos). Ordena maior
+                    // primeiro para pegar a imagem GERADA, nao um thumbnail.
+                    const cand = imgs.filter(img => {
+                        const w = img.naturalWidth || img.offsetWidth;
+                        const h = img.naturalHeight || img.offsetHeight;
+                        return img.src && img.src.startsWith('http') && w >= 200 && h >= 200;
+                    }).sort((a,b) => (b.naturalWidth*b.naturalHeight) - (a.naturalWidth*a.naturalHeight));
+                    return cand.length ? cand[0].src : null;
                 }""")
                 if img_src:
                     print(f"  baixando imagem direta da tela: {img_src[:80]}...", flush=True)

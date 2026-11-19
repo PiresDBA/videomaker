@@ -5106,29 +5106,87 @@ PT: "Bom dia! Bem-vindo ao nosso canal! Aproveite mais uma das nossas aventuras!
 
 ES: "¡Buenos días! ¡Bienvenidos a nuestro canal! ¡Disfruten otra de nuestras aventuras!"
 
-EN: "Good morning! Welcome to our channel! Enjoy another one of our adventures!"
-
-
-## 69. NUNCA renderizar idiomas em paralelo no mesmo projeto (2026-11-18)
-
-### 69.1. Regra dura
-
-> Os comandos `--only-lang es` e `--only-lang en` **NUNCA** podem rodar ao
-> mesmo tempo no mesmo projeto. Eles compartilham `artifacts/timeline.json`,
-> `assets/audio/final_mix.m4a`, `composition.html` e o workspace do
-> HyperFrames — rodando em paralelo, o timeline de um idioma sobrescreve o
-> outro e o video sai com as imagens dessincronizadas do audio.
-
-### 69.2. Caso real
-
-ES (narração 978s) e EN (narração 736.9s) rodaram em paralelo. O
-`timeline.json` ficou com o valor do EN (736.9s) e o video ES saiu com 999s
-de audio mas só 757s de imagens (delta 241s, STATUS VERIFICAR). Correção:
-re-renderizar ES **sozinho**, depois que o EN terminar.
-
-### 69.3. Ordem correta
-
-1. Renderizar PT (sozinho)
-2. Renderizar ES (sozinho, com `script_es.json` e timings próprios)
-3. Renderizar EN (sozinho, com `script_en.json` e timings próprios)
+EN: "Good morning! Welcome to our channel! Enjoy another one of our adventures!"
+
+
+
+
+
+## 69. NUNCA renderizar idiomas em paralelo no mesmo projeto (2026-11-18)
+
+
+
+### 69.1. Regra dura
+
+
+
+> Os comandos `--only-lang es` e `--only-lang en` **NUNCA** podem rodar ao
+
+> mesmo tempo no mesmo projeto. Eles compartilham `artifacts/timeline.json`,
+
+> `assets/audio/final_mix.m4a`, `composition.html` e o workspace do
+
+> HyperFrames — rodando em paralelo, o timeline de um idioma sobrescreve o
+
+> outro e o video sai com as imagens dessincronizadas do audio.
+
+
+
+### 69.2. Caso real
+
+
+
+ES (narração 978s) e EN (narração 736.9s) rodaram em paralelo. O
+
+`timeline.json` ficou com o valor do EN (736.9s) e o video ES saiu com 999s
+
+de audio mas só 757s de imagens (delta 241s, STATUS VERIFICAR). Correção:
+
+re-renderizar ES **sozinho**, depois que o EN terminar.
+
+
+
+### 69.3. Ordem correta
+
+
+
+1. Renderizar PT (sozinho)
+
+2. Renderizar ES (sozinho, com `script_es.json` e timings próprios)
+
+3. Renderizar EN (sozinho, com `script_en.json` e timings próprios)
+
 4. Conferir `STATUS: OK` e `delta ~0` na ficha de cada um antes de aceitar.
+
+
+## 70. Modo guiado de aprendizado do Google Flow (2026-11-19)
+
+### 70.1. Problema
+
+O Google Flow muda o layout constantemente. Quando os seletores aprendidos
+se perdem, o flow_fetch nao acha o campo de prompt/painel e falha.
+
+### 70.2. Solucao: observar o usuario
+
+ scripts/flow_learn.py         modo guiado completo (video + cliques + perfil)
+ scripts/flow_observe_arm.py   instala observador de cliques (sem forcar zoom)
+ scripts/flow_observe_collect.py  coleta cliques, infere seletores, salva perfil
+
+Fluxo:
+  1. `python scripts/flow_observe_arm.py` -> abre o Flow no projeto (URL do
+     estado) e injeta listener de cliques. NAO forca viewport (zoom escondia
+     campos) -- respeita o tamanho que o usuario ajustou.
+  2. Usuario navega no navegador: entra projeto, clica Imagem, x1, fecha pop-ups,
+     deixa campo de prompt visivel. Cada clique e registrado com seletor robusto.
+  3. Usuario avisa no chat -> `python scripts/flow_observe_collect.py` coleta os
+     cliques, tira captura, infere seletores e salva `.flow_learned_profile.json`
+     versionado (com historico das ultimas 10 versoes).
+  4. flow_fetch.py carrega o perfil aprendido (via _load_flow_state) antes do
+     estado antigo. Se o layout mudar de novo, repete o aprendizado -> nova versao.
+
+### 70.3. Regra de ouro do Flow
+
+- NUNCA forcar `set_viewport_size` / `--window-size`: o Flow reage ao tamanho e
+  esconde/move campos, quebrando o aprendizado.
+- Sempre entrar DIRETO na URL do projeto (`/project/...`), nunca na home.
+- Seletores por TEXTO (`text="x1"`, `text="Salvar"`) sao mais robustos que classe.
