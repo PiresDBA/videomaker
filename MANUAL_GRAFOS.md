@@ -5156,37 +5156,155 @@ re-renderizar ES **sozinho**, depois que o EN terminar.
 
 3. Renderizar EN (sozinho, com `script_en.json` e timings próprios)
 
-4. Conferir `STATUS: OK` e `delta ~0` na ficha de cada um antes de aceitar.
+4. Conferir `STATUS: OK` e `delta ~0` na ficha de cada um antes de aceitar.
+
+
+
+
+
+## 70. Modo guiado de aprendizado do Google Flow (2026-11-19)
+
+
+
+### 70.1. Problema
+
+
+
+O Google Flow muda o layout constantemente. Quando os seletores aprendidos
+
+se perdem, o flow_fetch nao acha o campo de prompt/painel e falha.
+
+
+
+### 70.2. Solucao: observar o usuario
+
+
+
+ scripts/flow_learn.py         modo guiado completo (video + cliques + perfil)
+
+ scripts/flow_observe_arm.py   instala observador de cliques (sem forcar zoom)
+
+ scripts/flow_observe_collect.py  coleta cliques, infere seletores, salva perfil
+
+
+
+Fluxo:
+
+  1. `python scripts/flow_observe_arm.py` -> abre o Flow no projeto (URL do
+
+     estado) e injeta listener de cliques. NAO forca viewport (zoom escondia
+
+     campos) -- respeita o tamanho que o usuario ajustou.
+
+  2. Usuario navega no navegador: entra projeto, clica Imagem, x1, fecha pop-ups,
+
+     deixa campo de prompt visivel. Cada clique e registrado com seletor robusto.
+
+  3. Usuario avisa no chat -> `python scripts/flow_observe_collect.py` coleta os
+
+     cliques, tira captura, infere seletores e salva `.flow_learned_profile.json`
+
+     versionado (com historico das ultimas 10 versoes).
+
+  4. flow_fetch.py carrega o perfil aprendido (via _load_flow_state) antes do
+
+     estado antigo. Se o layout mudar de novo, repete o aprendizado -> nova versao.
+
+
+
+### 70.3. Regra de ouro do Flow
+
+
+
+- NUNCA forcar `set_viewport_size` / `--window-size`: o Flow reage ao tamanho e
+
+  esconde/move campos, quebrando o aprendizado.
+
+- Sempre entrar DIRETO na URL do projeto (`/project/...`), nunca na home.
+
+- Seletores por TEXTO (`text="x1"`, `text="Salvar"`) sao mais robustos que classe.
+
+
+
+
+
+## 71. Regras do lote no modo Agente do Flow (2026-11-19)
+
+
+
+### 71.1. Espera escalada (REGRA DO USUARIO)
+
+
+
+> Quando o prompt pede VARIAS imagens de uma vez (lote), o Flow demora mais.
+
+> O script tem que esperar 3-4x mais do que quando gera 1 por 1 e, depois
+
+> que a imagem chega, ESTABILIZAR antes de mandar o proximo prompt — senao
+
+> manda o prompt seguinte enquanto o Flow ainda gera as outras imagens.
+
+
+
+Aplicado em flow_agent_batch.py:
+
+- escala de wait: 1x (1 cena), 3x (2-4 cenas), 4x (5+ cenas)
+
+- estabilizacao apos ultima imagem: 12s / 20s / 30s conforme o tamanho
+
+- pausa entre lotes: minima 15s
+
+
+
+### 71.2. Botao de falha (REGRA DO USUARIO)
+
+
+
+Quando o Flow recusa por politica ("Esta geracao talvez viole nossas
+
+politicas"), o botao CERTO no card e 'Tentar de novo' (icone refresh,
+
+aria-label="Tentar de novo"), NAO 'Reutilizar comando' (undo).
+
+Insistir ate 10x no MESMO card antes de desistir. Fechar o banner de
+
+creditos se aparecer. Salvo em .flow_learned_profile.json -> recovery_selectors.
 
 
-## 70. Modo guiado de aprendizado do Google Flow (2026-11-19)
+## 72. Estrutura de clipes de video e sonoplastia obrigatoria (2026-11-19)
 
-### 70.1. Problema
+### 72.1. Regra de ouro do usuario
 
-O Google Flow muda o layout constantemente. Quando os seletores aprendidos
-se perdem, o flow_fetch nao acha o campo de prompt/painel e falha.
+> Todo video do canal deve ter: 1 clipe de ABERTURA (boas-vindas), 3 clipes
+> de VIDEO no MEIO (8s cada, referentes ao que acontece na cena), e 2 clipes
+> FINAIS (like/subscribe). Todos com SONOPLASTIA.
 
-### 70.2. Solucao: observar o usuario
+### 72.2. Clipes do meio (3 por video, 8s, via Modo Agente do Flow)
 
- scripts/flow_learn.py         modo guiado completo (video + cliques + perfil)
- scripts/flow_observe_arm.py   instala observador de cliques (sem forcar zoom)
- scripts/flow_observe_collect.py  coleta cliques, infere seletores, salva perfil
+Gerados com `flow_agent_batch` / modo Agente (video 8s 16:9). Pontos:
+- ~2 min: cena de acao (ex.: pulo no sofá)
+- ~5 min: cena de corrida/brincadeira (ex.: pista no tapete)
+- ~7 min: cena de fechamento emocional (ex.: cama/bocejo)
 
-Fluxo:
-  1. `python scripts/flow_observe_arm.py` -> abre o Flow no projeto (URL do
-     estado) e injeta listener de cliques. NAO forca viewport (zoom escondia
-     campos) -- respeita o tamanho que o usuario ajustou.
-  2. Usuario navega no navegador: entra projeto, clica Imagem, x1, fecha pop-ups,
-     deixa campo de prompt visivel. Cada clique e registrado com seletor robusto.
-  3. Usuario avisa no chat -> `python scripts/flow_observe_collect.py` coleta os
-     cliques, tira captura, infere seletores e salva `.flow_learned_profile.json`
-     versionado (com historico das ultimas 10 versoes).
-  4. flow_fetch.py carrega o perfil aprendido (via _load_flow_state) antes do
-     estado antigo. Se o layout mudar de novo, repete o aprendizado -> nova versao.
+Devem ser injetados no `video_clips.json` como meio/meio2/meio3 com o
+`offset` calculado no tempo da composicao. Respeitar ciclo limpo: clipes
+NOVOS por projeto, nunca reaproveitar de videos anteriores.
 
-### 70.3. Regra de ouro do Flow
+### 72.3. Sonoplastia e uma REGRA do pipeline
 
-- NUNCA forcar `set_viewport_size` / `--window-size`: o Flow reage ao tamanho e
-  esconde/move campos, quebrando o aprendizado.
-- Sempre entrar DIRETO na URL do projeto (`/project/...`), nunca na home.
-- Seletores por TEXTO (`text="x1"`, `text="Salvar"`) sao mais robustos que classe.
+> A sonoplastia e OBRIGATORIA e pode (e deve) ser gerada APENAS ouvindo o
+> arquivo de NARRACAO — nao depende de assistir o video. O `faster-whisper`
+> transcreve a narração e o `sonoplastia_por_idioma.py` coloca o som na
+> palavra exata (regra §66/§67).
+
+Efeitos de fundo que DEVEM aparecer (movimento): estrelinhas, folhinhas,
+mosquinhas/abelhinhas — tudo da BIBLIOTECA_EFEITOS. Alem disso, um efeito
+de DESFOQUE/FOCO devagar (blur pulsante) para dar sensacao de movimento a
+imagem estatica. Aplicar com ffmpeg (filter `gblur` com sigma animado) ou
+CSS `filter: blur()` no build_composition.
+
+### 72.4. Ordem no pipeline
+
+1. imagens (lote Flow) -> 2. narração -> 3. sonoplastia (pela narração)
+-> 4. timeline/mix -> 5. compose (com clipes + efeitos visuais + blur/foco)
+-> 6. preprocess -> 7. render.
