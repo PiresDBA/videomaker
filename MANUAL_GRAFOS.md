@@ -5500,13 +5500,31 @@ Implementado em `scripts/gerar_clipes_meio.py`:
 
 Aplicado em: flow_agent_batch.py (estabiliza=120, pausa_entre_lotes>=120) e
 
-pipeline.py (--pause default=120).
-
-
-### 72.12. Tolerancia de duplicata relaxada (REGRA DO USUARIO)
-
-> O detector de 'imagem repetida' com tolerancia 0.05 (media<2.0) descartava
-> cenas do MESMO personagem por serem naturalmente parecidas com a referencia,
-> travando para sempre (15h para 71 imagens). Relaxado para so descartar COPIA
-> EXATA (media<0.5). Se uma imagem for descartada, resgatar o .webp temporario
+pipeline.py (--pause default=120).
+
+
+
+
+
+### 72.12. Tolerancia de duplicata relaxada (REGRA DO USUARIO)
+
+
+
+> O detector de 'imagem repetida' com tolerancia 0.05 (media<2.0) descartava
+
+> cenas do MESMO personagem por serem naturalmente parecidas com a referencia,
+
+> travando para sempre (15h para 71 imagens). Relaxado para so descartar COPIA
+
+> EXATA (media<0.5). Se uma imagem for descartada, resgatar o .webp temporario
+
 > convertendo para .jpg antes de relancar.
+
+
+### 72.13. FLOW_GUARD - imagens SEMPRE no Flow (REGRA DE CONTRATO)
+
+> Gemini e ULTIMO recurso. Ordem obrigatoria: 15 -> 12 -> 10 -> 8 -> 4 -> 2 ->
+> 1 (tudo no Flow), com 10 tentativas no tamanho 1. So depois disso o Gemini.
+> Causa do fallback indevido corrigido: seletor aprendido com acento corrompido
+> (`vocǦ`) fazia validate_flow_ready retornar False. Perfil corrigido para
+> seletores genericos (`div[role=textbox].ProseMirror`, etc).
