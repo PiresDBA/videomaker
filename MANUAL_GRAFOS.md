@@ -5476,16 +5476,37 @@ Implementado em `scripts/gerar_clipes_meio.py`:
 
 > (`--flow-agent`, `--batch-size`, `--clipes-meio`, `--sonoplastia`,
 
-> `--efeitos-fundo`, `--ref-personagem`). NUNCA criar outro pipeline.
-
-
-### 72.11. ESPERA DE 2 MINUTOS (REGRA DO USUARIO - CORRIGIDA)
-
-> O Flow REINICIA a geracao se mandarmos o proximo prompt antes da imagem
-> ficar pronta. Por isso: ESPERAR 2 MINUTOS (120s) apos as imagens chegarem
-> (estabiliza=120s no flow_agent_batch) e pausa padrao de 120s entre chamadas
-> (`--pause 120`). Sem isso o Flow reclama 'solicitacoes muito rapido',
-> descarta a imagem e nao converge (15 horas para 71 imagens).
-
-Aplicado em: flow_agent_batch.py (estabiliza=120, pausa_entre_lotes>=120) e
+> `--efeitos-fundo`, `--ref-personagem`). NUNCA criar outro pipeline.
+
+
+
+
+
+### 72.11. ESPERA DE 2 MINUTOS (REGRA DO USUARIO - CORRIGIDA)
+
+
+
+> O Flow REINICIA a geracao se mandarmos o proximo prompt antes da imagem
+
+> ficar pronta. Por isso: ESPERAR 2 MINUTOS (120s) apos as imagens chegarem
+
+> (estabiliza=120s no flow_agent_batch) e pausa padrao de 120s entre chamadas
+
+> (`--pause 120`). Sem isso o Flow reclama 'solicitacoes muito rapido',
+
+> descarta a imagem e nao converge (15 horas para 71 imagens).
+
+
+
+Aplicado em: flow_agent_batch.py (estabiliza=120, pausa_entre_lotes>=120) e
+
 pipeline.py (--pause default=120).
+
+
+### 72.12. Tolerancia de duplicata relaxada (REGRA DO USUARIO)
+
+> O detector de 'imagem repetida' com tolerancia 0.05 (media<2.0) descartava
+> cenas do MESMO personagem por serem naturalmente parecidas com a referencia,
+> travando para sempre (15h para 71 imagens). Relaxado para so descartar COPIA
+> EXATA (media<0.5). Se uma imagem for descartada, resgatar o .webp temporario
+> convertendo para .jpg antes de relancar.
