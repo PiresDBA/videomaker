@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import base64
+import io
 import json
 import os
 import re
@@ -759,6 +760,18 @@ def save_bytes(out_dir: Path, name: str, ext: str, data: bytes) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     p = out_dir / f"{name}{ext}"
     p.write_bytes(data)
+    # O pipeline espera .jpg. O Flow devolve .webp as vezes -> converte para
+    # .jpg tambem, senao o pipeline nao encontra a imagem e cai no Gemini.
+    if ext.lower() in (".webp", ".png"):
+        try:
+            from PIL import Image
+            jpg = out_dir / f"{name}.jpg"
+            img = Image.open(io.BytesIO(data)).convert("RGB")
+            img.save(jpg, "JPEG", quality=92)
+            print(f"  convertido {ext} -> .jpg: {jpg.name}", flush=True)
+            return jpg
+        except Exception as e:
+            print(f"  aviso: falha ao converter {ext} -> jpg ({e})", flush=True)
     return p
 
 
