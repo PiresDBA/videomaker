@@ -52,13 +52,36 @@ REGRAS = (" Sem humanos, sem outros cachorros, sem texto, sem letras, sem "
           "marcas. DURACAO: 8 SEGUNDOS.")
 
 
-def escolher(script, minutos):
+def escolher(script, minutos, proj=None):
+    """Escolhe a cena FALADA em cada minuto usando o timeline real.
+
+    REGRA (2026-11-19): o metodo antigo usava indice proporcional
+    `round((m/10)*(len(dev)-1))` e dava OFF-BY-ONE (2min->s4 em vez de s3,
+    etc). Os clipes gerados mostravam a cena seguinte e a narração falava a
+    anterior. Agora lemos artifacts/timeline.json e pegamos a cena cujo
+    intervalo contem o minuto.
+    """
     secs = script.get("sections", [])
     dev = [s for s in secs if re.match(r"^s\d+$", s.get("id", ""))]
+    tl = None
+    if proj:
+        tp = Path(proj) / "artifacts" / "timeline.json"
+        if tp.exists():
+            tl = json.loads(tp.read_text(encoding="utf-8"))
+    by_id = {s["id"]: s for s in secs}
     out = []
     for m in minutos:
-        idx = min(len(dev) - 1, max(0, round((m / 10.0) * (len(dev) - 1)))) if dev else 0
-        out.append((m, dev[idx] if dev else secs[0]))
+        cena = None
+        if tl:
+            t = m * 60.0
+            for c in tl.get("timeline", []):
+                if c.get("start", 0) <= t <= c.get("end", 0):
+                    cena = by_id.get(c["id"])
+                    break
+        if cena is None:
+            idx = min(len(dev) - 1, max(0, round((m / 10.0) * (len(dev) - 1)))) if dev else 0
+            cena = dev[idx] if dev else secs[0]
+        out.append((m, cena))
     return out
 
 
@@ -67,7 +90,7 @@ def main(slug):
     script = json.loads((P / "artifacts/script.json").read_text(encoding="utf-8"))
     titulo = script.get("title", slug)
     secs = {s["id"]: s for s in script["sections"]}
-    meio = escolher(script, [2, 5, 7])
+    meio = escolher(script, [2, 5, 7], P)
 
     blocos = []
 
