@@ -758,17 +758,71 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > `composition.html` (fonte da verdade). Fallback sem somar `pre_final`.
 
-> Commit `2f321d5`. Verificado: delta 0.02s, STATUS OK, audio continuo.
-
-
-## EFEITO SHADOW-SWAY - SEM DESFOQUE (2026-11-19)
-
-> O usuario REPROVOU o blur/foco pulsante (`filter:blur(0->2.5px)`): ficou ruim.
-> O efeito CERTO e `shadow-sway`: a imagem vai um pouquinho para um lado
-> (`translate:-6px`) enquanto a SOMBRA vai para o outro (`drop-shadow(+6px)`),
-> invertendo devagar em 14s. Parece a imagem dividida em 2 se mexendo,
-> SEM desfoque e SEM zoom (zoom corta colagens).
-> Usa a propriedade independente `translate` para nao conflitar com o
-> `transform` do GSAP. O nome da classe .focus-pulse foi MANTIDO para nao
-> quebrar validacoes; o conteudo do @keyframes e que mudou (commit 55ff1fe).
+> Commit `2f321d5`. Verificado: delta 0.02s, STATUS OK, audio continuo.
+
+
+
+
+
+## EFEITO SHADOW-SWAY - SEM DESFOQUE (2026-11-19)
+
+
+
+> O usuario REPROVOU o blur/foco pulsante (`filter:blur(0->2.5px)`): ficou ruim.
+
+> O efeito CERTO e `shadow-sway`: a imagem vai um pouquinho para um lado
+
+> (`translate:-6px`) enquanto a SOMBRA vai para o outro (`drop-shadow(+6px)`),
+
+> invertendo devagar em 14s. Parece a imagem dividida em 2 se mexendo,
+
+> SEM desfoque e SEM zoom (zoom corta colagens).
+
+> Usa a propriedade independente `translate` para nao conflitar com o
+
+> `transform` do GSAP. O nome da classe .focus-pulse foi MANTIDO para nao
+
+> quebrar validacoes; o conteudo do @keyframes e que mudou (commit 55ff1fe).
+
 > Hulk agora BLOQUEIA se aparecer `filter:blur(` na composicao.
+
+
+## AUDITORIA TOTAL DE SINCRONIA (2026-11-19)
+
+> O `batimento_roteiro_foto.py` DA FALSO NEGATIVO: so compara texto com texto,
+> nunca l? audio, nunca olha pixels, e so marca ERRADO se o NOME do arquivo
+> contiver "parque/festa/trofeu". Como os arquivos foram renomeados para
+> `desenvolvimento_N_scene.jpg`, ele sempre da "0 ERRADOS" mesmo fora de tempo.
+> AUDITORIA REAL (rodar sempre antes de publicar, narra??o -> timeline -> auditoria):
+> 1. `python scripts/auditoria_transcrever.py --slug <slug>` (Whisper word-timestamps)
+> 2. `python scripts/auditoria_cruzar.py --slug <slug>` (cruza fala x imagens,
+>    respeita +8s da capa e a inversao 'middle'; gera relatorio_sincronia.txt)
+> 3. `python scripts/auditoria_aplicar.py --slug <slug>` (grava novos 'at')
+> Os 3 scripts antes tinham slug fixo do projeto antigo; agora aceitam --slug.
+
+### Foto de humanos (ERRO GRAVE)
+> `desenvolvimento_13_scene_c.jpg` mostrou 2 CRIANCAS humanas enquanto a
+> narra??o falava da Frida (cachorra). O prompt pedia "sem humanos" mas o
+> Gemini gerou humano assim mesmo. REGRA: TODO prompt de imagem deve comecar
+> com "PROIBICAO ABSOLUTA: APENAS @Frida e @Luna, os DOIS CACHORROS. NUNCA
+> desenhe SERES HUMANOS, criancas, ...". Nenhuma imagem pode mostrar humano.
+
+### Videos do meio (OFF-BY-ONE)
+> `gerar_prompts_videos.escolher()` usava indice proporcional e gerava os
+> clipes das cenas SEGUINTES (s4/s9/s13) enquanto os clipes eram colocados
+> em s3/s8/s12 -> a acao exibida nunca casava com a fala. CORRIGIDO: escolher()
+> agora le o timeline real e pega a cena falada no minuto. Os clipes atuais
+> foram remapeados para s4/s9/s13 com offset 0.
+
+### Narra??o mais alegre
+> Voz PT trocada de Achernar (neutra) para Leda (`pipeline.voice_for`, aceita
+> `--voice-pt`). A limpeza Gemini NAO remove mais "Hahaha!" nem troca
+> "Oi?"->"Oi" (`gen_narration_gemini_sections.limpar_com_pronuncia`).
+> `narration_tempo` de 0.92 -> 1.0 (nao desacelera).
+
+### Sonoplastia rica
+> Antes so 5 chaves do dicionario casavam com o roteiro -> 14 cues.
+> `PALAVRAS['pt']` reescrito com ~60 palavras que a narracao REALMENTE fala;
+> chaves normalizadas (bug de acento em '?gua'/'abra?o' corrigido); teto de
+> repeticoes 4->20; dedup 0.3s->0.06s; BED CONTINUO de passarinhos/brisa a
+> cada 3s. Esperado: centenas de cues, nao 14.
