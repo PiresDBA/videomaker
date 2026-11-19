@@ -57,20 +57,31 @@ def main():
     print("audio   : %s" % a.get("codec_name"))
 
     expected = None
-    try:
-        timeline_total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
-        pre_dur = 0.0
-        clips_cfg = proj / "artifacts" / "video_clips.json"
-        if clips_cfg.exists():
-            vc = load_json(clips_cfg)
-            pre = vc.get("pre_final", {})
-            if isinstance(pre, dict) and pre.get("file"):
-                pre_dur = float(pre.get("dur", 8.0))
-        expected = timeline_total + INTRO_DUR + pre_dur + OUTRO_DUR
-        print("timeline: %.2f s + capa/pre/outro %.1f s = %.2f s (delta %.2f s)"
-              % (timeline_total, INTRO_DUR + pre_dur + OUTRO_DUR, expected, dur - expected))
-    except Exception:
-        pass
+    # FONTE DA VERDADE: a duracao do root em composition.html. A formula antiga
+    # (timeline + capa + pre + outro) dava falso positivo porque os clipes do
+    # meio e o pre_final SOBREPOEM as cenas - nao estendem a duracao total.
+    comp = proj / "composition.html"
+    if comp.exists():
+        try:
+            html = comp.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r'id="root"[^>]*data-duration="([\d.]+)"', html)
+            if not m:
+                m = re.search(r'data-duration="([\d.]+)"[^>]*id="root"', html)
+            if m:
+                expected = float(m.group(1))
+                print("composicao: data-duration(root) = %.2f s (delta %.2f s)"
+                      % (expected, dur - expected))
+        except Exception:
+            pass
+    if expected is None:
+        try:
+            timeline_total = float(load_json(proj / "artifacts" / "timeline.json")["total"])
+            # pre_final sobrepoe a cena s_outro: NAO somar sua duracao.
+            expected = timeline_total + INTRO_DUR + OUTRO_DUR
+            print("timeline: %.2f s + capa/outro %.1f s = %.2f s (delta %.2f s)"
+                  % (timeline_total, INTRO_DUR + OUTRO_DUR, expected, dur - expected))
+        except Exception:
+            pass
 
     r2 = subprocess.run([str(ff / "ffmpeg.exe"), "-hide_banner", "-i", str(path), "-af",
                          "loudnorm=print_format=summary", "-f", "null", "-"],
