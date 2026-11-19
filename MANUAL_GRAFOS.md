@@ -5402,18 +5402,55 @@ Argumentos adicionados em `common()` (ver `python scripts/pipeline.py full --hel
 
 `phase_images` repassa `--flow-agent`/`--batch-size` ao flow_agent_batch.py.
 
-Regra de ouro: um unico orquestrador (pipeline.py), manual no mesmo commit.
-
-
-### 72.9. Clipes do meio - REGRA DO USUARIO
-
-> Os 3 clipes do meio DEVEM ser de EXATAMENTE 8 SEGUNDOS. O prompt enviado ao
-> Flow TEM que escrever "8 SEGUNDOS" explicitamente (o gerar_video_flow.py
-> tambem seleciona o toggle de duracao 8s no UI). E, sempre que citar os
-> personagens no prompt, usar @[Frida] e @[Luna] (arro + colchete).
-
-Implementado em `scripts/gerar_clipes_meio.py`:
-- escolhe 1 cena do roteiro por minuto pedido (--minutos 2,5,7)
-- monta prompt com "8 SEGUNDOS" + @[Frida]/@[Luna] + tema da cena
-- chama gerar_video_flow.py (modo Video do Flow, 3 videos/dia)
+Regra de ouro: um unico orquestrador (pipeline.py), manual no mesmo commit.
+
+
+
+
+
+### 72.9. Clipes do meio - REGRA DO USUARIO
+
+
+
+> Os 3 clipes do meio DEVEM ser de EXATAMENTE 8 SEGUNDOS. O prompt enviado ao
+
+> Flow TEM que escrever "8 SEGUNDOS" explicitamente (o gerar_video_flow.py
+
+> tambem seleciona o toggle de duracao 8s no UI). E, sempre que citar os
+
+> personagens no prompt, usar @[Frida] e @[Luna] (arro + colchete).
+
+
+
+Implementado em `scripts/gerar_clipes_meio.py`:
+
+- escolhe 1 cena do roteiro por minuto pedido (--minutos 2,5,7)
+
+- monta prompt com "8 SEGUNDOS" + @[Frida]/@[Luna] + tema da cena
+
+- chama gerar_video_flow.py (modo Video do Flow, 3 videos/dia)
+
 - salva clipe_meio_<i>_<min>min.mp4
+
+
+### 72.10. CORRECOES FINAIS (2026-11-19) - LER ANTES DE GERAR
+
+> SINTAXE CORRETA DAS REFERENCIAS: **@Frida e @Luna** (SO a arroba, SEM
+> colchetes). Versoes anteriores deste manual com @[Frida] estavam ERRADAS.
+> Aplicado em image_prompts.json, scenes.json e todos os scripts.
+
+> DEGRADACAO PROGRESSIVA DO LOTE (REGRA DO USUARIO): comecar mandando 15
+> imagens de uma vez. Se travar/faltar, reduzir: 15 -> 12 -> 10 -> 8 -> 4 -> 2.
+> Se 2 travar, ir para 1 imagem por vez via GEMINI (NAO Flow). Entrar nesse
+> loop ate conseguir gerar todas. Implementado em flow_agent_batch.py.
+
+> RATE LIMIT DO FLOW: quando aparecer "Voce esta fazendo solicitacoes muito
+> rapido. Diminua o ritmo", esperar e clicar "Tentar de novo". Pausa entre
+> chamadas aumentada para 45s (padrao) / 60s (entre lotes).
+
+> MODELOS DE VIDEO (usuario): usar Veo 3.1 Lite, qualidade BAIXA (10 creditos
+> por video -> ate 5 videos), exportar em 720p. Configurado em gerar_video_flow.py.
+
+> ORQUESTRADOR UNICO: `scripts/pipeline.py`. Toda inteligencia e argumento dele
+> (`--flow-agent`, `--batch-size`, `--clipes-meio`, `--sonoplastia`,
+> `--efeitos-fundo`, `--ref-personagem`). NUNCA criar outro pipeline.
