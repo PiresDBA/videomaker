@@ -399,6 +399,7 @@ SCRIPTS = {
     "fetch_images": HERE / "fetch_images.py",
     "flow_fetch": HERE / "flow_fetch.py",
     "flow_agent_batch": HERE / "flow_agent_batch.py",
+    "gerar_prompts_videos": HERE / "gerar_prompts_videos.py",
     "preprocess_images": HERE / "preprocess_images.py",
     "fetch_music": HERE / "fetch_music_gemini.py",
     "gen_narration": HERE / "gen_narration_voicecraft.py",  # 1a opcao: voz com emocao (API 8090)
@@ -802,6 +803,16 @@ def phase_script(args, p: Project):
          "--prompt", args.prompt or p.prompt or p.slug,
          "--out", str(p.script)],
         "FASE script: roteiro via Gemini WEB (Chrome, conta gratuita)")
+    # REGRA DO USUARIO (CONTRATO): gerar o PROMPTS_VIDEOS.md LOGO APOIS do
+    # roteiro, antes das imagens, para o usuario criar os 5 videos no Flow
+    # em paralelo. Estilo cinematografico 3D Disney/Pixar + @Frida/@Luna.
+    pv = HERE / "gerar_prompts_videos.py"
+    if pv.exists():
+        try:
+            run([sys.executable, str(pv), p.dir.name],
+                "FASE script: PROMPTS_VIDEOS.md (5 videos, gerar em paralelo)")
+        except Exception as e:
+            print(f"  aviso: nao gerou PROMPTS_VIDEOS.md ({e})", flush=True)
     p.mark("script", detail=str(p.script))
 
 
