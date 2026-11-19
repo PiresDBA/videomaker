@@ -223,11 +223,22 @@ def launch_chrome(cdp_url: str, profile: Path):
         raise SystemExit("Chrome não encontrado. Defina a variável CHROME_PATH com o caminho do chrome.exe.")
     port = urlparse(cdp_url).port or 18800
     profile.mkdir(parents=True, exist_ok=True)
-    print(f"Abrindo Chrome (porta {port}, perfil {profile})...", flush=True)
+    # REGRA: entrar DIRETO no projeto do Flow. A home (https://flow.google.com)
+    # NAO mostra o campo de prompt ate o usuario clicar num projeto -> o script
+    # falhava achando que nao havia campo. Usa a URL salva no estado aprendido.
+    start_url = "https://flow.google.com"
+    try:
+        state = _load_flow_state()
+        u = state.get("url", "")
+        if u.startswith("https://flow.google.com/project/"):
+            start_url = u
+    except Exception:
+        pass
+    print(f"Abrindo Chrome (porta {port}, perfil {profile}) -> {start_url}", flush=True)
     subprocess.Popen(
         [exe, f"--remote-debugging-port={port}", f"--user-data-dir={profile}",
          "--no-first-run", "--no-default-browser-check", "--window-size=1920,1080",
-         "https://flow.google.com"],
+         start_url],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
     )
     for _ in range(45):
@@ -1455,7 +1466,27 @@ FLOW_STATE_FILE = Path(DEFAULT_ROOT) / ".flow_learned_state.json"
 
 
 def _load_flow_state() -> dict:
-    """Carrega as 'lições aprendidas' de configurações do Flow."""
+    """Carrega as 'lições aprendidas' de configurações do Flow.
+
+    Prioriza o PERFIL APRENDIDO pelo modo guiado (flow_learn.py), que observa
+    os cliques do usuario e registra seletores robustos. Faz fallback para o
+    estado antigo (.flow_learned_state.json).
+    """
+    try:
+        pf = Path(DEFAULT_ROOT) / ".flow_learned_profile.json"
+        if pf.exists():
+            d = json.loads(pf.read_text(encoding="utf-8"))
+            sels = d.get("editor_selectors", [])
+            return {
+                "ready": bool(sels),
+                "url": d.get("url", ""),
+                "title": d.get("title", ""),
+                "learned_at": d.get("learned_at", ""),
+                "editors_found": sels,
+                "profile_version": d.get("version", 1),
+            }
+    except Exception:
+        pass
     try:
         if FLOW_STATE_FILE.exists():
             return json.loads(FLOW_STATE_FILE.read_text(encoding="utf-8"))
@@ -1556,6 +1587,17 @@ async def validate_flow_ready(page) -> bool:
     if await _has_editor():
         return True
 
+    # Espera ativa pelo editor: o Flow carrega o campo de prompt de forma
+    # assincrona e pode demorar varios segundos apos o networkidle.
+    try:
+        for sel in state.get("editors_found", EDITORS):
+            await page.wait_for_selector(sel, timeout=15000)
+            if await _has_editor():
+                print("  campo de prompt apareceu apos espera", flush=True)
+                return True
+    except Exception:
+        pass
+
     # Se veio para a home (sem editor), tenta abrir a página do projeto salva.
     target = state.get("url", "")
     if target.startswith("https://flow.google.com") and target.rstrip("/") != page.url.rstrip("/"):
@@ -1565,7 +1607,12 @@ async def validate_flow_ready(page) -> bool:
                 await page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
                 pass
-            await page.wait_for_timeout(2500)
+            try:
+                for sel in state.get("editors_found", EDITORS):
+                    await page.wait_for_selector(sel, timeout=15000)
+                    break
+            except Exception:
+                pass
             return await _has_editor()
         except Exception:
             return False
