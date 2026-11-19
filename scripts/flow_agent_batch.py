@@ -407,13 +407,13 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
             import re as _re
             chars = _re.sub(pat, repl, chars, flags=_re.I)
         full = chars
-    # REGRA DO USUARIO: quando o prompt pede VARIAS imagens (lote), o Flow
-    # demora mais. Escalar o tempo de espera 3-4x e, depois que a primeira
-    # imagem chegar, ESPERAR ESTABILIZAR antes de seguir — senao o script manda
-    # o proximo prompt enquanto o Flow ainda esta gerando as outras imagens.
+    # REGRA DO USUARIO: esperar tempo suficiente, mas COM TETO de 5 minutos.
+    # Antes era 4x de 420s = 1680s (28min) e travava sem mensagem de erro
+    # quando o Flow devolvia só a referência (duplicata descartada).
     n_cenas = len(itens)
     escala = 1 if n_cenas <= 1 else (3 if n_cenas <= 4 else 4)
-    wait_efetivo = wait_s * escala
+    wait_efetivo = min(wait_s * escala, 300)  # TETO: 5 minutos por lote
+    print("  timeout de espera limitado a %ds" % wait_efetivo, flush=True)
     # Uma colagem 16:9 e UMA imagem, mas o Flow gera as N internas dela.
     # Esperar todas as N imagens mesmo em colagem.
     esperadas = n_cenas if colagem else len(itens)
