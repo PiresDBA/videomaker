@@ -479,9 +479,10 @@ async def refresh_cards_falhados(page, pendentes, out_dir, wait_s, hashes):
     Retorna lista de (nome, destino) recuperados.
     """
     import json
-    sels = ['button:has(mat-icon:has-text("undo"))',
-            'button:has(mat-icon:has-text("redo"))',
-            'button[aria-label="Reutilizar comando"]']
+    # Botao CERTO (aprendido do usuario com print da tela): no card de FALHA
+    # o refresh e 'Tentar de novo' (icone refresh), NAO 'Reutilizar comando'.
+    sels = ['button[aria-label="Tentar de novo"]',
+            'button:has(mat-icon:has-text("refresh"))']
     try:
         pf = Path(r"C:\videomaker\.flow_learned_profile.json")
         if pf.exists():
@@ -492,14 +493,28 @@ async def refresh_cards_falhados(page, pendentes, out_dir, wait_s, hashes):
 
     recuperadas = []
     MAX = 10
+    # fechar banner de creditos (se aparecer) para nao cobrir os cards
+    try:
+        banner = page.locator('button[aria-label="Fechar"], button:has(mat-icon:has-text("close"))')
+        for j in range(min(await banner.count(), 2)):
+            try:
+                if await banner.nth(j).is_visible():
+                    await banner.nth(j).click(timeout=2000)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
     for name, _cena in pendentes:
         print("  refresh card:", name, flush=True)
         for tentativa in range(1, MAX + 1):
-            # clica no primeiro botao de refresh visivel (o card falhado)
+            # clica no botao 'Tentar de novo' DENTRO do card que mostra 'Falha'
             clicou = False
+            card = page.locator('mat-card:has-text("Falha"), :has(> div:has-text("Esta geração"))')
+            escopo = card if await card.count() > 0 else page
             for sel in sels:
                 try:
-                    loc = page.locator(sel)
+                    loc = escopo.locator(sel)
                     for j in range(await loc.count()):
                         el = loc.nth(j)
                         if await el.is_visible():
@@ -514,7 +529,7 @@ async def refresh_cards_falhados(page, pendentes, out_dir, wait_s, hashes):
                 if clicou:
                     break
             if not clicou:
-                print("    nenhum botao de refresh visivel", flush=True)
+                print("    nenhum botao 'Tentar de novo' visivel", flush=True)
                 break
             print("    refresh %d/%d" % (tentativa, MAX), flush=True)
             # aguarda aparecer nova imagem / download
