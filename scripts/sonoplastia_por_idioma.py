@@ -219,7 +219,6 @@ if __name__=="__main__":
     ap.add_argument("--slug",default="",help="slug do projeto (ou VIDEOMAKER_PROJ)")
     args=ap.parse_args()
     if args.slug:
-        global P, AUD
         P = Path(r"C:\videomaker\projects") / args.slug
         AUD = P / "assets/audio"
     main(args.lang)
