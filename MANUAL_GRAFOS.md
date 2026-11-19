@@ -5518,13 +5518,32 @@ pipeline.py (--pause default=120).
 
 > EXATA (media<0.5). Se uma imagem for descartada, resgatar o .webp temporario
 
-> convertendo para .jpg antes de relancar.
-
-
-### 72.13. FLOW_GUARD - imagens SEMPRE no Flow (REGRA DE CONTRATO)
-
-> Gemini e ULTIMO recurso. Ordem obrigatoria: 15 -> 12 -> 10 -> 8 -> 4 -> 2 ->
-> 1 (tudo no Flow), com 10 tentativas no tamanho 1. So depois disso o Gemini.
-> Causa do fallback indevido corrigido: seletor aprendido com acento corrompido
-> (`vocǦ`) fazia validate_flow_ready retornar False. Perfil corrigido para
+> convertendo para .jpg antes de relancar.
+
+
+
+
+
+### 72.13. FLOW_GUARD - imagens SEMPRE no Flow (REGRA DE CONTRATO)
+
+
+
+> Gemini e ULTIMO recurso. Ordem obrigatoria: 15 -> 12 -> 10 -> 8 -> 4 -> 2 ->
+
+> 1 (tudo no Flow), com 10 tentativas no tamanho 1. So depois disso o Gemini.
+
+> Causa do fallback indevido corrigido: seletor aprendido com acento corrompido
+
+> (`vocǦ`) fazia validate_flow_ready retornar False. Perfil corrigido para
+
 > seletores genericos (`div[role=textbox].ProseMirror`, etc).
+
+
+### 72.14. PROMPTS_VIDEOS.md - videos gerados em paralelo (REGRA DE CONTRATO)
+
+> `gerar_prompts_videos.py` roda na fase script (antes das imagens) e cria
+> PROMPTS_VIDEOS.md com 5 prompts: intro, meio 2/5/7 min, final. Cada prompt:
+> estilo CINEMATOGRAFICO 3D DISNEY/PIXAR + @Frida/@Luna + 8 SEGUNDOS +
+> referencia. O usuario gera no Flow em paralelo e salva em
+> assets/images/gemini/scenes/ com os nomes indicados. Na compilacao final,
+> o pipeline injeta os clipes e gera sonoplastia pela narracao.

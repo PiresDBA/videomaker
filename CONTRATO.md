@@ -534,16 +534,40 @@ auditar as imagens antes de renderizar:
 
 **Imagem: uma cena diferente por pausa.** A referência é só o design das
 personagens — nunca a cena (§5.8). Vídeo com a mesma figura repetida não se
-renderiza nem se publica.
-
-
-## REGRA FLOW_GUARD (2026-11-19) - IMAGENS SEMPRE NO GOOGLE FLOW
-
-> Toda geracao de imagem DEVE usar o Google Flow. A degradacao e progressiva:
-> lotes de 15, 12, 10, 8, 4, 2 e, por ultimo, 1 por 1 no PROPRIO Flow,
-> insistindo 10 VEZES no tamanho 1. Somente apos esgotar TODAS essas tentativas
-> no Flow e permitido cair no Gemini, como ULTIMO recurso.
-> NUNCA cair no Gemini logo na primeira falha. O `flow_guard` no
-> `flow_agent_batch.py` garante isso. Seletor de editor com acento corrompido
-> no perfil aprendido pode fazer `validate_flow_ready` retornar False e
+renderiza nem se publica.
+
+
+
+
+
+## REGRA FLOW_GUARD (2026-11-19) - IMAGENS SEMPRE NO GOOGLE FLOW
+
+
+
+> Toda geracao de imagem DEVE usar o Google Flow. A degradacao e progressiva:
+
+> lotes de 15, 12, 10, 8, 4, 2 e, por ultimo, 1 por 1 no PROPRIO Flow,
+
+> insistindo 10 VEZES no tamanho 1. Somente apos esgotar TODAS essas tentativas
+
+> no Flow e permitido cair no Gemini, como ULTIMO recurso.
+
+> NUNCA cair no Gemini logo na primeira falha. O `flow_guard` no
+
+> `flow_agent_batch.py` garante isso. Seletor de editor com acento corrompido
+
+> no perfil aprendido pode fazer `validate_flow_ready` retornar False e
+
 > causar fallback indevido — validar com `python scripts/flow_fetch.py --check`.
+
+
+## REGRA PROMPTS_VIDEOS (2026-11-19) - VIDEOS EM PARALELO
+
+> Logo apos gerar o roteiro (fase script), o pipeline DEVE gerar o arquivo
+> PROMPTS_VIDEOS.md na raiz do projeto, com os 5 prompts dos videos (intro +
+> 3 meio + final). O usuario gera esses videos manualmente no Google Flow
+> ENQUANTO o pipeline continua gerando as fotos. Estilo OBRIGATORIO nos
+> prompts: cinematografico 3D Disney/Pixar, 8 SEGUNDOS, @Frida e @Luna
+> (arro sem colchetes), referencia anexada. Sonoplastia sempre incluida
+> (gerada pela narracao). Se o Flow automatico falhar apos todas as
+> tentativas, este e o fallback oficial para os videos.
