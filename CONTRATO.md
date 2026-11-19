@@ -582,53 +582,113 @@ renderiza nem se publica.
 
 > (gerada pela narracao). Se o Flow automatico falhar apos todas as
 
-> tentativas, este e o fallback oficial para os videos.
-
-
-## REGRA HULK - GUARDA DO CONTRATO (2026-11-19)
-
-> `scripts/hulk_validator.py` E O GUARDA. Roda automaticamente ANTES de
-> publicar (phase_youtube) e pode ser chamado a qualquer momento:
-> `python scripts/hulk_validator.py --slug <slug>`.
-> Se alguma regra abaixo foi quebrada, ELE AVISA e BLOQUEIA.
-
-### ERROS QUE ACONTECERAM (NUNCA REPETIR)
-
-1. **Imagens duplicadas** (mesmo hash em cenas diferentes) -> 10 imagens
-   desperdicadas e 15h de retrabalho. CORRECAO: checar duplicatas por hash
-   antes de renderizar; apagar e regerar as segundas ocorrencias.
-2. **Detector de duplicata agressivo** (media<2.0) descartava cenas parecidas
-   com a referencia e travava a geracao. CORRECAO: tolerancia 0.5 (so copia
-   exata). Foram DOIS detectores (`_imagem_repetida` E `_bytes_igual_ref`) —
-   os DOIS corrigidos.
-3. **Seletor do Flow com acento corrompido** (`vocǦ`) fazia
-   `validate_flow_ready` retornar False -> pipeline cair no Gemini na hora,
-   sem tentar o Flow. CORRECAO: seletores genericos no perfil aprendido.
-4. **Gemini antes de esgotar o Flow** -> inconsistentia dos personagens.
-   CORRECAO: FLOW_GUARD (15->12->10->8->4->2->1 no Flow, 10x no tamanho 1,
-   so depois Gemini).
-5. **Rate limit do Flow** ("solicitacoes muito rapido") -> geracao reiniciava.
-   CORRECAO: pausa padrao 120s e estabilizacao 120s apos imagens.
-6. **Timeout de 28 min** por lote travava sem mensagem de erro. CORRECAO:
-   teto de 5 min (300s) por lote e degradação de tamanho.
-7. **`@[Frida]` com colchetes** -> Flow nao reconhecia. CORRECAO: sintaxe
-   correta e `@Frida` / `@Luna` (arro, sem colchetes), em prompts e scenes.
-8. **`_cena_do_prompt` so extraia a 1a linha** e perdia as referencias dos
-   personagens. CORRECAO: funcao sempre injeta @Frida/@Luna.
-9. **Modo Agente do Flow trocava personagens / painel lateral travava envio**.
-   CORRECAO: fechar painel, desligar agente no batch, usar ref-image.
-10. **Videos das maos do usuario inconsistentes** -> fallback oficial:
-    PROMPTS_VIDEOS.md gerado apos o roteiro, estilo cinematografico 3D
-    Disney/Pixar + @Frida/@Luna + 8 SEGUNDOS, usuario gera em paralelo.
-11. **Slug truncado pelo PowerShell** com acento no prompt -> use `resume
-    --slug <slug>` (sem prompt) para retomar projetos existentes.
-12. **Criar pipeline/config paralelo** -> ERRADO. Orquestrador UNICO e
-    `scripts/pipeline.py`; regras sao ARGUMENTOS dele (`--flow-agent`,
-    `--batch-size`, `--clipes-meio`, `--sonoplastia`, `--efeitos-fundo`,
-    `--ref-personagem`).
-
-### SONOPLASTIA E OBRIGATORIA
-
-Gerada APENAS ouvindo o arquivo de narracao (faster-whisper), som na palavra
-exata, efeitos de fundo (estrelinhas/folhas/abelhas) e blur/foco pulsante.
+> tentativas, este e o fallback oficial para os videos.
+
+
+
+
+
+## REGRA HULK - GUARDA DO CONTRATO (2026-11-19)
+
+
+
+> `scripts/hulk_validator.py` E O GUARDA. Roda automaticamente ANTES de
+
+> publicar (phase_youtube) e pode ser chamado a qualquer momento:
+
+> `python scripts/hulk_validator.py --slug <slug>`.
+
+> Se alguma regra abaixo foi quebrada, ELE AVISA e BLOQUEIA.
+
+
+
+### ERROS QUE ACONTECERAM (NUNCA REPETIR)
+
+
+
+1. **Imagens duplicadas** (mesmo hash em cenas diferentes) -> 10 imagens
+
+   desperdicadas e 15h de retrabalho. CORRECAO: checar duplicatas por hash
+
+   antes de renderizar; apagar e regerar as segundas ocorrencias.
+
+2. **Detector de duplicata agressivo** (media<2.0) descartava cenas parecidas
+
+   com a referencia e travava a geracao. CORRECAO: tolerancia 0.5 (so copia
+
+   exata). Foram DOIS detectores (`_imagem_repetida` E `_bytes_igual_ref`) —
+
+   os DOIS corrigidos.
+
+3. **Seletor do Flow com acento corrompido** (`vocǦ`) fazia
+
+   `validate_flow_ready` retornar False -> pipeline cair no Gemini na hora,
+
+   sem tentar o Flow. CORRECAO: seletores genericos no perfil aprendido.
+
+4. **Gemini antes de esgotar o Flow** -> inconsistentia dos personagens.
+
+   CORRECAO: FLOW_GUARD (15->12->10->8->4->2->1 no Flow, 10x no tamanho 1,
+
+   so depois Gemini).
+
+5. **Rate limit do Flow** ("solicitacoes muito rapido") -> geracao reiniciava.
+
+   CORRECAO: pausa padrao 120s e estabilizacao 120s apos imagens.
+
+6. **Timeout de 28 min** por lote travava sem mensagem de erro. CORRECAO:
+
+   teto de 5 min (300s) por lote e degradação de tamanho.
+
+7. **`@[Frida]` com colchetes** -> Flow nao reconhecia. CORRECAO: sintaxe
+
+   correta e `@Frida` / `@Luna` (arro, sem colchetes), em prompts e scenes.
+
+8. **`_cena_do_prompt` so extraia a 1a linha** e perdia as referencias dos
+
+   personagens. CORRECAO: funcao sempre injeta @Frida/@Luna.
+
+9. **Modo Agente do Flow trocava personagens / painel lateral travava envio**.
+
+   CORRECAO: fechar painel, desligar agente no batch, usar ref-image.
+
+10. **Videos das maos do usuario inconsistentes** -> fallback oficial:
+
+    PROMPTS_VIDEOS.md gerado apos o roteiro, estilo cinematografico 3D
+
+    Disney/Pixar + @Frida/@Luna + 8 SEGUNDOS, usuario gera em paralelo.
+
+11. **Slug truncado pelo PowerShell** com acento no prompt -> use `resume
+
+    --slug <slug>` (sem prompt) para retomar projetos existentes.
+
+12. **Criar pipeline/config paralelo** -> ERRADO. Orquestrador UNICO e
+
+    `scripts/pipeline.py`; regras sao ARGUMENTOS dele (`--flow-agent`,
+
+    `--batch-size`, `--clipes-meio`, `--sonoplastia`, `--efeitos-fundo`,
+
+    `--ref-personagem`).
+
+
+
+### SONOPLASTIA E OBRIGATORIA
+
+
+
+Gerada APENAS ouvindo o arquivo de narracao (faster-whisper), som na palavra
+
+exata, efeitos de fundo (estrelinhas/folhas/abelhas) e blur/foco pulsante.
+
 NUNCA pular. Flag `--sonoplastia on` e padrao.
+
+
+## REGRA RETRY RECUSA - BOTAO "TENTAR DE NOVO" (2026-11-19)
+
+> Quando o Flow mostrar "Falha - Esta geracao talvez viole nossas politicas",
+> o botao CERTO e "Tentar de novo" (icone refresh 🔄) dentro do card da falha.
+> O `flow_fetch.retry_refused_image()` clica ate 10 vezes, esperando 2 minutos
+> entre cada tentativa, ANTES de desistir. NUNCA usar "Reutilizar comando"
+> (undo/redo) - estava errado e nao resolvia.
+> Se aparecer "solicitacoes muito rapido", aumentar a pausa (padrao 120s).
+> Corrigido em `fa05f0a`.
