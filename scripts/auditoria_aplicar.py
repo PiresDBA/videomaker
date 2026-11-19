@@ -3,11 +3,17 @@
 scenes.json. Faz backup antes. Também ajusta 'split' para cenas de 2 imagens.
 """
 from __future__ import annotations
-import json, sys
+import json, sys, os
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-P = Path(r"C:\videomaker\projects\e-se-os-cachorros-pudessem-falar-por-um-dia")
+SLUG = (os.environ.get("VIDEOMAKER_PROJ") or "").strip()
+for _i, _a in enumerate(sys.argv):
+    if _a == "--slug" and _i + 1 < len(sys.argv):
+        SLUG = sys.argv[_i + 1]
+if not SLUG:
+    SLUG = "e-se-os-cachorros-pudessem-falar-por-um-dia"
+P = Path(SLUG) if Path(SLUG).is_absolute() else Path(r"C:\videomaker\projects") / SLUG
 A = P / "artifacts"
 AUD = A / "auditoria"
 

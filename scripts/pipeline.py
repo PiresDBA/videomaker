@@ -1169,7 +1169,12 @@ def phase_narration(args, p: Project):
             return args.voice_en
         if lang == "es" and getattr(args, "voice_es", None):
             return args.voice_es
-        return {"pt": "Achernar", "en": "Achernar", "es": "Leda"}.get(lang, "Achernar")
+        # REGRA DO USUARIO (2026-11-19): narradora PT mais alegre/emocional.
+        # Achernar soava neutra; Leda tem mais expressao. Respeita --voice-pt
+        # quando informado.
+        if lang == "pt" and getattr(args, "voice_pt", None):
+            return args.voice_pt
+        return {"pt": "Leda", "en": "Achernar", "es": "Leda"}.get(lang, "Achernar")
 
     def edge_voice_for(lang):
         # Voz para o Edge-TTS (fallback local quando o Gemini nao tem cota).
@@ -2353,7 +2358,8 @@ def main():
                  "Padrao: on. Ex: --sonoplastia off")
         sp.add_argument(
             "--efeitos-fundo", choices=["on", "off"], default="on",
-            help="efeitos visuais de fundo (estrelinhas/folhas/abelhas) + blur/foco pulsante. "
+            help="efeitos visuais de fundo (estrelinhas/folhas/abelhas) + shadow-sway "
+                 "(deslocamento lateral lento com sombra, SEM blur/foco). "
                  "Padrao: on. Ex: --efeitos-fundo off")
         sp.add_argument(
             "--ref-personagem", choices=["on", "off"], default="on",
@@ -2363,6 +2369,10 @@ def main():
             "--voice", default="pt-BR-ThalitaNeural",
             help="voz da narracao. Edge: pt-BR-ThalitaNeural, pt-BR-FranciscaNeural. "
                  "Gemini: Leda, Achernar, Kore, Zephyr. Ex: --voice Leda")
+        sp.add_argument(
+            "--voice-pt", default=None,
+            help="voz Gemini especifica para PT (padrao: Leda, mais alegre). "
+                 "Ex: --voice-pt Kore")
         sp.add_argument(
             "--narration-style", default=None,
             help="instrucao de estilo para a voz Gemini (ex: 'divertida e alegre, sorrindo, empolgante para criancas')")

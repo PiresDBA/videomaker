@@ -36,33 +36,79 @@ SR = 44100
 # palavras-chave por idioma -> (id som earshot ou FORGE, ganho, descricao)
 PALAVRAS = {
     "pt": {
-        "espirro": [("pro_impact/air", 0.90, "espirro")],
-        "poirinha": [("shimmer/m4", 0.70, "poeirinha estrelinhas")],
-        "poeirinha": [("shimmer/m0", 0.55, "poeirinha magica")],
-        "carros": [("BUZINA", 0.55, "buzina carros"), ("whoosh_big/gust", 0.35, "passada")],
-        "bombeiros": [("BUZINA", 0.50, "buzina bombeiros")],
-        "pombo": [("POMBA", 0.60, "pomba burr-bru")],
-        "borboleta": [("hover_tick/air", 0.40, "asinhas borboleta"), ("pro_shimmer/m2", 0.30, "sparkle")],
-        "borboletas": [("hover_tick/air", 0.28, "asinhas borboletas")],
-        "passarinhos": [("whoosh_fast/whistle", 0.40, "passarinhos")],
-        "passarinho": [("pro_pop/chirp", 0.35, "passarinho")],
-        "estrelas": [("shimmer/m5", 0.55, "estrelas brilhantes")],
-        "ossinhos": [("whoosh_fast/whistle", 0.50, "ossinhos voadores")],
-        "bolinha": [("pro_pop/bloop", 0.65, "bolinha quique")],
-        "biscoito": [("typing_key/crisp", 0.45, "biscoito crocante")],
-        "biscoitos": [("typing_key/light", 0.40, "biscoitos")],
-        "gargalhada": [("whoosh_fast/whistle", 0.35, "gargalhada")],
-        "risadinha": [("pro_pop/chirp", 0.45, "risadinha")],
-        "roncando": [("pro_impact/rumble", 0.50, "barriga roncando")],
-        "cantando": [("mallet/glock", 0.40, "xilofone cantoria")],
-        "abraço": [("mallet/pluck", 0.40, "carinho abraco")],
-        "abranos": [("mallet/pluck", 0.40, "carinho")],
-        "bocejo": [("swish/soft", 0.35, "bocejo sopro")],
-        "fonte": [("drip/drop", 0.35, "agua fonte")],
-        "água": [("drip/bubble", 0.35, "agua")],
-        "vento": [("swish/soft", 0.30, "vento")],
-        "latido": [("pro_pop/bloop", 0.45, "latidinho")],
-        "inscreva": [("fit/bell/small_bell", 0.80, "campainha subscribe")],
+        # ---- ACOES REAIS DO ROTEIRO "sozinhas em casa" (2026-11-19) ----
+        # Antes so 5 chaves casavam com o texto (14 cues). Agora o dicionario
+        # foi reescrito com as palavras que a narracao REALMENTE fala.
+        "meia": [("swish/soft", 0.26, "puxao da meia"), ("typing_key/light", 0.15, "attrito")],
+        "corredor": [("swish/soft", 0.16, "passos no corredor")],
+        "piso": [("pro_tap/soft", 0.18, "patinha no piso")],
+        "patinha": [("pro_tap/finger", 0.26, "patinha")],
+        "patinhas": [("pro_tap/double", 0.24, "patinhas")],
+        "espelho": [("pro_click/glass", 0.24, "espelho")],
+        "reflexo": [("shimmer/m2", 0.20, "reflexo")],
+        "livro": [("fit/land.light/fingertip_book", 0.24, "livro")],
+        "almofada": [("pro_tap/soft", 0.24, "almofada")],
+        "sofá": [("pro_tap/soft", 0.22, "sofá macio"), ("pro_impact/rumble", 0.14, "corpo no sofá")],
+        "cozinha": [("pro_tap/table", 0.14, "cozinha")],
+        "porta": [("knock/wood", 0.26, "porta")],
+        "tapete": [("swish/velvet", 0.16, "tapete")],
+        "bola": [("pro_pop/bloop", 0.38, "bolinha")],
+        "bolinha": [("pro_pop/bloop", 0.48, "bolinha quique"), ("pro_pop/double", 0.18, "quique duplo")],
+        "confete": [("shimmer/m3", 0.28, "confete")],
+        "risada": [("pro_pop/chirp", 0.32, "risada")],
+        "risadinha": [("pro_pop/chirp", 0.32, "risadinha")],
+        "hahaha": [("pro_pop/chirp", 0.28, "risada escrita")],
+        "grunhidinho": [("pro_impact/rumble", 0.24, "grunhido")],
+        "bufando": [("swish/soft", 0.20, "bufo")],
+        "farejando": [("pro_tap/soft", 0.16, "farejar")],
+        "focinho": [("pro_tap/soft", 0.18, "focinho")],
+        "rabinho": [("swish/flick", 0.22, "rabinho")],
+        "orelhas": [("swish/soft", 0.14, "orelhas")],
+        "escorrega": [("swish/flick", 0.28, "escorregao")],
+        "pulinho": [("pro_pop/boop", 0.28, "pulinho")],
+        "corre": [("pro_typing_run/soft", 0.16, "corrida")],
+        "caminham": [("pro_tap/soft", 0.14, "caminhada")],
+        "deita": [("pro_impact/rumble", 0.20, "deitar")],
+        "cai": [("pro_impact/rumble", 0.30, "queda")],
+        "puxa": [("swish/cane", 0.26, "puxao")],
+        "estica": [("swish/zing", 0.20, "esticar")],
+        "solta": [("pro_pop/boop", 0.22, "soltar")],
+        "esconde": [("swish/velvet", 0.20, "esconder")],
+        "procura": [("pro_hover_tick/soft", 0.16, "procurar")],
+        "encontra": [("pro_pop/tink", 0.26, "encontrar")],
+        "acorda": [("pro_notify/ding_1930", 0.22, "acordar")],
+        "sono": [("shimmer/m1", 0.18, "sono")],
+        "soninho": [("shimmer/m1", 0.18, "soninho")],
+        "bocejo": [("swish/soft", 0.30, "bocejo")],
+        "espirro": [("pro_impact/air", 0.70, "espirro")],
+        "ronrona": [("pro_impact/rumble", 0.20, "ronronar")],
+        "roncando": [("pro_impact/rumble", 0.42, "barriga roncando")],
+        "latido": [("pro_pop/bloop", 0.34, "latidinho")],
+        "latidinho": [("pro_pop/bloop", 0.32, "latidinho")],
+        "au": [("pro_pop/bloop", 0.26, "au")],
+        "estrelinhas": [("shimmer/m5", 0.28, "estrelinhas")],
+        "folhinhas": [("swish/flick", 0.18, "folhinhas")],
+        "abelhinhas": [("hover_tick/air", 0.22, "abelhinhas")],
+        "poirinha": [("shimmer/m4", 0.50, "poeirinha estrelinhas")],
+        "poeirinha": [("shimmer/m0", 0.42, "poeirinha magica")],
+        "passarinhos": [("whoosh_fast/whistle", 0.32, "passarinhos")],
+        "passarinho": [("pro_pop/chirp", 0.30, "passarinho")],
+        "borboleta": [("hover_tick/air", 0.32, "asinhas borboleta"), ("pro_shimmer/m2", 0.24, "sparkle")],
+        "borboletas": [("hover_tick/air", 0.26, "asinhas borboletas")],
+        "estrelas": [("shimmer/m5", 0.42, "estrelas brilhantes")],
+        "ossinhos": [("whoosh_fast/whistle", 0.40, "ossinhos voadores")],
+        "biscoito": [("typing_key/crisp", 0.38, "biscoito crocante")],
+        "biscoitos": [("typing_key/light", 0.34, "biscoitos")],
+        "cantando": [("mallet/glock", 0.34, "xilofone cantoria")],
+        "abraço": [("mallet/pluck", 0.34, "carinho abraco")],
+        "abranos": [("mallet/pluck", 0.34, "carinho")],
+        "vento": [("swish/soft", 0.26, "vento")],
+        "água": [("drip/bubble", 0.32, "agua")],
+        "fonte": [("drip/drop", 0.32, "agua fonte")],
+        "gargalhada": [("whoosh_fast/whistle", 0.30, "gargalhada")],
+        "like": [("pro_pop/tink", 0.32, "like")],
+        "obrigado": [("mallet/glock", 0.22, "agradecimento")],
+        "inscreva": [("fit/bell/small_bell", 0.60, "campainha subscribe")],
     },
     "es": {
         "estornudo": [("pro_impact/air", 0.90, "estornudo")],
@@ -170,21 +216,32 @@ def main(lang):
     regras = PALAVRAS[lang]
     # ordena regras por especificidade (frases multi-palavra primeiro)
     for chave, sons in sorted(regras.items(), key=lambda x: -len(x[0])):
+        # BUG CORRIGIDO (2026-11-19): norm() tira acento das palavras
+        # transcritas, mas a chave era usada crua -> 'água', 'abraço' etc
+        # nunca casavam. Normalizar a chave tambem.
+        chave_n = norm(chave)
         encontradas = []
         for i,(pal,s,e) in enumerate(palavras):
-            if chave in pal or (len(chave)>6 and chave[:6] in pal):
+            if chave_n in pal or (len(chave_n)>6 and chave_n[:6] in pal):
                 encontradas.append((pal,s,e,i))
-        # limita repeticoes (ex.: 'carros' aparece 2x) e evita sobrepor
-        for pal,s,e,i in encontradas[:4]:
-            if any(abs(s-x[0])<0.3 for x in usadas):
+        # REGRA DO USUARIO: MUITOS mais sons. Antes era [:4] (no maximo 4
+        # por chave) e dedup de 0.3s -> so 14 cues. Agora ate 20 por chave
+        # e dedup de 0.06s (evita perder eventos proximos sem sobrepor).
+        for pal,s,e,i in encontradas[:20]:
+            if any(abs(s-x[0])<0.06 for x in usadas):
                 continue
             usadas.add((s,e))
             for sid,gain,motivo in sons:
                 cues.append((s+8.0, sid, gain, f"'{pal}' -> {motivo}"))
 
-    # also ambiente: passarinhos esparsos na pracinha (tempos fixos +8)
-    for t in [30.9, 118.4, 131.5, 219.0, 360.2]:
+    # ambiente: passarinhos esparsos + BED CONTINUO (o usuario reclamou que
+    # a sonoplastia estava pobre). O bed entra bem baixo para nao mascarar a voz.
+    for t in [30.9, 118.4, 131.5, 219.0, 360.2, 460.0, 560.0]:
         cues.append((t, "pro_pop/chirp", 0.22, "passarinho ambiente"))
+    dur_fala = palavras[-1][2] if palavras else 600.0
+    for k in range(int(dur_fala // 3.0) + 1):
+        cues.append((k*3.0 + 1.2 + 8.0, "pro_pop/chirp", 0.07, "bed continuo passarinhos"))
+        cues.append((k*3.0 + 2.6 + 8.0, "swish/soft", 0.05, "bed continuo brisa"))
 
     cues.sort()
     print(f"cues gerados: {len(cues)}", flush=True)

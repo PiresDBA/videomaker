@@ -33,7 +33,9 @@ import urllib.request
 from pathlib import Path
 
 from narration_contract import apply_contract, validate_contract
-from gen_narration_edge import limpar_e_preparar_texto, load_json
+from gen_narration_edge import (limpar_e_preparar_texto, load_json,
+                                aplicar_substituicoes_pronunciacao,
+                                remover_espaco_antes_pontuacao)
 from env_keys import load_env_key
 
 HERE = Path(__file__).resolve().parent
@@ -390,7 +392,14 @@ def main():
     texto_map = PRONUNCIATION_MAP.get(lang, [])
 
     def limpar_com_pronuncia(text: str) -> str:
-        t = limpar_e_preparar_texto(text)
+        # REGRA DO USUARIO (2026-11-19): narração MAIS ALEGRE / EMOLOCAL.
+        # A limpeza antiga (Edge) removia todo "Hahaha!" e trocava "Oiê"→"Oi",
+        # matando a emoção. O Gemini TTS sustenta emoção, então preservamos
+        # risadas e interjeições. Só normalizamos espaços e pronúncia.
+        t = " ".join((text or "").split())
+        t = re.sub(r"\(\s*\)", " ", t)                    # parênteses órfãos
+        t = aplicar_substituicoes_pronunciacao(t)          # gatinha → cachorrinha
+        t = remover_espaco_antes_pontuacao(t)
         for pat, repl in texto_map:
             t = re.sub(pat, repl, t, flags=re.I)
         return " ".join(t.split())
