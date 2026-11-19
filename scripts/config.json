@@ -1,0 +1,176 @@
+{
+  "project_dir": "..",
+  "tts": {
+    "provider": "gemini",
+    "model": "gemini-3.8-flash-tts",
+    "voice": "Leda",
+    "voice_en": "Achernar",
+    "voice_es": "Leda",
+    "gemini_voices": [
+      "Achernar",
+      "Leda"
+    ],
+    "alternate_voices": true,
+    "edge_fallback": true,
+    "key_env": "GOOGLE_TTS_API_KEY",
+    "chunk_size": 4,
+    "chunks": [
+      [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      [
+        "s4b",
+        "s5",
+        "s6",
+        "s7",
+        "s8"
+      ],
+      [
+        "s8b",
+        "s9",
+        "s10",
+        "s11",
+        "s12"
+      ]
+    ],
+    "laughs": {
+      "s4": [
+        "Que o universo está em perigo.",
+        "Que o universo está em perigo. Hahaha!"
+      ],
+      "s7": [
+        "Ele comprou um projeto de escavação.",
+        "Ele comprou um projeto de escavação. Hahaha!"
+      ],
+      "s8": [
+        "traído em novela mexicana.",
+        "traído em novela mexicana. Hahaha!"
+      ],
+      "s9": [
+        "com sotaque alemão.",
+        "com sotaque alemão. Hahaha!"
+      ],
+      "s11": [
+        "Não tem como não rir.",
+        "Não tem como não rir. Hahaha!"
+      ],
+      "s12": [
+        "não se solta.",
+        "não se solta. Hahaha!"
+      ]
+    },
+    "exclamations": [
+      [
+        "Simples assim.",
+        "Simples assim!"
+      ],
+      [
+        "Errado.",
+        "Errado!"
+      ],
+      [
+        "você vai querer.",
+        "você vai querer!"
+      ]
+    ],
+    "model_fallbacks": [
+      "gemini-3.8-flash-lite-tts"
+    ],
+    "narration_style": "divertida, alegre e empolgante, falando com entusiasmo e sorrindo, como uma contadora de historias para criancas"
+  },
+  "google_cloud_tts_voices": {
+    "descricao": "Vozes adicionais do Google Cloud TTS (Chirp HD, Journey, Neural2) - vozes jovens, alegres e com emocao. NAO removem as vozes existentes (Edge-TTS e Gemini Achernar/Leda). Sempre adicionar, nunca retirar.",
+    "pt-BR": {
+      "feminina": [
+        "pt-BR-Chirp-HD-F",
+        "pt-BR-Neural2-A",
+        "pt-BR-Studio-F"
+      ],
+      "masculina": [
+        "pt-BR-Chirp-HD-M",
+        "pt-BR-Neural2-D",
+        "pt-BR-Studio-M"
+      ]
+    },
+    "en-US": {
+      "feminina": [
+        "en-US-Journey-F",
+        "en-US-Chirp-HD-F",
+        "en-US-Studio-F",
+        "en-US-Neural2-G",
+        "en-US-Neural2-A"
+      ],
+      "masculina": [
+        "en-US-Journey-M",
+        "en-US-Chirp-HD-M",
+        "en-US-Studio-M",
+        "en-US-Neural2-M"
+      ]
+    },
+    "es-ES": {
+      "feminina": [
+        "es-ES-Chirp-HD-F",
+        "es-ES-Neural2-F",
+        "es-ES-Studio-F"
+      ],
+      "masculina": [
+        "es-ES-Chirp-HD-M",
+        "es-ES-Neural2-M",
+        "es-ES-Studio-M"
+      ]
+    }
+  },
+  "voice": "pt-BR-ThalitaNeural",
+  "voice_rate": "+6%",
+  "voice_pitch": "+8Hz",
+  "voice_volume": "+0%",
+  "rate_by_pace": {
+    "slow": "-19%",
+    "measured": "-12%",
+    "conversational": "-8%",
+    "brisk": "-3%",
+    "fast": "0%"
+  },
+  "rate_overrides": {},
+  "narration_tempo": 1.0,
+  "gap_seconds": 1.0,
+  "target_duration_s": 120,
+  "duration_tolerance_pct": 5,
+  "music": {
+    "provider": "gemini",
+    "gemini_prompt": "Crie uma musica instrumental divertida e fofa para um video de comedia. Estilo trilha de desenho animado moderno: ukulele, pizzicato de cordas, marimba, clarinete comico e assobio. Ritmo alegre e leve, 110 BPM, clima engracado e carinhoso, sem vocais, sem letra. Duracao aproximada de 3 minutos.",
+    "gain": 0.42,
+    "loop_crossfade_s": 4,
+    "duck_threshold": 0.04,
+    "duck_ratio": 6,
+    "duck_attack_ms": 25,
+    "duck_release_ms": 700,
+    "fade_in_s": 0.5,
+    "fade_out_s": 3.7
+  },
+  "loudness": {
+    "narration_i": -16,
+    "final_i": -14,
+    "true_peak": -1.5,
+    "lra": 11
+  },
+  "video": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "ffmpeg_dir": "C:\\videomaker\\ffmpeg\\bin",
+  "gemini_skill": "C:\\videomaker\\scripts\\gemini_fetch.py",
+  "reference_image": "C:\\videomaker\\scripts\\reference\\frida_luna_reference.jpg",
+  "image_bank": "C:\\videomaker\\banco de imagens",
+  "image_wait_s": 420,
+  "scene_density": {
+    "max_images_per_section": 4,
+    "min_words_per_beat": 7,
+    "max_words_per_beat": 16,
+    "scene_mode": "beats"
+  }
+}
