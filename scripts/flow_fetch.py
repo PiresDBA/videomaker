@@ -448,6 +448,80 @@ async def _loc_first_visible(page, selectors, timeout_ms: int = 4000):
             continue
     return None
 
+async def retry_refused_image(page, wait_s: int = 90) -> bool:
+    """Insiste no Flow quando a imagem foi recusada por politica de conteudo.
+
+    O usuario ensinou: clicar no botao 'Reutilizar comando' (undo/redo) no card
+    da imagem e o refresh que gera de novo. As veces o Flow recusa e, ao clicar
+    novamente, gera. Insistir ate MAX (10) vezes antes de desistir.
+    Retorna True se uma imagem apareceu (download button / captura).
+    """
+    MAX = 10
+    prof = {}
+    try:
+        pf = Path(DEFAULT_ROOT) / ".flow_learned_profile.json"
+        if pf.exists():
+            prof = json.loads(pf.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    sels = prof.get("recovery_selectors", {}).get("retry_buttons", [
+        'button[aria-label="Reutilizar comando"]',
+        'button:has(mat-icon:has-text("undo"))',
+        'button:has(mat-icon:has-text("redo"))',
+    ])
+
+    for tentativa in range(1, MAX + 1):
+        clicou = False
+        for sel in sels:
+            try:
+                loc = page.locator(sel)
+                n = await loc.count()
+                for j in range(n):
+                    el = loc.nth(j)
+                    if await el.is_visible():
+                        try:
+                            await el.click(timeout=2500)
+                        except Exception:
+                            await el.evaluate("(e) => e.click()")
+                        clicou = True
+                        print(f"  ↻ refresh no Flow (tentativa {tentativa}/{MAX}) via {sel}", flush=True)
+                        break
+            except Exception:
+                continue
+            if clicou:
+                break
+        if not clicou:
+            print("  (nenhum botao de refresh visivel no Flow)", flush=True)
+            return False
+        # aguarda a nova geracao (ou nova recusa) aparecer
+        waited = 0
+        while waited < wait_s:
+            await page.wait_for_timeout(3000)
+            waited += 3
+            st = _classify_screen(await _last_screen_text(page))
+            if st != "refusal":
+                # pode ter gerado (download button) ou outro estado
+                try:
+                    if await count_dl(page) > 0 or captured_body_set(page):
+                        return True
+                except Exception:
+                    return True
+            # se ainda ha recusa, continua o loop (clica de novo)
+        # apos esperar, verifica download
+        try:
+            if await count_dl(page) > 0:
+                return True
+        except Exception:
+            pass
+    print(f"  desistindo do Flow apos {MAX} tentativas", flush=True)
+    return False
+
+
+def captured_body_set(page) -> bool:
+    """Helper simples: sempre False (captura e via closure)."""
+    return False
+
+
 async def select_image_mode(page, aspect: str = "16:9") -> bool:
     """Seleciona 'Imagem' no painel de configurações do Google Flow.
 
@@ -1152,7 +1226,14 @@ async def grab_image(page, name, prompt, out_dir, wait_s, ref_image=None,
                 txt = (await _last_screen_text(page))[:120].replace("\n", " ")
                 print(f"  ⚠ recusa lida da tela ({waited}s): {txt}", flush=True)
                 attempt_log.append(f"{strategy}:recusa ({waited}s)")
-                continue
+                # REGRA DO USUARIO: insistir no Flow clicando em 'Reutilizar
+                # comando' (refresh) ate 10x ANTES de cair no Gemini.
+                insistiu = await retry_refused_image(page, wait_s=min(wait_s, 120))
+                if insistiu:
+                    attempt_log.append(f"{strategy}:recuperado_no_flow")
+                    # continua para a logica de download logo abaixo
+                else:
+                    continue
             # Fecha overlays remanescentes antes de tentar o botao de download
             try:
                 await _dismiss_overlays(page)
