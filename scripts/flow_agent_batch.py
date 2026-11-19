@@ -359,9 +359,19 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
             import re as _re
             chars = _re.sub(pat, repl, chars, flags=_re.I)
         full = chars
-    # Uma colagem 16:9 e UMA imagem: esperar N aqui causaria um timeout de minutos.
-    esperadas = 1 if colagem else len(itens)
-    captor = asyncio.create_task(baixar_novas(page, esperadas, wait_s))
+    # REGRA DO USUARIO: quando o prompt pede VARIAS imagens (lote), o Flow
+    # demora mais. Escalar o tempo de espera 3-4x e, depois que a primeira
+    # imagem chegar, ESPERAR ESTABILIZAR antes de seguir — senao o script manda
+    # o proximo prompt enquanto o Flow ainda esta gerando as outras imagens.
+    n_cenas = len(itens)
+    escala = 1 if n_cenas <= 1 else (3 if n_cenas <= 4 else 4)
+    wait_efetivo = wait_s * escala
+    # Uma colagem 16:9 e UMA imagem, mas o Flow gera as N internas dela.
+    # Esperar todas as N imagens mesmo em colagem.
+    esperadas = n_cenas if colagem else len(itens)
+    print("  esperando %d imagem(s), timeout %ds (escala %dx)" % (
+        esperadas, wait_efetivo, escala), flush=True)
+    captor = asyncio.create_task(baixar_novas(page, esperadas, wait_efetivo))
     res = await ff.submit_flow_prompt(page, full, clear=True)
     print("  submit:", res, flush=True)
     if not res.get("ok"):
@@ -369,6 +379,11 @@ async def _enviar_uma_vez(page, itens, biblia, wait_s, hashes_conhecidos,
         return []
     print("  prompt enviado; aguardando imagens...", flush=True)
     bodies = await captor
+    # ESTABILIZACAO: depois da ultima imagem, esperar mais para o Flow terminer
+    # de renderizar/gravar todas (evita mandar prompt seguinte antes da hora).
+    estabiliza = 12 if n_cenas <= 2 else (20 if n_cenas <= 4 else 30)
+    print("  aguardando estabilizacao (%ds) antes do proximo prompt..." % estabiliza, flush=True)
+    await asyncio.sleep(estabiliza)
 
     novas = []
     for body in bodies:
@@ -584,7 +599,11 @@ async def main_async(args):
                                                 orientacao_fixa=args.orientacao,
                                                 curto=args.prompt_curto)
             todos_faltantes.extend(faltantes)
-            await page.wait_for_timeout(args.pause * 1000)
+            # REGRA DO USUARIO: esperar mais entre lotes para nao mandar o
+            # proximo prompt enquanto o Flow ainda finaliza o anterior.
+            pausa_entre_lotes = max(args.pause, 15)
+            print("  pausa entre lotes: %ds" % pausa_entre_lotes, flush=True)
+            await page.wait_for_timeout(pausa_entre_lotes * 1000)
         if todos_faltantes:
             print("\n============================================================", flush=True)
             print("IMAGENS QUE FALTARAM (gerar depois):", flush=True)
