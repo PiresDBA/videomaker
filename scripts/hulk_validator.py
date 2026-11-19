@@ -136,9 +136,17 @@ def main(slug, strict):
         else:
             erros.append(f"composicao SEM clipes: {nvids} videos (esperado >=5)")
         if nparts > 0 and nfocus > 0:
-            oks.append(f"efeitos de fundo: {nparts} particulas, {nfocus} focus-pulse")
+            oks.append(f"efeitos de fundo: {nparts} particulas, {nfocus} shadow-sway")
         else:
-            erros.append(f"efeitos de fundo faltando: particulas={nparts}, focus-pulse={nfocus}")
+            erros.append(f"efeitos de fundo faltando: particulas={nparts}, shadow-sway={nfocus}")
+        # REGRA DO USUARIO (2026-11-19): sem blur/desfoque. O efeito certo e
+        # shadow-sway (deslocamento lateral lento + sombra), nao blur/foco.
+        if re.search(r"filter\s*:\s*blur\s*\(", html):
+            erros.append("DESFOQUE (filter:blur) detectado na composicao - usar shadow-sway")
+        elif "shadow-sway" not in html:
+            avisos.append("shadow-sway ainda nao aplicado (composicao antiga)")
+        else:
+            oks.append("sem blur: shadow-sway (deslocamento lateral + sombra)")
     else:
         avisos.append("composition.html ainda nao gerado")
 

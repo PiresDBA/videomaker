@@ -738,14 +738,37 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > 5. Composicao final DEVE ter >=5 videos, particulas > 0 e focus-pulse > 0.
 
-> 6. Hulk valida tudo isso (regras 10 e 11) antes de publicar.
-
-
-## VERIFY - DURACAO REAL DA COMPOSICAO (2026-11-19)
-
-> `verify_output.py` dava FALSO POSITIVO: calculava
-> `timeline + capa + pre_final + outro = 678.15s` e o video tinha 670.23s.
-> Causa: os clipes do meio e o `pre_final` SOBREPOEM as cenas, nao estendem.
-> CORRECAO: a duracao esperada agora vem do `data-duration` do `#root` no
-> `composition.html` (fonte da verdade). Fallback sem somar `pre_final`.
+> 6. Hulk valida tudo isso (regras 10 e 11) antes de publicar.
+
+
+
+
+
+## VERIFY - DURACAO REAL DA COMPOSICAO (2026-11-19)
+
+
+
+> `verify_output.py` dava FALSO POSITIVO: calculava
+
+> `timeline + capa + pre_final + outro = 678.15s` e o video tinha 670.23s.
+
+> Causa: os clipes do meio e o `pre_final` SOBREPOEM as cenas, nao estendem.
+
+> CORRECAO: a duracao esperada agora vem do `data-duration` do `#root` no
+
+> `composition.html` (fonte da verdade). Fallback sem somar `pre_final`.
+
 > Commit `2f321d5`. Verificado: delta 0.02s, STATUS OK, audio continuo.
+
+
+## EFEITO SHADOW-SWAY - SEM DESFOQUE (2026-11-19)
+
+> O usuario REPROVOU o blur/foco pulsante (`filter:blur(0->2.5px)`): ficou ruim.
+> O efeito CERTO e `shadow-sway`: a imagem vai um pouquinho para um lado
+> (`translate:-6px`) enquanto a SOMBRA vai para o outro (`drop-shadow(+6px)`),
+> invertendo devagar em 14s. Parece a imagem dividida em 2 se mexendo,
+> SEM desfoque e SEM zoom (zoom corta colagens).
+> Usa a propriedade independente `translate` para nao conflitar com o
+> `transform` do GSAP. O nome da classe .focus-pulse foi MANTIDO para nao
+> quebrar validacoes; o conteudo do @keyframes e que mudou (commit 55ff1fe).
+> Hulk agora BLOQUEIA se aparecer `filter:blur(` na composicao.
