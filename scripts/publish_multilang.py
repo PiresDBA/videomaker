@@ -417,6 +417,15 @@ def publish_project(proj_slug, dry_run=False, projects_dir=DEFAULT_PROJECTS_DIR,
         ("es", output / f"{proj_slug}_es.mp4", title_es or title_pt + " (ES)"),
     ]
     for lang, mp4_file, title in uploads:
+        # HOOK OBRIGATORIO antes de QUALQUER upload (2026-11-20): auditoria
+        # visual + idioma falado + canal + kids=False + thumbnail.
+        try:
+            from hook_manager import disparar
+        except ImportError:
+            sys.path.insert(0, str(HERE))
+            from hook_manager import disparar
+        if not disparar("antes_publicar", slug=proj_slug, lang=lang):
+            raise RuntimeError(f"HOOK bloqueou publicacao {lang.upper()} — corrija e tente de novo")
         storyline = get_storyline(proj_dir, lang)
         upload_and_caption(proj_slug, lang, mp4_file, title, storyline, dry_run,
                            client_secret, token, proj_dir)

@@ -241,6 +241,53 @@ def main(slug, strict, lang="pt"):
     else:
         oks.append("THUMB_TEXTS PT/EN/ES presentes")
 
+    # 16b) AUDITORIA VISUAL obrigatoria (folha de referencia, duplicatas,
+    #      contato revisado pelo agente) — regra 2026-11-20
+    av = P / "artifacts" / f"auditoria_visual_{lang}.json"
+    if not av.exists():
+        erros.append(f"AUDITORIA VISUAL ausente: rode auditoria_visual.py --lang {lang}")
+    else:
+        try:
+            d_av = json.loads(av.read_text(encoding="utf-8"))
+            if d_av.get("status") != "PASS":
+                erros.append(f"AUDITORIA VISUAL FALHOU: {d_av.get('erros', [])[:3]}")
+            elif not d_av.get("revisado_por_agente"):
+                erros.append("AUDITORIA VISUAL nao revisada: agente deve OLHAR os contatos "
+                             "e rodar auditoria_visual.py --revisar")
+            else:
+                oks.append(f"auditoria visual PASS e revisada ({d_av.get('total_imagens')} imagens)")
+        except Exception as e:
+            erros.append(f"auditoria visual ilegivel: {e}")
+
+    # 16c) AUDITORIA DE IDIOMA FALADO (Whisper auto-detect)
+    ai = P / "artifacts" / f"auditoria_idioma_{lang}.json"
+    if not ai.exists():
+        erros.append(f"AUDITORIA DE IDIOMA ausente: rode auditoria_idioma.py --lang {lang}")
+    else:
+        try:
+            d_ai = json.loads(ai.read_text(encoding="utf-8"))
+            if d_ai.get("status") != "PASS":
+                erros.append(f"AUDIO NO IDIOMA ERRADO: {d_ai.get('erros', [])[:2]}")
+            else:
+                oks.append("auditoria de idioma falado PASS")
+        except Exception as e:
+            erros.append(f"auditoria de idioma ilegivel: {e}")
+
+    # 16d) texto do roteiro traduzido sem marcadore PT (EN/ES)
+    if lang in ("en", "es"):
+        sl = P / "artifacts" / f"script_{lang}.json"
+        if sl.exists():
+            import unicodedata as _u
+            def _fold(s):
+                return "".join(c for c in _u.normalize("NFKD", s or "") if not _u.combining(c)).lower()
+            txt = _fold(sl.read_text(encoding="utf-8", errors="replace"))
+            marcas = [m for m in ("coracao", "voce", "obrigado", "proximos videos",
+                                  "amiguinhos", "fique com a gente") if m in txt]
+            if marcas:
+                erros.append(f"ROTEIRO {lang.upper()} com texto PT: {marcas}")
+            else:
+                oks.append(f"roteiro {lang.upper()} sem marcadore PT")
+
     # 17) PONTO UNICO de SFX: gerenciador_efeitos_sonoros.obter_efeito_sonoro
     ger = (SCRIPTS / "gerenciador_efeitos_sonoros.py").read_text(
         encoding="utf-8", errors="replace")

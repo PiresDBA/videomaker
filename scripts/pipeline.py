@@ -1519,7 +1519,8 @@ def phase_render(args, p: Project):
         python scripts/pipeline.py full --prompt "Husky engraçado" --only render --skip-check
     """
     # HOOK: intercepta ANTES de renderizar e valida o CONTRATO.
-    if not hook_disparar("antes_render", slug=p.slug):
+    if not hook_disparar("antes_render", slug=p.slug,
+                         lang=(getattr(args, "mix_lang", "pt") or "pt")):
         raise RuntimeError("HOOK bloqueou o render")
     cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File",
            str(HERE / "render.ps1"),

@@ -215,32 +215,80 @@ Detalhes: `CONTRATO.md`.
 - `.chrome-gemini-profile/` (sessão do Chrome)
 - `*.log`, `*.mp4`, `*.jpg`, `*.png`, `*.wav`, `*.m4a`
 - `ffmpeg/`, `hyperframes-workspace/`, `banco de imagens/`, `banco de músicas/`
-- `scripts/client_secret*.json`, `scripts/*token*.json`, `scripts/config.json`
-
-
-## Regras de Efeitos Sonoros (SFX) e Áudio (2026-11-20)
-
-- Sempre utilize o módulo `gerenciador_efeitos_sonoros.py`
-  (`obter_efeito_sonoro`) para obter qualquer efeito sonoro do vídeo.
-  **Nunca crie caminhos de áudio fictícios.** Sons locais só são aceitos se o
-  arquivo existir (`origem="local"` valida antes de devolver o caminho).
-- Quando usar `origem="earshot"`: para todos os sons de ritmo, interface,
-  transições de cena, cortes secos, impactos, subidas de tensão e alertas
-  (`whoosh_fast/crisp`, `ui_pop`, `cut_hit`, `riser`, `knock`, `shutter`,
-  `reverse_swell`). Antes de escolher um ID do Earshot, rode
-  `earshot sfx list` se tiver dúvida sobre o nome exato.
-- Quando usar `origem="freesound"`: para sons realistas e específicos de
-  ambiente, objetos, máquinas, animais, clima ou ações complexas
-  (ex: "forest rain", "dog bark", "explosion debris", "typewriter"). Use
-  sempre termos de busca curtos em inglês (2 a 3 palavras). Requer
-  `FREESOUND_API_KEY` no `.env` (se ausente, o módulo avisa e não inventa som).
-- Mixagem no FFmpeg: sempre normalize e atenue o volume dos efeitos sonoros
-  (ex: `-filter:a "volume=0.35"`) ao misturar com a faixa de narração
-  principal para não encobrir a voz. Na sonoplastia atual isso equivale ao
-  ducking com earshot (efeitos caem para 55% durante a fala).
-- No Earshot, use sempre o ID completo no formato familia/variante
-  (ex: `whoosh_fast/crisp`, `swipe/paper`, `swish/bright`) e só passe
-  `--pitch` ou `--dur` se aparecerem na coluna `knobs` de `earshot sfx list`.
-- Anti-laser: `osso_assobio` (apito puro 1454 Hz), `zap`, `glitch`, `zing`,
-  `whistle`, `logo_sting`, `downlifter` e `sub_drop` continuam proibidos.
+- `scripts/client_secret*.json`, `scripts/*token*.json`, `scripts/config.json`
+
+
+
+
+
+## Regras de Efeitos Sonoros (SFX) e Áudio (2026-11-20)
+
+
+
+- Sempre utilize o módulo `gerenciador_efeitos_sonoros.py`
+
+  (`obter_efeito_sonoro`) para obter qualquer efeito sonoro do vídeo.
+
+  **Nunca crie caminhos de áudio fictícios.** Sons locais só são aceitos se o
+
+  arquivo existir (`origem="local"` valida antes de devolver o caminho).
+
+- Quando usar `origem="earshot"`: para todos os sons de ritmo, interface,
+
+  transições de cena, cortes secos, impactos, subidas de tensão e alertas
+
+  (`whoosh_fast/crisp`, `ui_pop`, `cut_hit`, `riser`, `knock`, `shutter`,
+
+  `reverse_swell`). Antes de escolher um ID do Earshot, rode
+
+  `earshot sfx list` se tiver dúvida sobre o nome exato.
+
+- Quando usar `origem="freesound"`: para sons realistas e específicos de
+
+  ambiente, objetos, máquinas, animais, clima ou ações complexas
+
+  (ex: "forest rain", "dog bark", "explosion debris", "typewriter"). Use
+
+  sempre termos de busca curtos em inglês (2 a 3 palavras). Requer
+
+  `FREESOUND_API_KEY` no `.env` (se ausente, o módulo avisa e não inventa som).
+
+- Mixagem no FFmpeg: sempre normalize e atenue o volume dos efeitos sonoros
+
+  (ex: `-filter:a "volume=0.35"`) ao misturar com a faixa de narração
+
+  principal para não encobrir a voz. Na sonoplastia atual isso equivale ao
+
+  ducking com earshot (efeitos caem para 55% durante a fala).
+
+- No Earshot, use sempre o ID completo no formato familia/variante
+
+  (ex: `whoosh_fast/crisp`, `swipe/paper`, `swish/bright`) e só passe
+
+  `--pitch` ou `--dur` se aparecerem na coluna `knobs` de `earshot sfx list`.
+
+- Anti-laser: `osso_assobio` (apito puro 1454 Hz), `zap`, `glitch`, `zing`,
+
+  `whistle`, `logo_sting`, `downlifter` e `sub_drop` continuam proibidos.
+
   `riser` é permitido apenas para subida de tensão, com ganho baixo e ducking.
+
+
+## AUDITORIA VISUAL E DE IDIOMA OBRIGATORIA (2026-11-20)
+
+Motivo: o usuario teve que apontar erros que a auditoria antiga nao pegou.
+Causa: `check_personagens_imagens.py` era STUB (`auditar()` = NotImplementedError)
+e `make_contact_sheet.py` apontava para OUTRO projeto. Nada rodava no Hook.
+
+Ferramentas reais (rodar ANTES de renderizar/publicar):
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang>
+  # abre as 4 folhas de contato em conferencia/auditoria_visual/ e OLHA
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang> --revisar
+  python scripts/auditoria_idioma.py --slug <slug> --lang <lang>
+
+O Hook (`antes_render`, `antes_publicar`) BLOQUEIA se faltar:
+  - auditoria_visual_<lang>.json com status PASS e revisado_por_agente=true
+  - auditoria_idioma_<lang>.json com status PASS (Whisper detecta o idioma falado)
+  - roteiro <lang> sem marcadores de outro idioma
+O `publish_multilang.py` tambem dispara o Hook antes de cada upload.
+Somente apos aprovacao explicita do usuario (`pode publicar`) o upload acontece.

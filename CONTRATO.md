@@ -1075,19 +1075,54 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > 8. Renderizar idiomas SEQUENCIALMENTE (nunca EN e ES em paralelo no mesmo
 
->    projeto). Copiar o MP4 final para `<slug>_<lang>.mp4` antes do proximo.
-
-
-## BANCO DE SONS DOMESTICOS (2026-11-20)
-
-> O usuario ouviu "laser" de novo. Causa: sons de apito puro. O banco earshot
-> tem 252 sons, mas muitos sao eletronicos (glitch/riser/zap/whistle).
-> REGRAS:
-> - `SONS_PROIBIDOS` inclui `osso_assobio` (apito puro 1454 Hz) — NUNCA usar.
-> - Novos sons DOMESTICOS copiados para `assets/audio/sons/`:
->   `bola_quique`, `espirro`, `estrelinha`, `pomba_coo`, `buzina_bibi`.
->   Usar de preferencia sobre sinteticos quando a cena pedir (bola, espirro,
->   estrelinha, pomba, bocina).
-> - `gerar_capitulo_trilinguo.py` agora roda SONOPLASTIA depois do mix e antes
->   do compose (antes o video saia sem efeitos).
+>    projeto). Copiar o MP4 final para `<slug>_<lang>.mp4` antes do proximo.
+
+
+
+
+
+## BANCO DE SONS DOMESTICOS (2026-11-20)
+
+
+
+> O usuario ouviu "laser" de novo. Causa: sons de apito puro. O banco earshot
+
+> tem 252 sons, mas muitos sao eletronicos (glitch/riser/zap/whistle).
+
+> REGRAS:
+
+> - `SONS_PROIBIDOS` inclui `osso_assobio` (apito puro 1454 Hz) — NUNCA usar.
+
+> - Novos sons DOMESTICOS copiados para `assets/audio/sons/`:
+
+>   `bola_quique`, `espirro`, `estrelinha`, `pomba_coo`, `buzina_bibi`.
+
+>   Usar de preferencia sobre sinteticos quando a cena pedir (bola, espirro,
+
+>   estrelinha, pomba, bocina).
+
+> - `gerar_capitulo_trilinguo.py` agora roda SONOPLASTIA depois do mix e antes
+
+>   do compose (antes o video saia sem efeitos).
+
 > - NUNCA publicar sem o usuario avaliar o pacote de `revisar_entrega.py`.
+
+
+## AUDITORIA VISUAL E DE IDIOMA OBRIGATORIA (2026-11-20)
+
+Motivo: o usuario teve que apontar erros que a auditoria antiga nao pegou.
+Causa: `check_personagens_imagens.py` era STUB (`auditar()` = NotImplementedError)
+e `make_contact_sheet.py` apontava para OUTRO projeto. Nada rodava no Hook.
+
+Ferramentas reais (rodar ANTES de renderizar/publicar):
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang>
+  # abre as 4 folhas de contato em conferencia/auditoria_visual/ e OLHA
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang> --revisar
+  python scripts/auditoria_idioma.py --slug <slug> --lang <lang>
+
+O Hook (`antes_render`, `antes_publicar`) BLOQUEIA se faltar:
+  - auditoria_visual_<lang>.json com status PASS e revisado_por_agente=true
+  - auditoria_idioma_<lang>.json com status PASS (Whisper detecta o idioma falado)
+  - roteiro <lang> sem marcadores de outro idioma
+O `publish_multilang.py` tambem dispara o Hook antes de cada upload.
+Somente apos aprovacao explicita do usuario (`pode publicar`) o upload acontece.
