@@ -96,3 +96,30 @@ scripts/.publish_history.json
 
 youtube_token.json*
 
+# --- Logs e relatórios de execução (não são código) ---
+log_*.txt
+relatorio_*.txt
+relatorio_*.json
+monitor_status.ps1
+
+# --- Dublagem temporária ---
+_dublagem_tmp*/
+_dublagem_tmp*/*
+
+# --- Scripts/arquivos de inspeção temporários ---
+_inspect_*.py
+_test_*.py
+_check_flow_state.py
+_canal_pt_check.json
+.flow_learned_profile.json.bak-zoom
+
+# --- Áudio de dubbing (temporário) ---
+*.mp3
+
+# --- Artefatos soltos na raiz ---
+artifacts/
+
+# --- Pacote vendored (ferramenta separada; o grafo usa earshot-sfx) ---
+VoiceCraft-portable/
+VoiceCraft-portable.zip
+

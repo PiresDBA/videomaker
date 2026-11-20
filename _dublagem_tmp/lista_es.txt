@@ -1,4 +1,0 @@
-file 'C:/videomaker/_dublagem_tmp/es_0_seg.wav'
-file 'C:/videomaker/_dublagem_tmp/es_1_seg.wav'
-file 'C:/videomaker/_dublagem_tmp/es_2_seg.wav'
-file 'C:/videomaker/_dublagem_tmp/sil_fim.wav'

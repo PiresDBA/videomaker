@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T11:50:46.881319+00:00",
+  "generated_at": "2026-11-20T15:37:00.979744+00:00",
   "nodes": {
     "earshot_sfx_earshot_audio_to_mono": {
       "code_fingerprint": "add15ed1489d333c45266e45c1461ca34312b80f32eee7fd483ed4338c31b3da",
@@ -12,7 +12,7 @@
           "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
         }
       ],
-      "score": 0.999738492,
+      "score": 0.996116063,
       "source_file": "earshot-sfx/earshot/audio.py",
       "status": "tentative",
       "uses": 1
@@ -28,7 +28,7 @@
           "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
         }
       ],
-      "score": 0.999738492,
+      "score": 0.996116063,
       "source_file": "earshot-sfx/earshot/compare.py",
       "status": "tentative",
       "uses": 1
@@ -44,7 +44,7 @@
           "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
         }
       ],
-      "score": 0.999738492,
+      "score": 0.996116063,
       "source_file": "earshot-sfx/earshot/compare.py",
       "status": "tentative",
       "uses": 1
@@ -60,7 +60,7 @@
           "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
         }
       ],
-      "score": 0.99973869,
+      "score": 0.99611626,
       "source_file": "earshot-sfx/earshot/llm.py",
       "status": "tentative",
       "uses": 1
@@ -76,7 +76,7 @@
           "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
         }
       ],
-      "score": 0.99973869,
+      "score": 0.99611626,
       "source_file": "earshot-sfx/earshot/llm.py",
       "status": "tentative",
       "uses": 1
@@ -92,13 +92,13 @@
           "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
         }
       ],
-      "score": 0.99973869,
+      "score": 0.99611626,
       "source_file": "earshot-sfx/earshot/llm.py",
       "status": "tentative",
       "uses": 1
     },
     "scripts_gerar_capitulo_trilinguo": {
-      "code_fingerprint": "6a03a98ec0dbe5848f59a77d42bdb3cdc5ad9e974eb4a47559ac274c5edccd0f",
+      "code_fingerprint": "008ea7e6d28de2879df50d2cc712f6f2d9f78037eb17e96b9e43b82c42ed0f14",
       "label": "gerar_capitulo_trilinguo.py",
       "last": "2026-11-20T11:34:29.350674+00:00",
       "provenance": [
@@ -108,13 +108,13 @@
           "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
         }
       ],
-      "score": 0.999738625,
+      "score": 0.996116196,
       "source_file": "scripts/gerar_capitulo_trilinguo.py",
       "status": "tentative",
       "uses": 1
     },
     "scripts_hook_manager": {
-      "code_fingerprint": "1282d41aadcf846b01f9fd2143c7775c9c0386691f65f3a024786651ddae54dd",
+      "code_fingerprint": "7802488a60cc56c48f0ddd0e94bce733b72bbb686fdf970e0e1899924eeb0f4b",
       "label": "hook_manager.py",
       "last": "2026-11-20T11:34:29.350674+00:00",
       "provenance": [
@@ -124,13 +124,13 @@
           "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
         }
       ],
-      "score": 0.999738625,
+      "score": 0.996116196,
       "source_file": "scripts/hook_manager.py",
       "status": "tentative",
       "uses": 1
     },
     "scripts_pipeline": {
-      "code_fingerprint": "788917a903d9078161b0a2353e9d3f2494cb25ac02447e66fa7790f2a507bd60",
+      "code_fingerprint": "e7105f8153ff910a15bcf725343bd2d9ed9cd3438934b489ca901d657aa21bd6",
       "label": "pipeline.py",
       "last": "2026-11-20T11:34:29.350674+00:00",
       "provenance": [
@@ -140,7 +140,7 @@
           "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
         }
       ],
-      "score": 0.999738625,
+      "score": 0.996116196,
       "source_file": "scripts/pipeline.py",
       "status": "tentative",
       "uses": 1
@@ -156,7 +156,7 @@
           "q": "O que conecta assemble, bgm_gemini.wav e o timeout do FrameCapture?"
         }
       ],
-      "score": 0.999738556,
+      "score": 0.996116127,
       "source_file": "",
       "status": "tentative",
       "uses": 1
