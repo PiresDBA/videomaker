@@ -1,5 +1,21 @@
 # AGENTS.md — Videomaker
 
+## 🛑 REGRA DE OURO DO AGENTE (2026-11-20) — NAO QUEBRAR
+
+**Toda sessão COMEÇA com:**
+```powershell
+python scripts/agent_briefing.py --slug <slug>
+```
+Ele imprime as fórmulas prontas e roda as travas. **Nunca reimplementar o que
+já existe** (`publish_multilang.py`, `gerar_capitulo_trilinguo.py`,
+`check_texto_idioma.py`, `check_imagens_compartilhadas.py`,
+`gen_narration_voicecraft.py`). Se algo deu errado antes, procure no
+`git log --all --oneline --grep="..." -i` — a correção já foi feita.
+
+Antes de PUBLICAR, o Hook `antes_publicar` bloqueia se faltar: idioma do
+overlay, credencial do canal, `kids=False`, thumbnail no idioma, ou folha de
+referência entre as imagens. **Não contorne o Hook.**
+
 **Leia `CONTRATO.md` e `MANUAL_GRAFOS.md` ANTES de fazer qualquer coisa.**
 O manual é a fonte de verdade do produto: o que já está feito, como está e por
 quê. Não refaça e não desfaça o que já está resolvido.

@@ -36,10 +36,33 @@ def md5(p):
     return h.hexdigest()
 
 
-def main(slug, strict):
+BADGE = {"pt": "Frida e Luna", "en": "Frida and Luna", "es": "Frida y Luna"}
+CREDENCIAIS = {
+    "pt": ("client_secret_pt.json", "youtube_token_pt.json"),
+    "en": ("client_secret_en.json", "youtube_token_en.json"),
+    "es": ("client_secret_es.json", "youtube_token_es.json"),
+}
+
+
+def _eh_folha_referencia(path):
+    """Folha de personagem: fundo quase branco + muito texto (bordas)."""
+    try:
+        from PIL import Image
+        import numpy as np
+        im = Image.open(path).convert("RGB").resize((160, 90))
+        a = np.asarray(im, dtype=np.float32)
+        branco = float((a.min(axis=2) > 200).mean())
+        cinza = np.asarray(im.convert("L"), dtype=np.float32)
+        bordas = float((np.abs(np.diff(cinza, axis=1)) > 40).mean())
+        return branco > 0.60 and bordas > 0.055
+    except Exception:
+        return False
+
+
+def main(slug, strict, lang="pt"):
     P = PROJETOS / slug
     erros, avisos, oks = [], [], []
-    print(f"=== HOOK - VALIDANDO {slug} ===")
+    print(f"=== HOOK - VALIDANDO {slug} (idioma {lang.upper()}) ===")
 
     # 1) duplicatas de imagem
     d = P / "assets/images/gemini/scenes"
@@ -164,6 +187,60 @@ def main(slug, strict):
     elif not sonoes:
         avisos.append("sonoplastia ainda nao gerada")
 
+    # 12) PROIBIDO folha de referencia de personagem como imagem de cena
+    folhas = [im.name for im in imgs if _eh_folha_referencia(im)]
+    if folhas:
+        erros.append(f"FOLHA DE REFERENCIA nas imagens: {folhas} "
+                     "(use um quadro real, nunca a folha de personagem)")
+    else:
+        oks.append("nenhuma folha de referencia entre as imagens")
+
+    # 13) overlays no idioma do video (PT/EN/ES) — regra de ouro
+    if lang in ("en", "es"):
+        s0 = P / "scenes" / lang / "s0.html"
+        if not s0.exists():
+            erros.append(f"OVERLAY {lang.upper()} AUSENTE: scenes/{lang}/s0.html "
+                         "(rode gerar_capitulo_trilinguo.py)")
+        else:
+            txt = s0.read_text(encoding="utf-8", errors="replace")
+            if BADGE[lang] not in txt:
+                erros.append(f"OVERLAY {lang.upper()} com badge errado "
+                             f"(esperado '{BADGE[lang]}')")
+            pt_markers = ["Frida e Luna", "sozinhas em casa", "coração",
+                          "próximos vídeos", "amiguinhos", "Oiê"]
+            achados = [m for m in pt_markers if m.lower() in txt.lower()]
+            if achados:
+                erros.append(f"OVERLAY {lang.upper()} com texto PT: {achados}")
+            else:
+                oks.append(f"overlay {lang.upper()} no idioma correto")
+    else:
+        oks.append("overlay PT (padrao)")
+
+    # 14) credenciais separadas por canal (PT/EN/ES)
+    faltando = [f"{lang2.upper()}:{f}" for lang2, par in CREDENCIAIS.items()
+                for f in par if not (SCRIPTS / f).exists()]
+    if faltando:
+        erros.append(f"CREDENCIAIS DE CANAL AUSENTES: {faltando}")
+    else:
+        oks.append("credenciais PT/EN/ES presentes (canal certo por idioma)")
+
+    # 15) publicar SEMPRE como NAO infantil
+    up = (SCRIPTS / "youtube_upload.py").read_text(encoding="utf-8", errors="replace")
+    if '"--made-for-kids", action="store_true", default=False' not in up:
+        erros.append("youtube_upload.py: --made-for-kids NAO tem default=False")
+    else:
+        oks.append("publicacao NAO infantil por padrao")
+
+    # 16) thumbnail no idioma do video
+    pl = (SCRIPTS / "pipeline.py").read_text(encoding="utf-8", errors="replace")
+    for chave in ('"pt": ("SOZINHAS EM CASA!"', '"en": ("HOME ALONE!"',
+                  '"es": ("¡SOLAS EN CASA!"'):
+        if chave not in pl:
+            erros.append(f"THUMB_TEXTS incompleto (falta {chave})")
+            break
+    else:
+        oks.append("THUMB_TEXTS PT/EN/ES presentes")
+
     print("\n".join(f"  OK  {x}" for x in oks))
     print("\n".join(f"  AVISO  {x}" for x in avisos))
     print("\n".join(f"  ERRO  {x}" for x in erros))
@@ -179,5 +256,6 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--slug", required=True)
     ap.add_argument("--strict", action="store_true")
+    ap.add_argument("--lang", default="pt", choices=["pt", "en", "es"])
     a = ap.parse_args()
-    sys.exit(main(a.slug, a.strict))
+    sys.exit(main(a.slug, a.strict, a.lang))

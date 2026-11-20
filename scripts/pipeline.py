@@ -380,6 +380,13 @@ YT_TAGS_POR_IDIOMA = {
     "es": ("perro,perros,frida,luna,dibujosanimados,historiainfantil,"
            "cachorros,perrito,animacion,familia,amigos,solasencasa,entretenimiento"),
 }
+# REGRA DE OURO 2026-11-20: cada idioma vai no SEU canal. Nunca publicar
+# EN/ES no token PT (bug real: 2 videos subidos no canal errado).
+YT_CREDENCIAIS_POR_IDIOMA = {
+    "pt": ("client_secret_pt.json", "youtube_token_pt.json"),
+    "en": ("client_secret_en.json", "youtube_token_en.json"),
+    "es": ("client_secret_es.json", "youtube_token_es.json"),
+}
 
 # Indice do MANUAL_GRAFOS.md, mostrado pelo comando `contract`.
 # Serve para o proximo nao gastar token vasculhando o manual inteiro.
@@ -1159,9 +1166,11 @@ def phase_narration(args, p: Project):
     """
     cfg = load_json(HERE / "config.json")
     tts = cfg.get("tts", {})
-    provider = (getattr(args, "narration_provider", None) or tts.get("provider") or "edge").lower()
-    if provider not in ("edge", "gemini"):
-        provider = "edge"
+    provider = (getattr(args, "narration_provider", None) or tts.get("provider") or "voicecraft").lower()
+    # REGRA 2026-11-20: VoiceCraft e o provedor PADRAO (voz com emocao, 12
+    # provedores no servico local 8090). edge/gemini sao alternativas.
+    if provider not in ("edge", "gemini", "voicecraft"):
+        provider = "voicecraft"
 
     languages = [l.strip().lower() for l in (getattr(args, "languages", "pt") or "pt").split(",") if l.strip()]
     if not languages:
@@ -1293,7 +1302,32 @@ def phase_narration(args, p: Project):
         rate = rate_for(lang)
         pitch = pitch_for(lang)
 
-        if provider == "gemini":
+        if provider == "voicecraft":
+            # VoiceCraft (API local 8090): voz com EMOCao, perfil infantil e
+            # cascata de 12 provedores (gemini -> gcloud -> nvidia -> edge...).
+            #CORRIGIDO 2026-11-20: nao passar --rate/--pitch (o script
+            # do VoiceCraft nao aceita; era isso que quebrava e fazia o
+            # pipeline cair no Edge comum).
+            rc = run([sys.executable, str(SCRIPTS["gen_narration"]),
+                      "--proj", str(p.dir),
+                      "--lang", lang,
+                      "--script", str(script_path),
+                      "--voice", voice,
+                      "--workers", str(workers)],
+                     f"FASE narration[{lang}]: VoiceCraft (API 8090, voz com emocao)")
+            if rc.returncode != 0:
+                print(f"  {lang}: VoiceCraft falhou, usando Edge-TTS local", flush=True)
+                rc2 = run([sys.executable, str(SCRIPTS["gen_narration_edge"]),
+                           "--proj", str(p.dir), "--lang", lang,
+                           "--script", str(script_path), "--voice", edge_voice,
+                           "--rate", rate, "--pitch", pitch,
+                           "--workers", str(workers)],
+                          f"FASE narration[{lang}]: Edge-TTS fallback")
+                if rc2.returncode != 0:
+                    print(f"  {lang}: falhou narracao (VoiceCraft + Edge)", flush=True)
+            else:
+                print(f"  {lang}: narracao via VoiceCraft OK", flush=True)
+        elif provider == "gemini":
             # Tenta Gemini TTS primeiro; se falhar por cota/erro, cai no Edge-TTS.
             rc = run_gemini(lang, voice, script_path,
                             f"FASE narration[{lang}]: Gemini-TTS '{voice}' (Google)")
@@ -1599,8 +1633,9 @@ def phase_youtube(args, p: Project):
             --privacy unlisted --yt-title "Husky que faz drama"
     """
     print("== FASE youtube: iniciando", flush=True)
-    # HOOK: intercepta ANTES de publicar e valida todas as regras do CONTRATO.
-    if not hook_disparar("antes_publicar", slug=p.dir.name):
+    # HOOK: intercepta ANTES de publicar e valida todas as regras do CONTRATO,
+    # INCLUSIVE o idioma do video (overlay/canal/thumbnail) — 2026-11-20.
+    if not hook_disparar("antes_publicar", slug=p.dir.name, lang=thumb_lang(args)):
         args.publish_ok = False
         return False
     if not p.video.exists():
@@ -1641,6 +1676,11 @@ def phase_youtube(args, p: Project):
     if not thumb:
         thumb = gerar_thumbnail_viral(p, title, thumb_lang(args))
     secret = getattr(args, "yt_secret", "") or ""
+    # REGRA DE OURO: cada idioma no SEU canal (token/client_secret por idioma).
+    cs_lang, tk_lang = YT_CREDENCIAIS_POR_IDIOMA.get(lang_pub, YT_CREDENCIAIS_POR_IDIOMA["pt"])
+    secret = secret or str(HERE / cs_lang)
+    token_path = str(HERE / tk_lang)
+    print(f"== YOUTUBE: canal {lang_pub.upper()} -> {tk_lang}", flush=True)
 
     cmd = [
         sys.executable, str(HERE / "youtube_upload.py"),
@@ -1652,7 +1692,8 @@ def phase_youtube(args, p: Project):
         "--category", category,
         "--default-language", default_language,
         "--default-audio-language", default_audio_language,
-        "--client-secret", secret or str(HERE / "client_secret.json"),
+        "--client-secret", secret,
+        "--token", token_path,
     ]
     if made_for_kids:
         cmd.append("--made-for-kids")
@@ -1946,6 +1987,10 @@ def update_youtube_metadata(p: Project, args):
     if not thumb:
         thumb = gerar_thumbnail_viral(p, title, thumb_lang(args))
     secret = getattr(args, "yt_secret", "") or ""
+    cs_lang, tk_lang = YT_CREDENCIAIS_POR_IDIOMA.get(lang_pub, YT_CREDENCIAIS_POR_IDIOMA["pt"])
+    secret = secret or str(HERE / cs_lang)
+    token_path = str(HERE / tk_lang)
+    print(f"== YT-META: canal {lang_pub.upper()} -> {tk_lang}", flush=True)
 
     cmd = [
         sys.executable, str(HERE / "youtube_update.py"),
@@ -1954,7 +1999,8 @@ def update_youtube_metadata(p: Project, args):
         "--description", desc,
         "--tags", tags,
         "--category", category,
-        "--client-secret", secret or str(HERE / "client_secret.json"),
+        "--client-secret", secret,
+        "--token", token_path,
     ]
     if thumb:
         cmd += ["--thumbnail", thumb]
@@ -2439,7 +2485,7 @@ def main():
             "--narration-style", default=None,
             help="instrucao de estilo para a voz Gemini (ex: 'divertida e alegre, sorrindo, empolgante para criancas')")
         sp.add_argument(
-            "--narration-provider", default=None, choices=["edge", "gemini"],
+            "--narration-provider", default=None, choices=["edge", "gemini", "voicecraft"],
             help="motor da narracao. edge = local sem API (padrao seguro); "
                  "gemini = Google AI Studio (fallback automatico para edge). "
                  "Padrao: config.json tts.provider. Ex: --narration-provider edge")

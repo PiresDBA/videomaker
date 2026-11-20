@@ -1,5 +1,14 @@
 # CONTRATO DE TRABALHO — Videomaker
 
+> ## 🛑 REGRA DE OURO (2026-11-20) — NAO QUEBRAR
+>Todo agente começa com `python scripts/agent_briefing.py --slug <slug>`.
+>Se existe script pronto, **usa** — nunca reimplementa. Fórmulas:
+>`gerar_capitulo_trilinguo.py` (3 idiomas), `publish_multilang.py` (canal por
+>idioma), `check_texto_idioma.py` (overlay/roteiro no idioma),
+>`check_imagens_compartilhadas.py` (mesmas imagens), `gen_narration_voicecraft.py`
+>(voz com emoção). Antes de publicar, procure no `git log` — a correção já
+>foi feita uma vez. O Hook `antes_publicar` bloqueia publicação errada.
+
 > **Leia este arquivo ANTES de qualquer coisa.**
 > Leia também o `MANUAL_GRAFOS.md`, que é a fonte de verdade do produto.
 

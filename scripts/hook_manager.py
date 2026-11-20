@@ -48,8 +48,12 @@ def disparar(evento: str, **contexto) -> bool:
 @registrar("antes_render")
 @registrar("antes_publicar")
 @registrar("antes_auditoria_aplicar")
-def validar_contrato(slug: str = "", **_ctx) -> bool:
-    """Gatilho principal: roda o validador do CONTRATO e bloqueia se falhar."""
+def validar_contrato(slug: str = "", lang: str = "pt", **_ctx) -> bool:
+    """Gatilho principal: roda o validador do CONTRATO e bloqueia se falhar.
+
+    `lang` e OBRIGATORIO na publicacao:_o Hook valida overlay, canal e
+    thumbnail no idioma do video (2026-11-20).
+    """
     validador = HERE / "hook_validator.py"
     if not validador.exists():
         print("HOOK: validador ausente - bloqueando por seguranca", flush=True)
@@ -57,6 +61,8 @@ def validar_contrato(slug: str = "", **_ctx) -> bool:
     args = [sys.executable, str(validador)]
     if slug:
         args += ["--slug", slug]
+    if lang:
+        args += ["--lang", lang]
     r = subprocess.run(args, capture_output=True, text=True)
     print(r.stdout, flush=True)
     if r.returncode != 0:

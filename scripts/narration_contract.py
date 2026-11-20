@@ -179,6 +179,18 @@ def _heart_order(match):
     return rep[:1].upper() + rep[1:] if match.group(0)[:1].isupper() else rep
 
 
+# REGRA DE OURO 2026-11-20: o bloco canonico PT so pode ser injetado em texto
+# PORTUGUES. Bug real: gen_narration_edge.py chamou apply_contract no
+# script_en.json e o encerramento saiu em PT com sotaque americano no video EN.
+_PT_HINTS = ("coracao", "voc", "obrigad", "amiguinh", "inscreva",
+             "nossos", "fique com a gente", "cachorrinh", "turminha")
+
+
+def _eh_portugues(texto):
+    low = _fold(texto or "")
+    return any(h in low for h in _PT_HINTS)
+
+
 def sanitize_heart_phrase(text):
     """Corrige o encerramento para soar humano.
 
@@ -192,6 +204,8 @@ def sanitize_heart_phrase(text):
     t = _norm(text)
     if not t:
         return t
+    if not _eh_portugues(t):
+        return t  # EN/ES: nunca injetar bloco canonico em portugues
     for rx in _BAD_HEART_RE:
         t = rx.sub(" ", t)
     t = re.sub(r"(?i)\s+e\s*([.!?,])", r"\1", t)
