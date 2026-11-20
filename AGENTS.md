@@ -271,24 +271,98 @@ Detalhes: `CONTRATO.md`.
 
   `whistle`, `logo_sting`, `downlifter` e `sub_drop` continuam proibidos.
 
-  `riser` é permitido apenas para subida de tensão, com ganho baixo e ducking.
-
-
-## AUDITORIA VISUAL E DE IDIOMA OBRIGATORIA (2026-11-20)
-
-Motivo: o usuario teve que apontar erros que a auditoria antiga nao pegou.
-Causa: `check_personagens_imagens.py` era STUB (`auditar()` = NotImplementedError)
-e `make_contact_sheet.py` apontava para OUTRO projeto. Nada rodava no Hook.
-
-Ferramentas reais (rodar ANTES de renderizar/publicar):
-  python scripts/auditoria_visual.py --slug <slug> --lang <lang>
-  # abre as 4 folhas de contato em conferencia/auditoria_visual/ e OLHA
-  python scripts/auditoria_visual.py --slug <slug> --lang <lang> --revisar
-  python scripts/auditoria_idioma.py --slug <slug> --lang <lang>
-
-O Hook (`antes_render`, `antes_publicar`) BLOQUEIA se faltar:
-  - auditoria_visual_<lang>.json com status PASS e revisado_por_agente=true
-  - auditoria_idioma_<lang>.json com status PASS (Whisper detecta o idioma falado)
-  - roteiro <lang> sem marcadores de outro idioma
-O `publish_multilang.py` tambem dispara o Hook antes de cada upload.
+  `riser` é permitido apenas para subida de tensão, com ganho baixo e ducking.
+
+
+
+
+
+## AUDITORIA VISUAL E DE IDIOMA OBRIGATORIA (2026-11-20)
+
+
+
+Motivo: o usuario teve que apontar erros que a auditoria antiga nao pegou.
+
+Causa: `check_personagens_imagens.py` era STUB (`auditar()` = NotImplementedError)
+
+e `make_contact_sheet.py` apontava para OUTRO projeto. Nada rodava no Hook.
+
+
+
+Ferramentas reais (rodar ANTES de renderizar/publicar):
+
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang>
+
+  # abre as 4 folhas de contato em conferencia/auditoria_visual/ e OLHA
+
+  python scripts/auditoria_visual.py --slug <slug> --lang <lang> --revisar
+
+  python scripts/auditoria_idioma.py --slug <slug> --lang <lang>
+
+
+
+O Hook (`antes_render`, `antes_publicar`) BLOQUEIA se faltar:
+
+  - auditoria_visual_<lang>.json com status PASS e revisado_por_agente=true
+
+  - auditoria_idioma_<lang>.json com status PASS (Whisper detecta o idioma falado)
+
+  - roteiro <lang> sem marcadores de outro idioma
+
+O `publish_multilang.py` tambem dispara o Hook antes de cada upload.
+
 Somente apos aprovacao explicita do usuario (`pode publicar`) o upload acontece.
+
+
+## Gerenciador de Efeitos Sonoros — `gerenciador_efeitos_sonoros.py` (2026-11-20)
+
+Ponto único para obter QUALQUER efeito sonoro no pipeline. Nunca monte caminhos
+de áudio manualmente.
+
+```python
+from gerenciador_efeitos_sonoros import obter_efeito_sonoro
+
+# Earshot (procedural, 252 sons): ritmo, UI, transições, cortes, impactos, tensão, alertas
+som = obter_efeito_sonoro("whoosh_fast/crisp", origem="earshot", duracao=0.6)
+
+# Freesound (realistas, CC0): ambiente, objetos, máquinas, animais, clima
+# Requer FREESOUND_API_KEY no .env
+som = obter_efeito_sonoro("forest rain", origem="freesound", max_duracao=5.0)
+
+# Local (sons domésticos reais): só aceita arquivo existente
+som = obter_efeito_sonoro("espirro.wav", origem="local")
+```
+
+### Regras obrigatórias (validados no Hook `antes_publicar`)
+
+1. **Ponto único**: `obter_efeito_sonoro` é a ÚNICA forma de obter SFX.
+   - `sonoplastia_por_idioma.py` JÁ USA o gerenciador (não use `bank.render()` direto).
+   - `gerar_sonoplastia.py` (antigo) é LEGACY — não use.
+
+2. **Earshot** (`origem="earshot"`): sons de ritmo, UI, transições, cortes, impactos, tensão, alertas.
+   - IDs: `familia/variante` exato do `earshot sfx list` (ex: `whoosh_fast/crisp`, `swipe/paper`, `swish/bright`, `riser/air`).
+   - Só passe `--pitch` ou `--dur` se a coluna `knobs` do `earshot sfx list` mostrar.
+
+3. **Freesound** (`origem="freesound"`): sons realistas de ambiente, objetos, máquinas, animais, clima, ações complexas.
+   - Busca em inglês, 2-3 palavras: `"forest rain"`, `"dog bark"`, `"explosion debris"`, `"typewriter"`.
+   - Requer `FREESOUND_API_KEY` no `.env` (grátis em freesound.org). Se ausente, o módulo avisa e NÃO inventa som.
+
+4. **Local** (`origem="local"`): sons domésticos reais em `assets/audio/sons/`.
+   - Só aceita arquivo que EXISTA (`buscar_som_local` valida antes de devolver caminho).
+
+5. **Mixagem**: SEMPRE atenue efeitos (`volume=0.35` no FFmpeg ou ducking earshot 55% durante fala).
+   - Na sonoplastia atual: ducking com earshot (efeitos caem para 55% durante fala).
+
+6. **IDs Earshot**: SEMPRE `familia/variante` (ex: `whoosh_fast/crisp`, `swipe/paper`).
+   - Só passe `--pitch`/`--dur` se a coluna `knobs` do `earshot sfx list` permitir.
+
+6. **Anti-laser** (2026-11-20): Tons puros/agudos proibidos.
+   - `SONS_PROIBIDOS` em `sonoplastia_por_idioma.py`: `osso_assobio` (apito 1454Hz), `zap`, `glitch`, `zing`, `whistle`, `logo_sting`, `pro_logo_sting`, `downlifter`, `sub_drop`, `glitch/chirp`.
+   - `riser` permitido APENAS para subida de tensão, com ganho baixo + ducking.
+   - Filtro automático `som_eh_laser()` bloqueia tons puros/agudos (flatness > -18 dB E centroide > 700 Hz).
+
+### Como adicionar novos sons domésticos
+
+1. Coloque o `.wav` em `assets/audio/sons/` do projeto.
+2. Adicione em `SONS_LOCAIS` no `render_cue()` de `sonoplastia_por_idioma.py`.
+3. Use `origem="local"` no dicionário `PALAVRAS`.

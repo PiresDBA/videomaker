@@ -310,6 +310,33 @@ def transcrever(lang):
     return palavras
 
 
+def som_eh_laser(caminho, cache={}):
+    """Detecta som TONAL/AGUDO (laser/apito/sino) por flatness espectral.
+
+    Regra 2026-11-20: NUNCA pode haver 'barulho de laser'. Teste medido nos
+    sons do banco: campainha (fit/bell) flat=-7.8dB/centro 7073Hz,
+    hover_tick -4.9dB/7032Hz, shimmer -5.3dB/7350Hz... todos caem aqui.
+    Sons com flatness > -18 dB E centroide > 700 Hz sao considerados laser.
+    """
+    try:
+        import numpy as np
+        from scipy.stats import gmean
+        y, sr = sf.read(caminho, dtype="float32")
+        if getattr(y, "ndim", 1) == 2:
+            y = y.mean(axis=1)
+        n = min(4096, len(y))
+        if n < 2048:
+            return False
+        w = np.hanning(n)
+        S = np.abs(np.fft.rfft(y[:n] * w)) + 1e-9
+        f = np.fft.rfftfreq(n, 1 / sr)
+        flat = float(10 * np.log10(gmean(S) / S.mean()))
+        cent = float((S * f).sum() / S.sum())
+        return flat > -18 and cent > 700
+    except Exception:
+        return False
+
+
 def render_cue(sid, cache):
     """PONTO UNICO: todo SFX vem de obter_efeito_sonoro (regra AGENTS.md).
 
