@@ -259,19 +259,34 @@ def main(slug, strict, lang="pt"):
         except Exception as e:
             erros.append(f"auditoria visual ilegivel: {e}")
 
-    # 16c) AUDITORIA DE IDIOMA FALADO (Whisper auto-detect)
-    ai = P / "artifacts" / f"auditoria_idioma_{lang}.json"
-    if not ai.exists():
-        erros.append(f"AUDITORIA DE IDIOMA ausente: rode auditoria_idioma.py --lang {lang}")
+    # 16b-2) VOZ NATIVA DO PAIS + infantil + emoção máxima (regra 2026-11-20)
+    # O video EN saiu com narração de brasileira porque o provider 'auto'
+    # (Gemini) usava a MESMA locutora para todos os idiomas. Bloqueia se o
+    # registro de voz nativa estiver ausente ou com provider/voice sem pais.
+    try:
+        from voz_nativa import conferir_voz_gravada
+        _erro_voz = conferir_voz_gravada(P, lang)
+        if _erro_voz:
+            erros.append(_erro_voz)
+        else:
+            oks.append(f"voz nativa do pais ({lang.upper()}) registrada, infantil e com emocao")
+    except Exception as e:
+        erros.append(f"nao foi possivel validar voz nativa: {e}")
+
+    # 16c) AUDITORIA DE IDIOMA DO VIDEO FINAL (Whisper auto-detect no audio do video)
+    # Regra 2026-11-20: DEVE checar o audio do VIDEO FINAL, nao o arquivo de narracao.
+    avideo = P / "artifacts" / f"auditoria_idioma_{lang}.json"
+    if not avideo.exists():
+        erros.append(f"AUDITORIA DE IDIOMA DO VIDEO ausente: rode auditoria_idioma.py --lang {lang} --video <video.mp4>")
     else:
         try:
-            d_ai = json.loads(ai.read_text(encoding="utf-8"))
+            d_ai = json.loads(avideo.read_text(encoding="utf-8"))
             if d_ai.get("status") != "PASS":
-                erros.append(f"AUDIO NO IDIOMA ERRADO: {d_ai.get('erros', [])[:2]}")
+                erros.append(f"AUDIO DO VIDEO NO IDIOMA ERRADO: {d_ai.get('erros', [])[:2]}")
             else:
-                oks.append("auditoria de idioma falado PASS")
+                oks.append(f"auditoria de idioma do VIDEO PASS (video: {d_ai.get('video_verificado','?')})")
         except Exception as e:
-            erros.append(f"auditoria de idioma ilegivel: {e}")
+            erros.append(f"auditoria de idioma do video ilegivel: {e}")
 
     # 16d) texto do roteiro traduzido sem marcadore PT (EN/ES)
     if lang in ("en", "es"):

@@ -5925,8 +5925,54 @@ som = obter_efeito_sonoro("espirro.wav", origem="local")
    - `riser` permitido APENAS para subida de tensão, com ganho baixo + ducking.
    - Filtro automático `som_eh_laser()` bloqueia tons puros/agudos (flatness > -18 dB E centroide > 700 Hz).
 
-### Como adicionar novos sons domésticos
-
-1. Coloque o `.wav` em `assets/audio/sons/` do projeto.
-2. Adicione em `SONS_LOCAIS` no `render_cue()` de `sonoplastia_por_idioma.py`.
-3. Use `origem="local"` no dicionário `PALAVRAS`.
+### Como adicionar novos sons domésticos
+
+1. Coloque o `.wav` em `assets/audio/sons/` do projeto.
+2. Adicione em `SONS_LOCAIS` no `render_cue()` de `sonoplastia_por_idioma.py`.
+3. Use `origem="local"` no dicionário `PALAVRAS`.
+
+---
+
+## 78. Voz nativa do país + infantil + emoção máxima (2026-11-20)
+
+### O erro que aconteceu
+
+O vídeo **EN** foi entregue com narração de **brasileira com sotaque**, e o ES
+com sotaque português no meio da narração. O usuário apontou o erro e exigiu:
+"o modelo da voz tem que ser do país do vídeo a ser gerado" e "todos com voz
+infantil e com emoção ao máximo".
+
+### Causa raiz (por que as auditorias antigas não pegaram)
+
+- `gen_narration_voicecraft.py` chamava a API 8090 com `provider="auto"`.
+- O `auto` escolhe `gemini` (vozes `Kore`/`Achernar`/`Leda`) — **a mesma
+  locutora para todos os idiomas**, sem país atrelado no ID da voz.
+- Com o `profile="infantil"` (instruções em português), o modelo falava
+  inglês/espanhol com sotaque brasileiro.
+- `auditoria_idioma.py` (antiga) checava só o arquivo de narração, não o áudio
+  do vídeo final — então o vídeo errado passava no Hook.
+
+### Correção
+
+`scripts/voz_nativa.py` é a fonte única da verdade:
+
+| Idioma | País | Provedor | Voz | Perfil |
+|---|---|---|---|---|
+| PT | pt-BR | nvidia | `Magpie-Multilingual.PT-BR.Louise` | infantil |
+| EN | en-US | nvidia | `Magpie-Multilingual.EN-US.Jason.Happy` | infantil |
+| ES | es-ES | nvidia | `Magpie-Multilingual.ES-US.Isabela.Happy` | infantil |
+
+- Vozes `Gemini`/`auto`/`Kore`/`Achernar`/`Leda` são proibidas.
+- `validar_voz()` barra antes de sintetizar (não espera 35 min de render).
+- `gen_narration_voicecraft.py` grava `artifacts/narracao_voz_nativa_<lang>.json`.
+- Hook `antes_render`/`antes_publicar` bloqueia se o registro estiver ausente,
+  sem país ou sem perfil infantil.
+- `auditoria_idioma.py` foi corrigida para checar o **áudio do vídeo final**
+  (`--video`), não o arquivo de narração.
+- `gerar_capitulo_trilinguo.py` agora processa os 3 idiomas por default e
+  re-renderiza se o idioma do áudio do vídeo estiver errado.
+
+### Validação
+
+Whisper auto-detect nas amostras (2026-11-20): pt=0.99, en=0.99, es=0.98 de
+probabilidade de idioma nativo correto, com entoação alegre/infantil.

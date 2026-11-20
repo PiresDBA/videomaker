@@ -530,6 +530,37 @@ auditar as imagens antes de renderizar:
   arquivo. Com prompt curto o Flow gera na 1ª tentativa e mantém os personagens.
 - Auditoria visual (§5.13) continua obrigatória: verificar personagem e cenário.
 
+## 5.18. Voz nativa do país + infantil + emoção máxima (regra dura — 2026-11-20)
+
+Motivo: o vídeo EN foi entregue com **narração de brasileira com sotaque** e o
+ES com sotaque português no meio. Causa: o pipeline usava `VoiceCraft -> provider
+'auto' -> Gemini TTS` (vozes `Kore`/`Achernar`/`Leda`), que são **as mesmas para
+pt/en/es** (não são atreladas a nenhum país). Com o perfil infantil (prompt em
+português), o modelo narrava inglês/espanhol com sotaque brasileiro.
+
+Regra do usuário (nunca quebrar):
+- **O modelo da voz tem que ser do país do vídeo a ser gerado.**
+- **Todos os idiomas com voz infantil e emoção ao máximo.**
+
+Vozes oficiais (`scripts/voz_nativa.py` — fonte única da verdade):
+
+| Idioma | País | Provedor | Voz (emoção máxima) | Perfil |
+|---|---|---|---|---|
+| PT | pt-BR | nvidia Magpie | `Magpie-Multilingual.PT-BR.Louise` | infantil |
+| EN | en-US | nvidia Magpie | `Magpie-Multilingual.EN-US.Jason.Happy` | infantil |
+| ES | es-ES | nvidia Magpie | `Magpie-Multilingual.ES-US.Isabela.Happy` | infantil |
+
+- `Gemini`/`auto`/`Kore`/`Aoede`/`Achernar`/`Leda` são **PROIBIDOS** na narração
+  (voz sem país). `validar_voz()` barra antes de sintetizar.
+- Fallback: Edge-TTS também é nativo por país (`pt-BR-ThalitaNeural`,
+  `en-US-AriaNeural`, `es-ES-ElviraNeural`), mas sem controle de emoção real.
+- `gen_narration_voicecraft.py` grava
+  `artifacts/narracao_voz_nativa_<lang>.json` (provider/voice/perfil) e o Hook
+  `antes_render`/`antes_publicar` bloqueia se faltar ou estiver sem país/infantil.
+- Teste de natividade (Whisper, 2026-11-20): pt=0.99, en=0.99, es=0.98.
+
+---
+
 ## 6. Resumo em 30 segundos
 
 1. Ler `CONTRATO.md` + `MANUAL_GRAFOS.md` + docstring do `pipeline.py`.

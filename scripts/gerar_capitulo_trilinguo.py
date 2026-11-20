@@ -386,9 +386,22 @@ def fase_para_idioma(args, p_dir, lang):
     # Video final deste idioma ja existe E esta atualizado: reaproveita.
     video_pronto = p_dir / "output" / f"{p_dir.name}_{lang}.mp4"
     if _video_atualizado(p_dir, video_pronto, lang):
-        print(f"== VIDEO[{lang}]: ja existe e esta atualizado ({video_pronto.name}), "
-              f"reaproveitando (nada sera re-renderizado)", flush=True)
-        return
+        # VALIDAÇÃO EXTRA: verificar se o audio do video esta no idioma correto
+        try:
+            import subprocess
+            result = subprocess.run([
+                sys.executable, str(Path(__file__).resolve().parent / "auditoria_idioma.py"),
+                "--slug", p_dir.name, "--lang", lang, "--video", str(video_pronto)
+            ], capture_output=True, text=True, timeout=120)
+            if result.returncode != 0:
+                print(f"== VIDEO[{lang}]: IDIOMA DO AUDIO INCOMPATIVEL - forçando re-render", flush=True)
+                raise Exception("Idioma do video incompativel")
+            else:
+                print(f"== VIDEO[{lang}]: ja existe, atualizado e IDIOMA CORRETO ({video_pronto.name}), reaproveitando", flush=True)
+                return
+        except Exception as e:
+            print(f"== VIDEO[{lang}]: erro ao validar idioma ({e}) - forçando re-render por segurança", flush=True)
+            # NÃO retorna, continua para re-render
     if video_pronto.exists() and video_pronto.stat().st_size > 0:
         print(f"== VIDEO[{lang}]: existe mas esta DESATUALIZADO "
               f"(imagem/roteiro/overlay/narracao mais novos) - re-renderizando",
@@ -549,7 +562,12 @@ def main():
     fase_music(args, p_dir, prompt)
 
     # Por idioma (traducao/overlays/narracao/legendas/montagem/render)
-    idiomas = [args.only_lang] if args.only_lang else IDIOMAS
+    # REGRA 2026-11-20: SEMPRE processar os 3 idiomas por default.
+    # --only-lang serve APENAS para reprocessar um idioma especifico ja pronto.
+    if args.only_lang:
+        idiomas = [args.only_lang.strip().lower()]
+    else:
+        idiomas = IDIOMAS  # SEMPRE pt, en, es
     for lang in idiomas:
         lang = lang.strip().lower()
         if lang not in IDIOMAS:

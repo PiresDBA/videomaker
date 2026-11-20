@@ -14,6 +14,9 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from voz_nativa import voz_para, validar_voz, registrar_voz  # regra 2026-11-20
+
 URL = "http://127.0.0.1:8090/api/tts"
 LANG_CODE = {"pt": "pt-BR", "en": "en-US", "es": "es-ES"}
 
@@ -33,10 +36,13 @@ def limpar(texto):
     return texto.strip()
 
 
-def synthesize(text, out, lang_code, profile="infantil", provider="auto"):
-    body = json.dumps({"text": text, "provider": provider, "profile": profile,
-                       "language": lang_code}).encode("utf-8")
-    req = urllib.request.Request(URL, data=body, headers={"Content-Type": "application/json"})
+def synthesize(text, out, lang_code, profile="infantil", provider="nvidia", voice=None):
+    body = {"text": text, "provider": provider, "profile": profile,
+            "language": lang_code}
+    if voice:
+        body["voice"] = voice
+    req = urllib.request.Request(URL, data=json.dumps(body).encode("utf-8"),
+                                 headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=180) as r:
         data = r.read()
     Path(out).write_bytes(data)
@@ -58,6 +64,16 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     code = LANG_CODE.get(a.lang, "pt-BR")
 
+    # REGRA 2026-11-20: voz nativa do pais + infantil + emoção máxima.
+    # O provider 'auto' (Gemini) usava a MESMA locutora para pt/en/es e gerava
+    # sotaque brasileiro no inglês/espanhol. Aqui fixamos a voz pelo idioma.
+    cfg = voz_para(a.lang)
+    provider, voice, profile = cfg["provider"], cfg["voice"], cfg["profile"]
+    validar_voz(a.lang, provider, voice)   # trava antes de sintetizar
+    registrar_voz(proj, a.lang, provider, voice)
+    print(f"VOZ NATIVA[{a.lang}]: {provider} / {voice} / perfil={profile} "
+          f"({cfg['narrador']})", flush=True)
+
     tarefas = [(s["id"], limpar(s.get("text", ""))) for s in scr["sections"]
                if s.get("text", "").strip()]
 
@@ -68,7 +84,8 @@ def main():
         dst = out / f"{sid}.mp3"
         for attempt in range(3):
             try:
-                synthesize(texto, str(dst), code)
+                synthesize(texto, str(dst), code, profile=profile,
+                           provider=provider, voice=voice)
                 break
             except Exception as e:
                 print(f"{sid}: erro {str(e)[:70]} (tentativa {attempt+1}/3)", flush=True)
