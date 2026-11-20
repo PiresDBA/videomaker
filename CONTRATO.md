@@ -952,24 +952,56 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > nao depende de chamada manual. (`hulk_validator.py` virou wrapper de
 
-> compatibilidade; `Hulk` nos textos foi renomeado para `Hook`.)
-
-
-## ENGENHARIA DE SOM - EARSHOT (2026-11-19)
-
-> O earshot 1.2.2 tem DOIS pacotes com o mesmo nome: `earshot-sfx` (banco com
-> 252 sons, `earshot.forge.bank`) e o earshot pip (VAD `Detector.predict_i16`).
-> `sonoplastia_por_idioma.py` carrega o bank primeiro, remove o path do
-> earshot-sfx e entao importa o earshot pip para o VAD.
->
-> MELHORIAS APLICADAS (auditoria com `analisar_sonoplastia.py`):
-> - DUCKING: efeitos caem para 55% durante a fala (earshot detecta a voz),
->   voltam a 100% nos intervalos. Efeitos ficam ACIMA da musica de fundo.
-> - BED audivel: 0.07->0.12 (passarinhos) e 0.05->0.09 (brisa).
-> - Buracos 0-9s e 620-629s preenchidos.
-> - Dedup 0.06->0.10s (menos 'sopa de sons').
-> - `artifacts/cues_sonoplastia_<lang>.json` para rastreabilidade.
->
-> RESULTADO: 529 cues, 0 buracos, 0 inaudiveis, 100% cobertura, ganho medio
-> 0.132. Validacao earshot no mix final: confianca media da voz 0.871
+> compatibilidade; `Hulk` nos textos foi renomeado para `Hook`.)
+
+
+
+
+
+## ENGENHARIA DE SOM - EARSHOT (2026-11-19)
+
+
+
+> O earshot 1.2.2 tem DOIS pacotes com o mesmo nome: `earshot-sfx` (banco com
+
+> 252 sons, `earshot.forge.bank`) e o earshot pip (VAD `Detector.predict_i16`).
+
+> `sonoplastia_por_idioma.py` carrega o bank primeiro, remove o path do
+
+> earshot-sfx e entao importa o earshot pip para o VAD.
+
+>
+
+> MELHORIAS APLICADAS (auditoria com `analisar_sonoplastia.py`):
+
+> - DUCKING: efeitos caem para 55% durante a fala (earshot detecta a voz),
+
+>   voltam a 100% nos intervalos. Efeitos ficam ACIMA da musica de fundo.
+
+> - BED audivel: 0.07->0.12 (passarinhos) e 0.05->0.09 (brisa).
+
+> - Buracos 0-9s e 620-629s preenchidos.
+
+> - Dedup 0.06->0.10s (menos 'sopa de sons').
+
+> - `artifacts/cues_sonoplastia_<lang>.json` para rastreabilidade.
+
+>
+
+> RESULTADO: 529 cues, 0 buracos, 0 inaudiveis, 100% cobertura, ganho medio
+
+> 0.132. Validacao earshot no mix final: confianca media da voz 0.871
+
 > (narra??o nao mascarada).
+
+
+## REGRAS DE PUBLICACAO (2026-11-20)
+
+> 1. PUBLICAR SEMPRE como NAO feito para criancas. No pipeline, `made_for_kids`
+>    agora e False por padrao (`--yt-kids` so vale como excecao explicita).
+> 2. ANTES de publicar, GERAR uma THUMBNAIL VIRALIZANTE automaticamente
+>    (`gerar_thumbnail_viral`) usando `generate_thumbnail.py` com os dois
+>    personagens bem visiveis, contraste/saturacao e texto chamativo
+>    ("SOZINHAS EM CASA!" / "VAI DAR MUITA RISADA!") em 1280x720.
+>    NUNCA usar uma imagem qualquer do projeto como capa.
+> 3. Vale para upload (`phase_youtube`) e atualizacao (`youtube_update`).

@@ -1512,6 +1512,40 @@ def phase_render(args, p: Project):
         print(f"AVISO: verificacao reportou problema (video existe): {e}")
 
 
+def gerar_thumbnail_viral(p: Project, titulo: str) -> str:
+    """Gera uma thumbnail VIRALIZANTE antes de publicar.
+
+    REGRA DO USUARIO: nunca usar uma imagem qualquer gerada pelo pipeline.
+    Escolhe uma cena com os dois personagens bem visíveis (de preferencia a
+    ultima cena de desenvolvimento, onde eles olham para a camera), aplica
+    contraste/saturacao e texto chamativo em 1280x720.
+
+    Retorna o caminho da thumbnail gerada (string vazia se falhar).
+    """
+    img_dir = p.dir / "assets" / "images" / "gemini" / "scenes"
+    if not img_dir.exists():
+        return ""
+    # Prioriza a ultima imagem '_scene_d' (os dois personagens juntos).
+    candidatas = sorted(img_dir.glob("desenvolvimento_*_scene_d.jpg"))
+    if not candidatas:
+        candidatas = sorted(img_dir.glob("*.jpg"))
+    if not candidatas:
+        return ""
+    base = candidatas[-1]
+    saida = p.dir / "artifacts" / "thumbnail_viral.jpg"
+    saida.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        run([sys.executable, str(HERE / "generate_thumbnail.py"),
+             "--image", str(base), "--out", str(saida),
+             "--title", "SOZINHAS EM CASA!",
+             "--subtitle", "VAI DAR MUITA RISADA!"],
+            "FASE youtube: gerando thumbnail viral")
+        return str(saida)
+    except Exception as e:
+        print(f"== YOUTUBE: AVISO - falha ao gerar thumbnail viral: {e}", flush=True)
+        return ""
+
+
 def phase_youtube(args, p: Project):
     """FASE EXTRA (youtube) - Publica o MP4 no YouTube.
 
@@ -1562,18 +1596,14 @@ def phase_youtube(args, p: Project):
     tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
     privacy = getattr(args, "privacy", "public")
     category = "24"
-    made_for_kids = bool(getattr(args, "yt_kids", True)) and not getattr(args, "nao_kids", False)
+    made_for_kids = ("--yt-kids" in sys.argv) and ("--nao-kids" not in sys.argv)  # padrao: NAO infantil
     default_language = getattr(args, "default_language", "pt-BR") or "pt-BR"
     default_audio_language = getattr(args, "default_audio_language", "pt-BR") or "pt-BR"
-    # Thumbnail: usa --yt-thumb se informado, senao busca primeira imagem do projeto
+    # Thumbnail: usa --yt-thumb se informado; SENAO gera uma capa VIRALIZANTE
+    # (regra do usuario: nunca pegar uma imagem qualquer do projeto).
     thumb = getattr(args, "yt_thumb", "") or ""
     if not thumb:
-        # tenta encontrar primeira imagem de cena disponível
-        img_dir = p.dir / "assets" / "images" / "gemini" / "scenes"
-        if img_dir.exists():
-            imgs = sorted(img_dir.glob("*.jpg"))
-            if imgs:
-                thumb = str(imgs[0])
+        thumb = gerar_thumbnail_viral(p, title)
     secret = getattr(args, "yt_secret", "") or ""
 
     cmd = [
@@ -1872,14 +1902,10 @@ def update_youtube_metadata(p: Project, args):
     tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
     privacy = getattr(args, "privacy", "public")
     category = "24"
-    made_for_kids = bool(getattr(args, "yt_kids", True)) and not getattr(args, "nao_kids", False)
+    made_for_kids = ("--yt-kids" in sys.argv) and ("--nao-kids" not in sys.argv)  # padrao: NAO infantil
     thumb = getattr(args, "yt_thumb", "") or ""
     if not thumb:
-        img_dir = p.dir / "assets" / "images" / "gemini" / "scenes"
-        if img_dir.exists():
-            imgs = sorted(img_dir.glob("*.jpg"))
-            if imgs:
-                thumb = str(imgs[0])
+        thumb = gerar_thumbnail_viral(p, title)
     secret = getattr(args, "yt_secret", "") or ""
 
     cmd = [
@@ -2439,11 +2465,12 @@ def main():
             help="ID de video existente para atualizar apenas metadados (sem upload). "
                  "Ex: --yt-video-id kJztp7A7xWI")
         sp.add_argument(
-            "--yt-kids", action="store_true", default=True,
-            help="marca o video como feito para criancas (COPPA) - padrao do canal")
+            "--yt-kids", action="store_true", default=False,
+            help="EXCECAO: marca o video como feito para criancas (COPPA). "
+                 "PADRAO DO CANAL e NAO marcar como infantil.")
         sp.add_argument(
-            "--nao-kids", action="store_true",
-            help="desativa o modo feito para criancas (sobrescreve --yt-kids)")
+            "--nao-kids", action="store_true", default=True,
+            help="padrao: NAO marcar como feito para criancas (regra do canal)")
         sp.add_argument(
             "--sem-texto", action="store_true", default=True,
             help="nao gera texto sobreposta nas cenas (apenas imagem + narracao) - padrao")
