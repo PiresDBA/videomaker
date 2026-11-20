@@ -866,15 +866,41 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > repeticoes 4->20; dedup 0.3s->0.06s; BED CONTINUO de passarinhos/brisa a
 
-> cada 3s. Esperado: centenas de cues, nao 14.
-
-
-## FALSOS POSITIVOS DOS CLIPES NA AUDITORIA (2026-11-19)
-
-> Apos a auditoria Whisper + aplicacao dos novos `at`, o relatorio ficou
-> 70 OK / 3 ADIANTADA. As 3 restantes (primeira still de s4, s9 e s13)
-> sao FALSOS POSITIVOS: o clipe de video entra no inicio da cena e mostra
-> exatamente a acao falada; o auditor ve a still sendo empurrada +clip_dur
-> pelo modo `middle` e marca "adiantada", mas na pratica a still aparece
-> DEPOIS do video, quando a narra??o ja avan?ou. NAO corrigir (faria a still
+> cada 3s. Esperado: centenas de cues, nao 14.
+
+
+
+
+
+## FALSOS POSITIVOS DOS CLIPES NA AUDITORIA (2026-11-19)
+
+
+
+> Apos a auditoria Whisper + aplicacao dos novos `at`, o relatorio ficou
+
+> 70 OK / 3 ADIANTADA. As 3 restantes (primeira still de s4, s9 e s13)
+
+> sao FALSOS POSITIVOS: o clipe de video entra no inicio da cena e mostra
+
+> exatamente a acao falada; o auditor ve a still sendo empurrada +clip_dur
+
+> pelo modo `middle` e marca "adiantada", mas na pratica a still aparece
+
+> DEPOIS do video, quando a narra??o ja avan?ou. NAO corrigir (faria a still
+
 > competir com o video). Antes da corre??o eram 35 adiantadas + 5 atrasadas.
+
+
+## AUDITORIA DO USUARIO - TEMPOS DOS CLIPES (2026-11-19)
+
+> O usuario conferiu o video renderizado e corrigiu os tempos na mao:
+> - clipe em 02:23 -> deve estar em 01:41 (`meio_2min.mp4` -> s2, offset 33.4s)
+> - NOVO clipe em 03:06 -> `abra?o-na-cozinha.mp4` (s5, offset 5.4s, 10.03s)
+> - clipe em 05:07 -> deve estar em 05:43 (`meio_5min.mp4` -> s10, offset 5.8s)
+> - clipe em 07:07 -> deve estar em 07:53 (`meio_7min.mp4` -> s14, offset 17.1s)
+>
+> Imagens: as 16 fotos de s12-s15 estavam FORA DE CENA (bolinha de papel,
+> pirueta e a Luna transformada em GOLDEN em s14_d). Todas foram regeneradas
+> com acao especifica no prompt. AVISO: o clipe `abra?o-na-cozinha.mp4` tem
+> a acao certa mas as coleiras estao erradas (Frida azul, Luna vermelha) -
+> o usuario foi avisado; manter ate ele decidir.
