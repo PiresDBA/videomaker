@@ -278,11 +278,16 @@ def main(slug, strict, lang="pt"):
         sl = P / "artifacts" / f"script_{lang}.json"
         if sl.exists():
             import unicodedata as _u
+            import json as _json
             def _fold(s):
                 return "".join(c for c in _u.normalize("NFKD", s or "") if not _u.combining(c)).lower()
-            txt = _fold(sl.read_text(encoding="utf-8", errors="replace"))
-            marcas = [m for m in ("coracao", "voce", "obrigado", "proximos videos",
-                                  "amiguinhos", "fique com a gente") if m in txt]
+            data = _json.loads(sl.read_text(encoding="utf-8", errors="replace"))
+            # So verifica os campos "text" das secoes, nao o JSON inteiro
+            txt = " ".join(_fold(s.get("text", "")) for s in data.get("sections", []))
+            # "proximos videos" normalizado vira "proximos videos" que e valido em ES
+            # so bloqueia se for claramente PT (coracao, obrigado, voce, amiguinhos, etc)
+            palavras_pt = ("coracao", "voce", "obrigado", "amiguinhos", "fique com a gente")
+            marcas = [m for m in palavras_pt if m in txt]
             if marcas:
                 erros.append(f"ROTEIRO {lang.upper()} com texto PT: {marcas}")
             else:
