@@ -1,0 +1,166 @@
+{
+  "generated_at": "2026-11-20T11:34:29.979751+00:00",
+  "nodes": {
+    "earshot_sfx_earshot_audio_to_mono": {
+      "code_fingerprint": "add15ed1489d333c45266e45c1461ca34312b80f32eee7fd483ed4338c31b3da",
+      "label": "to_mono()",
+      "last": "2026-11-20T11:34:28.854619+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:28.854619+00:00",
+          "outcome": "useful",
+          "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
+        }
+      ],
+      "score": 0.999999699,
+      "source_file": "earshot-sfx/earshot/audio.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "earshot_sfx_earshot_compare": {
+      "code_fingerprint": "3f3a62add240455417666026d3cb75c513b707a5bc3e07bedec32eff7474ffe3",
+      "label": "compare.py",
+      "last": "2026-11-20T11:34:28.854619+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:28.854619+00:00",
+          "outcome": "useful",
+          "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
+        }
+      ],
+      "score": 0.999999699,
+      "source_file": "earshot-sfx/earshot/compare.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "earshot_sfx_earshot_compare_active_length": {
+      "code_fingerprint": "3f3a62add240455417666026d3cb75c513b707a5bc3e07bedec32eff7474ffe3",
+      "label": "active_length()",
+      "last": "2026-11-20T11:34:28.854619+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:28.854619+00:00",
+          "outcome": "useful",
+          "q": "Por que active_length() conecta compare.py, resample/features.py, align/onset e to_mono/get?"
+        }
+      ],
+      "score": 0.999999699,
+      "source_file": "earshot-sfx/earshot/compare.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "earshot_sfx_earshot_llm": {
+      "code_fingerprint": "f133b7bcf9931221eef94f5457ca21c27f6e38ae3113311eacf2c7c20e9bc5bf",
+      "label": "llm.py",
+      "last": "2026-11-20T11:34:29.593392+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.593392+00:00",
+          "outcome": "useful",
+          "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
+        }
+      ],
+      "score": 0.999999897,
+      "source_file": "earshot-sfx/earshot/llm.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "earshot_sfx_earshot_llm_outer_object": {
+      "code_fingerprint": "f133b7bcf9931221eef94f5457ca21c27f6e38ae3113311eacf2c7c20e9bc5bf",
+      "label": "_outer_object()",
+      "last": "2026-11-20T11:34:29.593392+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.593392+00:00",
+          "outcome": "useful",
+          "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
+        }
+      ],
+      "score": 0.999999897,
+      "source_file": "earshot-sfx/earshot/llm.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "earshot_sfx_earshot_llm_parse_json": {
+      "code_fingerprint": "f133b7bcf9931221eef94f5457ca21c27f6e38ae3113311eacf2c7c20e9bc5bf",
+      "label": "parse_json()",
+      "last": "2026-11-20T11:34:29.593392+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.593392+00:00",
+          "outcome": "useful",
+          "q": "Por que parse_json() liga llm.py a testes, ast/classify e eval/save?"
+        }
+      ],
+      "score": 0.999999897,
+      "source_file": "earshot-sfx/earshot/llm.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "scripts_gerar_capitulo_trilinguo": {
+      "code_fingerprint": "6a03a98ec0dbe5848f59a77d42bdb3cdc5ad9e974eb4a47559ac274c5edccd0f",
+      "label": "gerar_capitulo_trilinguo.py",
+      "last": "2026-11-20T11:34:29.350674+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.350674+00:00",
+          "outcome": "useful",
+          "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
+        }
+      ],
+      "score": 0.999999832,
+      "source_file": "scripts/gerar_capitulo_trilinguo.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "scripts_hook_manager": {
+      "code_fingerprint": "1282d41aadcf846b01f9fd2143c7775c9c0386691f65f3a024786651ddae54dd",
+      "label": "hook_manager.py",
+      "last": "2026-11-20T11:34:29.350674+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.350674+00:00",
+          "outcome": "useful",
+          "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
+        }
+      ],
+      "score": 0.999999832,
+      "source_file": "scripts/hook_manager.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "scripts_pipeline": {
+      "code_fingerprint": "788917a903d9078161b0a2353e9d3f2494cb25ac02447e66fa7790f2a507bd60",
+      "label": "pipeline.py",
+      "last": "2026-11-20T11:34:29.350674+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.350674+00:00",
+          "outcome": "useful",
+          "q": "scripts: indexar_midia / gerar_capitulo_trilingu deveria ser dividido?"
+        }
+      ],
+      "score": 0.999999832,
+      "source_file": "scripts/pipeline.py",
+      "status": "tentative",
+      "uses": 1
+    },
+    "video": {
+      "code_fingerprint": "",
+      "label": "Video",
+      "last": "2026-11-20T11:34:29.093726+00:00",
+      "provenance": [
+        {
+          "date": "2026-11-20T11:34:29.093726+00:00",
+          "outcome": "useful",
+          "q": "O que conecta assemble, bgm_gemini.wav e o timeout do FrameCapture?"
+        }
+      ],
+      "score": 0.999999763,
+      "source_file": "",
+      "status": "tentative",
+      "uses": 1
+    }
+  },
+  "version": 1
+}

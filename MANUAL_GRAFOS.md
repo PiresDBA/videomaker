@@ -4398,6 +4398,37 @@ Regras (CONTRATO §5.16 / AGENTS.md topo):
 - Saídas: `graph.json` (dados), `GRAPH_REPORT.md` (relatório legível),
   `graph.html` (visual), `manifest.json` (cache incremental).
 
+### 58.10.1. Rebuild determinístico e armadilhas de interpretação (2026-11-20)
+
+> `scripts/graphify_rebuild.py` faz o rebuild **completo e sem LLM**
+> (`python scripts/graphify_rebuild.py`). Config em
+> `graphify-out/.graphify_build.json` (`code_only`, `excludes`, `gitignore`).
+
+Regras descobertas ao auditar as perguntas sugeridas pelo grafo:
+
+1. **Nós externos nunca nomeiam comunidade.** `re`, `json`, `numpy` etc. são
+   `type=external`, `source_file=""`. O rotulador do `graphify_rebuild.py`
+   ordena só nós com `source_file` antes de escolher o nome. Sem isso, o
+   relatório sugeria perguntas enganosas do tipo "por que `parse_json()`
+   liga `llm.py` a `ast/classify` e `eval/save`?" — eram bibliotecas padrão
+   clusterizadas em comunidades arbitrárias, não acoplamento real.
+2. **Logs são ilhas.** `log_*.txt` e `_dublagem_tmp*` produziam componentes
+   de 43 e 34 nós com **0 arestas** para o grafo principal e nenhuma relação
+   com código. Estão nos `excludes`. Ao excluí-los, as **50 hyperedges**
+   derivadas de logs também desaparecem — correto: 100% dos 248 nós que elas
+   citavam eram de logs; mantê-las criaria arestas penduradas.
+3. **`pipeline.py` é god file.** A comunidade
+   `scripts: indexar_midia / gerar_capitulo_trilingu` tem 176 nós (133 de
+   `pipeline.py`, 31 do gerador trilingue, 9 do `hook_manager.py`), densidade
+  0,0218 e acoplamento real entre os três arquivos (14 + 4 arestas). O rótulo
+   antigo citava só `indexar_midia`/`gerar_capitulo` por serem os nós com mais
+   grau. **Não dividir a comunidade**: dividir o `pipeline.py` em módulos por
+   fase (branch `refactor/`) — aí a coesão sobe naturalmente.
+4. **Pergunta sobre hub/ponte:** sempre checar bypass — procurar o literal
+   distintivo da função em arquivos **sem aresta** com ela. Ex.:
+   `eval/semantics/run_eval.py:574` usa `0.01 * audio.SR` sem chamar
+   `active_length()` (só calcula offset, não reimplementa).
+
 ---
 
 ## 59. Animações e transições por beat — `build_composition.py` (2026-11-15)
