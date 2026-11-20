@@ -5674,49 +5674,125 @@ Agora o caminho Edge chama `gen_narration_edge.py`.
 
 - EN: https://youtu.be/nu7PaHLHNJw
 
-- ES: https://youtu.be/KUhkYfYGW-U
+- ES: https://youtu.be/KUhkYfYGW-U
+
+
+
+
+
+---
+
+
+
+## 74. Barreiras anti-regressao do agente (2026-11-20)
+
+
+
+Motivo: errors ja resolvidos voltaram a acontecer porque o agente nao leu o
+
+manual, nao buscou no git log e reimplementou o que ja existia. Resultado:
+
+overlay PT em video EN/ES, video publicado no canal PT, folha de referencia
+
+como imagem final e narração PT injetada no script EN.
+
+
+
+### 74.1. Comando obrigatorio de abertura
+
+
+
+```
+
+python scripts/agent_briefing.py --slug <slug> [--lang pt|en|es]
+
+```
+
+
+
+Ele imprime as formulas prontas e roda as 3 travas. **Saida 1 = nao pode seguir.**
+
+Regra correspondente no topo de `AGENTS.md` e `CONTRATO.md`.
+
+
+
+### 74.2. Formulas prontas (USAR, nao reimplementar)
+
+
+
+| Tarefa | Script |
+
+|---|---|
+
+| 3 videos PT/EN/ES | `scripts/gerar_capitulo_trilinguo.py` |
+
+| publicar no canal certo | `scripts/publish_multilang.py` (`LANG_CREDENTIALS`) |
+
+| trava idioma | `scripts/check_texto_idioma.py --strict` |
+
+| trava imagens compartilhadas | `scripts/check_imagens_compartilhadas.py` |
+
+| voz com emoção | `scripts/gen_narration_voicecraft.py` (API 8090) |
+
+
+
+### 74.3. Causas especificas corrigidas
+
+
+
+1. `apply_contract`/`sanitize_heart_phrase` injetavam o bloco canonico PT em
+
+   `script_en.json` (via `gen_narration_edge.py`) -> agora so injeta se o texto
+
+   for portugues (`_eh_portugues`).
+
+2. `pipeline.py` agora passa `--token youtube_token_<lang>.json` e
+
+   `--client-secret client_secret_<lang>.json` no upload/atualizacao.
+
+3. `hook_validator.py` (via Hook `antes_publicar`, com `lang`) bloqueia:
+
+   folha de referencia (bright>0.60 e bordas>0.055), overlay sem badge do
+
+   idioma, credencial faltante, `made-for-kids` default True, THUMB_TEXTS
+
+   incompleto.
+
+4. Imagem `agradecimento_scene.jpg` era a FOLHA DE REFERENCIA (texto
+
+   "PERSONAGENS LUNA E FRIDA") — substituida por quadro real do clipe final.
+
+5. Overlays por idioma gerados em `scenes/<lang>/` com
+
+   `generate_scene_htmls.py --lang <lang>`.
 
 
 ---
 
-## 74. Barreiras anti-regressao do agente (2026-11-20)
+## 75. Regras de Efeitos Sonoros (SFX) e Áudio (2026-11-20)
+## Regras de Efeitos Sonoros (SFX) e Áudio (2026-11-20)
 
-Motivo: errors ja resolvidos voltaram a acontecer porque o agente nao leu o
-manual, nao buscou no git log e reimplementou o que ja existia. Resultado:
-overlay PT em video EN/ES, video publicado no canal PT, folha de referencia
-como imagem final e narração PT injetada no script EN.
-
-### 74.1. Comando obrigatorio de abertura
-
-```
-python scripts/agent_briefing.py --slug <slug> [--lang pt|en|es]
-```
-
-Ele imprime as formulas prontas e roda as 3 travas. **Saida 1 = nao pode seguir.**
-Regra correspondente no topo de `AGENTS.md` e `CONTRATO.md`.
-
-### 74.2. Formulas prontas (USAR, nao reimplementar)
-
-| Tarefa | Script |
-|---|---|
-| 3 videos PT/EN/ES | `scripts/gerar_capitulo_trilinguo.py` |
-| publicar no canal certo | `scripts/publish_multilang.py` (`LANG_CREDENTIALS`) |
-| trava idioma | `scripts/check_texto_idioma.py --strict` |
-| trava imagens compartilhadas | `scripts/check_imagens_compartilhadas.py` |
-| voz com emoção | `scripts/gen_narration_voicecraft.py` (API 8090) |
-
-### 74.3. Causas especificas corrigidas
-
-1. `apply_contract`/`sanitize_heart_phrase` injetavam o bloco canonico PT em
-   `script_en.json` (via `gen_narration_edge.py`) -> agora so injeta se o texto
-   for portugues (`_eh_portugues`).
-2. `pipeline.py` agora passa `--token youtube_token_<lang>.json` e
-   `--client-secret client_secret_<lang>.json` no upload/atualizacao.
-3. `hook_validator.py` (via Hook `antes_publicar`, com `lang`) bloqueia:
-   folha de referencia (bright>0.60 e bordas>0.055), overlay sem badge do
-   idioma, credencial faltante, `made-for-kids` default True, THUMB_TEXTS
-   incompleto.
-4. Imagem `agradecimento_scene.jpg` era a FOLHA DE REFERENCIA (texto
-   "PERSONAGENS LUNA E FRIDA") — substituida por quadro real do clipe final.
-5. Overlays por idioma gerados em `scenes/<lang>/` com
-   `generate_scene_htmls.py --lang <lang>`.
+- Sempre utilize o módulo `gerenciador_efeitos_sonoros.py`
+  (`obter_efeito_sonoro`) para obter qualquer efeito sonoro do vídeo.
+  **Nunca crie caminhos de áudio fictícios.** Sons locais só são aceitos se o
+  arquivo existir (`origem="local"` valida antes de devolver o caminho).
+- Quando usar `origem="earshot"`: para todos os sons de ritmo, interface,
+  transições de cena, cortes secos, impactos, subidas de tensão e alertas
+  (`whoosh_fast/crisp`, `ui_pop`, `cut_hit`, `riser`, `knock`, `shutter`,
+  `reverse_swell`). Antes de escolher um ID do Earshot, rode
+  `earshot sfx list` se tiver dúvida sobre o nome exato.
+- Quando usar `origem="freesound"`: para sons realistas e específicos de
+  ambiente, objetos, máquinas, animais, clima ou ações complexas
+  (ex: "forest rain", "dog bark", "explosion debris", "typewriter"). Use
+  sempre termos de busca curtos em inglês (2 a 3 palavras). Requer
+  `FREESOUND_API_KEY` no `.env` (se ausente, o módulo avisa e não inventa som).
+- Mixagem no FFmpeg: sempre normalize e atenue o volume dos efeitos sonoros
+  (ex: `-filter:a "volume=0.35"`) ao misturar com a faixa de narração
+  principal para não encobrir a voz. Na sonoplastia atual isso equivale ao
+  ducking com earshot (efeitos caem para 55% durante a fala).
+- No Earshot, use sempre o ID completo no formato familia/variante
+  (ex: `whoosh_fast/crisp`, `swipe/paper`, `swish/bright`) e só passe
+  `--pitch` ou `--dur` se aparecerem na coluna `knobs` de `earshot sfx list`.
+- Anti-laser: `osso_assobio` (apito puro 1454 Hz), `zap`, `glitch`, `zing`,
+  `whistle`, `logo_sting`, `downlifter` e `sub_drop` continuam proibidos.
+  `riser` é permitido apenas para subida de tensão, com ganho baixo e ducking.

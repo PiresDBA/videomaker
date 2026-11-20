@@ -311,33 +311,37 @@ def transcrever(lang):
 
 
 def render_cue(sid, cache):
+    """PONTO UNICO: todo SFX vem de obter_efeito_sonoro (regra AGENTS.md).
+
+    Nunca montar caminho de audio 'achado'. IDs earshot usam familia/variante;
+    sons domesticos usam origem='local' e so sao aceitos se o arquivo existir.
+    """
     if sid in cache:
         return cache[sid]
+    from gerenciador_efeitos_sonoros import obter_efeito_sonoro
     SONS_LOCAIS = {"BUZINA": "buzina_bibi.wav", "POMBA": "pomba_coo.wav",
                   "bola_quique": "bola_quique.wav", "espirro": "espirro.wav",
                   "estrelinha": "estrelinha.wav", "pomba_coo": "pomba_coo.wav",
                   "buzina_bibi": "buzina_bibi.wav"}
     if sid in SONS_LOCAIS:
-        nome = SONS_LOCAIS[sid]
-        y, sr = sf.read(AUD / "sons" / nome, dtype="float32")
-        if sr != SR:
-            n = int(len(y)*SR/sr); y = np.interp(np.linspace(0,len(y),n), np.arange(len(y)), y)
-        y = y.astype(np.float32)
+        caminho = obter_efeito_sonoro(SONS_LOCAIS[sid], origem="local")
     else:
-        y, meta = bank.render(sid)
-        if getattr(y,"ndim",1)==2: y=y.mean(axis=1)
-        if meta.get("sr",SR)!=SR:
-            n=int(len(y)*SR/meta["sr"]); y=np.interp(np.linspace(0,len(y),n),np.arange(len(y)),y)
-        y=y.astype(np.float32)
-    cache[sid]=y
-    return y
+        caminho = obter_efeito_sonoro(sid, origem="earshot")
+    y, sr = sf.read(caminho, dtype="float32")
+    if getattr(y, "ndim", 1) == 2:
+        y = y.mean(axis=1)
+    if sr != SR:
+        n = int(len(y) * SR / sr)
+        y = np.interp(np.linspace(0, len(y), n), np.arange(len(y)), y)
+    cache[sid] = y.astype(np.float32)
+    return cache[sid]
 
 
 # Sons que soam como "laser"/eletronico e NAO combinam com cenas domesticas
 # fofas. O usuario reclamou de muito "barulhinho de laser" (2026-11-20).
-SONS_PROIBIDOS = ("zap", "glitch", "zing", "whistle", "pro_logo_sting",
-                  "downlifter", "riser", "sub_drop", "glitch/chirp",
-                  "osso_assobio")  # apito puro 1454Hz = "laser"
+SONS_PROIBIDOS = ("zap", "glitch", "zing", "whistle", "logo_sting", "pro_logo_sting",
+                  "downlifter", "sub_drop", "glitch/chirp",
+                  "osso_assobio")  # riser e permitido para tensao, com ganho baixo  # apito puro 1454Hz = "laser"
 
 
 def som_permitido(sid):

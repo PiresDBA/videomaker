@@ -241,6 +241,41 @@ def main(slug, strict, lang="pt"):
     else:
         oks.append("THUMB_TEXTS PT/EN/ES presentes")
 
+    # 17) PONTO UNICO de SFX: gerenciador_efeitos_sonoros.obter_efeito_sonoro
+    ger = (SCRIPTS / "gerenciador_efeitos_sonoros.py").read_text(
+        encoding="utf-8", errors="replace")
+    sono = (SCRIPTS / "sonoplastia_por_idioma.py").read_text(
+        encoding="utf-8", errors="replace")
+    if "def obter_efeito_sonoro" not in ger:
+        erros.append("gerenciador_efeitos_sonoros.py sem obter_efeito_sonoro")
+    elif "obter_efeito_sonoro" not in sono:
+        erros.append("sonoplastia NAO usa obter_efeito_sonoro (ponto unico obrigatorio)")
+    elif "bank.render(" in sono:
+        erros.append("sonoplastia chama bank.render() direto — use o gerenciador")
+    else:
+        oks.append("SFX pelo gerenciador (obter_efeito_sonoro), sem caminho ficticio")
+
+    # 18) anti-laser: apito puro e IDs eletronicos proibidos
+    proibidos = ("osso_assobio", "zap", "glitch", "zing", "whistle",
+                 "logo_sting", "downlifter", "sub_drop")
+    faltam = [x for x in proibidos if f'"{x}"' not in sono]
+    if faltam:
+        erros.append(f"SONS_PROIBIDOS incompleto (anti-laser): {faltam}")
+    else:
+        oks.append("anti-laser: apito puro/zap/glitch/zing proibidos")
+
+    # 19) reducao de volume na mixagem (ducking ou filtro FFmpeg volume=)
+    if ("reducao" in sono and "0.45" in sono) or "volume=0." in sono or "-filter:a" in sono:
+        oks.append("efeitos atenuados na mixagem (ducking/volume) — voz nao encoberta")
+    else:
+        erros.append("mixagem sem atenuacao de SFX (use ducking ou volume=0.35)")
+
+    # 20) ID completo familia/variante (ex: whoosh_fast/crisp) e knobs
+    if "familia/variante" not in ger or "knobs" not in ger:
+        erros.append(" gerenciador sem regra de ID completo familia/variante + knobs")
+    else:
+        oks.append("IDs Earshot completos (familia/variante) e knobs documentados")
+
     print("\n".join(f"  OK  {x}" for x in oks))
     print("\n".join(f"  AVISO  {x}" for x in avisos))
     print("\n".join(f"  ERRO  {x}" for x in erros))
