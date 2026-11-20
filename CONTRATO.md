@@ -1025,29 +1025,69 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 >    NUNCA usar uma imagem qualquer do projeto como capa.
 
-> 3. Vale para upload (`phase_youtube`) e atualizacao (`youtube_update`).
-
-
-## SONOPLASTIA SEM LASER E IDIOMA CORRETO (2026-11-20)
-
-> REGRAS DE OUVIDO (usuario reclamou de muito "barulhinho de laser"):
-> 1. NUNCA usar sons `zap`, `glitch`, `zing`, `whistle`, `pro_logo_sting`,
->    `downlifter`, `riser`, `sub_drop` em cena fofa/domestica. Filtro em
->    `SONS_PROIBIDOS` / `som_permitido()` no `sonoplastia_por_idioma.py`.
-> 2. PROIBIDO bed de chirp repetitivo (antes: 204 `pro_pop/chirp` + 204
->    `swish/soft` a cada 3s — soava como laser). Usar `ambient_bed()`:
->    brisa continua suave + no maximo ~12 passarinhos esparsos e variados.
-> 3. Cada palavra-chave deve casar com uma ACAO REAL da cena, com pelo menos
->    uma opcao de som apropriada. Dicionarios `PALAVRAS` por idioma (pt/en/es)
->    reescritos para o roteiro "sozinhas em casa".
-> 4. Traducoes: `artifacts/script_<lang>.json` (PT->EN/ES) com nomes locais
->    corretos (ES: Lunita/Frida). NUNCA narrar PT em video EN/ES.
-> 5. Naracao: se Gemini TTS der HTTP 429 (cota), usar
->    `--narration-provider edge`. CORRIGIDO: caminho Edge usa
->    `gen_narration_edge.py` (aceita --rate/--pitch), nao
->    `gen_narration_voicecraft.py`.
-> 6. Thumbnail: gerada ANTES de publicar, TEXTO NO IDIOMA DO VIDEO
->    (`THUMB_TEXTS` em pipeline.py) e arquivo `thumbnail_viral_<lang>.jpg`.
-> 7. Publicar SEMPRE como NAO infantil (`made_for_kids=False` por padrao).
-> 8. Renderizar idiomas SEQUENCIALMENTE (nunca EN e ES em paralelo no mesmo
+> 3. Vale para upload (`phase_youtube`) e atualizacao (`youtube_update`).
+
+
+
+
+
+## SONOPLASTIA SEM LASER E IDIOMA CORRETO (2026-11-20)
+
+
+
+> REGRAS DE OUVIDO (usuario reclamou de muito "barulhinho de laser"):
+
+> 1. NUNCA usar sons `zap`, `glitch`, `zing`, `whistle`, `pro_logo_sting`,
+
+>    `downlifter`, `riser`, `sub_drop` em cena fofa/domestica. Filtro em
+
+>    `SONS_PROIBIDOS` / `som_permitido()` no `sonoplastia_por_idioma.py`.
+
+> 2. PROIBIDO bed de chirp repetitivo (antes: 204 `pro_pop/chirp` + 204
+
+>    `swish/soft` a cada 3s — soava como laser). Usar `ambient_bed()`:
+
+>    brisa continua suave + no maximo ~12 passarinhos esparsos e variados.
+
+> 3. Cada palavra-chave deve casar com uma ACAO REAL da cena, com pelo menos
+
+>    uma opcao de som apropriada. Dicionarios `PALAVRAS` por idioma (pt/en/es)
+
+>    reescritos para o roteiro "sozinhas em casa".
+
+> 4. Traducoes: `artifacts/script_<lang>.json` (PT->EN/ES) com nomes locais
+
+>    corretos (ES: Lunita/Frida). NUNCA narrar PT em video EN/ES.
+
+> 5. Naracao: se Gemini TTS der HTTP 429 (cota), usar
+
+>    `--narration-provider edge`. CORRIGIDO: caminho Edge usa
+
+>    `gen_narration_edge.py` (aceita --rate/--pitch), nao
+
+>    `gen_narration_voicecraft.py`.
+
+> 6. Thumbnail: gerada ANTES de publicar, TEXTO NO IDIOMA DO VIDEO
+
+>    (`THUMB_TEXTS` em pipeline.py) e arquivo `thumbnail_viral_<lang>.jpg`.
+
+> 7. Publicar SEMPRE como NAO infantil (`made_for_kids=False` por padrao).
+
+> 8. Renderizar idiomas SEQUENCIALMENTE (nunca EN e ES em paralelo no mesmo
+
 >    projeto). Copiar o MP4 final para `<slug>_<lang>.mp4` antes do proximo.
+
+
+## BANCO DE SONS DOMESTICOS (2026-11-20)
+
+> O usuario ouviu "laser" de novo. Causa: sons de apito puro. O banco earshot
+> tem 252 sons, mas muitos sao eletronicos (glitch/riser/zap/whistle).
+> REGRAS:
+> - `SONS_PROIBIDOS` inclui `osso_assobio` (apito puro 1454 Hz) — NUNCA usar.
+> - Novos sons DOMESTICOS copiados para `assets/audio/sons/`:
+>   `bola_quique`, `espirro`, `estrelinha`, `pomba_coo`, `buzina_bibi`.
+>   Usar de preferencia sobre sinteticos quando a cena pedir (bola, espirro,
+>   estrelinha, pomba, bocina).
+> - `gerar_capitulo_trilinguo.py` agora roda SONOPLASTIA depois do mix e antes
+>   do compose (antes o video saia sem efeitos).
+> - NUNCA publicar sem o usuario avaliar o pacote de `revisar_entrega.py`.

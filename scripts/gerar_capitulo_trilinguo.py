@@ -422,6 +422,17 @@ def fase_para_idioma(args, p_dir, lang):
         mix_cmd += ["--gain", str(args.gain)]
     run(mix_cmd, f"FASE mix[{lang}]")
 
+    # REGRA 2026-11-20: sonoplastia OBRIGATORIA depois do mix e ANTES do
+    # compose/render. Antes a formula antiga nao tinha este passo e o video
+    # saia sem efeitos (e o Hook acusava 'mix pelado').
+    run([sys.executable, str(SCRIPTS["sonoplastia"]),
+         "--lang", lang, "--slug", p_dir.name],
+        f"FASE sonoplastia[{lang}] (earshot + ducking, sem laser)")
+    sono = p_dir / "assets" / "audio" / f"final_mix_sonoplastia_{lang}.m4a"
+    if sono.exists():
+        shutil.copy2(sono, p_dir / "assets" / "audio" / "final_mix.m4a")
+        print(f"== SONOPLASTIA[{lang}]: final_mix.m4a atualizado", flush=True)
+
     run([sys.executable, str(SCRIPTS["build_composition"]),
          "--timeline", str(p_dir / "artifacts" / "timeline.json"),
          "--scenes", str(p_dir / "artifacts" / "scenes.json"),

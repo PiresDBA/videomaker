@@ -412,6 +412,7 @@ SCRIPTS = {
     "scenes_from_script": HERE / "generate_scenes_and_prompts.py",
     "scene_htmls": HERE / "generate_scene_htmls.py",
     "fetch_images": HERE / "fetch_images.py",
+    "sonoplastia": HERE / "sonoplastia_por_idioma.py",
     "flow_fetch": HERE / "flow_fetch.py",
     "flow_agent_batch": HERE / "flow_agent_batch.py",
     "gerar_prompts_videos": HERE / "gerar_prompts_videos.py",

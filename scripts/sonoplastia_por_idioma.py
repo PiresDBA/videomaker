@@ -94,7 +94,7 @@ PALAVRAS = {
         "porta": [("knock/wood", 0.26, "porta")],
         "tapete": [("swipe/velvet", 0.16, "tapete")],
         "bola": [("pro_pop/bloop", 0.38, "bolinha")],
-        "bolinha": [("pro_pop/bloop", 0.48, "bolinha quique"), ("pro_pop/double", 0.18, "quique duplo")],
+        "bolinha": [("bola_quique", 0.38, "bolinha quique real"), ("pro_pop/bloop", 0.28, "quique"), ("pro_pop/double", 0.18, "quique duplo")],
         "confete": [("shimmer/m3", 0.28, "confete")],
         "risada": [("pro_pop/chirp", 0.32, "risada")],
         "risadinha": [("pro_pop/chirp", 0.32, "risadinha")],
@@ -121,13 +121,13 @@ PALAVRAS = {
         "sono": [("shimmer/m1", 0.18, "sono")],
         "soninho": [("shimmer/m1", 0.18, "soninho")],
         "bocejo": [("swish/soft", 0.30, "bocejo")],
-        "espirro": [("pro_impact/air", 0.70, "espirro")],
+        "espirro": [("espirro", 0.42, "espirro real"), ("pro_impact/air", 0.30, "espirro")],
         "ronrona": [("pro_impact/rumble", 0.20, "ronronar")],
         "roncando": [("pro_impact/rumble", 0.42, "barriga roncando")],
         "latido": [("pro_pop/bloop", 0.34, "latidinho")],
         "latidinho": [("pro_pop/bloop", 0.32, "latidinho")],
         "au": [("pro_pop/bloop", 0.26, "au")],
-        "estrelinhas": [("shimmer/m5", 0.28, "estrelinhas")],
+        "estrelinhas": [("estrelinha", 0.28, "estrelinhas reais"), ("shimmer/m5", 0.18, "brilho")],
         "folhinhas": [("swish/flick", 0.18, "folhinhas")],
         "abelhinhas": [("hover_tick/air", 0.22, "abelhinhas")],
         "poirinha": [("shimmer/m4", 0.50, "poeirinha estrelinhas")],
@@ -176,7 +176,7 @@ PALAVRAS = {
         "reloj": [("click/soft", 0.16, "tic tac")],
         "tique": [("click/soft", 0.20, "tic tac")],
         "libro": [("fit/land.light/fingertip_book", 0.22, "libro")],
-        "estornudo": [("pro_impact/air", 0.55, "estornudo")],
+        "estornudo": [("espirro", 0.42, "estornudo real"), ("pro_impact/air", 0.30, "estornudo")],
         "reflejo": [("pro_click/glass", 0.20, "reflejo en el cristal")],
         "espejo": [("pro_click/glass", 0.20, "espejo")],
         "pasillo": [("pro_typing_run/soft", 0.14, "pasos por el pasillo")],
@@ -250,7 +250,7 @@ PALAVRAS = {
         "clock": [("click/soft", 0.16, "tick tock")],
         "tick": [("click/soft", 0.20, "tick tock")],
         "book": [("fit/land.light/fingertip_book", 0.22, "book")],
-        "sneeze": [("pro_impact/air", 0.55, "sneeze")],
+        "sneeze": [("espirro", 0.42, "real sneeze"), ("pro_impact/air", 0.30, "sneeze")],
         "reflection": [("pro_click/glass", 0.20, "reflection in glass")],
         "mirror": [("pro_click/glass", 0.20, "mirror")],
         "hallway": [("pro_typing_run/soft", 0.14, "paws in hallway")],
@@ -270,7 +270,7 @@ PALAVRAS = {
         "toy": [("pro_pop/bloop", 0.22, "toy")],
         "bounces": [("pro_pop/boop", 0.24, "bounce")],
         "yawns": [("reverse_swell/breath", 0.22, "yawn")],
-        "ball": [("pro_pop/bloop", 0.30, "little ball")],
+        "ball": [("bola_quique", 0.38, "real ball bounce"), ("pro_pop/bloop", 0.22, "bounce")],
         "rolls": [("pro_pop/tink", 0.16, "rolling ball")],
         "spin": [("swish/flick", 0.18, "silly spin")],
         "grunt": [("pro_impact/rumble", 0.20, "little grunt")],
@@ -313,8 +313,12 @@ def transcrever(lang):
 def render_cue(sid, cache):
     if sid in cache:
         return cache[sid]
-    if sid in ("BUZINA", "POMBA"):
-        nome = "buzina_bibi.wav" if sid == "BUZINA" else "pomba_coo.wav"
+    SONS_LOCAIS = {"BUZINA": "buzina_bibi.wav", "POMBA": "pomba_coo.wav",
+                  "bola_quique": "bola_quique.wav", "espirro": "espirro.wav",
+                  "estrelinha": "estrelinha.wav", "pomba_coo": "pomba_coo.wav",
+                  "buzina_bibi": "buzina_bibi.wav"}
+    if sid in SONS_LOCAIS:
+        nome = SONS_LOCAIS[sid]
         y, sr = sf.read(AUD / "sons" / nome, dtype="float32")
         if sr != SR:
             n = int(len(y)*SR/sr); y = np.interp(np.linspace(0,len(y),n), np.arange(len(y)), y)
@@ -332,7 +336,8 @@ def render_cue(sid, cache):
 # Sons que soam como "laser"/eletronico e NAO combinam com cenas domesticas
 # fofas. O usuario reclamou de muito "barulhinho de laser" (2026-11-20).
 SONS_PROIBIDOS = ("zap", "glitch", "zing", "whistle", "pro_logo_sting",
-                  "downlifter", "riser", "sub_drop", "glitch/chirp")
+                  "downlifter", "riser", "sub_drop", "glitch/chirp",
+                  "osso_assobio")  # apito puro 1454Hz = "laser"
 
 
 def som_permitido(sid):
