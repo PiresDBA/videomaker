@@ -18,8 +18,19 @@ import numpy as np
 import soundfile as sf
 from faster_whisper import WhisperModel
 
-sys.path.insert(0, r"C:\videomaker\earshot-sfx")
+# ATENCAO: existem DOIS pacotes chamados `earshot`:
+#   1) C:\videomaker\earshot-sfx -> earshot.forge.bank (banco de 252 sons)
+#   2) earshot 1.2.2 (pip) -> Detector.predict_i16 (VAD para ducking)
+# Carregamos o bank PRIMEIRO com o path do earshot-sfx, removemos o modulo
+# do cache e so entao importamos o earshot do pip para o VAD.
+_EARSHOT_SFX = r"C:\videomaker\earshot-sfx"
+sys.path.insert(0, _EARSHOT_SFX)
 from earshot.forge import bank
+# remove o path do earshot-sfx para o proximo import resolver o earshot do pip
+if _EARSHOT_SFX in sys.path:
+    sys.path.remove(_EARSHOT_SFX)
+sys.modules.pop("earshot", None)
+import earshot  # pip 1.2.2 - VAD
 
 FF = shutil.which("ffmpeg") or r"C:\Users\Pires\AppData\Local\Microsoft\WinGet\Packages\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\ffmpeg-9.0.2-full_build\bin\ffmpeg.exe"
 # REGRA: slug via --slug (ou VIDEOMAKER_PROJ); NUNCA slug fixo de projeto antigo.
@@ -32,6 +43,36 @@ if not SLUG:
 P = Path(SLUG) if Path(SLUG).is_absolute() else Path(r"C:\videomaker\projects") / SLUG
 AUD = P / "assets/audio"
 SR = 44100
+
+
+def mascara_voz_earshot(base: np.ndarray, sr: int) -> np.ndarray:
+    """Detecta VOZ com earshot e devolve uma mascara suave [0..1] no tamanho
+    de `base`. 1 = voz presente (efeitos devem ser atenuados), 0 = sem voz.
+
+    O earshot exige 16 kHz/int16/frames de 256 amostras. Reamostramos o base
+    (44,1 kHz) para 16 kHz, pontuamos cada frame com predict_i16 e suavizamos
+    a transicao para nao gerar 'pump' audivel no ducking.
+    """
+    try:
+        n16 = int(len(base) * 16000 / sr)
+        a16 = np.interp(np.linspace(0, len(base), n16), np.arange(len(base)), base)
+        a16 = np.clip(a16 * 32767.0, -32768, 32767).astype(np.int16)
+        det = earshot.Detector()
+        scores = np.zeros(len(a16) // 256 + 1, dtype=np.float32)
+        for i in range(len(a16) // 256):
+            scores[i] = det.predict_i16(a16[i * 256:(i + 1) * 256])
+        # suaviza: limiar 0.5 + rampa de 0.15s para entrar/sair do ducking
+        binario = (scores > 0.5).astype(np.float32)
+        janela = max(1, int(0.15 / 0.016))  # 150ms em frames de 16ms
+        kernel = np.ones(janela, dtype=np.float32) / janela
+        suave = np.convolve(binario, kernel, mode="same")
+        # expande de volta para o tamanho do base
+        mascara = np.interp(np.arange(len(base)),
+                            np.linspace(0, len(base), len(suave)), suave)
+        return np.clip(mascara, 0.0, 1.0).astype(np.float32)
+    except Exception as e:
+        print(f"  AVISO earshot VAD: {e} (ducking desativado)", flush=True)
+        return np.zeros(len(base), dtype=np.float32)
 
 # palavras-chave por idioma -> (id som earshot ou FORGE, ganho, descricao)
 PALAVRAS = {
@@ -228,7 +269,7 @@ def main(lang):
         # por chave) e dedup de 0.3s -> so 14 cues. Agora ate 20 por chave
         # e dedup de 0.06s (evita perder eventos proximos sem sobrepor).
         for pal,s,e,i in encontradas[:20]:
-            if any(abs(s-x[0])<0.06 for x in usadas):
+            if any(abs(s-x[0])<0.10 for x in usadas):
                 continue
             usadas.add((s,e))
             for sid,gain,motivo in sons:
@@ -239,26 +280,51 @@ def main(lang):
     for t in [30.9, 118.4, 131.5, 219.0, 360.2, 460.0, 560.0]:
         cues.append((t, "pro_pop/chirp", 0.22, "passarinho ambiente"))
     dur_fala = palavras[-1][2] if palavras else 600.0
+    # REGRA DO ENGENHEIRO DE SOM: bed audivel (antes 0.07/0.05 era inaudivel).
     for k in range(int(dur_fala // 3.0) + 1):
-        cues.append((k*3.0 + 1.2 + 8.0, "pro_pop/chirp", 0.07, "bed continuo passarinhos"))
-        cues.append((k*3.0 + 2.6 + 8.0, "swish/soft", 0.05, "bed continuo brisa"))
+        cues.append((k*3.0 + 1.2 + 8.0, "pro_pop/chirp", 0.12, "bed continuo passarinhos"))
+        cues.append((k*3.0 + 2.6 + 8.0, "swish/soft", 0.09, "bed continuo brisa"))
+    # Preenche os 2 buracos encontrados na auditoria (0-9s e 620-629s).
+    for t in [1.0, 4.0, 7.0, 621.0, 624.0, 627.0]:
+        cues.append((t, "pro_pop/chirp", 0.11, "bed buraco sem efeito"))
+        cues.append((t + 1.5, "swish/soft", 0.09, "bed buraco sem efeito"))
 
     cues.sort()
     print(f"cues gerados: {len(cues)}", flush=True)
+
+    # RASTREABILIDADE: salva a lista de cues para auditoria de sonoplastia.
+    # Permite cruzar efeitos com segmentos de voz (earshot) e achar buracos.
+    try:
+        cues_json = (P / "artifacts" / f"cues_sonoplastia_{lang}.json")
+        cues_json.parent.mkdir(parents=True, exist_ok=True)
+        cues_json.write_text(json.dumps(
+            [{"t": round(t, 3), "id": sid, "gain": round(g, 3), "motivo": mot}
+             for t, sid, g, mot in cues], ensure_ascii=False, indent=2),
+            encoding="utf-8")
+        print(f"cues salvos: {cues_json}", flush=True)
+    except Exception as e:
+        print(f"AVISO: nao salvou JSON de cues: {e}", flush=True)
 
     # mix base
     subprocess.run([FF,"-y","-v","error","-i",str(AUD/f"final_mix.m4a"),
                     "-ar",str(SR),"-ac","1","-c:a","pcm_s16le",str(AUD/"_base_tmp.wav")],check=True)
     base,_=sf.read(AUD/"_base_tmp.wav",dtype="float32")
-    out=base.copy(); cache={}
+    # Efeitos sao acumulados SEPARADAMENTE para aplicar ducking com earshot.
+    efeitos=np.zeros(len(base),dtype=np.float32); cache={}
     for t,sid,gain,motivo in cues:
         i0=int(t*SR)
-        if i0>=len(out): continue
+        if i0>=len(efeitos): continue
         try: y=render_cue(sid,cache)
         except Exception as e:
             print(f"  ERRO {sid}: {e}"); continue
-        n=min(len(y),len(out)-i0)
-        out[i0:i0+n]+=y[:n]*gain
+        n=min(len(y),len(efeitos)-i0)
+        efeitos[i0:i0+n]+=y[:n]*gain
+    # DUCKING com earshot: a voz tem prioridade, mas os efeitos continuam
+    # audiveis (55% do ganho) e ACIMA da musica de fundo. Fora da fala, 100%.
+    mascara = mascara_voz_earshot(base, SR)
+    reducao = (1.0 - 0.45 * mascara).astype(np.float32)
+    efeitos *= reducao
+    out = base + efeitos
     pk=np.max(np.abs(out))
     if pk>0.99: out=out/pk*0.99
     tmp=AUD/"_sono_tmp.wav"
