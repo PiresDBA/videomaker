@@ -330,6 +330,7 @@ import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from hook_manager import disparar as hook_disparar
 from narration_contract import apply_contract, validate_contract
 from translate_script import translate_script
 
@@ -1473,6 +1474,9 @@ def phase_render(args, p: Project):
     Exemplo:
         python scripts/pipeline.py full --prompt "Husky engraçado" --only render --skip-check
     """
+    # HOOK: intercepta ANTES de renderizar e valida o CONTRATO.
+    if not hook_disparar("antes_render", slug=p.slug):
+        raise RuntimeError("HOOK bloqueou o render")
     cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File",
            str(HERE / "render.ps1"),
            "-ProjectDir", str(p.dir),
@@ -1529,17 +1533,10 @@ def phase_youtube(args, p: Project):
             --privacy unlisted --yt-title "Husky que faz drama"
     """
     print("== FASE youtube: iniciando", flush=True)
-    # HOOK (guarda do CONTRATO): valida todas as regras ANTES de publicar.
-    # Se quebrou alguma regra, ELE AVISA e bloqueia o upload.
-    hulk = HERE / "hook_validator.py"
-    if hulk.exists():
-        h = subprocess.run([sys.executable, str(hulk), "--slug", p.dir.name],
-                           capture_output=True, text=True)
-        print(h.stdout, flush=True)
-        if h.returncode != 0:
-            print("HOOK BLOQUEOU a publicacao. Corrija os erros e tente de novo.", flush=True)
-            args.publish_ok = False
-            return False
+    # HOOK: intercepta ANTES de publicar e valida todas as regras do CONTRATO.
+    if not hook_disparar("antes_publicar", slug=p.dir.name):
+        args.publish_ok = False
+        return False
     if not p.video.exists():
         print("== YOUTUBE: video ausente, nada para publicar", flush=True)
         args.publish_ok = False
