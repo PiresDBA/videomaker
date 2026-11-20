@@ -48,7 +48,7 @@ video.clip-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cov
    lateral MUITO lento: a imagem vai um pouquinho para um lado enquanto a
    sombra vai para o outro ( parece a imagem dividida em 2 ). Da impressao
    de que a imagem esta se mexendo, sem desfoque e sem zoom (zoom corta
-   colagens). Mantido o nome da classe .focus-pulse para nao quebrar o Hulk.
+   colagens). Mantido o nome da classe .focus-pulse para nao quebrar o Hook.
    Usa a propriedade INDEPENDENTE `translate` para nao sobrescrever o
    `transform` (scale/x/y) que o GSAP aplica nas cenas. */
 @keyframes shadow-sway{
