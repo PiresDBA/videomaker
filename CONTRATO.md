@@ -888,19 +888,51 @@ NUNCA pular. Flag `--sonoplastia on` e padrao.
 
 > DEPOIS do video, quando a narra??o ja avan?ou. NAO corrigir (faria a still
 
-> competir com o video). Antes da corre??o eram 35 adiantadas + 5 atrasadas.
-
-
-## AUDITORIA DO USUARIO - TEMPOS DOS CLIPES (2026-11-19)
-
-> O usuario conferiu o video renderizado e corrigiu os tempos na mao:
-> - clipe em 02:23 -> deve estar em 01:41 (`meio_2min.mp4` -> s2, offset 33.4s)
-> - NOVO clipe em 03:06 -> `abra?o-na-cozinha.mp4` (s5, offset 5.4s, 10.03s)
-> - clipe em 05:07 -> deve estar em 05:43 (`meio_5min.mp4` -> s10, offset 5.8s)
-> - clipe em 07:07 -> deve estar em 07:53 (`meio_7min.mp4` -> s14, offset 17.1s)
->
-> Imagens: as 16 fotos de s12-s15 estavam FORA DE CENA (bolinha de papel,
-> pirueta e a Luna transformada em GOLDEN em s14_d). Todas foram regeneradas
-> com acao especifica no prompt. AVISO: o clipe `abra?o-na-cozinha.mp4` tem
-> a acao certa mas as coleiras estao erradas (Frida azul, Luna vermelha) -
+> competir com o video). Antes da corre??o eram 35 adiantadas + 5 atrasadas.
+
+
+
+
+
+## AUDITORIA DO USUARIO - TEMPOS DOS CLIPES (2026-11-19)
+
+
+
+> O usuario conferiu o video renderizado e corrigiu os tempos na mao:
+
+> - clipe em 02:23 -> deve estar em 01:41 (`meio_2min.mp4` -> s2, offset 33.4s)
+
+> - NOVO clipe em 03:06 -> `abra?o-na-cozinha.mp4` (s5, offset 5.4s, 10.03s)
+
+> - clipe em 05:07 -> deve estar em 05:43 (`meio_5min.mp4` -> s10, offset 5.8s)
+
+> - clipe em 07:07 -> deve estar em 07:53 (`meio_7min.mp4` -> s14, offset 17.1s)
+
+>
+
+> Imagens: as 16 fotos de s12-s15 estavam FORA DE CENA (bolinha de papel,
+
+> pirueta e a Luna transformada em GOLDEN em s14_d). Todas foram regeneradas
+
+> com acao especifica no prompt. AVISO: o clipe `abra?o-na-cozinha.mp4` tem
+
+> a acao certa mas as coleiras estao erradas (Frida azul, Luna vermelha) -
+
 > o usuario foi avisado; manter ate ele decidir.
+
+
+## HOOK - MECANISMO DE INTERCEPTACAO (2026-11-19)
+
+> O usuario corrigiu o nome: nao e "Hulk", e HOOK. Um hook e um mecanismo
+> que 'engancha' codigo personalizado no fluxo de execucao existente, sem
+> alterar o codigo original. Serve para interceptar eventos e disparar acoes
+> automaticas.
+>
+> IMPLEMENTACAO: `scripts/hook_manager.py` registra funcoes via
+> `@registrar("evento")` e dispara com `disparar("evento", **ctx)`.
+> Eventos registrados: `antes_render`, `antes_publicar`,
+> `antes_auditoria_aplicar`. Todos chamam `hook_validator.py` e BLOQUEIAM
+> a acao se alguma regra do CONTRATO estiver quebrada.
+> O pipeline chama `hook_disparar(...)` automaticamente nesses pontos -
+> nao depende de chamada manual. (`hulk_validator.py` virou wrapper de
+> compatibilidade; `Hulk` nos textos foi renomeado para `Hook`.)
