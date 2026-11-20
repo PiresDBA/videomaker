@@ -373,6 +373,13 @@ YT_TAGS_PADRAO = (
     "videoengraçado,conteúdocriativo,petspride,familia,criancas,"
     "cachorroengraçado,diversão,aprendizado"
 )
+# Tags no idioma do video (regra 2026-11-20: nada de tag PT em video EN/ES).
+YT_TAGS_POR_IDIOMA = {
+    "en": ("dog,dogs,frida,luna,cartoon,funnyanimation,kidsstory,puppies,"
+           "funnydog,animation,family,friends,homealone,fyp"),
+    "es": ("perro,perros,frida,luna,dibujosanimados,historiainfantil,"
+           "cachorros,perrito,animacion,familia,amigos,solasencasa,entretenimiento"),
+}
 
 # Indice do MANUAL_GRAFOS.md, mostrado pelo comando `contract`.
 # Serve para o proximo nao gastar token vasculhando o manual inteiro.
@@ -1292,7 +1299,7 @@ def phase_narration(args, p: Project):
                             f"FASE narration[{lang}]: Gemini-TTS '{voice}' (Google)")
             if rc != 0:
                 print("  %s: Gemini falhou, tentando Edge-TTS fallback" % lang, flush=True)
-                rc2 = run([sys.executable, str(SCRIPTS["gen_narration"]),
+                rc2 = run([sys.executable, str(SCRIPTS["gen_narration_edge"]),
                            "--proj", str(p.dir),
                            "--lang", lang,
                            "--script", str(script_path),
@@ -1309,7 +1316,9 @@ def phase_narration(args, p: Project):
                 print("  %s: narracao via Gemini OK" % lang, flush=True)
         else:
             # Edge-TTS para todos os idiomas (provider edge).
-            rc = run([sys.executable, str(SCRIPTS["gen_narration"]),
+            # CORRIGIDO 2026-11-20: usar gen_narration_edge.py (aceita
+            # --rate/--pitch); gen_narration.py e o VoiceCraft e nao aceita.
+            rc = run([sys.executable, str(SCRIPTS["gen_narration_edge"]),
                       "--proj", str(p.dir),
                       "--lang", lang,
                       "--script", str(script_path),
@@ -1512,13 +1521,36 @@ def phase_render(args, p: Project):
         print(f"AVISO: verificacao reportou problema (video existe): {e}")
 
 
-def gerar_thumbnail_viral(p: Project, titulo: str) -> str:
-    """Gera uma thumbnail VIRALIZANTE antes de publicar.
+# Texto da thumbnail VIRAL por idioma do video (regra do usuario 2026-11-20:
+# "sempre na língua correta"). Nunca usar texto PT em video EN/ES.
+THUMB_TEXTS = {
+    "pt": ("SOZINHAS EM CASA!", "VAI DAR MUITA RISADA!"),
+    "en": ("HOME ALONE!", "THEIR FUNNY MISCHIEF!"),
+    "es": ("¡SOLAS EN CASA!", "¡MUCHAS RISAS AQUÍ!"),
+}
+
+
+def thumb_lang(args) -> str:
+    """Idioma do video final, para thumbnail/titulo/descricao corretos."""
+    lang = (getattr(args, "mix_lang", "") or "").strip().lower()[:2]
+    if lang in ("pt", "en", "es"):
+        return lang
+    dl = (getattr(args, "default_language", "") or "pt-BR").lower()
+    if dl.startswith("en"):
+        return "en"
+    if dl.startswith("es"):
+        return "es"
+    return "pt"
+
+
+def gerar_thumbnail_viral(p: Project, titulo: str, lang: str = "pt") -> str:
+    """Gera uma thumbnail VIRALIZANTE antes de publicar, NO IDIOMA DO VIDEO.
 
     REGRA DO USUARIO: nunca usar uma imagem qualquer gerada pelo pipeline.
     Escolhe uma cena com os dois personagens bem visíveis (de preferencia a
     ultima cena de desenvolvimento, onde eles olham para a camera), aplica
-    contraste/saturacao e texto chamativo em 1280x720.
+    contraste/saturacao e texto chamativo em 1280x720. O arquivo e salvo por
+    idioma (thumbnail_viral_<lang>.jpg) para nao sobrescrever o PT.
 
     Retorna o caminho da thumbnail gerada (string vazia se falhar).
     """
@@ -1532,14 +1564,14 @@ def gerar_thumbnail_viral(p: Project, titulo: str) -> str:
     if not candidatas:
         return ""
     base = candidatas[-1]
-    saida = p.dir / "artifacts" / "thumbnail_viral.jpg"
+    saida = p.dir / "artifacts" / f"thumbnail_viral_{lang}.jpg"
     saida.parent.mkdir(parents=True, exist_ok=True)
+    titulo_thumb, subtitulo_thumb = THUMB_TEXTS.get(lang, THUMB_TEXTS["pt"])
     try:
         run([sys.executable, str(HERE / "generate_thumbnail.py"),
              "--image", str(base), "--out", str(saida),
-             "--title", "SOZINHAS EM CASA!",
-             "--subtitle", "VAI DAR MUITA RISADA!"],
-            "FASE youtube: gerando thumbnail viral")
+             "--title", titulo_thumb, "--subtitle", subtitulo_thumb],
+            f"FASE youtube: gerando thumbnail viral ({lang})")
         return str(saida)
     except Exception as e:
         print(f"== YOUTUBE: AVISO - falha ao gerar thumbnail viral: {e}", flush=True)
@@ -1590,10 +1622,14 @@ def phase_youtube(args, p: Project):
     # descricao rica). Nunca montar a descricao na mao aqui.
     from description_template import build_description, extract_storyline, read_script
 
-    script = read_script(p.dir) or {}
-    auto_desc = build_description(title, extract_storyline(script))
+    lang_pub = thumb_lang(args)
+    # CORRIGIDO 2026-11-20: descricao no idioma do video (antes sempre PT).
+    script_path_lang = p.dir / "artifacts" / f"script_{lang_pub}.json"
+    script = (json.loads(script_path_lang.read_text(encoding="utf-8"))
+              if script_path_lang.exists() else (read_script(p.dir) or {}))
+    auto_desc = build_description(title, extract_storyline(script), lang=lang_pub)
     desc = (getattr(args, "yt_desc", "") or "").strip() or auto_desc
-    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
+    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_POR_IDIOMA.get(lang_pub, YT_TAGS_PADRAO)
     privacy = getattr(args, "privacy", "public")
     category = "24"
     made_for_kids = ("--yt-kids" in sys.argv) and ("--nao-kids" not in sys.argv)  # padrao: NAO infantil
@@ -1603,7 +1639,7 @@ def phase_youtube(args, p: Project):
     # (regra do usuario: nunca pegar uma imagem qualquer do projeto).
     thumb = getattr(args, "yt_thumb", "") or ""
     if not thumb:
-        thumb = gerar_thumbnail_viral(p, title)
+        thumb = gerar_thumbnail_viral(p, title, thumb_lang(args))
     secret = getattr(args, "yt_secret", "") or ""
 
     cmd = [
@@ -1894,18 +1930,21 @@ def update_youtube_metadata(p: Project, args):
     # a partir do roteiro do projeto (fonte unica da verdade).
     from description_template import build_description, extract_storyline, read_script
 
-    script = read_script(p.dir) or {}
+    lang_pub = thumb_lang(args)
+    script_path_lang = p.dir / "artifacts" / f"script_{lang_pub}.json"
+    script = (json.loads(script_path_lang.read_text(encoding="utf-8"))
+              if script_path_lang.exists() else (read_script(p.dir) or {}))
     desc = (getattr(args, "yt_desc", "") or "").strip()
     if not desc:
-        desc = build_description(title, extract_storyline(script))
+        desc = build_description(title, extract_storyline(script), lang=lang_pub)
 
-    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_PADRAO
+    tags = (getattr(args, "yt_tags", "") or "").strip() or YT_TAGS_POR_IDIOMA.get(lang_pub, YT_TAGS_PADRAO)
     privacy = getattr(args, "privacy", "public")
     category = "24"
     made_for_kids = ("--yt-kids" in sys.argv) and ("--nao-kids" not in sys.argv)  # padrao: NAO infantil
     thumb = getattr(args, "yt_thumb", "") or ""
     if not thumb:
-        thumb = gerar_thumbnail_viral(p, title)
+        thumb = gerar_thumbnail_viral(p, title, thumb_lang(args))
     secret = getattr(args, "yt_secret", "") or ""
 
     cmd = [

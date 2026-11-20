@@ -530,10 +530,10 @@
     "semantic_hash": "734d897581045e6c22fda641c1da98ff"
   },
   "scripts/pipeline.py": {
-    "mtime": 1795173247.5899026,
-    "seen": 1795173742.7871115,
-    "ast_hash": "7570aad8c8dfd2d4ec43703a4a808c66",
-    "semantic_hash": "7570aad8c8dfd2d4ec43703a4a808c66"
+    "mtime": 1795180179.5613248,
+    "seen": 1795182689.1949646,
+    "ast_hash": "1c211bd001aabe86ffdb7e92d3c43940",
+    "semantic_hash": "1c211bd001aabe86ffdb7e92d3c43940"
   },
   "scripts/pipeline_ui-old.py": {
     "mtime": 1793583377.1770477,
@@ -753,10 +753,10 @@
     "semantic_hash": "829e4b11f5b69b9703792085d653e6c2"
   },
   "scripts/youtube_upload.py": {
-    "mtime": 1794507330.6914585,
-    "seen": 1794924162.4132078,
-    "ast_hash": "a45f79158bd1ce61424a5a771952e435",
-    "semantic_hash": "a45f79158bd1ce61424a5a771952e435"
+    "mtime": 1795182530.1406605,
+    "seen": 1795182689.1951754,
+    "ast_hash": "1bfd38967744c0ffceb86e01b93c48ab",
+    "semantic_hash": "1bfd38967744c0ffceb86e01b93c48ab"
   },
   "server/api.py": {
     "mtime": 1793692030.4321842,
@@ -3345,10 +3345,10 @@
     "semantic_hash": "5b446ffec92ba2e54c598d8a208c0e40"
   },
   "scripts/sonoplastia_por_idioma.py": {
-    "mtime": 1795139713.4555323,
-    "seen": 1795173742.78723,
-    "ast_hash": "44351ba5691a91666a0ed73f146ba193",
-    "semantic_hash": "44351ba5691a91666a0ed73f146ba193"
+    "mtime": 1795177913.0226905,
+    "seen": 1795182689.195069,
+    "ast_hash": "1511a46c1b0119de57f9e04f05f23ee6",
+    "semantic_hash": "1511a46c1b0119de57f9e04f05f23ee6"
   },
   "scripts/sons_personalizados.py": {
     "mtime": 1795041262.4529698,

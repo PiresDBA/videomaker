@@ -4506,7 +4506,7 @@ beat corretos (ex.: fade-in do segundo beat = beat anterior + duração da cena)
 
 ## 60. Variedade visual de painéis — 1/2/3/4 e horizontal/vertical (2026-11-17)
 
-### 60.1. Decisão do canal (preferência validada)
+### 73.1. Decisão do canal (preferência validada)
 
 O usuário validou visualmente o esquema de **história em quadrinho**: a tela
 dividida em painéis, cada painel contando um pedacinho da história. Adotar como
@@ -4523,7 +4523,7 @@ padrão de variação visual do canal:
 - todos os painéis mantêm Frida, Luna, Pipoca, Penélope e a Bíblia de
   Continuidade (CONTRATO §5.13). Não usar essa variação para repetir figura.
 
-### 60.2. Implementação (2026-11-17)
+### 73.2. Implementação (2026-11-17)
 
 Tudo em `scripts/flow_agent_batch.py`:
 
@@ -4544,7 +4544,7 @@ Tudo em `scripts/flow_agent_batch.py`:
 - Com colagem 16:9 o captor espera **1 imagem** (não N), evitando timeout de
   minutos; os nomes restantes do lote seguem para a próxima tentativa.
 
-### 60.3. Validação antes de renderizar
+### 73.3. Validação antes de renderizar
 
 - Teste rápido, sem Chrome: `python scripts/test_paineis.py` — valida o
   fatiamento largo/alto, a preservação do 16:9 e os textos dos prompts.
@@ -4553,7 +4553,7 @@ Tudo em `scripts/flow_agent_batch.py`:
   alternando entre beats. Se houver painel repetido, **não renderizar nem
   publicar** (CONTRATO §5.8).
 
-### 60.4. Arquivos alterados
+### 73.4. Arquivos alterados
 
 - `scripts/flow_agent_batch.py` — variação de quantidade e orientação dos
   painéis, fatiamento nas duas direções, captura de 1 imagem para colagens e
@@ -5570,14 +5570,109 @@ pipeline.py (--pause default=120).
 
 > (`vocǦ`) fazia validate_flow_ready retornar False. Perfil corrigido para
 
-> seletores genericos (`div[role=textbox].ProseMirror`, etc).
-
-
-### 72.14. PROMPTS_VIDEOS.md - videos gerados em paralelo (REGRA DE CONTRATO)
-
-> `gerar_prompts_videos.py` roda na fase script (antes das imagens) e cria
-> PROMPTS_VIDEOS.md com 5 prompts: intro, meio 2/5/7 min, final. Cada prompt:
-> estilo CINEMATOGRAFICO 3D DISNEY/PIXAR + @Frida/@Luna + 8 SEGUNDOS +
-> referencia. O usuario gera no Flow em paralelo e salva em
-> assets/images/gemini/scenes/ com os nomes indicados. Na compilacao final,
-> o pipeline injeta os clipes e gera sonoplastia pela narracao.
+> seletores genericos (`div[role=textbox].ProseMirror`, etc).
+
+
+
+
+
+### 72.14. PROMPTS_VIDEOS.md - videos gerados em paralelo (REGRA DE CONTRATO)
+
+
+
+> `gerar_prompts_videos.py` roda na fase script (antes das imagens) e cria
+
+> PROMPTS_VIDEOS.md com 5 prompts: intro, meio 2/5/7 min, final. Cada prompt:
+
+> estilo CINEMATOGRAFICO 3D DISNEY/PIXAR + @Frida/@Luna + 8 SEGUNDOS +
+
+> referencia. O usuario gera no Flow em paralelo e salva em
+
+> assets/images/gemini/scenes/ com os nomes indicados. Na compilacao final,
+
+> o pipeline injeta os clipes e gera sonoplastia pela narracao.
+
+
+
+
+
+---
+
+
+
+## 73. Sonoplastia sem laser e publicacao multilingue (2026-11-20)
+
+
+
+Motivo: o usuario ouviu "muito barulhinho de laser" no video PT. Causa raiz
+
+encontrada: **204 cues** de `pro_pop/chirp` + 204 de `swish/soft` repetidos a
+
+cada 3s como "bed continuo" — um apito agudo e repetitivo.
+
+
+
+### 73.1. Correcoes no `sonoplastia_por_idioma.py`
+
+
+
+- `SONS_PROIBIDOS` + `som_permitido()` bloqueiam `zap`, `glitch`, `zing`,
+
+  `whistle`, `pro_logo_sting`, `downlifter`, `riser`, `sub_drop`.
+
+- `ambient_bed()` gera brisa contínua (ruido marrom filtrado, ganho 0.03) uma
+
+  unica vez; passarinhos esparsos e variados (12 no video todo, nao 204).
+
+- Dicionarios `PALAVRAS` pt/en/es reescritos com sons por ACAO REAL da cena.
+
+- Resultado EN: 168 cues, 31 sons distintos, 0 lasers, earshot 0.877.
+
+  Resultado ES: 188 cues, 29 sons distintos, 0 lasers.
+
+
+
+### 73.2. Traducoes e publicacao
+
+
+
+- `artifacts/script_en.json` e `script_es.json` com 22 secoes, nomes locais
+
+  corretos (ES: Lunita/Frida) e nenhuma secao igual ao PT.
+
+- `pipeline.py`: `THUMB_TEXTS`, `thumb_lang()`, `YT_TAGS_POR_IDIOMA`, descricao
+
+  via `build_description(..., lang=...)` e roteiro `script_<lang>.json`.
+
+- `phase_youtube`gera `thumbnail_viral_<lang>.jpg` antes de publicar.
+
+- CORRIGIDO: `youtube_upload.py` tinha `--made-for-kids` default True → agora
+
+  False. `youtube_update.py` ja era False. Videos publicados foram ajustados
+
+  via `--yt-video-id` (kids=False confirmado na API).
+
+
+
+### 73.3. Bug de naracao corrigido
+
+
+
+Gemini TTS esgotou cota (HTTP 429 nas 6 chaves). Fallback Edge falhava porque
+
+o pipeline chamava `gen_narration_voicecraft.py` (nao aceita --rate/--pitch).
+
+Agora o caminho Edge chama `gen_narration_edge.py`.
+
+
+
+### 73.4. Publicados neste ciclo
+
+
+
+- PT (ja existente, ajustado pelo usuario): https://youtu.be/m2ikNnE7mEY
+
+- EN: https://youtu.be/nu7PaHLHNJw
+
+- ES: https://youtu.be/KUhkYfYGW-U
+

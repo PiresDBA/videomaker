@@ -152,51 +152,134 @@ PALAVRAS = {
         "inscreva": [("fit/bell/small_bell", 0.60, "campainha subscribe")],
     },
     "es": {
-        "estornudo": [("pro_impact/air", 0.90, "estornudo")],
-        "polvo": [("shimmer/m4", 0.70, "polvo estrellitas")],  # fallback
-        "polvillo": [("shimmer/m0", 0.55, "polvillo magico")],
-        "polvo de oro": [("shimmer/m4", 0.70, "polvo dorado")],
-        "coches": [("BUZINA", 0.55, "bocina coches"), ("whoosh_big/gust", 0.35, "paso")],
-        "carros": [("BUZINA", 0.55, "bocina carros")],
-        "bomberos": [("BUZINA", 0.50, "bocina bomberos")],
-        "paloma": [("POMBA", 0.60, "paloma arrullo")],
-        "mariposa": [("hover_tick/air", 0.40, "alas mariposa"), ("pro_shimmer/m2", 0.30, "brillo")],
-        "pajaritos": [("whoosh_fast/whistle", 0.40, "pajaritos")],
-        "pájaro": [("pro_pop/chirp", 0.35, "pajaro")],
-        "estrellas": [("shimmer/m5", 0.55, "estrellas")],
-        "huesitos": [("whoosh_fast/whistle", 0.50, "huesitos voladores")],
-        "pelota": [("pro_pop/bloop", 0.65, "pelota bote")],
-        "galleta": [("typing_key/crisp", 0.45, "galleta crujiente")],
-        "risa": [("pro_pop/chirp", 0.45, "risa")],
-        "carcajada": [("whoosh_fast/whistle", 0.35, "carcajada")],
-        "ronroneo": [("pro_impact/rumble", 0.50, "barriga")],
-        "cantando": [("mallet/glock", 0.40, "xilofono")],
-        "abrazo": [("mallet/pluck", 0.40, "carino")],
-        "bostezo": [("swish/soft", 0.35, "bostezo")],
-        "fuente": [("drip/drop", 0.35, "agua fuente")],
-        "suscríbete": [("fit/bell/small_bell", 0.80, "campana suscribete")],
+        # ---- "sozinhas em casa" — sons por ACAO REAL da cena ----
+        "solitas": [("mallet/celesta", 0.20, "complicidade")],
+        "casa": [("tap/soft", 0.10, "casa tranquila")],
+        "puerta": [("knock/wood", 0.24, "puerta"), ("toggle/rocker", 0.12, "cerradura")],
+        "clic": [("click/soft", 0.24, "clic de la puerta")],
+        "alfombra": [("swipe/velvet", 0.14, "alfombra suave")],
+        "rabito": [("swish/flick", 0.20, "rabito")],
+        "patitas": [("pro_tap/soft", 0.20, "patitas")],
+        "patita": [("pro_tap/finger", 0.18, "patita")],
+        "ladridito": [("pro_pop/bloop", 0.30, "ladridito")],
+        "ladrar": [("pro_pop/bloop", 0.26, "ladrido")],
+        "paso": [("pro_typing_run/soft", 0.14, "paso pesado")],
+        "resbala": [("swish/flick", 0.22, "resbalon")],
+        "escorrega": [("swish/flick", 0.22, "resbalon")],
+        "sofa": [("pro_impact/rumble", 0.22, "caida en el sofa"), ("pro_tap/soft", 0.16, "almohadon")],
+        "salto": [("pro_pop/boop", 0.24, "saltito")],
+        "cay": [("pro_impact/rumble", 0.28, "caida")],
+        "barriga": [("pro_impact/rumble", 0.18, "barriguita")],
+        "almohada": [("pro_tap/soft", 0.20, "almohada")],
+        "risa": [("mallet/celesta", 0.20, "risa compartida")],
+        "risitas": [("mallet/celesta", 0.18, "risitas")],
+        "reloj": [("click/soft", 0.16, "tic tac")],
+        "tique": [("click/soft", 0.20, "tic tac")],
+        "libro": [("fit/land.light/fingertip_book", 0.22, "libro")],
+        "estornudo": [("pro_impact/air", 0.55, "estornudo")],
+        "reflejo": [("pro_click/glass", 0.20, "reflejo en el cristal")],
+        "espejo": [("pro_click/glass", 0.20, "espejo")],
+        "pasillo": [("pro_typing_run/soft", 0.14, "pasos por el pasillo")],
+        "fareja": [("pro_tap/soft", 0.14, "olfatear")],
+        "media": [("swipe/cloth", 0.20, "media"), ("swish/cane", 0.14, "tirar de la media")],
+        "tira": [("swish/cane", 0.20, "tiron")],
+        "estira": [("swish/flick", 0.16, "estirar")],
+        "suelta": [("pro_pop/boop", 0.18, "soltar")],
+        "cocina": [("tap/table", 0.12, "cocina")],
+        "agua": [("drip/bubble", 0.24, "agua"), ("drip/drop", 0.16, "gotitas")],
+        "salpica": [("drip/drop", 0.24, "salpicadura")],
+        "ventana": [("swish/soft", 0.10, "brisa en la ventana")],
+        "sombra": [("swish/soft", 0.12, "sombra en el piso")],
+        "dormitorio": [("tap/soft", 0.10, "habitacion")],
+        "cama": [("pro_tap/soft", 0.18, "cama mullida")],
+        "taburete": [("tap/finger", 0.16, "taburete")],
+        "juguete": [("pro_pop/bloop", 0.22, "juguete")],
+        "bote": [("pro_pop/boop", 0.24, "rebote")],
+        "bostezo": [("reverse_swell/breath", 0.22, "bostezo")],
+        "bolita": [("pro_pop/bloop", 0.30, "bolita")],
+        "rueda": [("pro_pop/tink", 0.16, "bola que rueda")],
+        "gira": [("swish/flick", 0.18, "pirueta")],
+        "grunidito": [("pro_impact/rumble", 0.20, "grunidito")],
+        "suspiro": [("reverse_swell/breath", 0.20, "suspiro")],
+        "lamidita": [("fit/pop/mouth_plop", 0.24, "lamidita cariñosa")],
+        "abrazo": [("mallet/pluck", 0.22, "carino")],
+        "unida": [("mallet/pluck", 0.18, "dupla unida")],
+        "like": [("pro_pop/tink", 0.22, "me gusta")],
+        "solas": [("mallet/celesta", 0.18, "las dos solitas")],
+        "jajaja": [("mallet/celesta", 0.18, "risa compartida")],
+        "risas": [("mallet/celesta", 0.18, "risas")],
+        "riendo": [("mallet/celesta", 0.18, "riendo juntas")],
+        "salon": [("tap/soft", 0.10, "salon tranquilo")],
+        "hocico": [("pro_tap/soft", 0.16, "hocico")],
+        "nariz": [("pro_tap/soft", 0.14, "nariz")],
+        "colita": [("swish/flick", 0.20, "colita")],
+        "vuelta": [("swish/flick", 0.14, "vuelta")],
+        "huele": [("pro_tap/soft", 0.14, "olfatear")],
+        "juntas": [("mallet/pluck", 0.16, "juntas")],
+        "corazon": [("mallet/pluck", 0.18, "corazon caliente")],
+        "cario": [("mallet/pluck", 0.18, "cariño")],
+        "acoge": [("mallet/pluck", 0.18, "acoge con cariño")],
+        "rebota": [("pro_pop/boop", 0.22, "rebote")],
+        "cae": [("pro_impact/rumble", 0.24, "caida")],
+        "banquito": [("tap/finger", 0.16, "banquito")],
+        "tic": [("click/soft", 0.18, "tic tac del reloj")],
+        "suscribete": [("fit/bell/small_bell", 0.40, "campana suscribete")],
     },
     "en": {
-        "sneeze": [("pro_impact/air", 0.90, "sneeze")],
-        "sparkling": [("shimmer/m4", 0.70, "sparkling dust")],
-        "dust": [("shimmer/m0", 0.55, "magic dust")],
-        "cars": [("BUZINA", 0.55, "car horn"), ("whoosh_big/gust", 0.35, "pass by")],
-        "firefighters": [("BUZINA", 0.50, "firefighter horn")],
-        "pigeon": [("POMBA", 0.60, "pigeon coo")],
-        "butterfly": [("hover_tick/air", 0.40, "butterfly wings"), ("pro_shimmer/m2", 0.30, "sparkle")],
-        "birds": [("whoosh_fast/whistle", 0.40, "birds")],
-        "bird": [("pro_pop/chirp", 0.35, "bird chirp")],
-        "stars": [("shimmer/m5", 0.55, "stars")],
-        "bones": [("whoosh_fast/whistle", 0.50, "flying bones")],
-        "ball": [("pro_pop/bloop", 0.65, "ball bounce")],
-        "biscuit": [("typing_key/crisp", 0.45, "crunchy biscuit")],
-        "laugh": [("pro_pop/chirp", 0.45, "laugh")],
-        "rumbling": [("pro_impact/rumble", 0.50, "tummy rumble")],
-        "singing": [("mallet/glock", 0.40, "xylophone")],
-        "hug": [("mallet/pluck", 0.40, "hug")],
-        "yawn": [("swish/soft", 0.35, "yawn")],
-        "fountain": [("drip/drop", 0.35, "water fountain")],
-        "subscribe": [("fit/bell/small_bell", 0.80, "subscribe bell")],
+        # ---- "home alone" — sounds matched to the REAL on-screen action ----
+        "alone": [("mallet/celesta", 0.20, "together alone")],
+        "home": [("tap/soft", 0.10, "quiet house")],
+        "door": [("knock/wood", 0.24, "door"), ("toggle/rocker", 0.12, "latch")],
+        "click": [("click/soft", 0.24, "door click")],
+        "rug": [("swipe/velvet", 0.14, "soft rug")],
+        "tail": [("swish/flick", 0.20, "tail wag")],
+        "paws": [("pro_tap/soft", 0.20, "paws")],
+        "paw": [("pro_tap/finger", 0.18, "paw pat")],
+        "bark": [("pro_pop/bloop", 0.30, "little bark")],
+        "barking": [("pro_pop/bloop", 0.26, "bark")],
+        "step": [("pro_typing_run/soft", 0.14, "heavy step")],
+        "slips": [("swish/flick", 0.22, "slip")],
+        "couch": [("pro_impact/rumble", 0.22, "flop on couch"), ("pro_tap/soft", 0.16, "cushion")],
+        "sofa": [("pro_impact/rumble", 0.22, "flop on sofa")],
+        "jump": [("pro_pop/boop", 0.24, "little jump")],
+        "fell": [("pro_impact/rumble", 0.28, "fall")],
+        "belly": [("pro_impact/rumble", 0.18, "tummy")],
+        "cushion": [("pro_tap/soft", 0.20, "cushion")],
+        "laugh": [("mallet/celesta", 0.20, "shared laugh")],
+        "giggles": [("mallet/celesta", 0.18, "giggles")],
+        "clock": [("click/soft", 0.16, "tick tock")],
+        "tick": [("click/soft", 0.20, "tick tock")],
+        "book": [("fit/land.light/fingertip_book", 0.22, "book")],
+        "sneeze": [("pro_impact/air", 0.55, "sneeze")],
+        "reflection": [("pro_click/glass", 0.20, "reflection in glass")],
+        "mirror": [("pro_click/glass", 0.20, "mirror")],
+        "hallway": [("pro_typing_run/soft", 0.14, "paws in hallway")],
+        "sniff": [("pro_tap/soft", 0.14, "sniffing")],
+        "sock": [("swipe/cloth", 0.20, "sock"), ("swish/cane", 0.14, "tug the sock")],
+        "pulls": [("swish/cane", 0.20, "tug")],
+        "stretches": [("swish/flick", 0.16, "stretch")],
+        "lets": [("pro_pop/boop", 0.18, "let go")],
+        "kitchen": [("tap/table", 0.12, "kitchen")],
+        "water": [("drip/bubble", 0.24, "water"), ("drip/drop", 0.16, "droplets")],
+        "splash": [("drip/drop", 0.24, "splash")],
+        "window": [("swish/soft", 0.10, "breeze at window")],
+        "shadow": [("swish/soft", 0.12, "shadow on floor")],
+        "bedroom": [("tap/soft", 0.10, "bedroom")],
+        "bed": [("pro_tap/soft", 0.18, "soft bed")],
+        "stool": [("tap/finger", 0.16, "little stool")],
+        "toy": [("pro_pop/bloop", 0.22, "toy")],
+        "bounces": [("pro_pop/boop", 0.24, "bounce")],
+        "yawns": [("reverse_swell/breath", 0.22, "yawn")],
+        "ball": [("pro_pop/bloop", 0.30, "little ball")],
+        "rolls": [("pro_pop/tink", 0.16, "rolling ball")],
+        "spin": [("swish/flick", 0.18, "silly spin")],
+        "grunt": [("pro_impact/rumble", 0.20, "little grunt")],
+        "sigh": [("reverse_swell/breath", 0.20, "sigh")],
+        "lick": [("fit/pop/mouth_plop", 0.24, "affectionate lick")],
+        "hug": [("mallet/pluck", 0.22, "cuddle")],
+        "together": [("mallet/pluck", 0.18, "best friends")],
+        "like": [("pro_pop/tink", 0.22, "like")],
+        "subscribe": [("fit/bell/small_bell", 0.40, "subscribe bell")],
     },
 }
 
@@ -246,6 +329,39 @@ def render_cue(sid, cache):
     return y
 
 
+# Sons que soam como "laser"/eletronico e NAO combinam com cenas domesticas
+# fofas. O usuario reclamou de muito "barulhinho de laser" (2026-11-20).
+SONS_PROIBIDOS = ("zap", "glitch", "zing", "whistle", "pro_logo_sting",
+                  "downlifter", "riser", "sub_drop", "glitch/chirp")
+
+
+def som_permitido(sid):
+    s = sid.lower()
+    return not any(p in s for p in SONS_PROIBIDOS)
+
+
+def ambient_bed(dur, sr, seed=7):
+    """Leito ambiente CONTINUO e suave (brisa), gerado uma unica vez.
+
+    Substitui o antigo 'bed' de 204 chirps + 204 swishes a cada 3s — que
+    soava como um laser apitando sem parar. Ruido marrom filtrado + modulacao
+    lenta, em ganho muito baixo: nao chama atencao, so preenche o silencio.
+    """
+    rng = np.random.default_rng(seed)
+    n = int(dur * sr)
+    if n <= 0:
+        return np.zeros(1, dtype=np.float32)
+    w = rng.standard_normal(n).astype(np.float32)
+    b = np.cumsum(w)
+    b -= b.mean()
+    b /= (np.max(np.abs(b)) + 1e-9)
+    k = max(1, int(0.25 * sr))  # low-pass ~0.25 s -> brisa, nao aspero
+    b = np.convolve(b, np.ones(k, dtype=np.float32) / k, mode="same")
+    t = np.arange(n, dtype=np.float32) / sr
+    env = 0.55 + 0.45 * np.sin(2 * np.pi * 0.045 * t)
+    return (b * env).astype(np.float32)
+
+
 def main(lang):
     print(f"=== sonoplastia {lang.upper()} ===", flush=True)
     palavras = transcrever(lang)
@@ -273,21 +389,20 @@ def main(lang):
                 continue
             usadas.add((s,e))
             for sid,gain,motivo in sons:
+                if not som_permitido(sid):
+                    continue  # nunca usar som de laser/eletronico em cena fofa
                 cues.append((s+8.0, sid, gain, f"'{pal}' -> {motivo}"))
 
-    # ambiente: passarinhos esparsos + BED CONTINUO (o usuario reclamou que
-    # a sonoplastia estava pobre). O bed entra bem baixo para nao mascarar a voz.
-    for t in [30.9, 118.4, 131.5, 219.0, 360.2, 460.0, 560.0]:
-        cues.append((t, "pro_pop/chirp", 0.22, "passarinho ambiente"))
+    # AMBIENTE (CORRIGIDO 2026-11-20): antes havia 204 chirps + 204 swishes
+    # repetidos a cada 3s — soava como laser apitando sem parar. Agora:
+    #   - leito continuo de brisa (ruido filtrado, ganho 0.03) cobre o video
+    #   - passarinhos esparsos e VARIADOS (12 eventos em ~10 min, nao 204)
     dur_fala = palavras[-1][2] if palavras else 600.0
-    # REGRA DO ENGENHEIRO DE SOM: bed audivel (antes 0.07/0.05 era inaudivel).
-    for k in range(int(dur_fala // 3.0) + 1):
-        cues.append((k*3.0 + 1.2 + 8.0, "pro_pop/chirp", 0.12, "bed continuo passarinhos"))
-        cues.append((k*3.0 + 2.6 + 8.0, "swish/soft", 0.09, "bed continuo brisa"))
-    # Preenche os 2 buracos encontrados na auditoria (0-9s e 620-629s).
-    for t in [1.0, 4.0, 7.0, 621.0, 624.0, 627.0]:
-        cues.append((t, "pro_pop/chirp", 0.11, "bed buraco sem efeito"))
-        cues.append((t + 1.5, "swish/soft", 0.09, "bed buraco sem efeito"))
+    dur_total = max(dur_fala + 8.0 + 12.0, 630.0)
+    passaros = ["pro_pop/chirp", "pro_pop/tink", "hover_tick/air", "notify/m1"]
+    for i in range(12):
+        t = 14.0 + i * (dur_total - 30.0) / 12 + (i % 3) * 1.7
+        cues.append((t, passaros[i % len(passaros)], 0.16, "passarinho esparso"))
 
     cues.sort()
     print(f"cues gerados: {len(cues)}", flush=True)
@@ -319,6 +434,14 @@ def main(lang):
             print(f"  ERRO {sid}: {e}"); continue
         n=min(len(y),len(efeitos)-i0)
         efeitos[i0:i0+n]+=y[:n]*gain
+    # LEITO AMBIENTE: brisa continua e suave, cobre todo o video (inclusive
+    # os antigos buracos 0-9s e 620-629s) sem nenhum "apito" repetitivo.
+    bed = ambient_bed(len(base) / SR, SR)
+    if len(bed) < len(base):
+        bed = np.pad(bed, (0, len(base) - len(bed)))
+    else:
+        bed = bed[:len(base)]
+    efeitos += bed * 0.03
     # DUCKING com earshot: a voz tem prioridade, mas os efeitos continuam
     # audiveis (55% do ganho) e ACIMA da musica de fundo. Fora da fala, 100%.
     mascara = mascara_voz_earshot(base, SR)

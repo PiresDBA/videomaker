@@ -126,7 +126,7 @@ def main():
     ap.add_argument("--tags", default="cachorro,animacao,infantil,frida,luna,cachorrinho,desenhoanimado,videoengraçado,conteúdocriativo,petspride,familia,criancas,cachorroengraçado,diversão,aprendizado", help="tags separadas por virgula")
     ap.add_argument("--category", default="24", help="22=Pessoas e blogs, 24=Entretenimento, 1=Filmes/Animacao")
     ap.add_argument("--privacy", default="public", choices=["private", "unlisted", "public"])
-    ap.add_argument("--made-for-kids", action="store_true", default=True, help="marca como feito para criancas (padrao: sim)")
+    ap.add_argument("--made-for-kids", action="store_true", default=False, help="EXCECAO: marca como feito para criancas (padrao: sim)")
     ap.add_argument("--nao-kids", action="store_true", help="desativa o modo feito para criancas")
     ap.add_argument("--publish-at", default="", help="'AAAA-MM-DD HH:MM' (hora local); agenda a publicacao")
     ap.add_argument("--thumbnail", default="", help="caminho da thumbnail (default: procura thumb.jpg/thumbnail.jpg na pasta do projeto)")
@@ -173,7 +173,7 @@ def main():
     # Tags
     tags = [t.strip() for t in a.tags.split(",") if t.strip()]
 
-    # Made for kids: default True, --nao-kids desativa
+    # REGRA 2026-11-20: padrao NAO infantil; --made-for-kids e excecao explicita
     made_for_kids = bool(a.made_for_kids) and not a.nao_kids
 
     # Idiomas
