@@ -939,9 +939,9 @@
     "semantic_hash": "f5d27d592fa26b1e831fb1a8c0cdd391"
   },
   "AGENTS.md": {
-    "mtime": 1795188871.8766482,
-    "seen": 1795189019.1568842,
-    "ast_hash": "619f9f4263bb2d23ef9119ccbce0b026",
+    "mtime": 1795190401.892596,
+    "seen": 1795192889.3519049,
+    "ast_hash": "23d8c83b83d6fd6477bcf46c2be12471",
     "semantic_hash": ""
   },
   "AUDIO-2025-11-06_report.md": {
@@ -1083,15 +1083,15 @@
     "semantic_hash": "042b17857159b6d64cd56773ad58f420"
   },
   "CONTRATO.md": {
-    "mtime": 1795187728.6607919,
-    "seen": 1795189019.1569011,
-    "ast_hash": "ea5c2dce7992a18f9f845cf30b1e35c2",
+    "mtime": 1795190401.9191813,
+    "seen": 1795192889.3519132,
+    "ast_hash": "303ef732f46e70030e55c53f1952c362",
     "semantic_hash": ""
   },
   "MANUAL_GRAFOS.md": {
-    "mtime": 1795188871.8968022,
-    "seen": 1795189019.156919,
-    "ast_hash": "57908b2052e29de74e411444bf460a0a",
+    "mtime": 1795190401.9150946,
+    "seen": 1795192889.3519204,
+    "ast_hash": "00af6b53ffa8cbacecce5e2336d9ef81",
     "semantic_hash": ""
   },
   "scripts/encurtar_prompts.py": {
@@ -1693,12 +1693,6 @@
     "seen": 1795117890.7669847,
     "ast_hash": "f6c3098ae2b09ec4a135a254f817122d",
     "semantic_hash": ""
-  },
-  "scripts/config.json": {
-    "mtime": 1795184308.8167398,
-    "seen": 1795192723.7816913,
-    "ast_hash": "9b9f98fb350190bf920181de1d4e5e75",
-    "semantic_hash": "9b9f98fb350190bf920181de1d4e5e75"
   },
   "scripts/hook_validator.py": {
     "mtime": 1795189613.0457962,
@@ -3211,5 +3205,281 @@
     "seen": 1795192797.008229,
     "ast_hash": "48928d86da563b84385dc7c40111b005",
     "semantic_hash": "48928d86da563b84385dc7c40111b005"
+  },
+  "earshot-sfx/CHANGELOG.md": {
+    "mtime": 1795037988.2100976,
+    "seen": 1795192889.3519945,
+    "ast_hash": "9d951fce336f004524c2997c3869b0e2",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/README.md": {
+    "mtime": 1795037988.212435,
+    "seen": 1795192889.3519979,
+    "ast_hash": "2ff68e869a2c369b11a32e9ea962ed6b",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/CREDITS_FIT.md": {
+    "mtime": 1795037988.2134402,
+    "seen": 1795192889.3520005,
+    "ast_hash": "4d89d630db7c192f5a1287fdc3dd604c",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/DESIGN.md": {
+    "mtime": 1795037988.2134402,
+    "seen": 1795192889.3520036,
+    "ast_hash": "eafc858f0614247c01ce34313485e594",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/FIT.md": {
+    "mtime": 1795037988.214442,
+    "seen": 1795192889.3520064,
+    "ast_hash": "d7681f7a085c431d1ccbeaf961f35f7e",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/FORGE_V2.md": {
+    "mtime": 1795037988.2154763,
+    "seen": 1795192889.352009,
+    "ast_hash": "177e2c55b39d05a574e978993838ef9f",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/INTEGRATION.md": {
+    "mtime": 1795037988.2154763,
+    "seen": 1795192889.3520117,
+    "ast_hash": "737f110c485f822004b438d18b3dc142",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/LIMITS.md": {
+    "mtime": 1795037988.2169855,
+    "seen": 1795192889.3520148,
+    "ast_hash": "32428b063af59b47f3e93036e0535a9d",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/SFX.md": {
+    "mtime": 1795037988.2178397,
+    "seen": 1795192889.3520164,
+    "ast_hash": "1a1553056c3ba1b383f10596bca12e5f",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/VALIDATION.md": {
+    "mtime": 1795037988.2178397,
+    "seen": 1795192889.3520179,
+    "ast_hash": "d79df37ff4d7076e52b520196790b567",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/history/FORGE_V2_LOG.md": {
+    "mtime": 1795037988.2193706,
+    "seen": 1795192889.3520193,
+    "ast_hash": "c417deb2d2fbc1517ede19e52473ebd0",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/launch-video-sound.md": {
+    "mtime": 1795037988.2193706,
+    "seen": 1795192889.3520205,
+    "ast_hash": "42fa44eeee9ca06c5543d1ae7cd08d6a",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/motion-sfx-study.md": {
+    "mtime": 1795037988.2253966,
+    "seen": 1795192889.352022,
+    "ast_hash": "d4f099b93832ed82566e7c3ee83ccd0c",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/docs/motion-sfx-techniques.md": {
+    "mtime": 1795037988.2263963,
+    "seen": 1795192889.3520234,
+    "ast_hash": "9cf410ac290018d4761e068975ebd195",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/README.md": {
+    "mtime": 1795037988.3037806,
+    "seen": 1795192889.3520246,
+    "ast_hash": "f03a00f3faf975bdf6351f0dc361a85f",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/RESULTS.md": {
+    "mtime": 1795037988.3047695,
+    "seen": 1795192889.3520262,
+    "ast_hash": "220af68a77ce7b8acdd20e9872af0f31",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_real.md": {
+    "mtime": 1795037988.315567,
+    "seen": 1795192889.352028,
+    "ast_hash": "ef981c8f42a61edbbaf6edd0073d0dbb",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v1.md": {
+    "mtime": 1795037988.317073,
+    "seen": 1795192889.3520293,
+    "ast_hash": "03f56c157fdcaf8f9669df1fbd65aede",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v2r2.md": {
+    "mtime": 1795037988.3215892,
+    "seen": 1795192889.352031,
+    "ast_hash": "482eeb0c3f00e83536204b2c0701671a",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v2r3.md": {
+    "mtime": 1795037988.3245878,
+    "seen": 1795192889.352032,
+    "ast_hash": "d9cb56b0afe2cb225c73a77e110b304d",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v2r4.md": {
+    "mtime": 1795037988.326093,
+    "seen": 1795192889.3520334,
+    "ast_hash": "caea1d2f66c519b537e2dddddabc626a",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v2r5.md": {
+    "mtime": 1795037988.328609,
+    "seen": 1795192889.3520348,
+    "ast_hash": "c7b2ec373d4e60f149f394c100c05fca",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/forge/results_v2r6.md": {
+    "mtime": 1795037988.3301814,
+    "seen": 1795192889.352036,
+    "ast_hash": "ae78e77bf5081fabda59d39a3e7233f1",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/launch/RESULTS.md": {
+    "mtime": 1795037988.331694,
+    "seen": 1795192889.3520374,
+    "ast_hash": "5ef59f591f36e08adc58cd4389877e3c",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/realness/RESULTS.md": {
+    "mtime": 1795037988.3350685,
+    "seen": 1795192889.3520389,
+    "ast_hash": "52c95911f2372ce2e32ce4e5f8fe0f23",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/semantics/RESULTS.md": {
+    "mtime": 1795037988.3437517,
+    "seen": 1795192889.3520405,
+    "ast_hash": "9f346c0def3b7a72c910731f084e40c7",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/eval/timeline/RESULTS.md": {
+    "mtime": 1795037988.3520212,
+    "seen": 1795192889.352042,
+    "ast_hash": "50c4db8cf2d8ff8049e5a4843e0251aa",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/earshot/SKILL.md": {
+    "mtime": 1795037988.3600726,
+    "seen": 1795192889.3520432,
+    "ast_hash": "405fdf5c1f82cdb05a558fc99da892fb",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/SKILL.md": {
+    "mtime": 1795037988.361277,
+    "seen": 1795192889.3520448,
+    "ast_hash": "b216f6357e962b5abfb89cff626d9a62",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/references/design-format.md": {
+    "mtime": 1795037988.362283,
+    "seen": 1795192889.3520463,
+    "ast_hash": "cff8687749e02e6dde154911cf9d5005",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/references/licences.md": {
+    "mtime": 1795037988.362283,
+    "seen": 1795192889.352048,
+    "ast_hash": "78b33b4aa2865fc7bd1da3a5c6abd7ed",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/references/process.md": {
+    "mtime": 1795037988.363283,
+    "seen": 1795192889.3520494,
+    "ast_hash": "6072d8afda6f344dd5bd0daf33ee32b8",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/references/sound-design.md": {
+    "mtime": 1795037988.3639271,
+    "seen": 1795192889.3520513,
+    "ast_hash": "f278771a8857c493a693355f96f26884",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/references/troubleshooting.md": {
+    "mtime": 1795037988.3639271,
+    "seen": 1795192889.352053,
+    "ast_hash": "89ac847306bac89c69ee560a7212d423",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/SOUND_BRIEF.md": {
+    "mtime": 1795037988.3724747,
+    "seen": 1795192889.3520544,
+    "ast_hash": "0d0138378b6b77d029b1b8e0bca4c690",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/critic_director.md": {
+    "mtime": 1795037988.3773198,
+    "seen": 1795192889.3520577,
+    "ast_hash": "cd11857b3a3b6fa1ce092700537efc36",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/critic_edges.md": {
+    "mtime": 1795037988.3773198,
+    "seen": 1795192889.3520603,
+    "ast_hash": "49366dfdbb8c1c345060f96ca8559160",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/critic_masking.md": {
+    "mtime": 1795037988.378404,
+    "seen": 1795192889.3520634,
+    "ast_hash": "e8357cb926cd59ec778522e665851f85",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/critic_sync.md": {
+    "mtime": 1795037988.378404,
+    "seen": 1795192889.352066,
+    "ast_hash": "9229867a2c1a0e708f7ceb77332ec09c",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/critic_tonal.md": {
+    "mtime": 1795037988.3794067,
+    "seen": 1795192889.352069,
+    "ast_hash": "abcf5ae0c7b816591744350f61d4318d",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/designer.md": {
+    "mtime": 1795037988.3804524,
+    "seen": 1795192889.3520722,
+    "ast_hash": "d14d49db8c32361480902f57bb1ea88d",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/fixer.md": {
+    "mtime": 1795037988.3804524,
+    "seen": 1795192889.3520749,
+    "ast_hash": "b0683b666e4cbdfcf6f616a719cae347",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/licence_audit.md": {
+    "mtime": 1795037988.3814573,
+    "seen": 1795192889.3520775,
+    "ast_hash": "1fcfded7e2bdf60fc5e50f213e657edc",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/music_supervisor.md": {
+    "mtime": 1795037988.3814573,
+    "seen": 1795192889.3520796,
+    "ast_hash": "44a9e1c650abe81ebe924fbfb7d27d3e",
+    "semantic_hash": ""
+  },
+  "earshot-sfx/skills/real-sound/templates/prompts/sourcing.md": {
+    "mtime": 1795037988.3814573,
+    "seen": 1795192889.3520813,
+    "ast_hash": "397857254c38b0323a828502976e9b0f",
+    "semantic_hash": ""
+  },
+  "ui/package-lock.json": {
+    "mtime": 1793667402.9408429,
+    "seen": 1795192889.3521154,
+    "ast_hash": "d5e20d2af9e8ea4c16e9d10d4d3c55fe",
+    "semantic_hash": ""
   }
 }

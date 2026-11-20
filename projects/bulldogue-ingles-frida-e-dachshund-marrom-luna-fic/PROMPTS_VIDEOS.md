@@ -1,96 +1,46 @@
-# 🎬 PROMPTS DOS 5 VÍDEOS — GERAR MANUALMENTE NO GOOGLE FLOW
+# PROMPTS DOS 5 VIDEOS - Fridóca e Luninha sozinhas em casa
 
-**Projeto:** Fridóca e Luninha sozinhas em casa
-**Motivo:** o Flow não conseguiu gerar os vídeos automaticamente após várias tentativas. Fallback = você gera manualmente e salva na pasta.
+Gerado automaticamente pelo pipeline (logo apos o roteiro).
+Gere os 5 manualmente no Google Flow ENQUANTO o pipeline gera as fotos.
 
----
+## ONDE SALVAR
 
-## 📁 ONDE SALVAR
-
-Todos os 5 arquivos vão em:
-
-```
 C:\videomaker\projects\bulldogue-ingles-frida-e-dachshund-marrom-luna-fic\assets\images\gemini\scenes\
-```
 
-**Nomes exatos dos arquivos** (salve com estes nomes):
+## CONFIG (TODOS)
+Veo 3.1 Lite - qualidade BAIXA (10 creditos) - 8 segundos - 16:9 - export 720p
+Anexar referencia: C:\videomaker\scripts\reference\frida_luna_reference.jpg
+ESTILO: cinematografico 3D Disney/Pixar. Usar @Frida e @Luna (arro, sem colchetes).
 
-| # | Nome do arquivo | Duração | Momento no vídeo |
-|---|---|---|---|
-| 1 | `intro_8s.mp4` | 8s | Abertura (0s) |
-| 2 | `meio_2min.mp4` | 8s | ~2 minutos |
-| 3 | `meio_5min.mp4` | 8s | ~5 minutos |
-| 4 | `meio_7min.mp4` | 8s | ~7 minutos |
-| 5 | `final_subscribe.mp4` | 5-8s | Final (subscribe) |
-
----
-
-## ⚙️ CONFIGURAÇÃO NO FLOW (para TODOS os 5)
-
-- **Modelo:** Veo 3.1 Lite
-- **Qualidade:** BAIXA (10 créditos por vídeo → dá para fazer os 5)
-- **Duração:** 8 segundos (escrever "8 SEGUNDOS" no prompt)
-- **Formato:** 16:9
-- **Exportação:** 720p
-- **Personagens:** use `@Frida` e `@Luna` (arro, sem colchetes) em TODO prompt
-  - `@Frida` = buldogue inglesa fawn, grande e compacta, colar de pérolas
-  - `@Luna` = dachshund/salsicha marrom-chocolate, comprida e baixa, coleira dourada
-- **Anexar** a imagem de referência: `C:\videomaker\scripts\reference\frida_luna_reference.jpg`
-- Sem humanos, sem outros cachorros, sem texto, sem marcas
-
----
-
-## 1️⃣ intro_8s.mp4 — ABERTURA
+## 1. intro_8s.mp4 (minuto 0, cena s0)
 
 ```
-Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, estilo desenho 3D cinematografico para criancas. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada). As duas acenam alegres para a camera na sala aconchegante da casa, sorrindo, com olhinhos brilhantes e movimentos fofos. Luz quente e feliz. Mesmos personagens da referencia em todos os quadros. Sem humanos, sem texto, sem marcas, sem outros cachorros. DURACAO: 8 SEGUNDOS.
+Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, ESTILO CINEMATOGRAFICO 3D estilo Disney/Pixar, animacao fofa de alta qualidade para criancas, traco suave, luz cinematografica, personagens expressivos. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada), EXATAMENTE como na imagem de referencia anexada, mesmos rostos, racas, cores e tamanhos em todos os quadros. CENA (Oiê, turminha! Que alegria ter você aqui hoje! Prepare o coração que a história de agora é pura fofura e risada.). Sem humanos, sem outros cachorros, sem texto, sem letras, sem marcas. DURACAO: 8 SEGUNDOS.
 ```
 
----
-
-## 2️⃣ meio_2min.mp4 — O SOFÁ CASTELO (~2 min)
-
-Cena do roteiro s2: o sofá gigante virou castelo/caverna/trampolim.
+## 2. meio_2min.mp4 (minuto 2, cena s4)
 
 ```
-Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, estilo desenho 3D cinematografico para criancas. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada). Na sala de estar, @Frida pega impulso e cai de barriga no sofa gigante, que afunda todo fofinho. @Luna, bem baixinha, passa correndo por baixo da almofada como se fosse um tunel e aparece do outro lado com uma almofada na cabeca. @Frida olha sem entender e as duas riem com o focinho. O sofa virou castelo, caverna e trampolim. Mesmos personagens da referencia em todos os quadros. Sem humanos, sem texto, sem marcas, sem outros cachorros. DURACAO: 8 SEGUNDOS.
+Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, ESTILO CINEMATOGRAFICO 3D estilo Disney/Pixar, animacao fofa de alta qualidade para criancas, traco suave, luz cinematografica, personagens expressivos. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada), EXATAMENTE como na imagem de referencia anexada, mesmos rostos, racas, cores e tamanhos em todos os quadros. CENA (A sala já está toda bagunçada, mas o dia continua! Fridóca e @Luna caminham juntas pelo corredor da casa. O piso é fresquinho e faz barulhinho de patinha. @Luna vai na frente, farejando cada cantinho com o nariz colado no chão. Fridóca vem logo atrás, bufando de leve, toda concentrada. De repente, @Luna encontra uma meia perdida perto da parede! Ela puxa a meia com força e anda para trás! Fridóca tenta segurar a outra ponta e... puxa! A meia estica e solta! Hahaha! Fridóca cai sentada no chão do corredor!). Sem humanos, sem outros cachorros, sem texto, sem letras, sem marcas. DURACAO: 8 SEGUNDOS.
 ```
 
----
-
-## 3️⃣ meio_5min.mp4 — A PISTA DO TAPETE (~5 min)
-
-Cena do roteiro s10: o tapete virou pista de corrida.
+## 3. meio_5min.mp4 (minuto 5, cena s9)
 
 ```
-Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, estilo desenho 3D cinematografico para criancas. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada). Na sala, o tapete virou pista de corrida: @Luna da a largada com o corpo bem baixinho, quase encostando no chao, e corre em zigue-zague entre as pernas da mesa. @Frida tenta acompanhar trotando no seu ritmo, e quando vira rapido as orelhinhas balancam e batem na bochecha. As duas brincam felizes. Mesmos personagens da referencia em todos os quadros. Sem humanos, sem texto, sem marcas, sem outros cachorros. DURACAO: 8 SEGUNDOS.
+Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, ESTILO CINEMATOGRAFICO 3D estilo Disney/Pixar, animacao fofa de alta qualidade para criancas, traco suave, luz cinematografica, personagens expressivos. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada), EXATAMENTE como na imagem de referencia anexada, mesmos rostos, racas, cores e tamanhos em todos os quadros. CENA (O sol vai mudando de lugar na janela, e o dia inteiro continua! Fridóca desce da cama com cuidado, bufando baixinho. @Luna já está no chão, rolando de costas e mexendo as patinhas! As quatro patinhas da @Luna ficam para o alto no meio do quarto! Fridóca encosta o focinho na barriguinha dela, bem devagar! @Luna faz cócegas com o rabo no chão e dá um grunhidinho! Hahaha! Parece um pãezinho marrom assando no sol do quarto!). Sem humanos, sem outros cachorros, sem texto, sem letras, sem marcas. DURACAO: 8 SEGUNDOS.
 ```
 
----
-
-## 4️⃣ meio_7min.mp4 — A CAMA QUENTINHA (~7 min)
-
-Cena do roteiro s15: volta ao quarto, as duas na cama.
+## 4. meio_7min.mp4 (minuto 7, cena s13)
 
 ```
-Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, estilo desenho 3D cinematografico para criancas. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada). No quarto aconchegante, @Frida sobe na cama pelo banquinho com calma e ajuda @Luna a subir, deixando um espaco quentinho. @Luna se enrola toda, virando uma bolinha marrom bem fofa. @Frida deita pertinho, encostando as costas quentinhas na amiga, e as duas fecham os olhinhos em paz, como dois travesseiros com orelhas. Luz suave do fim de tarde. Mesmos personagens da referencia em todos os quadros. Sem humanos, sem texto, sem marcas, sem outros cachorros. DURACAO: 8 SEGUNDOS.
+Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, ESTILO CINEMATOGRAFICO 3D estilo Disney/Pixar, animacao fofa de alta qualidade para criancas, traco suave, luz cinematografica, personagens expressivos. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada), EXATAMENTE como na imagem de referencia anexada, mesmos rostos, racas, cores e tamanhos em todos os quadros. CENA (@Luna corre atrás da bolinha, toda contente, e escorrega um pouquinho no piso! Ela não se machuca, só faz uma pirueta engraçada! Fridóca observa tudo com calma, sentada no chão da cozinha. Ela é a irmã mais grandona e fofinha, cheia de paciência! @Luna traz a bolinha de volta e solta bem no focinho da Fridóca! Fridóca pega a bolinha e esconde embaixo da barriga! Hahaha! @Luna procura em todo lugar, menos ali!). Sem humanos, sem outros cachorros, sem texto, sem letras, sem marcas. DURACAO: 8 SEGUNDOS.
 ```
 
----
-
-## 5️⃣ final_subscribe.mp4 — FINAL / INSCREVA-SE
+## 5. final_subscribe.mp4 (minuto 9, cena s_outro)
 
 ```
-Video animado de 8 SEGUNDOS, 16:9, estilo desenho 3D cinematografico para criancas. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada). As duas na sala aconchegante sorriem, acenam e fazem gracinhas felizes, com confete colorido caindo e uma atmosfera de final feliz. Elas olham para a camera com carinho como quem diz 'ate a proxima'. Sem texto, sem letras, sem logo do YouTube (o botao de subscribe e colocado depois na edicao). Mesmos personagens da referencia em todos os quadros. Sem humanos, sem marcas, sem outros cachorros. DURACAO: 8 SEGUNDOS.
+Video animado de EXATAMENTE 8 SEGUNDOS, 16:9, ESTILO CINEMATOGRAFICO 3D estilo Disney/Pixar, animacao fofa de alta qualidade para criancas, traco suave, luz cinematografica, personagens expressivos. Use @Frida (buldogue inglesa fawn, grande e compacta, colar de perolas) e @Luna (dachshund marrom-chocolate comprida e baixa, coleira dourada), EXATAMENTE como na imagem de referencia anexada, mesmos rostos, racas, cores e tamanhos em todos os quadros. CENA (Muito obrigado por assistir até aqui! Deixe seu like, se inscreva no canal e mostre para seus amiguinhos! Um grande beijo no seu coração e fique com a gente, acompanhe nossos próximos vídeos!). Sem humanos, sem outros cachorros, sem texto, sem letras, sem marcas. DURACAO: 8 SEGUNDOS.
 ```
 
----
-
-## ✅ DEPOIS DE SALVAR
-
-Quando os 5 arquivos estiverem na pasta, me avise aqui no chat. Eu:
-1. Conferio os 5 MP4s (duração, resolução)
-2. Injeto no `video_clips.json` (intro + 3 meio + final)
-3. Gero a sonoplastia pela narração + efeitos de fundo + blur/foco
-4. Rodo o compose/preprocess/render final
-5. Entrego o vídeo completo
+## DEPOIS DE SALVAR
+Me avise no chat. O pipeline faz a compilacao final com sonoplastia (gerada pela narracao) + efeitos de fundo + blur/foco.
