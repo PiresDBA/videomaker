@@ -4417,13 +4417,16 @@ Regras descobertas ao auditar as perguntas sugeridas pelo grafo:
    com código. Estão nos `excludes`. Ao excluí-los, as **50 hyperedges**
    derivadas de logs também desaparecem — correto: 100% dos 248 nós que elas
    citavam eram de logs; mantê-las criaria arestas penduradas.
-3. **`pipeline.py` é god file.** A comunidade
-   `scripts: indexar_midia / gerar_capitulo_trilingu` tem 176 nós (133 de
-   `pipeline.py`, 31 do gerador trilingue, 9 do `hook_manager.py`), densidade
-  0,0218 e acoplamento real entre os três arquivos (14 + 4 arestas). O rótulo
-   antigo citava só `indexar_midia`/`gerar_capitulo` por serem os nós com mais
-   grau. **Não dividir a comunidade**: dividir o `pipeline.py` em módulos por
-   fase (branch `refactor/`) — aí a coesão sobe naturalmente.
+3. **`pipeline.py` é god file POR DESIGN — NÃO refatorar.** Regra do
+   `CONTRATO.md` (item 12): orquestrador **único**, todas as regras como
+   argumentos dele, nunca criar pipeline/config paralelo. A ideia é **rodar o
+   pipeline e tudo acontece**. Logo a baixa coesão é esperada e **não é
+   defeito**. Depois do rebuild de 2026-11-20 o arquivo aparece espalhado por
+   várias comunidades (`pipeline.py / buscar_imagem_banco`,
+   `execute_phases / invalidate_downstream`, `gerar_thumbnail_viral /
+   phase_compose`, ...): isso é o clustering separando as fases dentro do
+   mesmo orquestrador — não é sugestão de refactor. Nenhuma branch `refactor/`
+   deve ser aberta para dividir este arquivo.
 4. **Pergunta sobre hub/ponte:** sempre checar bypass — procurar o literal
    distintivo da função em arquivos **sem aresta** com ela. Ex.:
    `eval/semantics/run_eval.py:574` usa `0.01 * audio.SR` sem chamar
