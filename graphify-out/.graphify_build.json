@@ -1,1 +1,1 @@
-{"code_only": true, "excludes": ["log_*.txt", "**/log_*.txt", "_dublagem_tmp*", "**/_dublagem_tmp*"], "gitignore": true}
+{"code_only": false, "excludes": ["log_*.txt", "**/log_*.txt", "_dublagem_tmp*", "**/_dublagem_tmp*"], "gitignore": true}
